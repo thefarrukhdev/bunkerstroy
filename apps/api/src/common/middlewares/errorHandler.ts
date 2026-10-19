@@ -1,0 +1,14 @@
+import { Request, Response, NextFunction } from 'express';
+
+export function errorHandler(err: any, _req: Request, res: Response, _next: NextFunction) {
+  console.error('API Error:', err);
+
+  const status = err.status || err.statusCode || 500;
+  const message = err.message || 'Ichki server xatoligi yuz berdi';
+
+  res.status(status).json({
+    success: false,
+    error: message,
+    timestamp: new Date().toISOString()
+  });
+}
