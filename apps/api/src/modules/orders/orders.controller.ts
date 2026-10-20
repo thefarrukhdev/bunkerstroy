@@ -14,6 +14,7 @@ import { CreateOrderDto, UpdateOrderStatusDto } from './dto/order.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { Public } from '../../common/decorators/public.decorator';
 import { CurrentUser, CurrentUserPayload } from '../../common/decorators/current-user.decorator';
 
 @ApiTags('Orders & Checkout')
@@ -22,6 +23,8 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
+  @Public()
   @ApiOperation({ summary: 'Yangi buyurtma rasmiylashtirish (Tranzaksion zaxira va narx nazorati)' })
   async create(
     @Body() payload: CreateOrderDto,

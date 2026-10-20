@@ -2,13 +2,17 @@ import { Injectable, Logger } from '@nestjs/common';
 import crypto from 'crypto';
 import { PaymentProvider, PaymentStatus, OrderStatus } from '@bunkerstroy/db';
 import { PrismaService } from '../../prisma/prisma.service';
+import { AuditLogService } from '../admin/audit-log.service';
 import { env } from '../../config/env';
 
 @Injectable()
 export class PaymentsService {
   private readonly logger = new Logger(PaymentsService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly auditLogService: AuditLogService,
+  ) {}
 
   // ----------------------------------------------------
   // PAYME JSON-RPC 2.0 PROTOCOL
@@ -24,19 +28,19 @@ export class PaymentsService {
       const decoded = Buffer.from(base64, 'base64').toString('utf-8');
       const [login, key] = decoded.split(':');
 
-      // Payme sends login (e.g. 'Paycom') and the merchant secret key
-      if (key && (key === env.PAYME_SECRET_KEY || key === 'bunker_payme_test_secret_key_2026')) {
-        return true;
+      if (login !== 'Paycom') {
+        return false;
       }
-      // In dev mode, also allow testing with default dev pass
-      if (login === 'Paycom') {
-        return true;
+
+      const validKeys = [env.PAYME_SECRET_KEY];
+      if (env.NODE_ENV !== 'production') {
+        validKeys.push('bunker_payme_test_secret_key_2026');
       }
+
+      return !!(key && validKeys.includes(key));
     } catch {
       return false;
     }
-
-    return false;
   }
 
   private paymeError(code: number, messageUz: string, messageRu: string, id: any) {
@@ -216,6 +220,13 @@ export class PaymentsService {
       return p;
     });
 
+    await this.auditLogService.logAction({
+      action: 'PAYME_PAYMENT_SUCCESS',
+      category: 'PAYMENT',
+      details: `Payme to'lovi muvaffaqiyatli qabul qilindi: ${transId}, buyurtma: ${transaction.orderId}`,
+      level: 'SUCCESS',
+    });
+
     return {
       result: {
         transaction: transId,
@@ -237,21 +248,37 @@ export class PaymentsService {
       return this.paymeError(-31003, 'Tranzaksiya topilmadi', 'Транзакция не найдена', id);
     }
 
-    const newStatus =
-      transaction.status === PaymentStatus.PAID
-        ? PaymentStatus.REFUNDED
-        : PaymentStatus.FAILED;
+    const isPaid = transaction.status === PaymentStatus.PAID;
+    const newStatus = isPaid ? PaymentStatus.REFUNDED : PaymentStatus.FAILED;
 
-    const updated = await this.prisma.paymentTransaction.update({
-      where: { id: transaction.id },
-      data: { status: newStatus },
+    const updated = await this.prisma.$transaction(async (tx) => {
+      const p = await tx.paymentTransaction.update({
+        where: { id: transaction.id },
+        data: { status: newStatus },
+      });
+
+      if (isPaid && transaction.orderId) {
+        await tx.order.update({
+          where: { id: transaction.orderId },
+          data: { status: OrderStatus.CANCELLED },
+        });
+      }
+
+      return p;
+    });
+
+    await this.auditLogService.logAction({
+      action: 'PAYME_PAYMENT_CANCELLED',
+      category: 'PAYMENT',
+      details: `Payme to'lovi bekor qilindi (${newStatus}): ${transId}`,
+      level: 'WARNING',
     });
 
     return {
       result: {
         transaction: transId,
         cancel_time: updated.updatedAt.getTime(),
-        state: -1,
+        state: isPaid ? -2 : -1,
       },
       id,
     };
@@ -315,7 +342,7 @@ export class PaymentsService {
     const rawSign = `${click_trans_id}${service_id}${secretKey}${merchant_trans_id}${amount}${action}${sign_time}`;
     const expectedSign = crypto.createHash('md5').update(rawSign).digest('hex');
 
-    if (sign_string && sign_string.toLowerCase() !== expectedSign.toLowerCase()) {
+    if (!sign_string || sign_string.toLowerCase() !== expectedSign.toLowerCase()) {
       this.logger.warn(`Click signature mismatch: received ${sign_string}, expected ${expectedSign}`);
       return {
         click_trans_id,
@@ -354,6 +381,38 @@ export class PaymentsService {
 
     // Action 1: Complete
     if (Number(action) === 1) {
+      if (error && Number(error) < 0) {
+        await this.prisma.paymentTransaction.upsert({
+          where: { transactionId: String(click_trans_id) },
+          update: {
+            status: PaymentStatus.FAILED,
+            rawWebhookData: body,
+          },
+          create: {
+            orderId: order.id,
+            provider: PaymentProvider.CLICK,
+            transactionId: String(click_trans_id),
+            amount: order.finalAmount,
+            status: PaymentStatus.FAILED,
+            rawWebhookData: body,
+          },
+        });
+
+        await this.auditLogService.logAction({
+          action: 'CLICK_PAYMENT_FAILED',
+          category: 'PAYMENT',
+          details: `Click to'lovi xato bilan yakunlandi (${error}: ${error_note}): ${click_trans_id}`,
+          level: 'ERROR',
+        });
+
+        return {
+          click_trans_id,
+          merchant_trans_id,
+          error: Number(error),
+          error_note: error_note || 'Payment failed',
+        };
+      }
+
       await this.prisma.$transaction(async (tx) => {
         await tx.paymentTransaction.upsert({
           where: { transactionId: String(click_trans_id) },
@@ -375,6 +434,13 @@ export class PaymentsService {
           where: { id: order.id },
           data: { status: OrderStatus.CONFIRMED },
         });
+      });
+
+      await this.auditLogService.logAction({
+        action: 'CLICK_PAYMENT_SUCCESS',
+        category: 'PAYMENT',
+        details: `Click to'lovi muvaffaqiyatli yakunlandi: ${click_trans_id}, buyurtma: ${order.id}`,
+        level: 'SUCCESS',
       });
 
       return {

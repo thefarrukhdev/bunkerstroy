@@ -1,13 +1,17 @@
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { LogisticsVehicle } from '@bunkerstroy/types';
 import { PrismaService } from '../../prisma/prisma.service';
+import { AuditLogService } from '../admin/audit-log.service';
 import { CalculateQuoteDto, DispatchOrderDto } from './dto/logistics.dto';
 
 @Injectable()
 export class LogisticsService {
   private readonly logger = new Logger(LogisticsService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly auditLogService: AuditLogService,
+  ) {}
 
   private readonly defaultVehicles: LogisticsVehicle[] = [
     {
@@ -151,6 +155,14 @@ export class LogisticsService {
     await this.prisma.order.update({
       where: { id: order.id },
       data: { status: 'ASSIGNED_TO_FLEET' },
+    });
+
+    await this.auditLogService.logAction({
+      actorId: dto.driverId || null,
+      action: 'LOGISTICS_DISPATCH',
+      category: 'LOGISTICS',
+      details: `Buyurtmaga (${order.orderNumber}) maxsus texnika biriktirildi. Narx: ${totalCost} so'm`,
+      level: 'INFO',
     });
 
     return dispatch;

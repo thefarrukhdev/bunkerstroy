@@ -3,12 +3,14 @@ import {
   BadRequestException,
   NotFoundException,
   ForbiddenException,
+  UnauthorizedException,
   Logger,
 } from '@nestjs/common';
 import crypto from 'crypto';
-import { Role, OrderStatus, UserType } from '@bunkerstroy/db';
+import { Role, OrderStatus, UserType, PaymentProvider, PaymentStatus } from '@bunkerstroy/db';
 import { Order, OrderItem } from '@bunkerstroy/types';
 import { PrismaService } from '../../prisma/prisma.service';
+import { AuditLogService } from '../admin/audit-log.service';
 import { CurrentUserPayload } from '../../common/decorators/current-user.decorator';
 import { CreateOrderDto, UpdateOrderStatusDto } from './dto/order.dto';
 
@@ -16,9 +18,25 @@ import { CreateOrderDto, UpdateOrderStatusDto } from './dto/order.dto';
 export class OrdersService {
   private readonly logger = new Logger(OrdersService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly auditLogService: AuditLogService,
+  ) {}
 
   private mapPrismaOrder(o: any): Order {
+    const payments = Array.isArray(o.payments) ? o.payments : [];
+    const hasPaidPayment = payments.some((p: any) => p.status === PaymentStatus.PAID);
+    const latestPayment = payments[0] || null;
+
+    let paymentStatus: any = 'PENDING';
+    if (hasPaidPayment) {
+      paymentStatus = 'PAID';
+    } else if (latestPayment?.status) {
+      paymentStatus = latestPayment.status;
+    }
+
+    const paymentMethod: any = latestPayment?.provider || 'CASH_ON_DELIVERY';
+
     return {
       id: o.id,
       orderNumber: o.orderNumber,
@@ -43,8 +61,8 @@ export class OrdersService {
       discountAmount: Number(o.discountAmount || 0),
       finalAmount: Number(o.finalAmount),
       status: o.status as any,
-      paymentMethod: 'CASH_ON_DELIVERY',
-      paymentStatus: 'PENDING',
+      paymentMethod,
+      paymentStatus,
       deliveryAddress: {
         region: o.deliveryRegion || 'Toshkent shahri',
         district: o.deliveryDistrict || 'Chilonzor tumani',
@@ -89,7 +107,14 @@ export class OrdersService {
       buyerId = user.id;
     }
 
-    // 2. Execute within Prisma Interactive Transaction (ACID)
+    // 2. Consolidate and validate items
+    const consolidatedMap = new Map<string, number>();
+    for (const it of items) {
+      const current = consolidatedMap.get(it.productId) || 0;
+      consolidatedMap.set(it.productId, current + Math.max(1, it.quantity));
+    }
+
+    // 3. Execute within Prisma Interactive Transaction (ACID)
     const orderNumber = `BS-${Math.floor(100000 + Math.random() * 900000)}`;
     const deliveryFee = 150000;
 
@@ -103,19 +128,29 @@ export class OrdersService {
         totalPrice: number;
       }> = [];
 
-      for (const it of items) {
+      for (const [productId, qty] of consolidatedMap.entries()) {
         const product = await tx.product.findFirst({
           where: {
-            OR: [{ id: it.productId }, { slug: it.productId }],
+            OR: [{ id: productId }, { slug: productId }],
           },
         });
 
         if (!product) {
-          throw new NotFoundException(`Mahsulot topilmadi: ${it.productId}`);
+          throw new NotFoundException(`Mahsulot topilmadi: ${productId}`);
         }
 
-        const qty = Math.max(1, it.quantity);
-        if (product.stock < qty) {
+        // Atomic conditional decrement with concurrency protection (prevents overselling)
+        const updateResult = await tx.product.updateMany({
+          where: {
+            id: product.id,
+            stock: { gte: qty },
+          },
+          data: {
+            stock: { decrement: qty },
+          },
+        });
+
+        if (updateResult.count === 0) {
           throw new BadRequestException(
             `Mahsulot zaxirada yetarli emas: ${product.title} (Omborda: ${product.stock}, So‘ralgan: ${qty})`
           );
@@ -125,14 +160,6 @@ export class OrdersService {
         const officialUnitPrice = Number(product.price);
         const lineTotal = officialUnitPrice * qty;
         calculatedTotal += lineTotal;
-
-        // Decrement product stock in DB
-        await tx.product.update({
-          where: { id: product.id },
-          data: {
-            stock: { decrement: qty },
-          },
-        });
 
         orderItemsToCreate.push({
           productId: product.id,
@@ -168,34 +195,63 @@ export class OrdersService {
           items: {
             include: { product: true },
           },
+          payments: true,
         },
       });
 
+      // Create initial PaymentTransaction if online payment selected
+      if (payload.paymentMethod === 'PAYME' || payload.paymentMethod === 'CLICK') {
+        const provider = payload.paymentMethod === 'CLICK' ? PaymentProvider.CLICK : PaymentProvider.PAYME;
+        await tx.paymentTransaction.create({
+          data: {
+            orderId: order.id,
+            provider,
+            transactionId: `TX-${orderNumber}`,
+            amount: calculatedFinal,
+            status: PaymentStatus.PENDING,
+          },
+        });
+      }
+
       return order;
+    });
+
+    await this.auditLogService.logAction({
+      actorId: buyerId,
+      action: 'ORDER_CREATED',
+      category: 'ORDER',
+      details: `Yangi buyurtma rasmiylashtirildi: ${createdOrder.orderNumber}, Summa: ${createdOrder.finalAmount} so'm`,
+      level: 'INFO',
     });
 
     return this.mapPrismaOrder(createdOrder);
   }
 
   async findAll(currentUser?: CurrentUserPayload | null): Promise<Order[]> {
+    if (!currentUser || !currentUser.id) {
+      throw new UnauthorizedException('Avtorizatsiya talab qilinadi (Foydalanuvchi aniqlanmadi)');
+    }
+
     const where: any = {};
 
-    if (currentUser) {
-      if (currentUser.role === Role.ADMIN) {
-        // Admin sees all orders
-      } else if (currentUser.role === Role.SUPPLIER) {
-        // Supplier sees orders containing their supplied products
-        where.items = {
-          some: {
-            product: {
-              supplierId: currentUser.id,
-            },
+    if (currentUser.role === Role.ADMIN) {
+      // Admin sees all orders
+    } else if (currentUser.role === Role.SUPPLIER) {
+      // Supplier sees orders containing their supplied products
+      where.items = {
+        some: {
+          product: {
+            supplierId: currentUser.id,
           },
-        };
-      } else {
-        // Clients and Contractors see only their own orders
-        where.buyerId = currentUser.id;
+        },
+      };
+    } else {
+      // Clients and Contractors see only their own orders
+      const orConditions: any[] = [{ buyerId: currentUser.id }];
+      if (currentUser.phone) {
+        orConditions.push({ buyer: { phone: currentUser.phone } });
       }
+      where.OR = orConditions;
     }
 
     try {
@@ -205,6 +261,9 @@ export class OrdersService {
           buyer: true,
           items: {
             include: { product: true },
+          },
+          payments: {
+            orderBy: { createdAt: 'desc' },
           },
         },
         orderBy: { createdAt: 'desc' },
@@ -231,6 +290,9 @@ export class OrdersService {
         items: {
           include: { product: true },
         },
+        payments: {
+          orderBy: { createdAt: 'desc' },
+        },
       },
     });
 
@@ -255,7 +317,18 @@ export class OrdersService {
         items: {
           include: { product: true },
         },
+        payments: {
+          orderBy: { createdAt: 'desc' },
+        },
       },
+    });
+
+    await this.auditLogService.logAction({
+      actorId: currentUser?.id || null,
+      action: 'ORDER_STATUS_UPDATED',
+      category: 'ORDER',
+      details: `Buyurtma ${order.orderNumber} holati "${order.status}" dan "${dto.status}" ga o'zgartirildi`,
+      level: 'INFO',
     });
 
     return this.mapPrismaOrder(updated);

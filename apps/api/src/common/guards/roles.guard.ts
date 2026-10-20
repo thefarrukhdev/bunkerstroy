@@ -1,4 +1,10 @@
-import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from '@bunkerstroy/db';
 import { ROLES_KEY } from '../decorators/roles.decorator';
@@ -18,7 +24,10 @@ export class RolesGuard implements CanActivate {
     }
 
     const { user } = context.switchToHttp().getRequest();
-    if (!user || !user.role) {
+    if (!user) {
+      throw new UnauthorizedException("Avtorizatsiya talab qilinadi (Token mavjud emas)");
+    }
+    if (!user.role) {
       throw new ForbiddenException("Ushbu amalni bajarish uchun huquq yetarli emas (Foydalanuvchi roli aniqlanmadi)");
     }
 

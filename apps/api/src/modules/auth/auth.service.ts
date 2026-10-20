@@ -13,6 +13,7 @@ import { CompanyInfo, StirRegex } from '@bunkerstroy/types';
 import { env } from '../../config/env';
 import { PrismaService } from '../../prisma/prisma.service';
 import { RedisService } from '../../redis/redis.service';
+import { AuditLogService } from '../admin/audit-log.service';
 import { SmsService } from './sms.service';
 import { EImzoService } from './eimzo.service';
 import { StirService } from './stir.service';
@@ -28,6 +29,7 @@ export class AuthService {
     private readonly smsService: SmsService,
     private readonly eimzoService: EImzoService,
     private readonly stirService: StirService,
+    private readonly auditLogService: AuditLogService,
   ) {}
 
   private normalizePhone(phone: string): string {
@@ -82,22 +84,38 @@ export class AuthService {
     const normalizedPhone = this.normalizePhone(cleanLogin);
 
     // 1. Try to find user in PostgreSQL via Prisma
+    const searchConditions: any[] = [
+      { phone: cleanLogin },
+      { phone: normalizedPhone },
+      { email: cleanLogin.toLowerCase() },
+    ];
+    if (cleanLogin.toLowerCase() === 'admin') {
+      searchConditions.push({ email: 'admin@bunkerstroy.uz' }, { phone: '+998901234567' });
+    }
+    if (cleanLogin.toLowerCase() === 'supplier') {
+      searchConditions.push({ email: 'supplier@toshkentsement.uz' }, { phone: '+998971112233' });
+    }
+
     let user: any = await this.prisma.user.findFirst({
       where: {
-        OR: [
-          { phone: cleanLogin },
-          { phone: normalizedPhone },
-          { email: cleanLogin.toLowerCase() },
-        ],
+        OR: searchConditions,
       },
       include: { company: true },
     });
-
 
     if (user) {
       const isPasswordValid = await bcrypt.compare(pass, user.passwordHash);
       if (isPasswordValid) {
         const tokens = this.generateTokens(user);
+
+        await this.auditLogService.logAction({
+          actorId: user.id,
+          action: 'AUTH_LOGIN_SUCCESS',
+          category: 'AUTH',
+          details: `Foydalanuvchi tizimga kirdi: ${user.displayName} (${user.role})`,
+          level: 'INFO',
+        });
+
         return {
           ...tokens,
           user: {
@@ -223,6 +241,13 @@ export class AuthService {
         },
       };
     }
+
+    await this.auditLogService.logAction({
+      action: 'AUTH_LOGIN_FAILED',
+      category: 'AUTH',
+      details: `Muvaffaqiyatsiz kirish urinishi (Login: ${cleanLogin})`,
+      level: 'WARNING',
+    });
 
     throw new UnauthorizedException('Login yoki parol noto‘g‘ri kiritildi');
   }
@@ -441,6 +466,14 @@ export class AuthService {
     }
 
     const tokens = this.generateTokens(user);
+
+    await this.auditLogService.logAction({
+      actorId: user.id,
+      action: 'EIMZO_VERIFIED',
+      category: 'AUTH',
+      details: `E-IMZO raqamli imzo muvaffaqiyatli tasdiqlandi: STIR ${confirmedInn} (${verified.companyName})`,
+      level: 'INFO',
+    });
 
     return {
       valid: true,

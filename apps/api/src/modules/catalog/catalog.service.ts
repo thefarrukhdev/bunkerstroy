@@ -1,13 +1,43 @@
 import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
 import { Product } from '@bunkerstroy/types';
 import { PrismaService } from '../../prisma/prisma.service';
+import { AuditLogService } from '../admin/audit-log.service';
 import { GetProductsQueryDto, CreateProductDto } from './dto/catalog.dto';
 
 @Injectable()
 export class CatalogService {
   private readonly logger = new Logger(CatalogService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly auditLogService: AuditLogService,
+  ) {}
+
+  private slugify(text: string): string {
+    const cyrillicToLatin: Record<string, string> = {
+      а: 'a', б: 'b', в: 'v', г: 'g', д: 'd', е: 'e', ё: 'yo', ж: 'j',
+      з: 'z', и: 'i', й: 'y', к: 'k', л: 'l', м: 'm', н: 'n', о: 'o',
+      п: 'p', р: 'r', с: 's', т: 't', у: 'u', ф: 'f', х: 'kh', ц: 'ts',
+      ч: 'ch', ш: 'sh', щ: 'shch', ъ: '', ы: 'y', ь: '', э: 'e', ю: 'yu',
+      я: 'ya', ғ: 'g', қ: 'q', ҳ: 'h', ў: 'o',
+    };
+
+    const transliterated = text
+      .toLowerCase()
+      .split('')
+      .map((char) => cyrillicToLatin[char] || char)
+      .join('');
+
+    let clean = transliterated
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
+    if (!clean) {
+      clean = `prod-${Date.now().toString(36)}`;
+    }
+
+    return clean;
+  }
 
   private readonly defaultProducts: Product[] = [
     {
@@ -311,7 +341,7 @@ export class CatalogService {
     }
 
     // 3. Generate unique slug
-    let slug = dto.slug?.trim() || dto.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    let slug = dto.slug?.trim() || this.slugify(dto.title);
     const existing = await this.prisma.product.findUnique({ where: { slug } });
     if (existing) {
       slug = `${slug}-${Date.now().toString().slice(-4)}`;
@@ -340,6 +370,14 @@ export class CatalogService {
         hasBonus: dto.hasBonus ?? false,
       },
       include: { supplier: true, variants: true, category: true },
+    });
+
+    await this.auditLogService.logAction({
+      actorId: supplier.id,
+      action: 'PRODUCT_CREATED',
+      category: 'CATALOG',
+      details: `Yangi mahsulot qo‘shildi: ${created.title} (${created.id})`,
+      level: 'INFO',
     });
 
     return this.mapPrismaProduct(created);
