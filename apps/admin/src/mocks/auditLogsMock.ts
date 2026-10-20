@@ -130,7 +130,7 @@ export const INITIAL_AUDIT_LOGS: AuditLogRecord[] = [
     id: 'log-6',
     action: 'CONFIG_UPDATE',
     actionName: 'Tizim Konfiguratsiyasi Yangilandi',
-    actorName: 'Farrukh Jumayev',
+    actorName: 'Sukhrob Sadullayev',
     actorRole: 'SUPER_ADMIN',
     actorInn: '201122334',
     category: 'SYSTEM',
