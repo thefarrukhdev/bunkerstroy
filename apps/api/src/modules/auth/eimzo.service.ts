@@ -1,7 +1,10 @@
+import { Injectable } from '@nestjs/common';
 import crypto from 'crypto';
 import { EImzoChallenge } from '@bunkerstroy/types';
 
+@Injectable()
 export class EImzoService {
+
   private challenges = new Map<string, EImzoChallenge>();
   private readonly CHALLENGE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 

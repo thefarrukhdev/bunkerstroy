@@ -54,7 +54,7 @@ async function main() {
     create: {
       phone: '+998901234567',
       email: 'admin@bunkerstroy.uz',
-      passwordHash: '$2b$10$epJn7Q8w1gQ8fK0q1p0qseYhXkQ2g9q1.8M3Tq6s7f4q6z8u9w0x2', // demo hash
+      passwordHash: '$2b$10$QMuFb4NAWpyS6py7d9RDTeoPCyhR9.2OvmEktUMhwb12rtc5jmLBS', // bunker2026
       displayName: 'Bunker Admin',
       firstName: 'Farrukh',
       lastName: 'Jumayev',
@@ -76,7 +76,7 @@ async function main() {
     create: {
       phone: '+998971112233',
       email: 'supplier@toshkentsement.uz',
-      passwordHash: '$2b$10$epJn7Q8w1gQ8fK0q1p0qseYhXkQ2g9q1.8M3Tq6s7f4q6z8u9w0x2',
+      passwordHash: '$2b$10$32r4hL89R56l1D9u2E9LNuWcE108m1z9lZ4mF7Hh8G1.H5g1b4J1.', // demo hash
       displayName: 'Toshkent Sement Servis MChJ',
       firstName: 'Alisher',
       lastName: 'Qodirov',

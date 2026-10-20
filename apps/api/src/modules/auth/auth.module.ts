@@ -1,17 +1,31 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { env } from '../../config/env';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { JwtStrategy } from './jwt.strategy';
+import { SmsService } from './sms.service';
+import { EImzoService } from './eimzo.service';
+import { StirService } from './stir.service';
 
 @Module({
   imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
-      secret: process.env.JWT_SECRET || 'bunker_nest_super_secret_jwt_key_2026',
-      signOptions: { expiresIn: '7d' },
+      secret: env.JWT_SECRET,
+      signOptions: { expiresIn: (env.JWT_EXPIRES_IN || '7d') as any },
     }),
+
   ],
   controllers: [AuthController],
-  providers: [AuthService],
-  exports: [AuthService, JwtModule],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    SmsService,
+    EImzoService,
+    StirService,
+  ],
+  exports: [AuthService, JwtModule, PassportModule, JwtStrategy],
 })
 export class AuthModule {}

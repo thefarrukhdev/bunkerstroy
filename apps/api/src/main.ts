@@ -1,15 +1,42 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { setupLiveVoiceGateway } from './modules/ai/liveVoice.gateway';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:4000',
+  ];
+
   app.enableCors({
-    origin: '*',
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.bunkerstroy.uz')) {
+        callback(null, true);
+      } else {
+        callback(null, false);
+      }
+    },
+    credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Accept, Authorization, X-Requested-With',
   });
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidUnknownValues: false,
+    })
+  );
+
+  app.useGlobalFilters(new HttpExceptionFilter());
+
 
   // Swagger OpenAPI Documentation
   const config = new DocumentBuilder()
