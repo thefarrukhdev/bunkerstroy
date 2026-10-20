@@ -124,17 +124,7 @@ export class LogisticsService {
     };
   }
 
-  async dispatchOrder(dto: DispatchOrderDto) {
-    const order = await this.prisma.order.findFirst({
-      where: {
-        OR: [{ id: dto.orderId }, { orderNumber: dto.orderId }],
-      },
-    });
-
-    if (!order) {
-      throw new NotFoundException(`Buyurtma topilmadi: ${dto.orderId}`);
-    }
-
+  async dispatchOrder(dto: DispatchOrderDto, currentUser?: CurrentUserPayload) {
     const vehicle = await this.prisma.logisticsVehicle.findFirst({
       where: {
         OR: [{ id: dto.vehicleId }, { name: dto.vehicleId }],
@@ -144,6 +134,47 @@ export class LogisticsService {
     const basePrice = vehicle ? Number(vehicle.basePrice) : 450000;
     const pricePerKm = vehicle ? Number(vehicle.pricePerKm) : 18000;
     const totalCost = basePrice + dto.distanceKm * pricePerKm;
+
+    let order = await this.prisma.order.findFirst({
+      where: {
+        OR: [{ id: dto.orderId }, { orderNumber: dto.orderId }],
+      },
+    });
+
+    if (!order) {
+      if (
+        dto.orderId === 'EXPRESS' ||
+        dto.orderId?.startsWith('EXPRESS') ||
+        dto.orderId?.startsWith('BS-EXP') ||
+        !dto.orderId
+      ) {
+        const fallbackUserId = currentUser?.id;
+        const dbUser = fallbackUserId
+          ? await this.prisma.user.findUnique({ where: { id: fallbackUserId } })
+          : await this.prisma.user.findFirst();
+
+        if (dbUser) {
+          order = await this.prisma.order.create({
+            data: {
+              orderNumber: `BS-EXP-${Math.floor(100000 + Math.random() * 900000)}`,
+              buyerId: dbUser.id,
+              totalAmount: totalCost,
+              deliveryFee: totalCost,
+              finalAmount: totalCost,
+              status: 'ASSIGNED_TO_FLEET',
+              deliveryRegion: dto.destination.split(',')[0] || 'Toshkent shahri',
+              deliveryDistrict: dto.destination.split(',')[1] || 'Toshkent',
+              deliveryStreet: dto.destination,
+              vehicleType: vehicle?.name || 'Maxsus transport',
+            },
+          });
+        }
+      }
+    }
+
+    if (!order) {
+      throw new NotFoundException(`Buyurtma topilmadi: ${dto.orderId}`);
+    }
 
     const dispatch = await this.prisma.logisticsDispatch.create({
       data: {
@@ -159,6 +190,7 @@ export class LogisticsService {
       include: {
         order: true,
         vehicle: true,
+        driver: true,
       },
     });
 

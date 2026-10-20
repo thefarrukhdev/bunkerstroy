@@ -48,13 +48,16 @@ export class LogisticsController {
 
   @Post('dispatch')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN, Role.LOGISTICS_DRIVER)
+  @Roles(Role.ADMIN, Role.LOGISTICS_DRIVER, Role.CLIENT, Role.CONTRACTOR)
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Buyurtmaga transport va haydovchi biriktirish (Dispatch yaratish)',
   })
-  async dispatchOrder(@Body() body: DispatchOrderDto) {
-    const data = await this.logisticsService.dispatchOrder(body);
+  async dispatchOrder(
+    @Body() body: DispatchOrderDto,
+    @CurrentUser() user: CurrentUserPayload,
+  ) {
+    const data = await this.logisticsService.dispatchOrder(body, user);
     return {
       success: true,
       data,

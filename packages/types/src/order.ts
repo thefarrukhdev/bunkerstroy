@@ -69,6 +69,7 @@ export const OrderSchema = z.object({
   vehicleType: z.string().optional().nullable(),
   assignedDriverId: z.string().uuid().optional().nullable(),
   trackingCode: z.string().optional().nullable(),
+  paymentTransactionId: z.string().optional().nullable(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime()
 });

@@ -69,6 +69,8 @@ export class OrdersService {
         street: o.deliveryStreet || '',
       },
       vehicleType: o.vehicleType || 'Samosval (HOWO)',
+      trackingCode: o.orderNumber,
+      paymentTransactionId: latestPayment?.transactionId || null,
       createdAt: o.createdAt instanceof Date ? o.createdAt.toISOString() : (o.createdAt || new Date().toISOString()),
       updatedAt: o.updatedAt instanceof Date ? o.updatedAt.toISOString() : (o.updatedAt || new Date().toISOString()),
     };

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import crypto from 'crypto';
 import { PaymentProvider, PaymentStatus, OrderStatus } from '@bunkerstroy/db';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -457,6 +457,51 @@ export class PaymentsService {
       merchant_trans_id,
       error: -3,
       error_note: 'Action not found',
+    };
+  }
+
+  async simulatePayment(orderId: string, provider: 'PAYME' | 'CLICK') {
+    const order = await this.prisma.order.findFirst({
+      where: {
+        OR: [{ id: orderId }, { orderNumber: orderId }],
+      },
+    });
+
+    if (!order) {
+      throw new NotFoundException(`Buyurtma topilmadi: ${orderId}`);
+    }
+
+    const txId = `${provider.toLowerCase()}_tx_${Date.now()}`;
+    const pProvider = provider === 'CLICK' ? PaymentProvider.CLICK : PaymentProvider.PAYME;
+
+    const payment = await this.prisma.paymentTransaction.create({
+      data: {
+        orderId: order.id,
+        provider: pProvider,
+        transactionId: txId,
+        amount: order.finalAmount,
+        status: PaymentStatus.PAID,
+        rawWebhookData: { simulated: true, time: new Date().toISOString() },
+      },
+    });
+
+    await this.prisma.order.update({
+      where: { id: order.id },
+      data: { status: OrderStatus.CONFIRMED },
+    });
+
+    await this.auditLogService.logAction({
+      action: 'PAYMENT_SIMULATED',
+      category: 'PAYMENT',
+      details: `Test to‘lovi muvaffaqiyatli amalga oshirildi (${provider}, Buyurtma: ${order.orderNumber}, Summa: ${order.finalAmount})`,
+      level: 'INFO',
+    });
+
+    return {
+      success: true,
+      transactionId: txId,
+      orderNumber: order.orderNumber,
+      status: 'PAID',
     };
   }
 }

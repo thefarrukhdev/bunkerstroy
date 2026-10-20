@@ -21,4 +21,11 @@ export class PaymentsController {
   async handleClickWebhook(@Body() body: any) {
     return this.paymentsService.handleClickWebhook(body);
   }
+
+  @Post('simulate')
+  @ApiOperation({ summary: 'Payme va Click to‘lovlarini tezkor simulyatsiya qilish (Test muhiti)' })
+  async simulatePayment(@Body() body: { orderId: string; provider: 'PAYME' | 'CLICK' }) {
+    const data = await this.paymentsService.simulatePayment(body.orderId, body.provider || 'PAYME');
+    return { success: true, data, message: "To'lov muvaffaqiyatli qabul qilindi" };
+  }
 }
