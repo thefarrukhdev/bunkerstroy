@@ -8,7 +8,13 @@ export const OrdersView: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/orders')
+    const token = typeof window !== 'undefined' ? localStorage.getItem('bunkerstroy_token') : null;
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    fetch('/api/orders', { headers })
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {

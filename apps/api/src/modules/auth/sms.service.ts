@@ -1,6 +1,9 @@
+import { Injectable } from '@nestjs/common';
 import { env } from '../../config/env';
 
+@Injectable()
 export class SmsService {
+
   private cachedToken: string | null = null;
   private tokenExpiresAt = 0;
 

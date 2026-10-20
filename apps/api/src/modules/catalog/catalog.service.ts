@@ -1,10 +1,43 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
 import { Product } from '@bunkerstroy/types';
 import { PrismaService } from '../../prisma/prisma.service';
+import { AuditLogService } from '../admin/audit-log.service';
+import { GetProductsQueryDto, CreateProductDto } from './dto/catalog.dto';
 
 @Injectable()
 export class CatalogService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(CatalogService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly auditLogService: AuditLogService,
+  ) {}
+
+  private slugify(text: string): string {
+    const cyrillicToLatin: Record<string, string> = {
+      а: 'a', б: 'b', в: 'v', г: 'g', д: 'd', е: 'e', ё: 'yo', ж: 'j',
+      з: 'z', и: 'i', й: 'y', к: 'k', л: 'l', м: 'm', н: 'n', о: 'o',
+      п: 'p', р: 'r', с: 's', т: 't', у: 'u', ф: 'f', х: 'kh', ц: 'ts',
+      ч: 'ch', ш: 'sh', щ: 'shch', ъ: '', ы: 'y', ь: '', э: 'e', ю: 'yu',
+      я: 'ya', ғ: 'g', қ: 'q', ҳ: 'h', ў: 'o',
+    };
+
+    const transliterated = text
+      .toLowerCase()
+      .split('')
+      .map((char) => cyrillicToLatin[char] || char)
+      .join('');
+
+    let clean = transliterated
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
+    if (!clean) {
+      clean = `prod-${Date.now().toString(36)}`;
+    }
+
+    return clean;
+  }
 
   private readonly defaultProducts: Product[] = [
     {
@@ -84,7 +117,7 @@ export class CatalogService {
     }
   ];
 
-  private mapPrismaProduct(p: any): Product {
+  public mapPrismaProduct(p: any): Product {
     let unit = p.unit as any;
     if (unit === 'qop (50kg)' || unit?.includes('50kg') || unit?.includes('qop')) {
       unit = 'BAG_50KG';
@@ -141,40 +174,104 @@ export class CatalogService {
     };
   }
 
-  async findAll(query?: string, category?: string, region?: string, escoOnly?: boolean): Promise<Product[]> {
-    let products: Product[] = [];
-    try {
-      const dbProducts = await this.prisma.product.findMany({
-        include: { supplier: true, variants: true, category: true }
-      });
-      if (dbProducts && dbProducts.length > 0) {
-        products = dbProducts.map((p) => this.mapPrismaProduct(p));
+  async findAll(queryDto: GetProductsQueryDto = {}): Promise<{
+    data: Product[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }> {
+    const page = Math.max(1, Number(queryDto.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(queryDto.limit) || 20));
+    const skip = (page - 1) * limit;
+
+    const where: any = {};
+
+    if (queryDto.category && queryDto.category !== 'all') {
+      where.OR = [
+        { categoryId: queryDto.category },
+        { category: { slug: queryDto.category } }
+      ];
+    }
+
+    if (queryDto.region && queryDto.region !== 'all') {
+      where.region = { contains: queryDto.region, mode: 'insensitive' };
+    }
+
+    if (queryDto.escoOnly) {
+      where.isEscoCertified = true;
+    }
+
+    if (queryDto.query) {
+      const q = queryDto.query.trim();
+      const searchConditions = [
+        { title: { contains: q, mode: 'insensitive' } },
+        { description: { contains: q, mode: 'insensitive' } },
+      ];
+      if (where.OR) {
+        where.AND = [{ OR: where.OR }, { OR: searchConditions }];
+        delete where.OR;
+      } else {
+        where.OR = searchConditions;
       }
-    } catch (err) {
-      console.warn('Prisma CatalogService findAll fallback due to DB error/connecting:', err);
     }
 
-    if (products.length === 0) {
-      products = [...this.defaultProducts];
+    try {
+      const [dbProducts, total] = await Promise.all([
+        this.prisma.product.findMany({
+          where,
+          skip,
+          take: limit,
+          orderBy: { createdAt: 'desc' },
+          include: { supplier: true, variants: true, category: true },
+        }),
+        this.prisma.product.count({ where }),
+      ]);
+
+      if (total > 0 || (queryDto.category || queryDto.query || queryDto.region)) {
+        const mapped = dbProducts.map((p) => this.mapPrismaProduct(p));
+        return {
+          data: mapped,
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit) || 1,
+        };
+      }
+    } catch (err: any) {
+      this.logger.warn(`Prisma CatalogService findAll warning: ${err?.message}`);
     }
 
-    let result = products;
-    if (category && category !== 'all') {
-      result = result.filter((p) => p.categoryId === category);
+    // Fallback in-memory filter if database empty
+    let fallbackResult = [...this.defaultProducts];
+    if (queryDto.category && queryDto.category !== 'all') {
+      fallbackResult = fallbackResult.filter((p) => p.categoryId === queryDto.category);
     }
-    if (region && region !== 'all') {
-      result = result.filter((p) => p.region?.toLowerCase().includes(region.toLowerCase()));
+    if (queryDto.region && queryDto.region !== 'all') {
+      fallbackResult = fallbackResult.filter((p) =>
+        p.region?.toLowerCase().includes(queryDto.region!.toLowerCase())
+      );
     }
-    if (escoOnly) {
-      result = result.filter((p) => p.isEscoCertified);
+    if (queryDto.escoOnly) {
+      fallbackResult = fallbackResult.filter((p) => p.isEscoCertified);
     }
-    if (query) {
-      const q = query.toLowerCase();
-      result = result.filter(
+    if (queryDto.query) {
+      const q = queryDto.query.toLowerCase();
+      fallbackResult = fallbackResult.filter(
         (p) => p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q)
       );
     }
-    return result;
+
+    const total = fallbackResult.length;
+    const paginated = fallbackResult.slice(skip, skip + limit);
+
+    return {
+      data: paginated,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit) || 1,
+    };
   }
 
   async findById(id: string): Promise<Product | undefined> {
@@ -195,10 +292,94 @@ export class CatalogService {
       if (dbProduct) {
         return this.mapPrismaProduct(dbProduct);
       }
-    } catch (err) {
-      console.warn(`Prisma CatalogService findById error/fallback for ${id}:`, err);
+    } catch (err: any) {
+      this.logger.warn(`Prisma CatalogService findById warning for ${id}: ${err?.message}`);
     }
 
     return this.defaultProducts.find((p) => p.id === id || p.slug === id || p.slug === targetSlug);
+  }
+
+  async createProduct(dto: CreateProductDto, actorSupplierId: string): Promise<Product> {
+    // 1. Resolve Category
+    let category = await this.prisma.category.findFirst({
+      where: {
+        OR: [{ id: dto.categoryId }, { slug: dto.categoryId }],
+      },
+    });
+
+    if (!category) {
+      // Find default category or create one
+      category = await this.prisma.category.findFirst();
+      if (!category) {
+        category = await this.prisma.category.create({
+          data: {
+            name: 'Umumiy qurilish mollari',
+            slug: 'umumiy-qurilish',
+          },
+        });
+      }
+    }
+
+    // 2. Resolve Supplier User
+    let supplier = await this.prisma.user.findUnique({
+      where: { id: actorSupplierId },
+    });
+
+    if (!supplier) {
+      supplier = await this.prisma.user.findFirst({
+        where: { role: 'SUPPLIER' },
+      });
+      if (!supplier) {
+        supplier = await this.prisma.user.findFirst({
+          where: { role: 'ADMIN' },
+        });
+      }
+    }
+
+    if (!supplier) {
+      throw new BadRequestException('Ta’minotchi foydalanuvchi tizimda topilmadi');
+    }
+
+    // 3. Generate unique slug
+    let slug = dto.slug?.trim() || this.slugify(dto.title);
+    const existing = await this.prisma.product.findUnique({ where: { slug } });
+    if (existing) {
+      slug = `${slug}-${Date.now().toString().slice(-4)}`;
+    }
+
+    const created = await this.prisma.product.create({
+      data: {
+        title: dto.title,
+        slug,
+        categoryId: category.id,
+        supplierId: supplier.id,
+        price: dto.price,
+        unit: dto.unit || 'dona',
+        stock: dto.stock,
+        minOrder: dto.minOrder || 1,
+        energyEfficiencyRating: dto.energyEfficiencyRating || 'STANDARD',
+        isEscoCertified: dto.isEscoCertified || false,
+        description: dto.description,
+        itemType: dto.itemType || 'MATERIAL',
+        repairType: dto.repairType || 'UNIVERSAL',
+        region: dto.region || supplier.region || 'Toshkent shahri',
+        district: dto.district || supplier.district || 'Chilonzor tumani',
+        images: dto.images && dto.images.length > 0 ? dto.images : ['https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800'],
+        warranty: dto.warranty || null,
+        hasDelivery: dto.hasDelivery ?? true,
+        hasBonus: dto.hasBonus ?? false,
+      },
+      include: { supplier: true, variants: true, category: true },
+    });
+
+    await this.auditLogService.logAction({
+      actorId: supplier.id,
+      action: 'PRODUCT_CREATED',
+      category: 'CATALOG',
+      details: `Yangi mahsulot qo‘shildi: ${created.title} (${created.id})`,
+      level: 'INFO',
+    });
+
+    return this.mapPrismaProduct(created);
   }
 }

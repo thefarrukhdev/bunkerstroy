@@ -43,9 +43,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const handlePlaceOrder = async () => {
     setLoading(true);
     try {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('bunkerstroy_token') : null;
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const res = await fetch('/api/orders', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           buyerName: name || 'Buyurtmachi',
           buyerPhone: phone,

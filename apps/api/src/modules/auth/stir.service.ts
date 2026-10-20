@@ -1,13 +1,10 @@
+import { Injectable } from '@nestjs/common';
 import { CompanyInfo, StirRegex } from '@bunkerstroy/types';
+import { RedisService } from '../../redis/redis.service';
 
-interface CachedCompany {
-  data: CompanyInfo;
-  cachedAt: number;
-}
-
+@Injectable()
 export class StirService {
-  private cache = new Map<string, CachedCompany>();
-  private readonly CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+  private readonly CACHE_TTL_SECONDS = 24 * 60 * 60; // 24 hours
 
   private testCompanies: Record<string, Partial<CompanyInfo>> = {
     '201122334': {
@@ -48,25 +45,35 @@ export class StirService {
     }
   };
 
+  constructor(private readonly redisService?: RedisService) {}
+
   async lookup(inn: string): Promise<CompanyInfo | null> {
     const cleanInn = inn.trim();
     if (!StirRegex.test(cleanInn)) {
       throw new Error('STIR aynan 9 ta raqamdan iborat bo‘lishi shart');
     }
 
-    const cached = this.cache.get(cleanInn);
-    if (cached && Date.now() - cached.cachedAt < this.CACHE_TTL_MS) {
-      return cached.data;
+    const cacheKey = `stir:${cleanInn}`;
+    if (this.redisService) {
+      const cached = await this.redisService.get(cacheKey);
+      if (cached) {
+        try {
+          return JSON.parse(cached) as CompanyInfo;
+        } catch {
+          // ignore json parse error
+        }
+      }
     }
 
-    // Soliq Open Data API yoki mock data
+    // Soliq Open Data API or mock lookup
+    let company: CompanyInfo;
     const mock = this.testCompanies[cleanInn];
     if (mock) {
-      const company: CompanyInfo = {
+      company = {
         inn: cleanInn,
         companyName: mock.companyName || `MChJ (STIR: ${cleanInn})`,
         shortName: mock.shortName || undefined,
-        status: mock.status as any || 'ACTIVE',
+        status: (mock.status as any) || 'ACTIVE',
         statusDescription: mock.statusDescription || 'Faol korxona',
         director: mock.director || 'Rahbar aniqlanmagan',
         address: mock.address || "O'zbekiston Respublikasi",
@@ -76,28 +83,27 @@ export class StirService {
         activityType: mock.activityType || 'Qurilish faoliyati',
         vatPayer: mock.vatPayer ?? false
       };
-
-      this.cache.set(cleanInn, { data: company, cachedAt: Date.now() });
-      return company;
+    } else {
+      company = {
+        inn: cleanInn,
+        companyName: `«QURILISH INVEST SERVIS ${cleanInn.slice(-4)}» MChJ`,
+        status: 'ACTIVE',
+        statusDescription: 'Faol soliq to‘lovchi',
+        director: 'Mas’ul Shaxs',
+        address: `Toshkent shahri, STIR: ${cleanInn}`,
+        region: 'Toshkent shahri',
+        district: 'Mirobod tumani',
+        registrationDate: '2023-01-01',
+        activityType: 'Qurilish mollarini realizatsiya qilish',
+        vatPayer: true
+      };
     }
 
-    // Default dynamic lookup for any valid 9 digit STIR
-    const generated: CompanyInfo = {
-      inn: cleanInn,
-      companyName: `«QURILISH INVEST SERVIS ${cleanInn.slice(-4)}» MChJ`,
-      status: 'ACTIVE',
-      statusDescription: 'Faol soliq to‘lovchi',
-      director: 'Mas’ul Shaxs',
-      address: `Toshkent shahri, STIR: ${cleanInn}`,
-      region: 'Toshkent shahri',
-      district: 'Mirobod tumani',
-      registrationDate: '2023-01-01',
-      activityType: 'Qurilish mollarini realizatsiya qilish',
-      vatPayer: true
-    };
+    if (this.redisService) {
+      await this.redisService.set(cacheKey, JSON.stringify(company), this.CACHE_TTL_SECONDS);
+    }
 
-    this.cache.set(cleanInn, { data: generated, cachedAt: Date.now() });
-    return generated;
+    return company;
   }
 }
 

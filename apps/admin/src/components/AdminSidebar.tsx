@@ -1,28 +1,26 @@
 import React from 'react';
 import {
-  LayoutDashboard,
+  ShieldAlert,
   Building2,
   Package,
   Wallet,
-  ShieldAlert,
-  Settings,
-  HardHat,
-  LogOut,
-  ChevronRight,
-  Activity,
+  LayoutDashboard,
+  Truck,
+  ShoppingCart,
+  Users2,
   Terminal,
-  ShieldCheck,
-  Zap
+  ChevronRight
 } from 'lucide-react';
-import { Badge } from '@bunkerstroy/ui';
 
 export type AdminTab =
+  | 'super_admin'
   | 'analytics'
   | 'suppliers'
   | 'products'
+  | 'orders'
+  | 'logistics'
   | 'financial'
-  | 'audit_logs'
-  | 'settings';
+  | 'audit_logs';
 
 interface AdminSidebarProps {
   activeTab: AdminTab;
@@ -39,36 +37,45 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 }) => {
   const menuItems: { id: AdminTab; label: string; icon: React.ReactNode; badge?: string }[] = [
     {
+      id: 'super_admin',
+      label: 'Super Admin Katalogi',
+      icon: <Users2 className="w-4 h-4" />,
+      badge: 'BOSHQARUV'
+    },
+    {
       id: 'analytics',
       label: 'Boshqaruv Paneli',
-      icon: <LayoutDashboard className="w-5 h-5" />
+      icon: <LayoutDashboard className="w-4 h-4" />
     },
     {
       id: 'suppliers',
-      label: 'Ta\'minotchilar',
-      icon: <Building2 className="w-5 h-5" />,
-      badge: '28 ta'
+      label: "Ta'minotchilar & STIR",
+      icon: <Building2 className="w-4 h-4" />
     },
     {
       id: 'products',
-      label: 'Tovar Katalogi',
-      icon: <Package className="w-5 h-5" />,
-      badge: 'ESCO'
+      label: 'Mahsulotlar & Zaxira',
+      icon: <Package className="w-4 h-4" />
+    },
+    {
+      id: 'orders',
+      label: 'Buyurtmalar & Savdo',
+      icon: <ShoppingCart className="w-4 h-4" />
+    },
+    {
+      id: 'logistics',
+      label: "Og'ir Logistika",
+      icon: <Truck className="w-4 h-4" />
     },
     {
       id: 'financial',
-      label: 'Moliya & Kassa',
-      icon: <Wallet className="w-5 h-5" />
+      label: 'Kassa & Moliya',
+      icon: <Wallet className="w-4 h-4" />
     },
     {
       id: 'audit_logs',
       label: 'Xavfsizlik Jurnali',
-      icon: <ShieldAlert className="w-5 h-5" />
-    },
-    {
-      id: 'settings',
-      label: 'Platforma Sozlamalari',
-      icon: <Settings className="w-5 h-5" />
+      icon: <ShieldAlert className="w-4 h-4" />
     }
   ];
 
@@ -78,46 +85,38 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       {isOpen && (
         <div
           onClick={onClose}
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs lg:hidden"
+          className="fixed inset-0 z-40 bg-black/70 backdrop-blur-xs lg:hidden"
         />
       )}
 
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-72 bg-[#151719] border-r border-[#33373B] flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-72 bg-theme-sidebar border-r border-theme flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Top Hazard Accent */}
-        <div className="h-1 w-full hazard-stripe-sm opacity-90" />
-
         {/* Brand Header */}
-        <div className="p-5 border-b border-[#33373B] brushed-steel">
+        <div className="p-5 border-b border-theme bg-theme-header">
           <div className="flex items-center gap-3">
-            <div className="relative w-11 h-11 rounded-xl bg-[#222528] border border-[#51504A] flex items-center justify-center shadow-lg group">
-              <div className="absolute top-1 left-1 industrial-rivet" />
-              <div className="absolute top-1 right-1 industrial-rivet" />
-              <div className="absolute bottom-1 left-1 industrial-rivet" />
-              <div className="absolute bottom-1 right-1 industrial-rivet" />
-              <HardHat className="w-6 h-6 text-[#FFB800]" />
+            <div className="w-10 h-10 rounded-xl dark:bg-[#89B4FA]/15 dark:border dark:border-[#89B4FA]/30 dark:text-[#89B4FA] bg-[#1E66F5] text-white flex items-center justify-center font-black tracking-widest shadow-xs">
+              <Terminal className="w-5 h-5" />
             </div>
 
             <div>
-              <div className="text-lg font-black tracking-wider leading-none">
-                <span className="text-[#FFB800]">BUNKER</span>
-                <span className="text-[#F5F5F2]">STROY</span>
+              <div className="text-base font-black tracking-wider text-theme-main font-mono uppercase">
+                BUNKERSTROY
               </div>
-              <div className="text-[10px] tracking-widest text-[#B8B8B3] uppercase font-mono mt-1 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                Admin &amp; Supplier Hub
+              <div className="text-[10px] tracking-widest text-theme-muted uppercase font-mono flex items-center gap-1.5 mt-0.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#A6E3A1]" />
+                ENTERPRISE ADMIN
               </div>
             </div>
           </div>
         </div>
 
-        {/* Navigation Section */}
+        {/* Navigation Menu */}
         <div className="flex-1 py-4 px-3 overflow-y-auto space-y-1">
-          <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-widest text-[#8E9094]">
-            Boshqaruv Modullari
+          <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-widest text-theme-subtle">
+            Asosiy Modullar
           </div>
 
           {menuItems.map((item) => {
@@ -129,18 +128,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   setActiveTab(item.id);
                   onClose();
                 }}
-                className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl font-medium text-sm transition-all duration-200 group cursor-pointer ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-mono text-xs transition-all duration-150 cursor-pointer ${
                   isActive
-                    ? 'bg-[#222528] text-[#FFB800] border border-[#FFB800]/40 shadow-md font-bold'
-                    : 'text-[#B8B8B3] hover:text-[#F5F5F2] hover:bg-[#1A1D20] border border-transparent'
+                    ? 'dark:bg-[#89B4FA] dark:text-[#11111B] bg-[#1E66F5] text-white font-bold shadow-sm'
+                    : 'text-theme-muted hover:text-theme-main hover:bg-theme-card-subtle'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <span
-                    className={`transition-colors ${
-                      isActive ? 'text-[#FFB800]' : 'text-[#8E9094] group-hover:text-[#F5F5F2]'
-                    }`}
-                  >
+                  <span className={isActive ? 'dark:text-[#11111B] text-white' : 'text-theme-subtle'}>
                     {item.icon}
                   </span>
                   <span>{item.label}</span>
@@ -149,52 +144,30 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 <div className="flex items-center gap-1.5">
                   {item.badge && (
                     <span
-                      className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+                      className={`text-[9px] font-mono px-2 py-0.5 rounded-full border uppercase ${
                         isActive
-                          ? 'bg-[#FFB800]/20 text-[#FFB800] border-[#FFB800]/30'
-                          : 'bg-[#292C2F] text-[#8E9094] border-[#33373B]'
+                          ? 'dark:bg-[#11111B]/20 dark:text-[#11111B] dark:border-[#11111B]/30 bg-white/20 text-white border-white/30'
+                          : 'bg-theme-card-subtle text-theme-muted border-theme'
                       }`}
                     >
                       {item.badge}
                     </span>
                   )}
-                  {isActive && <ChevronRight className="w-4 h-4 text-[#FFB800]" />}
+                  {isActive && <ChevronRight className="w-3.5 h-3.5" />}
                 </div>
               </button>
             );
           })}
         </div>
 
-        {/* Bottom User & System Status Card */}
-        <div className="p-3 border-t border-[#33373B] bg-[#1A1D20]/80">
-          <div className="p-3 bg-[#151719] rounded-xl border border-[#33373B] space-y-2.5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#FFB800] text-[#151719] font-black text-xs flex items-center justify-center font-mono shadow-sm">
-                  FJ
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-[#F5F5F2] leading-tight">
-                    Farrukh Jumayev
-                  </div>
-                  <div className="text-[10px] font-mono text-emerald-400">
-                    Bosh Administrator
-                  </div>
-                </div>
-              </div>
-
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                ONLINE
-              </span>
-            </div>
-
-            <div className="pt-2 border-t border-[#33373B]/50 flex items-center justify-between text-[10px] font-mono text-[#8E9094]">
-              <span>v1.0.0 HEAVY CORE</span>
-              <span className="flex items-center gap-1 text-[#FFB800]">
-                <ShieldCheck className="w-3 h-3" /> E-IMZO Active
-              </span>
-            </div>
+        {/* Footer info (Pill Widget) */}
+        <div className="p-3 border-t border-theme bg-theme-header text-theme-muted text-[11px] font-mono">
+          <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-theme-card-subtle border border-theme">
+            <span className="text-theme-subtle">Tizim holati:</span>
+            <span className="text-[#A6E3A1] font-bold tracking-wider flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#A6E3A1] animate-pulse" />
+              ONLINE
+            </span>
           </div>
         </div>
       </aside>
