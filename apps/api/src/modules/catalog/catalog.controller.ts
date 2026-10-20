@@ -9,20 +9,20 @@ export class CatalogController {
 
   @Get('products')
   @ApiOperation({ summary: "Qurilish mollari katalogini filtrlash va olish" })
-  getProducts(
+  async getProducts(
     @Query('query') query?: string,
     @Query('category') category?: string,
     @Query('region') region?: string,
     @Query('isEscoOnly') isEscoOnly?: string
   ) {
-    const data = this.catalogService.findAll(query, category, region, isEscoOnly === 'true');
+    const data = await this.catalogService.findAll(query, category, region, isEscoOnly === 'true');
     return { success: true, data, total: data.length };
   }
 
   @Get('products/:id')
   @ApiOperation({ summary: "Bitta mahsulot tafsilotlarini olish" })
-  getProductById(@Param('id') id: string) {
-    const data = this.catalogService.findById(id);
+  async getProductById(@Param('id') id: string) {
+    const data = await this.catalogService.findById(id);
     return { success: !!data, data };
   }
 }

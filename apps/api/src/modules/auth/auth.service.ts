@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import crypto from 'crypto';
 import { CompanyInfo, StirRegex } from '@bunkerstroy/types';
@@ -70,11 +70,24 @@ export class AuthService {
     const confirmedInn = expectedInn || challenge.inn || '201122334';
     const serialNumber = 'EIMZO-' + crypto.randomBytes(8).toString('hex').toUpperCase();
 
-    const token = this.jwtService.sign({
+    const user = {
       id: 'eimzo-' + confirmedInn,
+      displayName: '«BUNKER STROY INVEST» MChJ',
       role: 'CONTRACTOR',
       inn: confirmedInn,
-      phone: '+998900000000'
+      phone: '+998900000000',
+      companyName: '«BUNKER STROY INVEST» MChJ',
+      verificationStatus: 'VERIFIED',
+      eimzoSerialNumber: serialNumber
+    };
+
+    const token = this.jwtService.sign({
+      id: user.id,
+      role: user.role,
+      inn: user.inn,
+      displayName: user.displayName,
+      companyName: user.companyName,
+      phone: user.phone
     });
 
     return {
@@ -83,8 +96,27 @@ export class AuthService {
       inn: confirmedInn,
       companyName: '«BUNKER STROY INVEST» MChJ',
       token,
+      user,
+      verification: user,
       verifiedAt: new Date().toISOString()
     };
+  }
+
+  async getMe(token: string) {
+    try {
+      const payload = this.jwtService.verify(token);
+      return {
+        id: payload.id,
+        displayName: payload.displayName || payload.companyName || 'Foydalanuvchi',
+        role: payload.role || 'CLIENT',
+        inn: payload.inn,
+        phone: payload.phone,
+        email: payload.email,
+        companyName: payload.companyName
+      };
+    } catch {
+      throw new UnauthorizedException('Token yaroqsiz yoki muddati o‘tgan');
+    }
   }
 
   async sendOtp(phone: string) {

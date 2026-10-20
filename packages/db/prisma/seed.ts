@@ -26,7 +26,28 @@ async function main() {
     }
   });
 
-  // 2. Admin User
+  // 2. Initial Supplier Company
+  await prisma.company.upsert({
+    where: { inn: '305566778' },
+    update: {},
+    create: {
+      inn: '305566778',
+      companyName: '«TOSHKENT G\'ISHT VA SEMENT SERVIS» MChJ',
+      shortName: 'TOSHKENT SEMENT SERVIS',
+      status: 'ACTIVE',
+      statusDescription: 'Faol soliq to‘lovchi yuridik shaxs',
+      director: 'Qodirov Alisher',
+      address: 'Toshkent vil., Zangiota tumani, Qoraqamish dahasi, 12-uy',
+      region: 'Toshkent viloyati',
+      district: 'Zangiota tumani',
+      registrationDate: new Date('2021-06-20'),
+      activityType: 'Qurilish materiallari ishlab chiqarish va ulgurji savdo',
+      vatPayer: true,
+      verifiedAt: new Date()
+    }
+  });
+
+  // 3. Admin User
   const admin = await prisma.user.upsert({
     where: { phone: '+998901234567' },
     update: {},
@@ -48,7 +69,7 @@ async function main() {
     }
   });
 
-  // 3. Sample Verified Supplier
+  // 4. Sample Verified Supplier
   const supplier = await prisma.user.upsert({
     where: { phone: '+998971112233' },
     update: {},
@@ -139,6 +160,35 @@ async function main() {
           images: ['https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?w=800'],
           warranty: 'Zavod sertifikati bilan',
           hasDelivery: true
+        }
+      });
+    }
+
+    if (cat.slug === 'izolyatsiya-tom') {
+      await prisma.product.upsert({
+        where: { slug: 'bazalt-plitasi-50mm' },
+        update: {},
+        create: {
+          title: 'Bazalt Mineral Plitasi 50mm (Fasad izolyatsiya)',
+          slug: 'bazalt-plitasi-50mm',
+          categoryId: createdCat.id,
+          supplierId: supplier.id,
+          price: 38000,
+          unit: 'm²',
+          stock: 2400,
+          minOrder: 50,
+          energyEfficiencyRating: 'A++',
+          isEscoCertified: true,
+          description: 'Fasad va tom uchun mineral tosh plitalari. Issiqlikni 40% gacha tejaydi.',
+          itemType: 'MATERIAL',
+          repairType: 'EXTERNAL',
+          region: 'Samarqand viloyati',
+          district: 'Samarqand shahri',
+          images: ['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800'],
+          warranty: 'Kafolat 10 yil',
+          hasDelivery: true,
+          hasBonus: true,
+          bonusDescription: '500 m² dan ortiq xaridda bepul yetkazish'
         }
       });
     }

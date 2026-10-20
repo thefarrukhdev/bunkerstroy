@@ -9,7 +9,7 @@ export function setupLiveVoiceGateway(server: Server) {
   wss.on('connection', async (clientWs: WebSocket) => {
     console.log('Client connected to Live Voice Gateway');
 
-    if (!env.GEMINI_API_KEY) {
+    if (!env.GEMINI_API_KEY || env.GEMINI_API_KEY.includes('your_google_gemini_api_key_here')) {
       clientWs.send(
         JSON.stringify({
           type: 'text',

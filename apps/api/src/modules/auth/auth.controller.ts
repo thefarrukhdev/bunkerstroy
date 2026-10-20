@@ -1,11 +1,26 @@
-import { Controller, Get, Post, Body, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Query, Headers, UnauthorizedException } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 
 @ApiTags('Authentication & Identity')
 @Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Get('me')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Joriy sessiya va foydalanuvchi ma’lumotlarini olish (JWT session persistence)' })
+  async getMe(@Headers('authorization') authHeader?: string) {
+    if (!authHeader) {
+      throw new UnauthorizedException('Avtorizatsiya tokeni topilmadi');
+    }
+    const token = authHeader.replace(/^Bearer\s+/i, '').trim();
+    if (!token) {
+      throw new UnauthorizedException('Avtorizatsiya tokeni noto‘g‘ri formatda');
+    }
+    const data = await this.authService.getMe(token);
+    return { success: true, data };
+  }
 
   @Get('stir-lookup')
   @ApiOperation({ summary: "Soliq STIR (INN) orqali yuridik shaxs ma'lumotlarini tekshirish" })

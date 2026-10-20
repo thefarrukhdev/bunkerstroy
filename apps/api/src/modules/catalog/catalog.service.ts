@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Product } from '@bunkerstroy/types';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class CatalogService {
-  private products: Product[] = [
+  constructor(private readonly prisma: PrismaService) {}
+
+  private readonly defaultProducts: Product[] = [
     {
       id: 'prod-1',
       title: 'Sement M500 D0 (Qoraqamish zavodi, 50kg)',
@@ -81,8 +84,81 @@ export class CatalogService {
     }
   ];
 
-  findAll(query?: string, category?: string, region?: string, escoOnly?: boolean): Product[] {
-    let result = [...this.products];
+  private mapPrismaProduct(p: any): Product {
+    let unit = p.unit as any;
+    if (unit === 'qop (50kg)' || unit?.includes('50kg') || unit?.includes('qop')) {
+      unit = 'BAG_50KG';
+    } else if (unit === 'tonna' || unit?.includes('ton')) {
+      unit = 'TON';
+    } else if (unit === 'm²' || unit === 'm2' || unit?.includes('SQ_METER')) {
+      unit = 'SQ_METER';
+    } else if (unit === 'dona' || unit?.includes('PIECE')) {
+      unit = 'PIECE';
+    } else if (!['BAG_50KG', 'TON', 'PIECE', 'SQ_METER', 'CUBIC_METER', 'ROLL', 'METER', 'LITER'].includes(unit)) {
+      unit = 'BAG_50KG';
+    }
+
+    return {
+      id: p.id,
+      title: p.title,
+      slug: p.slug,
+      categoryId: p.categoryId,
+      supplierId: p.supplierId,
+      supplierName: p.supplier?.companyName || p.supplier?.displayName || 'Toshkent Sement Servis MChJ',
+      price: Number(p.price),
+      unit,
+      stock: p.stock,
+      minOrder: p.minOrder,
+      energyEfficiencyRating: (p.energyEfficiencyRating || 'STANDARD') as any,
+      isEscoCertified: Boolean(p.isEscoCertified),
+      description: p.description,
+      itemType: (p.itemType || 'MATERIAL') as any,
+      repairType: (p.repairType || 'UNIVERSAL') as any,
+      region: p.region || null,
+      district: p.district || null,
+      images: Array.isArray(p.images) ? p.images : [],
+      warranty: p.warranty || null,
+      hasDelivery: Boolean(p.hasDelivery),
+      hasBonus: Boolean(p.hasBonus),
+      bonusDescription: p.bonusDescription || null,
+      bonusThreshold: p.bonusThreshold ? Number(p.bonusThreshold) : null,
+      bonusAmount: p.bonusAmount ? Number(p.bonusAmount) : null,
+      variants: Array.isArray(p.variants)
+        ? p.variants.map((v: any) => ({
+            id: v.id,
+            productId: v.productId,
+            sku: v.sku,
+            color: v.color || null,
+            size: v.size || null,
+            weight: v.weight || null,
+            length: v.length || null,
+            priceDelta: Number(v.priceDelta || 0),
+            stock: v.stock || 0
+          }))
+        : [],
+      createdAt: p.createdAt instanceof Date ? p.createdAt.toISOString() : (p.createdAt || new Date().toISOString()),
+      updatedAt: p.updatedAt instanceof Date ? p.updatedAt.toISOString() : (p.updatedAt || new Date().toISOString())
+    };
+  }
+
+  async findAll(query?: string, category?: string, region?: string, escoOnly?: boolean): Promise<Product[]> {
+    let products: Product[] = [];
+    try {
+      const dbProducts = await this.prisma.product.findMany({
+        include: { supplier: true, variants: true, category: true }
+      });
+      if (dbProducts && dbProducts.length > 0) {
+        products = dbProducts.map((p) => this.mapPrismaProduct(p));
+      }
+    } catch (err) {
+      console.warn('Prisma CatalogService findAll fallback due to DB error/connecting:', err);
+    }
+
+    if (products.length === 0) {
+      products = [...this.defaultProducts];
+    }
+
+    let result = products;
     if (category && category !== 'all') {
       result = result.filter((p) => p.categoryId === category);
     }
@@ -101,7 +177,28 @@ export class CatalogService {
     return result;
   }
 
-  findById(id: string): Product | undefined {
-    return this.products.find((p) => p.id === id);
+  async findById(id: string): Promise<Product | undefined> {
+    const slugMap: Record<string, string> = {
+      'prod-1': 'sement-m500-d0-50kg',
+      'prod-2': 'armatura-a500c-d14',
+      'prod-3': 'bazalt-plitasi-50mm'
+    };
+    const targetSlug = slugMap[id] || id;
+
+    try {
+      const dbProduct = await this.prisma.product.findFirst({
+        where: {
+          OR: [{ id }, { slug: id }, { slug: targetSlug }]
+        },
+        include: { supplier: true, variants: true, category: true }
+      });
+      if (dbProduct) {
+        return this.mapPrismaProduct(dbProduct);
+      }
+    } catch (err) {
+      console.warn(`Prisma CatalogService findById error/fallback for ${id}:`, err);
+    }
+
+    return this.defaultProducts.find((p) => p.id === id || p.slug === id || p.slug === targetSlug);
   }
 }

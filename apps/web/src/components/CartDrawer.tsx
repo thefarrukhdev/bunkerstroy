@@ -51,11 +51,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           buyerPhone: phone,
           items: items.map((it) => ({
             productId: it.product.id,
-            title: it.product.title,
-            supplierId: it.product.supplierId,
-            price: it.product.price,
-            quantity: it.quantity,
-            unit: it.product.unit
+            quantity: it.quantity
           })),
           deliveryAddress: { region, district },
           paymentMethod

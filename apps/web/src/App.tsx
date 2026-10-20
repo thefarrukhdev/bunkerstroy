@@ -66,21 +66,21 @@ export const App: React.FC = () => {
         Authorization: `Bearer ${token}`
       }
     })
-      .then((res) => {
-        if (res.ok) return res.json();
-        throw new Error('Session invalid');
-      })
-      .then((data) => {
-        if (data.success && data.data) {
-          setCurrentUser(data.data);
-        } else {
+      .then(async (res) => {
+        if (res.status === 401 || res.status === 403) {
           localStorage.removeItem('bunkerstroy_token');
           setCurrentUser(null);
+          return;
+        }
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.data) {
+            setCurrentUser(data.data);
+          }
         }
       })
-      .catch(() => {
-        localStorage.removeItem('bunkerstroy_token');
-        setCurrentUser(null);
+      .catch((err) => {
+        console.warn('Session check network error (token preserved):', err);
       });
   }, []);
 

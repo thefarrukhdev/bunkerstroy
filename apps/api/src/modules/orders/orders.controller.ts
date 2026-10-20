@@ -9,8 +9,8 @@ export class OrdersController {
 
   @Post()
   @ApiOperation({ summary: 'Yangi buyurtma rasmiylashtirish' })
-  create(@Body() payload: any) {
-    const data = this.ordersService.createOrder(payload);
+  async create(@Body() payload: any) {
+    const data = await this.ordersService.createOrder(payload);
     return {
       success: true,
       data,
@@ -20,8 +20,8 @@ export class OrdersController {
 
   @Get()
   @ApiOperation({ summary: 'Buyurtmalar ro‘yxati' })
-  findAll() {
-    const data = this.ordersService.findAll();
+  async findAll() {
+    const data = await this.ordersService.findAll();
     return { success: true, data, total: data.length };
   }
 }

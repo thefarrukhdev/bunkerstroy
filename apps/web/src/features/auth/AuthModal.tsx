@@ -60,7 +60,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
       const vfData = await vfRes.json();
       if (vfData.success) {
         localStorage.setItem('bunkerstroy_token', vfData.data.token);
-        onSuccess(vfData.data.verification);
+        const user = vfData.data.user || vfData.data.verification;
+        onSuccess(user);
         onClose();
       } else {
         setError(vfData.error);

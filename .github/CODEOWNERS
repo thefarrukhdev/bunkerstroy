@@ -1,0 +1,41 @@
+# ==============================================================================
+# BUNKERSTROY ENTERPRISE MONOREPO — CODEOWNERS
+# ==============================================================================
+# Ushbu fayl GitHub PR tekshiruvlari va modullar bo'yicha mas'ul muhandislarni
+# belgilaydi. Backend, Baza va Tip tizimlari eng yuqori qat'iylik bilan tekshiriladi.
+
+# Umumiy standart (Default Fallback)
+*                   @thefarrukhdev
+
+# ==============================================================================
+# 1. BACKEND CORE & API SERVICES (ASOSIY YO'NALISH)
+# ==============================================================================
+/apps/api/          @thefarrukhdev
+/apps/api/src/      @thefarrukhdev
+
+# ==============================================================================
+# 2. DATABASE, ORM & INFRASTRUCTURE
+# ==============================================================================
+/packages/db/       @thefarrukhdev
+/docker-compose.yml @thefarrukhdev
+
+# ==============================================================================
+# 3. DOMAIN TYPES, DTOs & CONTRACTS
+# ==============================================================================
+/packages/types/    @thefarrukhdev
+/packages/config/   @thefarrukhdev
+
+# ==============================================================================
+# 4. CI/CD, TURBOREPO & WORKSPACE CONFIG
+# ==============================================================================
+/.github/           @thefarrukhdev
+/package.json       @thefarrukhdev
+/pnpm-workspace.yaml @thefarrukhdev
+/turbo.json         @thefarrukhdev
+
+# ==============================================================================
+# 5. FRONTEND PORTALLAR & UI KUTUBXONA
+# ==============================================================================
+/apps/web/          @thefarrukhdev
+/apps/admin/        @thefarrukhdev
+/packages/ui/       @thefarrukhdev
