@@ -152,15 +152,15 @@ export const AuditLogsViewer: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 brushed-steel p-4 rounded-2xl border border-[#33373B]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-theme-card p-4 rounded-2xl border border-[#313244]">
         <div>
           <div className="flex items-center gap-2">
-            <ShieldAlert className="w-5 h-5 text-[#FFB800]" />
-            <h1 className="text-xl font-black uppercase tracking-wider text-[#F5F5F2]">
+            <ShieldAlert className="w-5 h-5 text-[#89B4FA]" />
+            <h1 className="text-xl font-black uppercase tracking-wider text-[#CDD6F4]">
               Xavfsizlik Jurnali &amp; Audit Logs
             </h1>
           </div>
-          <p className="text-xs text-[#B8B8B3] font-mono mt-0.5">
+          <p className="text-xs text-[#A6ADC8] font-mono mt-0.5">
             Autentifikatsiya, STIR/E-IMZO tekshiruvlari va xavfsizlik monitoringi
           </p>
         </div>
@@ -181,41 +181,41 @@ export const AuditLogsViewer: React.FC = () => {
 
       {/* Security Quick Indicators */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-[#1A1D20] p-3 rounded-xl border border-[#33373B]">
-          <div className="text-[11px] font-mono text-[#8E9094] uppercase">Tizim Kirishlari (Bugun)</div>
+        <div className="bg-[#252538] p-3 rounded-xl border border-[#313244]">
+          <div className="text-[11px] font-mono text-[#6C7086] uppercase">Tizim Kirishlari (Bugun)</div>
           <div className="text-lg font-mono font-black text-emerald-400 mt-1">128 ta</div>
-          <div className="text-[10px] text-[#51504A] font-mono">100% muvaffaqiyatli</div>
+          <div className="text-[10px] text-[#45475A] font-mono">100% muvaffaqiyatli</div>
         </div>
 
-        <div className="bg-[#1A1D20] p-3 rounded-xl border border-[#33373B]">
-          <div className="text-[11px] font-mono text-[#8E9094] uppercase">STIR So'rovlari</div>
+        <div className="bg-[#252538] p-3 rounded-xl border border-[#313244]">
+          <div className="text-[11px] font-mono text-[#6C7086] uppercase">STIR So'rovlari</div>
           <div className="text-lg font-mono font-black text-sky-400 mt-1">42 ta</div>
-          <div className="text-[10px] text-[#51504A] font-mono">GNK API integratsiyasi</div>
+          <div className="text-[10px] text-[#45475A] font-mono">GNK API integratsiyasi</div>
         </div>
 
-        <div className="bg-[#1A1D20] p-3 rounded-xl border border-[#33373B]">
-          <div className="text-[11px] font-mono text-[#8E9094] uppercase">Xavfsizlik Ogohlantirishlari</div>
+        <div className="bg-[#252538] p-3 rounded-xl border border-[#313244]">
+          <div className="text-[11px] font-mono text-[#6C7086] uppercase">Xavfsizlik Ogohlantirishlari</div>
           <div className="text-lg font-mono font-black text-amber-400 mt-1">1 ta</div>
-          <div className="text-[10px] text-[#51504A] font-mono">Narx anomaliyasi</div>
+          <div className="text-[10px] text-[#45475A] font-mono">Narx anomaliyasi</div>
         </div>
 
-        <div className="bg-[#1A1D20] p-3 rounded-xl border border-[#33373B]">
-          <div className="text-[11px] font-mono text-[#8E9094] uppercase">Bloklangan So'rovlar</div>
+        <div className="bg-[#252538] p-3 rounded-xl border border-[#313244]">
+          <div className="text-[11px] font-mono text-[#6C7086] uppercase">Bloklangan So'rovlar</div>
           <div className="text-lg font-mono font-black text-red-400 mt-1">1 ta IP</div>
-          <div className="text-[10px] text-[#51504A] font-mono">Rate-limit triggered</div>
+          <div className="text-[10px] text-[#45475A] font-mono">Rate-limit triggered</div>
         </div>
       </div>
 
       {/* Filters */}
       <div className="flex flex-col lg:flex-row gap-3 items-center justify-between">
         <div className="relative w-full lg:w-96">
-          <Search className="w-4 h-4 text-[#8E9094] absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#6C7086] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Harakat, Aktyor, IP manzil yoki ma'lumot..."
-            className="w-full bg-[#1A1D20] border border-[#33373B] rounded-xl pl-10 pr-4 py-2 text-sm text-[#F5F5F2] placeholder-[#8E9094] focus:outline-none focus:border-[#FFB800]"
+            className="w-full bg-[#252538] border border-[#313244] rounded-xl pl-10 pr-4 py-2 text-sm text-[#CDD6F4] placeholder-[#6C7086] focus:outline-none focus:border-[#89B4FA]"
           />
         </div>
 
@@ -234,8 +234,8 @@ export const AuditLogsViewer: React.FC = () => {
               onClick={() => setLevelFilter(t.id)}
               className={`px-2.5 py-1 text-xs font-mono font-bold rounded-lg border transition-all ${
                 levelFilter === t.id
-                  ? 'bg-[#FFB800] text-[#151719] border-[#FFB800]'
-                  : 'bg-[#1A1D20] text-[#B8B8B3] border-[#33373B] hover:text-[#F5F5F2]'
+                  ? 'bg-[#89B4FA] text-[#181825] border-[#89B4FA]'
+                  : 'bg-[#252538] text-[#A6ADC8] border-[#313244] hover:text-[#CDD6F4]'
               }`}
             >
               {t.label}
@@ -245,11 +245,11 @@ export const AuditLogsViewer: React.FC = () => {
       </div>
 
       {/* Logs Console / Table */}
-      <Card className="p-0 overflow-hidden border-[#33373B] bg-[#1A1D20]">
+      <Card className="p-0 overflow-hidden border-[#313244] bg-[#252538]">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-[#33373B] bg-[#151719] text-[11px] font-mono uppercase tracking-wider text-[#B8B8B3]">
+              <tr className="border-b border-[#313244] bg-[#181825] text-[11px] font-mono uppercase tracking-wider text-[#A6ADC8]">
                 <th className="py-3 px-4">Vaqt &amp; Daraja</th>
                 <th className="py-3 px-4">Harakat (Action)</th>
                 <th className="py-3 px-4">Aktyor (Foydalanuvchi)</th>
@@ -258,10 +258,10 @@ export const AuditLogsViewer: React.FC = () => {
                 <th className="py-3 px-4">Tafsilotlar</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#33373B]/60 text-xs font-mono">
+            <tbody className="divide-y divide-[#313244]/60 text-xs font-mono">
               {filteredLogs.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-[#8E9094]">
+                  <td colSpan={6} className="py-8 text-center text-[#6C7086]">
                     Xavfsizlik jurnali bo'yicha ma'lumot topilmadi
                   </td>
                 </tr>
@@ -270,10 +270,10 @@ export const AuditLogsViewer: React.FC = () => {
                   <tr
                     key={log.id}
                     onClick={() => setSelectedLog(log)}
-                    className="hover:bg-[#222528] cursor-pointer transition-colors"
+                    className="hover:bg-[#1E1E2E] cursor-pointer transition-colors"
                   >
                     <td className="py-3 px-4 whitespace-nowrap">
-                      <div className="text-[#8E9094] text-[11px] flex items-center gap-1">
+                      <div className="text-[#6C7086] text-[11px] flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {log.timestamp}
                       </div>
@@ -281,32 +281,32 @@ export const AuditLogsViewer: React.FC = () => {
                     </td>
 
                     <td className="py-3 px-4">
-                      <div className="font-bold text-[#F5F5F2] hover:text-[#FFB800] transition-colors">
+                      <div className="font-bold text-[#CDD6F4] hover:text-[#89B4FA] transition-colors">
                         {log.action}
                       </div>
                     </td>
 
                     <td className="py-3 px-4 whitespace-nowrap">
-                      <div className="text-[#F5F5F2] flex items-center gap-1.5">
-                        <UserCheck className="w-3.5 h-3.5 text-[#FFB800]" />
+                      <div className="text-[#CDD6F4] flex items-center gap-1.5">
+                        <UserCheck className="w-3.5 h-3.5 text-[#89B4FA]" />
                         {log.actor}
                       </div>
                     </td>
 
                     <td className="py-3 px-4 whitespace-nowrap">
-                      <div className="text-[#8E9094] flex items-center gap-1 bg-[#151719] px-2 py-0.5 rounded border border-[#33373B] w-fit">
-                        <Globe className="w-3 h-3 text-[#FFB800]" />
+                      <div className="text-[#6C7086] flex items-center gap-1 bg-[#181825] px-2 py-0.5 rounded border border-[#313244] w-fit">
+                        <Globe className="w-3 h-3 text-[#89B4FA]" />
                         {log.ipAddress}
                       </div>
                     </td>
 
                     <td className="py-3 px-4 whitespace-nowrap">
-                      <span className="text-[10px] text-[#B8B8B3] bg-[#292C2F] px-2 py-0.5 rounded border border-[#33373B]">
+                      <span className="text-[10px] text-[#A6ADC8] bg-[#252538] px-2 py-0.5 rounded border border-[#313244]">
                         {log.category}
                       </span>
                     </td>
 
-                    <td className="py-3 px-4 max-w-xs truncate text-[#8E9094]">
+                    <td className="py-3 px-4 max-w-xs truncate text-[#6C7086]">
                       {log.details}
                     </td>
                   </tr>
@@ -320,47 +320,47 @@ export const AuditLogsViewer: React.FC = () => {
       {/* Log Detail Modal */}
       {selectedLog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
-          <div className="bg-[#1A1D20] border border-[#33373B] rounded-2xl max-w-lg w-full p-6 text-[#F5F5F2] shadow-2xl relative font-mono text-xs">
+          <div className="bg-[#252538] border border-[#313244] rounded-2xl max-w-lg w-full p-6 text-[#CDD6F4] shadow-2xl relative font-mono text-xs">
             <button
               onClick={() => setSelectedLog(null)}
-              className="absolute top-4 right-4 text-[#8E9094] hover:text-[#F5F5F2] p-1 rounded-lg"
+              className="absolute top-4 right-4 text-[#6C7086] hover:text-[#CDD6F4] p-1 rounded-lg"
             >
               ✕
             </button>
 
             <div className="flex items-center gap-2 mb-3">
-              <Shield className="w-5 h-5 text-[#FFB800]" />
-              <h3 className="font-bold text-sm text-[#F5F5F2]">Audit Jurnali Yozuvi</h3>
+              <Shield className="w-5 h-5 text-[#89B4FA]" />
+              <h3 className="font-bold text-sm text-[#CDD6F4]">Audit Jurnali Yozuvi</h3>
             </div>
 
-            <div className="space-y-3 py-3 border-y border-[#33373B]">
+            <div className="space-y-3 py-3 border-y border-[#313244]">
               <div className="flex justify-between">
-                <span className="text-[#8E9094]">Xavfsizlik Darajasi:</span>
+                <span className="text-[#6C7086]">Xavfsizlik Darajasi:</span>
                 <div>{getLevelBadge(selectedLog.level)}</div>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#8E9094]">Vaqt:</span>
-                <span className="text-[#F5F5F2]">{selectedLog.timestamp}</span>
+                <span className="text-[#6C7086]">Vaqt:</span>
+                <span className="text-[#CDD6F4]">{selectedLog.timestamp}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#8E9094]">Harakat:</span>
-                <span className="text-[#FFB800] font-bold">{selectedLog.action}</span>
+                <span className="text-[#6C7086]">Harakat:</span>
+                <span className="text-[#89B4FA] font-bold">{selectedLog.action}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#8E9094]">Aktyor / Tizim:</span>
-                <span className="text-[#F5F5F2]">{selectedLog.actor}</span>
+                <span className="text-[#6C7086]">Aktyor / Tizim:</span>
+                <span className="text-[#CDD6F4]">{selectedLog.actor}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#8E9094]">IP Manzil:</span>
-                <span className="text-[#F5F5F2]">{selectedLog.ipAddress}</span>
+                <span className="text-[#6C7086]">IP Manzil:</span>
+                <span className="text-[#CDD6F4]">{selectedLog.ipAddress}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#8E9094]">Kategoriya:</span>
-                <span className="text-[#F5F5F2]">{selectedLog.category}</span>
+                <span className="text-[#6C7086]">Kategoriya:</span>
+                <span className="text-[#CDD6F4]">{selectedLog.category}</span>
               </div>
               <div>
-                <span className="text-[#8E9094] block mb-1">To'liq Tafsilotlar:</span>
-                <div className="bg-[#151719] p-3 rounded-xl border border-[#33373B] text-[#F5F5F2] leading-relaxed">
+                <span className="text-[#6C7086] block mb-1">To'liq Tafsilotlar:</span>
+                <div className="bg-[#181825] p-3 rounded-xl border border-[#313244] text-[#CDD6F4] leading-relaxed">
                   {selectedLog.details}
                 </div>
               </div>

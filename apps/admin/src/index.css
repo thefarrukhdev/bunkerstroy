@@ -1,63 +1,123 @@
 @import "tailwindcss";
 @source "../../packages/ui/src";
 
+@theme {
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+@variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Catppuccin Latte Inspired Soft Light Palette */
+  --bg-main: #EFF1F5;
+  --bg-sidebar: #FFFFFF;
+  --bg-header: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-card-subtle: #E6E9EF;
+  --border-main: #CCD0DA;
+  --border-subtle: #BCC0CC;
+  --text-main: #4C4F69;
+  --text-muted: #6C6F85;
+  --text-subtle: #8C8FA1;
+  --scrollbar-track: #EFF1F5;
+  --scrollbar-thumb: #CCD0DA;
+  --scrollbar-thumb-hover: #1E66F5;
+  --table-header-bg: #E6E9EF;
+  --table-row-hover: #F2F4F8;
+  --accent-color: #1E66F5;
+  --accent-bg: #1E66F5;
+  --accent-text: #FFFFFF;
+  --badge-pill-bg: #E6E9EF;
+
+  /* Aliases for super_admin & design components */
+  --color-text-primary: #4C4F69;
+  --color-text-secondary: #6C6F85;
+  --color-text-muted: #8C8FA1;
+  --color-surface-bg: #EFF1F5;
+  --color-surface-card: #FFFFFF;
+  --color-surface-hover: #E6E9EF;
+  --color-border-subtle: #CCD0DA;
+  --color-border-strong: #BCC0CC;
+  --color-accent-blue: #1E66F5;
+  --color-accent-green: #40A02B;
+  --color-accent-yellow: #DF8E1D;
+  --color-accent-red: #D20F39;
+}
+
+.dark {
+  /* Catppuccin Mocha / Arch Linux Desktop Aesthetics (From User Screenshot) */
+  --bg-main: #181825;
+  --bg-sidebar: #1E1E2E;
+  --bg-header: #1E1E2E;
+  --bg-card: #1E1E2E;
+  --bg-card-subtle: #252538;
+  --border-main: #313244;
+  --border-subtle: #45475A;
+  --text-main: #CDD6F4;
+  --text-muted: #A6ADC8;
+  --text-subtle: #6C7086;
+  --scrollbar-track: #181825;
+  --scrollbar-thumb: #313244;
+  --scrollbar-thumb-hover: #89B4FA;
+  --table-header-bg: #252538;
+  --table-row-hover: #2A2B3D;
+  --accent-color: #89B4FA;
+  --accent-bg: #89B4FA;
+  --accent-text: #11111B;
+  --badge-pill-bg: #252538;
+
+  /* Aliases for super_admin & design components */
+  --color-text-primary: #CDD6F4;
+  --color-text-secondary: #A6ADC8;
+  --color-text-muted: #6C7086;
+  --color-surface-bg: #181825;
+  --color-surface-card: #1E1E2E;
+  --color-surface-hover: #252538;
+  --color-border-subtle: #313244;
+  --color-border-strong: #45475A;
+  --color-accent-blue: #89B4FA;
+  --color-accent-green: #A6E3A1;
+  --color-accent-yellow: #F9E2AF;
+  --color-accent-red: #F38BA8;
+}
+
 @layer base {
   body {
-    background-color: #151719;
-    color: #F5F5F2;
+    background-color: var(--bg-main);
+    color: var(--text-main);
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 }
 
-.hazard-stripe {
-  background: repeating-linear-gradient(
-    -45deg,
-    #FFB800,
-    #FFB800 12px,
-    #151719 12px,
-    #151719 24px
-  );
-}
-
-.hazard-stripe-sm {
-  background: repeating-linear-gradient(
-    -45deg,
-    #FFB800,
-    #FFB800 6px,
-    #151719 6px,
-    #151719 12px
-  );
-}
-
-.brushed-steel {
-  background: linear-gradient(180deg, #222528 0%, #1A1D20 100%);
-  border-bottom: 1px solid #33373B;
-}
-
-.industrial-rivet {
-  width: 6px;
-  height: 6px;
-  border-radius: 9999px;
-  background: #51504A;
-  border: 1px solid #1A1D20;
-  box-shadow: inset 0 1px 1px rgba(0,0,0,0.8);
-}
-
-/* Custom industrial scrollbar */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #151719;
+  background: var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #33373B;
-  border-radius: 3px;
+  background: var(--scrollbar-thumb);
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #FFB800;
+  background: var(--scrollbar-thumb-hover);
 }
+
+/* Dynamic Classes using Variables */
+.bg-theme-main { background-color: var(--bg-main); }
+.bg-theme-sidebar { background-color: var(--bg-sidebar); }
+.bg-theme-header { background-color: var(--bg-header); }
+.bg-theme-card { background-color: var(--bg-card); }
+.bg-theme-card-subtle { background-color: var(--bg-card-subtle); }
+.border-theme { border-color: var(--border-main); }
+.border-theme-subtle { border-color: var(--border-subtle); }
+.text-theme-main { color: var(--text-main); }
+.text-theme-muted { color: var(--text-muted); }
+.text-theme-subtle { color: var(--text-subtle); }
