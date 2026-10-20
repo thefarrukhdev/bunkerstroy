@@ -7,6 +7,7 @@ import { SuperAdminHub } from './features/super_admin/SuperAdminHub';
 import { SuppliersTable } from './features/suppliers/SuppliersTable';
 import { ProductCatalogManager } from './features/products/ProductCatalogManager';
 import { OrdersManager } from './features/orders/OrdersManager';
+import { FleetManager } from './features/logistics/FleetManager';
 import { FinancialLedger } from './features/financial/FinancialLedger';
 import { AuditLogsViewer } from './features/audit_logs/AuditLogsViewer';
 import {
@@ -103,27 +104,8 @@ const AdminLayout: React.FC = () => {
           {/* 5. Orders */}
           {activeTab === 'orders' && <OrdersManager />}
 
-          {/* 6. Logistics Placeholder for Step 6 */}
-          {activeTab === 'logistics' && (
-            <div className="p-8 rounded-2xl border border-theme bg-theme-card text-theme-main shadow-sm transition-colors">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-xl dark:bg-[#89B4FA]/15 dark:border dark:border-[#89B4FA]/30 dark:text-[#89B4FA] bg-[#1E66F5] text-white">
-                  <Truck className="w-6 h-6" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold text-theme-main font-mono uppercase tracking-wide">
-                    Og'ir Maxsus Texnika &amp; Avtopark Dispecherligi
-                  </h2>
-                  <p className="text-xs text-theme-muted mt-1">
-                    HOWO 25t samosvallari, Shacman 10m³ beton mikserlari, kranlar monitoringi va PostGIS masofa kalkulyatori.
-                  </p>
-                </div>
-              </div>
-              <div className="mt-6 text-xs font-mono text-theme-subtle">
-                [6-Qadam doirasida to'liq amalga oshiriladi]
-              </div>
-            </div>
-          )}
+          {/* 6. Logistics */}
+          {activeTab === 'logistics' && <FleetManager />}
 
           {/* 7. Financial */}
           {activeTab === 'financial' && <FinancialLedger />}
