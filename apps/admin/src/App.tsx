@@ -6,6 +6,7 @@ import { OverviewStats } from './features/analytics/OverviewStats';
 import { SuperAdminHub } from './features/super_admin/SuperAdminHub';
 import { SuppliersTable } from './features/suppliers/SuppliersTable';
 import { ProductCatalogManager } from './features/products/ProductCatalogManager';
+import { OrdersManager } from './features/orders/OrdersManager';
 import { FinancialLedger } from './features/financial/FinancialLedger';
 import { AuditLogsViewer } from './features/audit_logs/AuditLogsViewer';
 import {
@@ -99,27 +100,8 @@ const AdminLayout: React.FC = () => {
           {/* 4. Products */}
           {activeTab === 'products' && <ProductCatalogManager />}
 
-          {/* 5. Orders Placeholder for Step 5 */}
-          {activeTab === 'orders' && (
-            <div className="p-8 rounded-2xl border border-theme bg-theme-card text-theme-main shadow-sm transition-colors">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-xl dark:bg-[#89B4FA]/15 dark:border dark:border-[#89B4FA]/30 dark:text-[#89B4FA] bg-[#1E66F5] text-white">
-                  <ShoppingCart className="w-6 h-6" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold text-theme-main font-mono uppercase tracking-wide">
-                    Buyurtmalar va Savdo Boshqaruvi
-                  </h2>
-                  <p className="text-xs text-theme-muted mt-1">
-                    B2B buyurtmalar hayotiy zanjiri (NEW ➡️ COMPLETED), server narx tekshiruvi va hisob-faktura (Invoice) generatori.
-                  </p>
-                </div>
-              </div>
-              <div className="mt-6 text-xs font-mono text-theme-subtle">
-                [5-Qadam doirasida to'liq amalga oshiriladi]
-              </div>
-            </div>
-          )}
+          {/* 5. Orders */}
+          {activeTab === 'orders' && <OrdersManager />}
 
           {/* 6. Logistics Placeholder for Step 6 */}
           {activeTab === 'logistics' && (
