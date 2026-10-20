@@ -8,9 +8,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser, CurrentUserPayload } from '../../common/decorators/current-user.decorator';
+import { Public } from '../../common/decorators/public.decorator';
 import {
   LoginDto,
   SendOtpDto,
@@ -37,6 +39,7 @@ export class AuthController {
     return { success: true, data };
   }
 
+  @Throttle({ auth: { limit: 5, ttl: 60000 } })
   @Post('login')
   @ApiOperation({ summary: 'Tizimga login va parol orqali kirish (Admin, Supplier, Client)' })
   async login(@Body() body: LoginDto) {
@@ -51,6 +54,7 @@ export class AuthController {
     return { success: true, data };
   }
 
+  @Throttle({ auth: { limit: 5, ttl: 60000 } })
   @Post('send-otp')
   @ApiOperation({ summary: 'SMS orqali bir martalik OTP tasdiqlash kodi yuborish' })
   async sendOtp(@Body() body: SendOtpDto) {
@@ -58,6 +62,7 @@ export class AuthController {
     return { success: true, data };
   }
 
+  @Throttle({ auth: { limit: 5, ttl: 60000 } })
   @Post('verify-otp')
   @ApiOperation({ summary: 'SMS OTP tasdiqlash va tizimga kirish' })
   async verifyOtp(@Body() body: VerifyOtpDto) {
@@ -65,6 +70,8 @@ export class AuthController {
     return { success: true, data };
   }
 
+  @SkipThrottle()
+  @Public()
   @Get('stir-lookup')
   @ApiOperation({ summary: "Soliq STIR (INN) orqali yuridik shaxs ma'lumotlarini tekshirish" })
   async lookupStir(@Query('inn') inn: string) {
@@ -72,6 +79,8 @@ export class AuthController {
     return { success: true, data };
   }
 
+  @SkipThrottle()
+  @Public()
   @Post('eimzo/challenge')
   @ApiOperation({ summary: 'E-IMZO bir martalik tasdiqlash challenge yaratish' })
   createEimzoChallenge(@Body() body: EimzoChallengeDto) {
@@ -79,6 +88,8 @@ export class AuthController {
     return { success: true, data };
   }
 
+  @Throttle({ auth: { limit: 5, ttl: 60000 } })
+  @Public()
   @Post('eimzo/verify')
   @ApiOperation({ summary: 'E-IMZO raqamli imzosini tekshirish va JWT olish' })
   async verifyEimzo(@Body() body: EimzoVerifyDto) {

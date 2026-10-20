@@ -1,8 +1,19 @@
-import { Injectable, NotFoundException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  Logger,
+} from '@nestjs/common';
 import { LogisticsVehicle } from '@bunkerstroy/types';
+import { Role, OrderStatus } from '@bunkerstroy/db';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AuditLogService } from '../admin/audit-log.service';
-import { CalculateQuoteDto, DispatchOrderDto } from './dto/logistics.dto';
+import { CurrentUserPayload } from '../../common/decorators/current-user.decorator';
+import {
+  CalculateQuoteDto,
+  DispatchOrderDto,
+  DispatchStatusType,
+} from './dto/logistics.dto';
 
 @Injectable()
 export class LogisticsService {
@@ -166,5 +177,86 @@ export class LogisticsService {
     });
 
     return dispatch;
+  }
+
+  async getDispatches(currentUser: CurrentUserPayload) {
+    const where: any = {};
+    if (currentUser.role === Role.LOGISTICS_DRIVER) {
+      where.driverId = currentUser.id;
+    }
+
+    return this.prisma.logisticsDispatch.findMany({
+      where,
+      include: {
+        order: true,
+        vehicle: true,
+        driver: true,
+      },
+      orderBy: { dispatchedAt: 'desc' },
+    });
+  }
+
+  async updateDispatchStatus(
+    dispatchId: string,
+    status: DispatchStatusType,
+    currentUser: CurrentUserPayload,
+  ) {
+    const dispatch = await this.prisma.logisticsDispatch.findUnique({
+      where: { id: dispatchId },
+      include: { order: true },
+    });
+
+    if (!dispatch) {
+      throw new NotFoundException(
+        `Dispetcherlik buyurtmasi topilmadi (ID: ${dispatchId})`,
+      );
+    }
+
+    if (
+      currentUser.role === Role.LOGISTICS_DRIVER &&
+      dispatch.driverId &&
+      dispatch.driverId !== currentUser.id
+    ) {
+      throw new ForbiddenException(
+        "Faqat o'zingizga biriktirilgan dispetcherlik holatini o'zgartirishingiz mumkin",
+      );
+    }
+
+    const dataToUpdate: any = { status };
+    if (status === 'DELIVERED') {
+      dataToUpdate.deliveredAt = new Date();
+    }
+
+    const updatedDispatch = await this.prisma.logisticsDispatch.update({
+      where: { id: dispatchId },
+      data: dataToUpdate,
+      include: {
+        order: true,
+        vehicle: true,
+        driver: true,
+      },
+    });
+
+    if (status === 'IN_TRANSIT') {
+      await this.prisma.order.update({
+        where: { id: dispatch.orderId },
+        data: { status: OrderStatus.IN_TRANSIT },
+      });
+    } else if (status === 'DELIVERED') {
+      await this.prisma.order.update({
+        where: { id: dispatch.orderId },
+        data: { status: OrderStatus.DELIVERED },
+      });
+    }
+
+    await this.auditLogService.logAction({
+      actorId: currentUser.id,
+      action: 'LOGISTICS_DISPATCH_STATUS_UPDATED',
+      category: 'LOGISTICS',
+      details: `Dispetcherlik (${dispatchId}) holati ${dispatch.status} dan ${status} ga o'zgartirildi`,
+      level: 'INFO',
+    });
+
+    return updatedDispatch;
   }
 }

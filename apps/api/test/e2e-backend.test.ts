@@ -4,12 +4,14 @@ import { AuthService } from '../src/modules/auth/auth.service';
 import { CatalogService } from '../src/modules/catalog/catalog.service';
 import { OrdersService } from '../src/modules/orders/orders.service';
 import { LogisticsService } from '../src/modules/logistics/logistics.service';
+import { EscoService } from '../src/modules/esco/esco.service';
 import { PaymentsService } from '../src/modules/payments/payments.service';
 import { AdminService } from '../src/modules/admin/admin.service';
 import { AuditLogService } from '../src/modules/admin/audit-log.service';
 import { RedisService } from '../src/redis/redis.service';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { Role, OrderStatus } from '@bunkerstroy/db';
+import { ThrottlerStorage } from '@nestjs/throttler';
 import crypto from 'crypto';
 import { env } from '../src/config/env';
 
@@ -23,6 +25,7 @@ async function runAllBackendVerificationTests() {
   const catalogService = app.get(CatalogService);
   const ordersService = app.get(OrdersService);
   const logisticsService = app.get(LogisticsService);
+  const escoService = app.get(EscoService);
   const paymentsService = app.get(PaymentsService);
   const adminService = app.get(AdminService);
   const auditLogService = app.get(AuditLogService);
@@ -41,13 +44,16 @@ async function runAllBackendVerificationTests() {
   }
 
   try {
-    console.log('\n--- 1. Testing Redis and PostgreSQL Connections ---');
+    console.log('\n--- 1. Testing Redis, PostgreSQL & Throttler Infrastructure ---');
     await redis.set('bunker:test:key', 'active_test_val', 10);
     const redisVal = await redis.get('bunker:test:key');
     assert(redisVal === 'active_test_val', 'Redis set and get with TTL works');
 
     const dbUserCount = await prisma.user.count();
     assert(dbUserCount > 0, `PostgreSQL connection active, users in DB: ${dbUserCount}`);
+
+    const throttlerStorage = app.get(ThrottlerStorage, { strict: false });
+    assert(!!throttlerStorage, 'ThrottlerModule & ThrottlerStorage initialized with default and auth tiers');
 
     console.log('\n--- 2. Testing AuthService (Login, OTP, Refresh, STIR, Me) ---');
     // Admin login
@@ -172,7 +178,8 @@ async function runAllBackendVerificationTests() {
     const adminOrders = await ordersService.findAll({ id: adminLogin.user.id, role: Role.ADMIN });
     assert(adminOrders.length >= clientOrders.length, 'Admin sees all orders');
 
-    console.log('\n--- 5. Testing LogisticsModule (Vehicles, Quote, Dispatch) ---');
+
+    console.log('\n--- 5. Testing LogisticsModule (Vehicles, Quote, Dispatch, Status Tracking) ---');
     const vehicles = await logisticsService.getVehicles();
     assert(vehicles.length >= 3, `Logistics vehicles returned from database: ${vehicles.length}`);
 
@@ -191,7 +198,121 @@ async function runAllBackendVerificationTests() {
     });
     assert(dispatch.orderId === createdOrder.id, 'dispatchOrder creates LogisticsDispatch in Prisma');
 
-    console.log('\n--- 6. Testing PaymentsModule (Payme JSON-RPC 2.0 & Click MD5) ---');
+    // Get dispatches as ADMIN
+    const allDispatches = await logisticsService.getDispatches({ id: adminLogin.user.id, role: Role.ADMIN });
+    assert(allDispatches.some((d) => d.id === dispatch.id), 'Admin getDispatches returns all dispatches including newly created');
+
+    // Get dispatches as Driver (filtered by driverId)
+    const driverDispatches = await logisticsService.getDispatches({ id: 'non-existent-driver-uuid', role: Role.LOGISTICS_DRIVER });
+    assert(driverDispatches.length === 0, 'Driver getDispatches filters strictly by driverId');
+
+    // Update dispatch status to IN_TRANSIT
+    const inTransitDispatch = await logisticsService.updateDispatchStatus(
+      dispatch.id,
+      'IN_TRANSIT',
+      { id: adminLogin.user.id, role: Role.ADMIN }
+    );
+    assert(inTransitDispatch.status === 'IN_TRANSIT', 'updateDispatchStatus updates status to IN_TRANSIT');
+
+    // Verify order status synchronized to IN_TRANSIT
+    const orderInTransit = await prisma.order.findUnique({ where: { id: createdOrder.id } });
+    assert(orderInTransit?.status === 'IN_TRANSIT', 'Order status synchronizes to IN_TRANSIT when dispatch is in transit');
+
+    // Update dispatch status to DELIVERED
+    const deliveredDispatch = await logisticsService.updateDispatchStatus(
+      dispatch.id,
+      'DELIVERED',
+      { id: adminLogin.user.id, role: Role.ADMIN }
+    );
+    assert(
+      deliveredDispatch.status === 'DELIVERED' && !!deliveredDispatch.deliveredAt,
+      'updateDispatchStatus sets DELIVERED status and records deliveredAt timestamp'
+    );
+
+    // Verify order status synchronized to DELIVERED
+    const orderDelivered = await prisma.order.findUnique({ where: { id: createdOrder.id } });
+    assert(orderDelivered?.status === 'DELIVERED', 'Order status synchronizes to DELIVERED upon completion');
+
+
+    console.log('\n--- 6. Testing EscoModule (Thermodynamic Calculation, DB Persistence, Access Control) ---');
+    // 1. Calculate without saving
+    const calcResult = await escoService.calculateEnergyAudit({
+      buildingType: 'COMMERCIAL_OFFICE',
+      areaM2: 500,
+      currentEnergyUsageKwh: 15000,
+      wallMaterial: "Pishiq g'isht",
+      windowType: '3 kamerali Low-E',
+    });
+    assert(
+      calcResult.energySavingsPercent > 0 &&
+      calcResult.annualSavingsSum > 0 &&
+      calcResult.recommendedMaterials.length > 0,
+      'calculateEnergyAudit returns valid thermodynamic metrics without writing to DB'
+    );
+
+    // 2. Save ESCO audit to database
+    const savedAudit = await escoService.saveAudit(
+      {
+        buildingType: 'COMMERCIAL_OFFICE',
+        areaM2: 500,
+        currentEnergyUsageKwh: 15000,
+      },
+      { id: verifyOtpRes.user.id, role: Role.CLIENT }
+    );
+    assert(
+      !!savedAudit.id && savedAudit.clientId === verifyOtpRes.user.id,
+      'saveAudit successfully persists EscoAudit record in PostgreSQL with client relation'
+    );
+    assert(
+      Number(savedAudit.annualSavingsSum) > 0 && savedAudit.recommendations.length > 0,
+      'saveAudit populates financial savings and engineering recommendations'
+    );
+
+    // 3. Verify AuditLog record for ESCO_AUDIT_SAVED
+    const escoAuditLog = await prisma.auditLog.findFirst({
+      where: { action: 'ESCO_AUDIT_SAVED', actorId: verifyOtpRes.user.id },
+      orderBy: { createdAt: 'desc' },
+    });
+    assert(!!escoAuditLog, 'AuditLog records ESCO_AUDIT_SAVED action with actor ID');
+
+    // 4. Retrieve client audits
+    const clientAudits = await escoService.getAudits({ id: verifyOtpRes.user.id, role: Role.CLIENT });
+    assert(
+      clientAudits.length > 0 && clientAudits.every((a) => a.clientId === verifyOtpRes.user.id),
+      'Client getAudits returns only audits belonging to current authenticated client'
+    );
+
+    // 5. Retrieve audits as ADMIN (includes client)
+    const adminAudits = await escoService.getAudits({ id: adminLogin.user.id, role: Role.ADMIN });
+    assert(
+      adminAudits.some((a) => a.id === savedAudit.id && (a as any).client?.id === verifyOtpRes.user.id),
+      'Admin getAudits returns all audits with full client relation included'
+    );
+
+    // 6. Retrieve single audit by ID (as owner)
+    const singleAudit = await escoService.getAuditById(savedAudit.id, { id: verifyOtpRes.user.id, role: Role.CLIENT });
+    assert(singleAudit.id === savedAudit.id, 'getAuditById returns audit entity for owner client');
+
+    // 7. Security check: Unauthorized access by another client
+    let forbiddenCaught = false;
+    try {
+      await escoService.getAuditById(savedAudit.id, { id: 'unauthorized-client-uuid', role: Role.CLIENT });
+    } catch {
+      forbiddenCaught = true;
+    }
+    assert(forbiddenCaught, 'SECURITY CHECK: Accessing another user’s ESCO audit throws ForbiddenException');
+
+    // 8. NotFound check
+    let notFoundCaught = false;
+    try {
+      await escoService.getAuditById('non-existent-audit-uuid', { id: adminLogin.user.id, role: Role.ADMIN });
+    } catch {
+      notFoundCaught = true;
+    }
+    assert(notFoundCaught, 'Non-existent audit ID throws NotFoundException');
+
+
+    console.log('\n--- 7. Testing PaymentsModule (Payme JSON-RPC 2.0 & Click MD5) ---');
     // Payme CheckPerformTransaction
     const paymeAuth = `Basic ${Buffer.from(`Paycom:${env.PAYME_SECRET_KEY}`).toString('base64')}`;
     const checkPerform: any = await paymentsService.handlePaymeWebhook(paymeAuth, {
@@ -259,7 +380,7 @@ async function runAllBackendVerificationTests() {
     });
     assert(clickComplete.error === 0, 'Click Complete action completes payment and records in database');
 
-    console.log('\n--- 7. Testing AdminModule (Real Analytics & Audit Logs) ---');
+    console.log('\n--- 8. Testing AdminModule (Real Analytics & Audit Logs) ---');
     await auditLogService.logAction({
       actorId: adminLogin.user.id,
       action: 'E2E Test Security Audit',
@@ -277,13 +398,25 @@ async function runAllBackendVerificationTests() {
     const suppliers = await adminService.getSuppliers();
     assert(suppliers.length > 0, `Admin suppliers retrieved from DB (Count: ${suppliers.length})`);
 
-    // Clean up created test product & order
+    // Clean up created test data
+    await prisma.escoAudit.deleteMany({ where: { clientId: verifyOtpRes.user.id } });
     await prisma.logisticsDispatch.deleteMany({ where: { orderId: createdOrder.id } });
     await prisma.paymentTransaction.deleteMany({ where: { orderId: createdOrder.id } });
     await prisma.orderItem.deleteMany({ where: { orderId: createdOrder.id } });
     await prisma.order.delete({ where: { id: createdOrder.id } });
     await prisma.product.delete({ where: { id: newProd.id } });
-    await prisma.auditLog.deleteMany({ where: { action: 'E2E Test Security Audit' } });
+    await prisma.auditLog.deleteMany({
+      where: {
+        action: {
+          in: [
+            'E2E Test Security Audit',
+            'ESCO_AUDIT_SAVED',
+            'LOGISTICS_DISPATCH',
+            'LOGISTICS_DISPATCH_STATUS_UPDATED',
+          ],
+        },
+      },
+    });
     await prisma.user.deleteMany({ where: { phone: testPhone } });
 
     console.log('\n========================================');

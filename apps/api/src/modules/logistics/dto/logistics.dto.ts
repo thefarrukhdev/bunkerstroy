@@ -1,4 +1,11 @@
-import { IsString, IsNotEmpty, IsNumber, Min, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsNumber,
+  Min,
+  IsOptional,
+  IsEnum,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -55,4 +62,26 @@ export class DispatchOrderDto {
   @IsNumber()
   @Min(0.1)
   distanceKm: number;
+}
+
+export const DISPATCH_STATUSES = [
+  'ASSIGNED',
+  'IN_TRANSIT',
+  'DELIVERED',
+  'CANCELLED',
+] as const;
+
+export type DispatchStatusType = (typeof DISPATCH_STATUSES)[number];
+
+export class UpdateDispatchStatusDto {
+  @ApiProperty({
+    example: 'IN_TRANSIT',
+    enum: DISPATCH_STATUSES,
+    description: 'Dispetcherlik yangi holati (ASSIGNED, IN_TRANSIT, DELIVERED, CANCELLED)',
+  })
+  @IsNotEmpty({ message: 'status kiritilishi shart' })
+  @IsEnum(DISPATCH_STATUSES, {
+    message: 'status faqat ASSIGNED, IN_TRANSIT, DELIVERED yoki CANCELLED bo‘lishi mumkin',
+  })
+  status: DispatchStatusType;
 }
