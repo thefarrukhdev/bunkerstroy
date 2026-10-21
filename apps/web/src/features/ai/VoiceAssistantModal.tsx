@@ -14,7 +14,7 @@ import {
   Building2,
   Volume2
 } from 'lucide-react';
-import { Badge, Button } from '@bunkerstroy/ui';
+import { Badge, Button, Input, Tooltip } from '@bunkerstroy/ui';
 
 interface VoiceAssistantModalProps {
   isOpen: boolean;
@@ -334,36 +334,36 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <h3 className="font-bold text-bunker-text-primary text-xs font-mono">Bunker AI Copilot</h3>
-              {connectionStatus === 'CONNECTED' ? (
-                <span className="flex items-center gap-1 text-[9px] font-mono text-bunker-status-green bg-bunker-status-green/10 px-1.5 py-0.2 rounded-full border border-bunker-status-green/30">
-                  <span className="w-1.5 h-1.5 rounded-full bg-bunker-status-green animate-pulse" />
-                  LIVE
-                </span>
-              ) : (
-                <span className="text-[9px] font-mono text-bunker-amber-500 bg-bunker-amber-500/10 px-1.5 py-0.2 rounded-full">
-                  COPILOT
-                </span>
-              )}
+              <Badge
+                variant={connectionStatus === 'CONNECTED' ? 'success' : 'warning'}
+                size="sm"
+                isMono
+                dot
+              >
+                {connectionStatus === 'CONNECTED' ? 'LIVE' : 'COPILOT'}
+              </Badge>
             </div>
             <p className="text-[9px] text-bunker-text-muted font-mono">Gemini 3.8 Qurilish & Logistika Maslahatchisi</p>
           </div>
         </div>
 
         <div className="flex items-center gap-1 text-bunker-text-secondary">
-          <button
-            onClick={() => setIsMinimized(true)}
-            className="p-1 hover:text-bunker-text-primary rounded hover:bg-bunker-surface-1 cursor-pointer transition-colors"
-            title="Kichraytirish"
-          >
-            <Minimize2 className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={onClose}
-            className="p-1 hover:text-bunker-status-red rounded hover:bg-bunker-surface-1 cursor-pointer transition-colors"
-            title="Yopish"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <Tooltip content="Kichraytirish" position="bottom">
+            <button
+              onClick={() => setIsMinimized(true)}
+              className="p-1 hover:text-bunker-text-primary rounded hover:bg-bunker-surface-1 cursor-pointer transition-colors"
+            >
+              <Minimize2 className="w-3.5 h-3.5" />
+            </button>
+          </Tooltip>
+          <Tooltip content="Yopish" position="bottom">
+            <button
+              onClick={onClose}
+              className="p-1 hover:text-bunker-status-red rounded hover:bg-bunker-surface-1 cursor-pointer transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </Tooltip>
         </div>
       </div>
 
@@ -450,35 +450,42 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
       {/* Bottom Input & Voice Controls */}
       <div className="p-3 bg-bunker-surface-2 border-t border-bunker-border-subtle shrink-0">
         <div className="flex items-center gap-1.5">
-          <input
-            type="text"
+          <Input
             placeholder="AI maslahatchiga savol bering..."
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-            className="flex-1 bg-bunker-input border border-bunker-border-subtle focus:border-bunker-amber-500 px-3 py-2 rounded-xl text-xs text-bunker-text-primary outline-none transition-colors font-mono placeholder:text-bunker-text-muted"
+            isMono
+            sizeVariant="sm"
+            className="flex-1"
           />
 
-          <Button
-            size="sm"
-            onClick={() => handleSendMessage()}
-            disabled={!inputText.trim()}
-            className="shrink-0 px-2.5"
-          >
-            <Send className="w-3.5 h-3.5" />
-          </Button>
+          <Tooltip content="Xabarni yuborish" position="top">
+            <Button
+              size="sm"
+              onClick={() => handleSendMessage()}
+              disabled={!inputText.trim()}
+              className="shrink-0 px-2.5"
+            >
+              <Send className="w-3.5 h-3.5" />
+            </Button>
+          </Tooltip>
 
-          <button
-            onClick={toggleRecording}
-            className={`p-2 rounded-xl border transition-all cursor-pointer shrink-0 ${
-              isRecording
-                ? 'bg-bunker-status-red text-white border-bunker-status-red shadow-lg shadow-bunker-status-red/20 animate-pulse'
-                : 'bg-bunker-surface-1 text-bunker-amber-500 border-bunker-border-strong hover:border-bunker-amber-500'
-            }`}
-            title={isRecording ? "Mikrofonni o'chirish" : 'Ovozli gapirish'}
+          <Tooltip
+            content={isRecording ? "Ovoz yozishni to'xtatish" : "Ovoz bilan gapirish"}
+            position="top"
           >
-            {isRecording ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
-          </button>
+            <button
+              onClick={toggleRecording}
+              className={`p-2 rounded-xl border transition-all cursor-pointer shrink-0 ${
+                isRecording
+                  ? 'bg-bunker-status-red text-white border-bunker-status-red shadow-lg shadow-bunker-status-red/20 animate-pulse'
+                  : 'bg-bunker-surface-1 text-bunker-amber-500 border-bunker-border-strong hover:border-bunker-amber-500'
+              }`}
+            >
+              {isRecording ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
+            </button>
+          </Tooltip>
         </div>
       </div>
     </div>

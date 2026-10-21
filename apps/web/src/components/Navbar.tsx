@@ -17,7 +17,7 @@ import {
   Building2,
   Activity
 } from 'lucide-react';
-import { Button } from '@bunkerstroy/ui';
+import { Badge, Button, Tooltip } from '@bunkerstroy/ui';
 
 export type ActiveTabType = 'marketplace' | 'logistics' | 'esco' | 'global_bunker' | 'orders';
 
@@ -66,10 +66,9 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2.5">
           {/* Left Telemetry Indicators */}
           <div className="flex items-center gap-3 overflow-x-auto no-scrollbar py-0.5">
-            <span className="flex items-center gap-1.5 text-bunker-status-green font-bold shrink-0">
-              <span className="w-2 h-2 rounded-full bg-bunker-status-green animate-pulse inline-block" />
+            <Badge variant="success" size="sm" isMono dot className="shrink-0">
               BUNKER-NET: 99.98% ONLINE
-            </span>
+            </Badge>
             <span className="text-bunker-border-strong hidden sm:inline">|</span>
             <span className="text-bunker-text-muted hidden md:inline shrink-0">
               Toshkent: <span className="text-bunker-text-primary font-semibold">+24°C</span> (Beton qotish: <strong className="text-bunker-status-green">92% OPTIMAL</strong>)
@@ -86,24 +85,26 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Right Action / Field Mode Toggle */}
           <div className="flex items-center gap-3 text-[10px] shrink-0">
-            <button
-              onClick={onToggleHighVis}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border font-mono font-bold transition-all cursor-pointer ${
-                highVisMode
-                  ? 'bg-bunker-amber-500 text-bunker-vault border-bunker-amber-500 shadow-sm'
-                  : 'bg-bunker-surface-2 text-bunker-text-secondary border-bunker-border-strong hover:text-bunker-amber-500 hover:border-bunker-amber-500'
-              }`}
-              title="Qurilish maydoni uchun yuqori kontrastli rejim (Shift + S)"
-            >
-              {highVisMode ? <Sun className="w-3 h-3 text-bunker-vault" /> : <Moon className="w-3 h-3 text-bunker-amber-500" />}
-              <span>FIELD MODE</span>
-              <span className="opacity-70 text-[9px] hidden sm:inline">(Shift+S)</span>
-            </button>
+            <Tooltip content="Qurilish maydoni uchun yuqori kontrastli rejim (Shift + S)" position="bottom">
+              <button
+                onClick={onToggleHighVis}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border font-mono font-bold transition-all cursor-pointer ${
+                  highVisMode
+                    ? 'bg-bunker-amber-500 text-bunker-vault border-bunker-amber-500 shadow-sm'
+                    : 'bg-bunker-surface-2 text-bunker-text-secondary border-bunker-border-strong hover:text-bunker-amber-500 hover:border-bunker-amber-500'
+                }`}
+              >
+                {highVisMode ? <Sun className="w-3 h-3 text-bunker-vault" /> : <Moon className="w-3 h-3 text-bunker-amber-500" />}
+                <span>FIELD MODE</span>
+                <span className="opacity-70 text-[9px] hidden sm:inline">(Shift+S)</span>
+              </button>
+            </Tooltip>
 
-            <span className="hidden sm:flex items-center gap-1 text-bunker-amber-500 font-mono">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>E-IMZO & Soliq STIR</span>
-            </span>
+            <Tooltip content="Elektron Raqamli Imzo va Davlat Soliq Qo'mitasi integratsiyasi" position="bottom">
+              <Badge variant="warning" size="sm" isMono leftIcon={<ShieldCheck className="w-3.5 h-3.5" />} className="hidden sm:inline-flex cursor-default">
+                E-IMZO & Soliq STIR
+              </Badge>
+            </Tooltip>
           </div>
         </div>
       </div>
@@ -155,45 +156,48 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Right Action Controls */}
           <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
             {/* Global Search Button (Ctrl + K) */}
-            <button
-              onClick={onOpenSearch}
-              className="px-2.5 sm:px-3 py-2 rounded-xl bg-bunker-surface-1 border border-bunker-border-subtle hover:border-bunker-amber-500 text-bunker-text-secondary hover:text-bunker-text-primary transition-all cursor-pointer flex items-center gap-2 text-xs font-mono"
-              title="Global qidiruv (Ctrl + K)"
-            >
-              <Search className="w-3.5 h-3.5 text-bunker-amber-500" />
-              <span className="hidden lg:inline text-bunker-text-muted">Qidiruv</span>
-              <kbd className="hidden sm:inline bg-bunker-surface-2 border border-bunker-border-strong px-1.5 py-0.5 rounded text-[10px] text-bunker-amber-500 font-bold">
-                Ctrl K
-              </kbd>
-            </button>
+            <Tooltip content="Global komanda va mahsulotlar qidiruvi (Ctrl + K)" position="bottom">
+              <button
+                onClick={onOpenSearch}
+                className="px-2.5 sm:px-3 py-2 rounded-xl bg-bunker-surface-1 border border-bunker-border-subtle hover:border-bunker-amber-500 text-bunker-text-secondary hover:text-bunker-text-primary transition-all cursor-pointer flex items-center gap-2 text-xs font-mono"
+              >
+                <Search className="w-3.5 h-3.5 text-bunker-amber-500" />
+                <span className="hidden lg:inline text-bunker-text-muted">Qidiruv</span>
+                <kbd className="hidden sm:inline bg-bunker-surface-2 border border-bunker-border-strong px-1.5 py-0.5 rounded text-[10px] text-bunker-amber-500 font-bold">
+                  Ctrl K
+                </kbd>
+              </button>
+            </Tooltip>
 
             {/* Voice Assistant Button */}
-            <button
-              onClick={onOpenVoice}
-              className="p-2 sm:p-2.5 rounded-xl bg-bunker-surface-2 border border-bunker-border-strong hover:border-bunker-amber-500 text-bunker-amber-500 transition-all cursor-pointer flex items-center gap-1.5"
-              title="Ovozli AI maslahatchi (Dock Copilot)"
-            >
-              <Mic className="w-4 h-4" />
-              <span className="text-xs font-mono hidden xl:inline">Voice AI</span>
-            </button>
+            <Tooltip content="Ovozli AI maslahatchi (Dock Copilot)" position="bottom">
+              <button
+                onClick={onOpenVoice}
+                className="p-2 sm:p-2.5 rounded-xl bg-bunker-surface-2 border border-bunker-border-strong hover:border-bunker-amber-500 text-bunker-amber-500 transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <Mic className="w-4 h-4" />
+                <span className="text-xs font-mono hidden xl:inline">Voice AI</span>
+              </button>
+            </Tooltip>
 
             {/* Cart Button */}
-            <button
-              onClick={onOpenCart}
-              className={`p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer flex items-center gap-2 ${
-                cartCount > 0
-                  ? 'bg-bunker-status-green/15 border-bunker-status-green text-bunker-status-green shadow-[0_0_15px_rgba(16,185,129,0.3)]'
-                  : 'bg-bunker-surface-2 border-bunker-border-strong text-bunker-text-primary hover:border-bunker-amber-500'
-              }`}
-              title="Xarid Savati"
-            >
-              <ShoppingCart className="w-4 h-4 text-bunker-amber-500" />
-              {cartCount > 0 && (
-                <span className="text-xs font-mono font-bold bg-bunker-status-green text-bunker-vault px-1.5 py-0.2 rounded-full">
-                  {cartCount}
-                </span>
-              )}
-            </button>
+            <Tooltip content={cartCount > 0 ? `${cartCount} ta mahsulot xarid savatida` : "Xarid savati bo'sh"} position="bottom">
+              <button
+                onClick={onOpenCart}
+                className={`p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer flex items-center gap-2 ${
+                  cartCount > 0
+                    ? 'bg-bunker-status-green/15 border-bunker-status-green text-bunker-status-green shadow-[0_0_15px_rgba(16,185,129,0.3)]'
+                    : 'bg-bunker-surface-2 border-bunker-border-strong text-bunker-text-primary hover:border-bunker-amber-500'
+                }`}
+              >
+                <ShoppingCart className="w-4 h-4 text-bunker-amber-500" />
+                {cartCount > 0 && (
+                  <Badge variant="success" size="sm" isMono className="px-1.5 py-0 font-bold">
+                    {cartCount}
+                  </Badge>
+                )}
+              </button>
+            </Tooltip>
 
             {/* Authenticated STIR Corporate Identity Badge or Login */}
             {currentUser ? (

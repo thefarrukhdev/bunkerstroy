@@ -19,14 +19,13 @@ import {
   Clock,
   Layers,
   Activity,
-  X,
   Building2,
   Truck,
   Leaf,
   Globe,
   ClipboardList
 } from 'lucide-react';
-import { Button } from '@bunkerstroy/ui';
+import { Button, Modal, Input, Badge, Tooltip } from '@bunkerstroy/ui';
 
 export const App: React.FC = () => {
   // Navigation tab state
@@ -391,83 +390,92 @@ export const App: React.FC = () => {
               &copy; 2026 BunkerStroy Technologies LLC. Barcha huquqlar himoyalangan.
             </p>
             <div className="flex items-center gap-3">
-              <span className="inline-flex items-center gap-1.5 text-bunker-status-green">
-                <Activity className="w-3.5 h-3.5 animate-pulse" />
-                SLA: 99.98% Ishonchlilik
-              </span>
+              <Tooltip content="99.98% High Availability klasteri va 24/7 uzluksiz B2B operatsiyalari kafolati" position="top">
+                <Badge variant="success" size="sm" isMono dot className="cursor-default">
+                  SLA: 99.98% Ishonchlilik
+                </Badge>
+              </Tooltip>
               <span className="text-bunker-border-strong">|</span>
-              <span className="text-bunker-text-muted">v1.2.0 (Tactile Precision Core)</span>
+              <Tooltip content="BunkerStroy Tactile Precision Core dizayn tizimi" position="top">
+                <Badge variant="default" size="sm" isMono className="cursor-default">
+                  v1.2.0 (Tactile Precision Core)
+                </Badge>
+              </Tooltip>
             </div>
           </div>
         </div>
       </footer>
 
       {/* 4. Global Command Search Palette Modal (Ctrl + K) */}
-      {isSearchOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="relative w-full max-w-xl bg-bunker-surface-1 border-2 border-bunker-amber-500 rounded-3xl p-5 shadow-2xl space-y-4">
-            <div className="flex items-center gap-2.5 pb-3 border-b border-bunker-border-subtle">
-              <Search className="w-5 h-5 text-bunker-amber-500 shrink-0" />
-              <input
-                type="text"
-                autoFocus
-                placeholder="Modul, mahsulot yoki xizmat nomini yozing..."
-                value={searchPaletteQuery}
-                onChange={(e) => setSearchPaletteQuery(e.target.value)}
-                className="w-full bg-transparent text-sm text-bunker-text-primary outline-none font-mono placeholder:text-bunker-text-muted"
-              />
-              <button
-                onClick={() => setIsSearchOpen(false)}
-                className="text-bunker-text-secondary hover:text-bunker-text-primary p-1 rounded-lg cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+      <Modal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        title="Global Komanda Qidiruvi"
+        subtitle="Platforma modullari va xizmatlari bo'yicha tezkor navigatsiya"
+        size="lg"
+        rivetAccents
+        footer={
+          <div className="flex items-center justify-between w-full text-[11px] font-mono text-bunker-text-muted">
+            <span>
+              Navigatsiya: <kbd className="bg-bunker-surface-2 px-1.5 py-0.5 rounded border border-bunker-border-subtle">↑</kbd>{' '}
+              <kbd className="bg-bunker-surface-2 px-1.5 py-0.5 rounded border border-bunker-border-subtle">↓</kbd>
+            </span>
+            <span>
+              Yopish: <kbd className="bg-bunker-surface-2 px-1.5 py-0.5 rounded border border-bunker-border-subtle">ESC</kbd>
+            </span>
+          </div>
+        }
+      >
+        <div className="space-y-4">
+          <Input
+            autoFocus
+            placeholder="Modul, mahsulot yoki xizmat nomini yozing..."
+            value={searchPaletteQuery}
+            onChange={(e) => setSearchPaletteQuery(e.target.value)}
+            leftIcon={<Search className="w-4 h-4 text-bunker-amber-500" />}
+            isMono
+            sizeVariant="md"
+          />
 
-            <div className="space-y-2">
-              <span className="text-[10px] text-bunker-text-muted uppercase font-mono block font-bold">
-                Tezkor O‘tish Modullari:
-              </span>
-              <div className="space-y-1">
-                {quickNavItems
-                  .filter((item) =>
+          <div className="space-y-2">
+            <span className="text-[10px] text-bunker-text-muted uppercase font-mono block font-bold tracking-wider">
+              Tezkor O‘tish Modullari:
+            </span>
+            <div className="space-y-1.5 max-h-64 overflow-y-auto pr-1">
+              {quickNavItems
+                .filter(
+                  (item) =>
                     !searchPaletteQuery ||
                     item.label.toLowerCase().includes(searchPaletteQuery.toLowerCase()) ||
                     item.desc.toLowerCase().includes(searchPaletteQuery.toLowerCase())
-                  )
-                  .map((item, idx) => (
-                    <div
-                      key={idx}
-                      onClick={() => {
-                        setActiveTab(item.tab);
-                        setIsSearchOpen(false);
-                      }}
-                      className="p-3 rounded-2xl bg-bunker-base hover:bg-bunker-surface-hover border border-bunker-border-subtle hover:border-bunker-amber-500 flex items-center justify-between cursor-pointer transition-all group font-mono"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-xl bg-bunker-surface-2 border border-bunker-border-strong group-hover:border-bunker-amber-500">
-                          {item.icon}
-                        </div>
-                        <div>
-                          <h4 className="text-xs font-bold text-bunker-text-primary group-hover:text-bunker-amber-500 transition-colors">
-                            {item.label}
-                          </h4>
-                          <p className="text-[11px] text-bunker-text-muted">{item.desc}</p>
-                        </div>
+                )
+                .map((item, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => {
+                      setActiveTab(item.tab);
+                      setIsSearchOpen(false);
+                    }}
+                    className="p-3 rounded-2xl bg-bunker-base hover:bg-bunker-surface-hover border border-bunker-border-subtle hover:border-bunker-amber-500 flex items-center justify-between cursor-pointer transition-all group font-mono"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-xl bg-bunker-surface-2 border border-bunker-border-strong group-hover:border-bunker-amber-500">
+                        {item.icon}
                       </div>
-                      <span className="text-xs text-bunker-text-muted group-hover:text-bunker-amber-500">↵</span>
+                      <div>
+                        <h4 className="text-xs font-bold text-bunker-text-primary group-hover:text-bunker-amber-500 transition-colors">
+                          {item.label}
+                        </h4>
+                        <p className="text-[11px] text-bunker-text-muted">{item.desc}</p>
+                      </div>
                     </div>
-                  ))}
-              </div>
-            </div>
-
-            <div className="pt-2 border-t border-bunker-border-subtle flex items-center justify-between text-[10px] font-mono text-bunker-text-muted">
-              <span>Navigatsiya: <kbd className="bg-bunker-surface-2 px-1.5 py-0.5 rounded">↑</kbd> <kbd className="bg-bunker-surface-2 px-1.5 py-0.5 rounded">↓</kbd></span>
-              <span>Yopish: <kbd className="bg-bunker-surface-2 px-1.5 py-0.5 rounded">ESC</kbd></span>
+                    <span className="text-xs text-bunker-text-muted group-hover:text-bunker-amber-500 font-bold">↵</span>
+                  </div>
+                ))}
             </div>
           </div>
         </div>
-      )}
+      </Modal>
 
       {/* 5. Drawers & Modals */}
       <CartDrawer
