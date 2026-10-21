@@ -6,21 +6,13 @@ import {
   Navigation,
   Phone,
   Clock,
-  AlertCircle,
   RefreshCw,
   PackageCheck,
   Compass,
-  FileCode,
-  Sliders,
-  Maximize2,
-  X,
-  Gauge,
-  Cpu,
-  Layers,
-  Wrench
+  FileCode
 } from 'lucide-react';
 import { LogisticsVehicle, Order } from '@bunkerstroy/types';
-import { Button, Badge, Card } from '@bunkerstroy/ui';
+import { Button, Badge, Card, Input, Select, Alert, StatCard, Modal } from '@bunkerstroy/ui';
 
 interface QuoteCalculation {
   vehicle: LogisticsVehicle;
@@ -388,43 +380,41 @@ export const LogisticsView: React.FC = () => {
             </Button>
           </div>
 
-          {/* Details Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
-            <div className="bg-bunker-base p-4 rounded-2xl border border-bunker-border-subtle space-y-1">
-              <span className="text-[10px] text-bunker-text-muted uppercase block">Haydovchi:</span>
-              <p className="font-bold text-sm text-bunker-text-primary">{confirmedDispatch.driverName}</p>
-              <a
-                href={`tel:${confirmedDispatch.driverPhone}`}
-                className="inline-flex items-center gap-1.5 text-xs text-bunker-amber-500 hover:underline mt-1"
-              >
-                <Phone className="w-3.5 h-3.5" />
-                {confirmedDispatch.driverPhone}
-              </a>
-            </div>
+          {/* Details Grid Using StatCard Component */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <StatCard
+              title="Haydovchi"
+              value={confirmedDispatch.driverName}
+              subtitle={confirmedDispatch.driverPhone}
+              variant="amber"
+              icon={<Phone className="w-4 h-4" />}
+            />
 
-            <div className="bg-bunker-base p-4 rounded-2xl border border-bunker-border-subtle space-y-1">
-              <span className="text-[10px] text-bunker-text-muted uppercase block">Maxsus Texnika:</span>
-              <p className="font-bold text-sm text-bunker-text-primary truncate">{confirmedDispatch.vehicleName}</p>
-              <Badge variant="warning" className="font-mono text-[10px] mt-1">
-                {confirmedDispatch.plateNumber}
-              </Badge>
-            </div>
+            <StatCard
+              title="Maxsus Texnika"
+              value={confirmedDispatch.vehicleName}
+              subtitle={confirmedDispatch.plateNumber}
+              variant="default"
+              icon={<Truck className="w-4 h-4" />}
+            />
 
-            <div className="bg-bunker-base p-4 rounded-2xl border border-bunker-border-subtle space-y-1">
-              <span className="text-[10px] text-bunker-text-muted uppercase block">Marshrut va Masofa:</span>
-              <p className="font-bold text-bunker-text-primary font-mono">{confirmedDispatch.distanceKm} km</p>
-              <span className="text-[11px] text-bunker-text-secondary block">
-                Taxminiy yetkazish: ~{confirmedDispatch.estimatedHours} soat
-              </span>
-            </div>
+            <StatCard
+              title="Marshrut va Masofa"
+              value={confirmedDispatch.distanceKm}
+              unit="km"
+              subtitle={`Taxminiy: ~${confirmedDispatch.estimatedHours} soat`}
+              variant="cyan"
+              icon={<Navigation className="w-4 h-4" />}
+            />
 
-            <div className="bg-bunker-base p-4 rounded-2xl border border-bunker-border-subtle space-y-1">
-              <span className="text-[10px] text-bunker-text-muted uppercase block">Jami Reys To‘lovi:</span>
-              <p className="text-lg font-black text-bunker-amber-500 font-mono">
-                {confirmedDispatch.totalCost.toLocaleString()} so'm
-              </p>
-              <span className="text-[11px] text-bunker-status-green font-mono">Kafolatlangan marshrut</span>
-            </div>
+            <StatCard
+              title="Jami Reys To‘lovi"
+              value={confirmedDispatch.totalCost.toLocaleString()}
+              unit="so'm"
+              subtitle="Kafolatlangan marshrut"
+              variant="amber"
+              icon={<CheckCircle2 className="w-4 h-4" />}
+            />
           </div>
 
           {/* 4-Step Route Progress Tracker */}
@@ -502,7 +492,6 @@ export const LogisticsView: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             {vehicles.map((v) => {
               const isSelected = selectedVehicle?.id === v.id;
-              const hasBlueprint = TECHNICAL_BLUEPRINTS[v.type];
 
               return (
                 <div
@@ -578,51 +567,41 @@ export const LogisticsView: React.FC = () => {
           </div>
 
           {bookingError && (
-            <div className="p-3 rounded-xl bg-bunker-status-red/15 border border-bunker-status-red/30 text-xs text-bunker-status-red flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-              <span>{bookingError}</span>
-            </div>
+            <Alert
+              variant="error"
+              description={bookingError}
+              onDismiss={() => setBookingError(null)}
+            />
           )}
 
           <div className="space-y-4 text-xs font-semibold text-bunker-text-secondary">
             {/* Optional order selector if active orders exist */}
             {activeOrders.length > 0 && (
-              <div>
-                <label className="block mb-1.5 text-bunker-text-primary font-mono text-[11px]">Biriktiriladigan buyurtma:</label>
-                <select
-                  value={selectedOrderId}
-                  onChange={(e) => setSelectedOrderId(e.target.value)}
-                  className="w-full bg-bunker-input border border-bunker-border-subtle focus:border-bunker-amber-500 p-2.5 rounded-xl text-xs text-bunker-text-primary outline-none"
-                >
-                  <option value="EXPRESS">Ekspress transport (Yangi to‘g‘ridan-to‘g‘ri reys)</option>
-                  {activeOrders.map((ord) => (
-                    <option key={ord.id} value={ord.id}>
-                      {ord.orderNumber} — {ord.buyerName} ({Number(ord.finalAmount).toLocaleString()} so'm)
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <Select
+                label="Biriktiriladigan buyurtma:"
+                value={selectedOrderId}
+                onChange={(e) => setSelectedOrderId(e.target.value)}
+              >
+                <option value="EXPRESS">Ekspress transport (Yangi to‘g‘ridan-to‘g‘ri reys)</option>
+                {activeOrders.map((ord) => (
+                  <option key={ord.id} value={ord.id}>
+                    {ord.orderNumber} — {ord.buyerName} ({Number(ord.finalAmount).toLocaleString()} so'm)
+                  </option>
+                ))}
+              </Select>
             )}
 
-            <div>
-              <label className="block mb-1.5 font-mono text-[11px]">Yuklash manzili (Karyer / Baza):</label>
-              <input
-                type="text"
-                value={origin}
-                onChange={(e) => setOrigin(e.target.value)}
-                className="w-full bg-bunker-input border border-bunker-border-subtle focus:border-bunker-amber-500 p-2.5 rounded-xl text-bunker-text-primary outline-none transition-colors"
-              />
-            </div>
+            <Input
+              label="Yuklash manzili (Karyer / Baza):"
+              value={origin}
+              onChange={(e) => setOrigin(e.target.value)}
+            />
 
-            <div>
-              <label className="block mb-1.5 font-mono text-[11px]">Yetkazish manzili (Qurilish ob'ekti):</label>
-              <input
-                type="text"
-                value={destination}
-                onChange={(e) => setDestination(e.target.value)}
-                className="w-full bg-bunker-input border border-bunker-border-subtle focus:border-bunker-amber-500 p-2.5 rounded-xl text-bunker-text-primary outline-none transition-colors"
-              />
-            </div>
+            <Input
+              label="Yetkazish manzili (Qurilish ob'ekti):"
+              value={destination}
+              onChange={(e) => setDestination(e.target.value)}
+            />
 
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -702,101 +681,84 @@ export const LogisticsView: React.FC = () => {
         </div>
       </div>
 
-      {/* 4. TECHNICAL BLUEPRINT CAD MODAL */}
+      {/* 4. TECHNICAL BLUEPRINT CAD MODAL (Using Modal Component) */}
       {selectedBlueprint && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="relative w-full max-w-3xl bg-bunker-surface-1 border-2 border-bunker-amber-500 rounded-3xl p-6 sm:p-8 space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-bunker-border-strong">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-bunker-amber-500/20 border border-bunker-amber-500/50 flex items-center justify-center">
-                  <FileCode className="w-5 h-5 text-bunker-amber-500" />
-                </div>
-                <div>
-                  <h3 className="font-black text-lg text-bunker-text-primary">{selectedBlueprint.modelName}</h3>
-                  <span className="text-xs font-mono text-bunker-amber-500">
-                    TEXNIK CHIZMA & ZAVOD PARAMETRLARI (CAD SPECIFICATION)
-                  </span>
-                </div>
-              </div>
-
-              <button
-                onClick={() => setSelectedBlueprint(null)}
-                className="text-bunker-text-secondary hover:text-bunker-text-primary p-1.5 rounded-lg bg-bunker-surface-2 border border-bunker-border-subtle cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
+        <Modal
+          isOpen={!!selectedBlueprint}
+          onClose={() => setSelectedBlueprint(null)}
+          size="lg"
+          headerExtra={
+            <div className="w-10 h-10 rounded-xl bg-bunker-amber-500/20 border border-bunker-amber-500/50 flex items-center justify-center shrink-0">
+              <FileCode className="w-5 h-5 text-bunker-amber-500" />
+            </div>
+          }
+          title={selectedBlueprint.modelName}
+          subtitle="TEXNIK CHIZMA & ZAVOD PARAMETRLARI (CAD SPECIFICATION)"
+          footer={
+            <Button variant="primary" onClick={() => setSelectedBlueprint(null)}>
+              Tushunarli / Yopish
+            </Button>
+          }
+        >
+          {/* CAD Wireframe Visualizer */}
+          <div className="relative bg-bunker-vault border border-bunker-border-strong rounded-2xl p-5 overflow-hidden font-mono text-xs">
+            <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#FFB800_1px,transparent_1px)] [background-size:16px_16px]" />
+            <div className="flex items-center justify-between text-bunker-text-muted text-[11px] mb-3">
+              <span>[BUNKER-CAD v4.8] ARCHITECTURAL WIREFRAME</span>
+              <span className="text-bunker-status-green">ONLINE KALIBROVKA</span>
             </div>
 
-            {/* CAD Wireframe Visualizer */}
-            <div className="relative bg-bunker-vault border border-bunker-border-strong rounded-2xl p-5 overflow-hidden font-mono text-xs">
-              <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#FFB800_1px,transparent_1px)] [background-size:16px_16px]" />
-              <div className="flex items-center justify-between text-bunker-text-muted text-[11px] mb-3">
-                <span>[BUNKER-CAD v4.8] ARCHITECTURAL WIREFRAME</span>
-                <span className="text-bunker-status-green">ONLINE KALIBROVKA</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div className="bg-bunker-surface-1/80 border border-bunker-border-subtle p-3 rounded-xl space-y-1">
+                <span className="text-[10px] text-bunker-text-muted uppercase block">Dvigatel & Quvvat:</span>
+                <p className="font-bold text-bunker-text-primary">{selectedBlueprint.engine}</p>
+                <span className="text-[11px] text-bunker-amber-500 block">{selectedBlueprint.powerOutput}</span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                <div className="bg-bunker-surface-1/80 border border-bunker-border-subtle p-3 rounded-xl space-y-1">
-                  <span className="text-[10px] text-bunker-text-muted uppercase block">Dvigatel & Quvvat:</span>
-                  <p className="font-bold text-bunker-text-primary">{selectedBlueprint.engine}</p>
-                  <span className="text-[11px] text-bunker-amber-500 block">{selectedBlueprint.powerOutput}</span>
-                </div>
-
-                <div className="bg-bunker-surface-1/80 border border-bunker-border-subtle p-3 rounded-xl space-y-1">
-                  <span className="text-[10px] text-bunker-text-muted uppercase block">Aylanish momenti:</span>
-                  <p className="font-bold text-bunker-text-primary">{selectedBlueprint.torque}</p>
-                  <span className="text-[11px] text-bunker-text-secondary block">Ko'prik: {selectedBlueprint.axleFormula}</span>
-                </div>
-
-                <div className="bg-bunker-surface-1/80 border border-bunker-border-subtle p-3 rounded-xl space-y-1">
-                  <span className="text-[10px] text-bunker-text-muted uppercase block">Foydali Sig'im:</span>
-                  <p className="font-bold text-bunker-amber-500">{selectedBlueprint.payloadCapacity}</p>
-                  <span className="text-[11px] text-bunker-text-secondary block">{selectedBlueprint.bodyVolume}</span>
-                </div>
-
-                <div className="bg-bunker-surface-1/80 border border-bunker-border-subtle p-3 rounded-xl space-y-1">
-                  <span className="text-[10px] text-bunker-text-muted uppercase block">Uzatmalar qutisi:</span>
-                  <p className="font-bold text-bunker-text-primary">{selectedBlueprint.transmission}</p>
-                </div>
-
-                <div className="bg-bunker-surface-1/80 border border-bunker-border-subtle p-3 rounded-xl space-y-1">
-                  <span className="text-[10px] text-bunker-text-muted uppercase block">Gidravlika tizimi:</span>
-                  <p className="font-bold text-bunker-text-primary truncate">{selectedBlueprint.hydraulicSystem}</p>
-                </div>
-
-                <div className="bg-bunker-surface-1/80 border border-bunker-border-subtle p-3 rounded-xl space-y-1">
-                  <span className="text-[10px] text-bunker-text-muted uppercase block">Gabarit o'lchamlar:</span>
-                  <p className="font-bold text-bunker-text-primary">{selectedBlueprint.dimensions}</p>
-                </div>
+              <div className="bg-bunker-surface-1/80 border border-bunker-border-subtle p-3 rounded-xl space-y-1">
+                <span className="text-[10px] text-bunker-text-muted uppercase block">Aylanish momenti:</span>
+                <p className="font-bold text-bunker-text-primary">{selectedBlueprint.torque}</p>
+                <span className="text-[11px] text-bunker-text-secondary block">Ko'prik: {selectedBlueprint.axleFormula}</span>
               </div>
 
-              {/* Detailed schematic bullets */}
-              <div className="mt-4 pt-3 border-t border-bunker-border-subtle space-y-2">
-                <span className="text-[11px] font-bold text-bunker-amber-500 uppercase block">
-                  Texnik Standartlar & Xavfsizlik Sertifikati:
-                </span>
-                <div className="space-y-1.5 text-[11px] text-bunker-text-secondary">
-                  {selectedBlueprint.schematicDetails.map((item, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <span className="text-bunker-amber-500 font-bold shrink-0">►</span>
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
+              <div className="bg-bunker-surface-1/80 border border-bunker-border-subtle p-3 rounded-xl space-y-1">
+                <span className="text-[10px] text-bunker-text-muted uppercase block">Foydali Sig'im:</span>
+                <p className="font-bold text-bunker-amber-500">{selectedBlueprint.payloadCapacity}</p>
+                <span className="text-[11px] text-bunker-text-secondary block">{selectedBlueprint.bodyVolume}</span>
+              </div>
+
+              <div className="bg-bunker-surface-1/80 border border-bunker-border-subtle p-3 rounded-xl space-y-1">
+                <span className="text-[10px] text-bunker-text-muted uppercase block">Uzatmalar qutisi:</span>
+                <p className="font-bold text-bunker-text-primary">{selectedBlueprint.transmission}</p>
+              </div>
+
+              <div className="bg-bunker-surface-1/80 border border-bunker-border-subtle p-3 rounded-xl space-y-1">
+                <span className="text-[10px] text-bunker-text-muted uppercase block">Gidravlika tizimi:</span>
+                <p className="font-bold text-bunker-text-primary truncate">{selectedBlueprint.hydraulicSystem}</p>
+              </div>
+
+              <div className="bg-bunker-surface-1/80 border border-bunker-border-subtle p-3 rounded-xl space-y-1">
+                <span className="text-[10px] text-bunker-text-muted uppercase block">Gabarit o'lchamlar:</span>
+                <p className="font-bold text-bunker-text-primary">{selectedBlueprint.dimensions}</p>
               </div>
             </div>
 
-            <div className="flex justify-end pt-2">
-              <Button
-                variant="primary"
-                onClick={() => setSelectedBlueprint(null)}
-              >
-                Tushunarli / Yopish
-              </Button>
+            {/* Detailed schematic bullets */}
+            <div className="mt-4 pt-3 border-t border-bunker-border-subtle space-y-2">
+              <span className="text-[11px] font-bold text-bunker-amber-500 uppercase block">
+                Texnik Standartlar & Xavfsizlik Sertifikati:
+              </span>
+              <div className="space-y-1.5 text-[11px] text-bunker-text-secondary">
+                {selectedBlueprint.schematicDetails.map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-2">
+                    <span className="text-bunker-amber-500 font-bold shrink-0">►</span>
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        </Modal>
       )}
     </div>
   );

@@ -5,7 +5,6 @@ import {
   Building2,
   BookmarkPlus,
   History,
-  AlertCircle,
   CheckCircle2,
   RefreshCw,
   LogIn,
@@ -13,16 +12,31 @@ import {
   Printer,
   TrendingUp,
   ShieldCheck,
-  Check,
   Zap,
   Percent,
-  Layers,
   Thermometer,
-  Flame,
-  ArrowRight
+  Flame
 } from 'lucide-react';
 import { EscoCalculationResult } from '@bunkerstroy/types';
-import { Button, Badge, Card } from '@bunkerstroy/ui';
+import {
+  Button,
+  Badge,
+  Card,
+  Input,
+  Select,
+  Alert,
+  StatCard,
+  Modal,
+  Tabs,
+  TabsList,
+  TabTrigger,
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell
+} from '@bunkerstroy/ui';
 
 interface SavedEscoAudit {
   id: string;
@@ -153,18 +167,18 @@ export const EscoCalculatorView: React.FC = () => {
         setCalcError(data.message || 'Hisoblashda xatolik yuz berdi');
       }
     } catch (e) {
-      console.error('ESCO calculation error:', e);
-      setCalcError('Server bilan aloqa uzildi. Parametrlarni tekshiring.');
+      console.error(e);
+      setCalcError('Server bilan ulanishda xato. Iltimos qayta urining.');
     } finally {
       setLoading(false);
     }
   };
 
-  // Save audit to profile
+  // Save audit to user database profile
   const handleSaveAudit = async () => {
     const token = getToken();
     if (!token) {
-      setSaveError("Auditni saqlash uchun tizimga kirish talab etiladi. Yuqoridagi 'Kirish' tugmasini bosing.");
+      setSaveError('Auditni saqlash uchun avval shaxsiy kabinetga kiring');
       return;
     }
 
@@ -172,6 +186,7 @@ export const EscoCalculatorView: React.FC = () => {
 
     setIsSaving(true);
     setSaveError(null);
+    setSaveSuccess(false);
 
     try {
       const res = await fetch('/api/esco/audits', {
@@ -184,10 +199,6 @@ export const EscoCalculatorView: React.FC = () => {
           buildingType,
           areaM2: Number(areaM2),
           currentEnergyUsageKwh: Number(energyUsageKwh),
-          wallMaterial,
-          windowType,
-          currentHeatingType,
-          region,
           estimatedSavingsPct: result.energySavingsPercent,
           annualSavingsSum: result.annualSavingsSum,
           paybackYears: result.paybackYears,
@@ -243,36 +254,28 @@ export const EscoCalculatorView: React.FC = () => {
       </div>
 
       {/* 2. Navigation Sub-Tabs */}
-      <div className="flex items-center gap-2 border-b border-bunker-border-strong pb-3">
-        <button
-          onClick={() => setActiveSubTab('calculator')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs cursor-pointer font-mono transition-all ${
-            activeSubTab === 'calculator'
-              ? 'bg-bunker-amber-500 text-bunker-vault shadow-md shadow-bunker-amber-500/20'
-              : 'bg-bunker-surface-1 text-bunker-text-secondary border border-bunker-border-subtle hover:text-bunker-text-primary'
-          }`}
-        >
-          <Calculator className="w-4 h-4" />
-          <span>AI ESCO Kalkulyatori & Izometrik Model</span>
-        </button>
+      <Tabs
+        variant="chamfer"
+        value={activeSubTab}
+        onValueChange={(val) => setActiveSubTab(val as 'calculator' | 'saved')}
+      >
+        <TabsList>
+          <TabTrigger value="calculator">
+            <Calculator className="w-4 h-4" />
+            <span>AI ESCO Kalkulyatori & Izometrik Model</span>
+          </TabTrigger>
 
-        <button
-          onClick={() => setActiveSubTab('saved')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs cursor-pointer font-mono transition-all ${
-            activeSubTab === 'saved'
-              ? 'bg-bunker-amber-500 text-bunker-vault shadow-md shadow-bunker-amber-500/20'
-              : 'bg-bunker-surface-1 text-bunker-text-secondary border border-bunker-border-subtle hover:text-bunker-text-primary'
-          }`}
-        >
-          <History className="w-4 h-4" />
-          <span>Mening Saqlangan Auditlarim</span>
-          {savedAudits.length > 0 && (
-            <span className="bg-bunker-base text-bunker-amber-500 text-[10px] font-mono px-2 py-0.5 rounded-full font-bold">
-              {savedAudits.length}
-            </span>
-          )}
-        </button>
-      </div>
+          <TabTrigger value="saved">
+            <History className="w-4 h-4" />
+            <span>Mening Saqlangan Auditlarim</span>
+            {savedAudits.length > 0 && (
+              <span className="bg-bunker-base text-bunker-amber-500 text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ml-1">
+                {savedAudits.length}
+              </span>
+            )}
+          </TabTrigger>
+        </TabsList>
+      </Tabs>
 
       {/* SUB-TAB 1: CALCULATOR & ISOMETRIC THERMAL MODEL */}
       {activeSubTab === 'calculator' && (
@@ -298,14 +301,14 @@ export const EscoCalculatorView: React.FC = () => {
                 <span className="text-bunker-border-strong">|</span>
                 <span className="flex items-center gap-1.5 text-bunker-status-green font-bold">
                   <span className="w-2.5 h-2.5 rounded-full bg-bunker-status-green" />
-                  Optimal Izolyatsiya
+                  Optimal Izolyatsiya (ShNQ)
                 </span>
               </div>
             </div>
 
-            {/* Cutaway Zone Grid */}
+            {/* Isometric Cutaway Interactive 3-Zone Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Zone 1: Devorlar (42%) */}
+              {/* Zone 1: Tashqi Devorlar (42%) */}
               <div
                 onClick={() => setInsulatedWalls(!insulatedWalls)}
                 className={`p-5 rounded-2xl border-2 transition-all cursor-pointer relative overflow-hidden ${
@@ -318,17 +321,17 @@ export const EscoCalculatorView: React.FC = () => {
                   <Badge variant={insulatedWalls ? 'success' : 'danger'} className="font-mono text-[10px]">
                     {insulatedWalls ? 'OPTIMAL: 100mm BAZALT' : 'YO‘QOTISH: 42%'}
                   </Badge>
-                  <span className="text-xs font-mono font-bold text-bunker-text-primary">DEVORLAR</span>
+                  <span className="text-xs font-mono font-bold text-bunker-text-primary">TASHQI DEVORLAR</span>
                 </div>
 
                 <div className="space-y-1.5 text-xs font-mono">
                   <p className="font-bold text-sm text-bunker-text-primary">
-                    {insulatedWalls ? 'R = 3.8 m²·K/W (ShNQ Standart)' : 'R = 1.1 m²·K/W (Issiqlik Sizib Chiqishi)'}
+                    {insulatedWalls ? 'R = 3.8 m²·K/W (Norma Bajarildi)' : 'R = 1.1 m²·K/W (Kritik Sovuq Oqimi)'}
                   </p>
                   <p className="text-[11px] text-bunker-text-secondary">
                     {insulatedWalls
-                      ? '100mm bazalt tosh mineral plitalari o‘rnatildi. Yo‘qotish 42% dan 8% ga qisqardi.'
-                      : 'Oddiy 380mm pishiq g‘isht. Devor orqali bino umumiy issiqligining 42% i havoga uchadi.'}
+                      ? 'Fasad 100mm zichligi 135 kg/m³ bazalt plitasi bilan qoplangan. ShNQ 2.01.04-18 talabiga mos.'
+                      : 'Izolyatsiyasiz g‘isht devor. Bino umumiy issiqligining 42% qismi aynan devorlar orqali chiqib ketadi.'}
                   </p>
                 </div>
 
@@ -414,7 +417,7 @@ export const EscoCalculatorView: React.FC = () => {
 
           {/* Form & AI Calculator Results Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Input Form */}
+            {/* Input Form with Input & Select Components */}
             <div className="lg:col-span-6 bg-bunker-surface-1 border border-bunker-border-strong p-6 rounded-3xl space-y-4">
               <h3 className="font-bold text-bunker-text-primary flex items-center gap-2 border-b border-bunker-border-subtle pb-3 text-sm font-mono">
                 <Building2 className="w-4 h-4 text-bunker-status-green" />
@@ -422,104 +425,87 @@ export const EscoCalculatorView: React.FC = () => {
               </h3>
 
               {calcError && (
-                <div className="p-3 rounded-xl bg-bunker-status-red/15 border border-bunker-status-red/30 text-xs text-bunker-status-red flex items-start gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                  <span>{calcError}</span>
-                </div>
+                <Alert
+                  variant="error"
+                  description={calcError}
+                  onDismiss={() => setCalcError(null)}
+                />
               )}
 
               <div className="space-y-3.5 text-xs font-semibold text-bunker-text-secondary">
-                <div>
-                  <label className="block mb-1 font-mono text-[11px]">Bino turi va vazifasi:</label>
-                  <select
-                    value={buildingType}
-                    onChange={(e) => setBuildingType(e.target.value)}
-                    className="w-full bg-bunker-input border border-bunker-border-subtle focus:border-bunker-status-green p-2.5 rounded-xl text-bunker-text-primary outline-none transition-colors"
+                <Select
+                  label="Bino turi va vazifasi:"
+                  value={buildingType}
+                  onChange={(e) => setBuildingType(e.target.value)}
+                >
+                  <option value="RESIDENTIAL_MULTI_STOREY">Ko‘p qavatli turar joy binosi</option>
+                  <option value="PRIVATE_HOUSE_COTTAGE">Xususiy hovli / Kottej</option>
+                  <option value="COMMERCIAL_OFFICE">Tijorat / Ofis binosi</option>
+                  <option value="INDUSTRIAL_WAREHOUSE">Sanoat ombori / Ishlab chiqarish</option>
+                  <option value="PUBLIC_SCHOOL_HOSPITAL">Maktab / Shifoxona / Ijtimoiy muassasa</option>
+                </Select>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Input
+                    label="Umumiy maydon (m²):"
+                    type="number"
+                    min="10"
+                    max="100000"
+                    isMono
+                    value={areaM2}
+                    onChange={(e) => setAreaM2(Number(e.target.value))}
+                  />
+
+                  <Input
+                    label="Yillik energiya sarfi (kVt/soat):"
+                    type="number"
+                    min="100"
+                    max="5000000"
+                    isMono
+                    value={energyUsageKwh}
+                    onChange={(e) => setEnergyUsageKwh(Number(e.target.value))}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Input
+                    label="Tashqi devor konstruksiyasi:"
+                    value={wallMaterial}
+                    onChange={(e) => setWallMaterial(e.target.value)}
+                    placeholder="Pishiq g'isht 380mm"
+                  />
+
+                  <Input
+                    label="Deraza va vitrina turlari:"
+                    value={windowType}
+                    onChange={(e) => setWindowType(e.target.value)}
+                    placeholder="Oddiy 2 kamerali plastik"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Select
+                    label="Isitish tizimi turi:"
+                    value={currentHeatingType}
+                    onChange={(e) => setCurrentHeatingType(e.target.value)}
                   >
-                    <option value="RESIDENTIAL_MULTI_STOREY">Ko‘p qavatli turar joy binosi</option>
-                    <option value="PRIVATE_HOUSE_COTTAGE">Xususiy hovli / Kottej</option>
-                    <option value="COMMERCIAL_OFFICE">Tijorat / Ofis binosi</option>
-                    <option value="INDUSTRIAL_WAREHOUSE">Sanoat ombori / Ishlab chiqarish</option>
-                    <option value="PUBLIC_SCHOOL_HOSPITAL">Maktab / Shifoxona / Ijtimoiy muassasa</option>
-                  </select>
-                </div>
+                    <option value="Gaz qozoni">Avtonom gaz qozoni</option>
+                    <option value="Markaziy issiqlik">Markaziy shahar issiqlik tarmog‘i</option>
+                    <option value="Elektr isitgich">Elektr qozoni / radiatorlar</option>
+                    <option value="Issiqlik nasosi">Issiqlik nasosi (Heat Pump)</option>
+                  </Select>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block mb-1 font-mono text-[11px]">Umumiy maydon (m²):</label>
-                    <input
-                      type="number"
-                      min="10"
-                      max="100000"
-                      value={areaM2}
-                      onChange={(e) => setAreaM2(Number(e.target.value))}
-                      className="w-full bg-bunker-input border border-bunker-border-subtle focus:border-bunker-status-green p-2.5 rounded-xl text-bunker-text-primary font-mono outline-none transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="block mb-1 font-mono text-[11px]">Yillik energiya sarfi (kVt/soat):</label>
-                    <input
-                      type="number"
-                      min="100"
-                      max="5000000"
-                      value={energyUsageKwh}
-                      onChange={(e) => setEnergyUsageKwh(Number(e.target.value))}
-                      className="w-full bg-bunker-input border border-bunker-border-subtle focus:border-bunker-status-green p-2.5 rounded-xl text-bunker-text-primary font-mono outline-none transition-colors"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block mb-1 font-mono text-[11px]">Tashqi devor konstruksiyasi:</label>
-                    <input
-                      type="text"
-                      value={wallMaterial}
-                      onChange={(e) => setWallMaterial(e.target.value)}
-                      placeholder="Pishiq g'isht 380mm"
-                      className="w-full bg-bunker-input border border-bunker-border-subtle focus:border-bunker-status-green p-2.5 rounded-xl text-bunker-text-primary outline-none transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="block mb-1 font-mono text-[11px]">Deraza va vitrina turlari:</label>
-                    <input
-                      type="text"
-                      value={windowType}
-                      onChange={(e) => setWindowType(e.target.value)}
-                      placeholder="Oddiy 2 kamerali plastik"
-                      className="w-full bg-bunker-input border border-bunker-border-subtle focus:border-bunker-status-green p-2.5 rounded-xl text-bunker-text-primary outline-none transition-colors"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block mb-1 font-mono text-[11px]">Isitish tizimi turi:</label>
-                    <select
-                      value={currentHeatingType}
-                      onChange={(e) => setCurrentHeatingType(e.target.value)}
-                      className="w-full bg-bunker-input border border-bunker-border-subtle focus:border-bunker-status-green p-2.5 rounded-xl text-bunker-text-primary outline-none transition-colors"
-                    >
-                      <option value="Gaz qozoni">Avtonom gaz qozoni</option>
-                      <option value="Markaziy issiqlik">Markaziy shahar issiqlik tarmog‘i</option>
-                      <option value="Elektr isitgich">Elektr qozoni / radiatorlar</option>
-                      <option value="Issiqlik nasosi">Issiqlik nasosi (Heat Pump)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block mb-1 font-mono text-[11px]">Joylashgan hududi:</label>
-                    <select
-                      value={region}
-                      onChange={(e) => setRegion(e.target.value)}
-                      className="w-full bg-bunker-input border border-bunker-border-subtle focus:border-bunker-status-green p-2.5 rounded-xl text-bunker-text-primary outline-none transition-colors"
-                    >
-                      <option value="Toshkent shahri">Toshkent shahri</option>
-                      <option value="Toshkent viloyati">Toshkent viloyati</option>
-                      <option value="Samarqand viloyati">Samarqand viloyati</option>
-                      <option value="Farg‘ona viloyati">Farg‘ona viloyati</option>
-                      <option value="Buxoro viloyati">Buxoro viloyati</option>
-                    </select>
-                  </div>
+                  <Select
+                    label="Joylashgan hududi:"
+                    value={region}
+                    onChange={(e) => setRegion(e.target.value)}
+                  >
+                    <option value="Toshkent shahri">Toshkent shahri</option>
+                    <option value="Toshkent viloyati">Toshkent viloyati</option>
+                    <option value="Samarqand viloyati">Samarqand viloyati</option>
+                    <option value="Farg‘ona viloyati">Farg‘ona viloyati</option>
+                    <option value="Buxoro viloyati">Buxoro viloyati</option>
+                  </Select>
                 </div>
               </div>
 
@@ -553,32 +539,35 @@ export const EscoCalculatorView: React.FC = () => {
                     </Badge>
                   </div>
 
-                  {/* Core Metrics */}
-                  <div className="grid grid-cols-2 gap-3.5 font-mono">
-                    <div className="bg-bunker-base border border-bunker-border-subtle p-3.5 rounded-2xl">
-                      <span className="text-[10px] text-bunker-text-secondary uppercase block">Energiya tejamkorligi:</span>
-                      <span className="text-2xl font-black text-bunker-status-green">
-                        +{result.energySavingsPercent}%
-                      </span>
-                    </div>
-                    <div className="bg-bunker-base border border-bunker-border-subtle p-3.5 rounded-2xl">
-                      <span className="text-[10px] text-bunker-text-secondary uppercase block">O'zini oqlash muddati:</span>
-                      <span className="text-2xl font-black text-bunker-amber-500">
-                        {result.paybackYears} yil
-                      </span>
-                    </div>
-                    <div className="bg-bunker-base border border-bunker-border-subtle p-3.5 rounded-2xl">
-                      <span className="text-[10px] text-bunker-text-secondary uppercase block">Yillik tejalgan mablag':</span>
-                      <span className="text-xl font-black text-bunker-text-primary">
-                        {Number(result.annualSavingsSum).toLocaleString()} so'm
-                      </span>
-                    </div>
-                    <div className="bg-bunker-base border border-bunker-border-subtle p-3.5 rounded-2xl">
-                      <span className="text-[10px] text-bunker-text-secondary uppercase block">CO2 Qisqarishi:</span>
-                      <span className="text-xl font-black text-bunker-status-cyan">
-                        -{result.co2ReductionTons} t/yil
-                      </span>
-                    </div>
+                  {/* Core Metrics Using StatCard Component */}
+                  <div className="grid grid-cols-2 gap-3.5">
+                    <StatCard
+                      title="Energiya tejamkorligi"
+                      value={`+${result.energySavingsPercent}%`}
+                      variant="green"
+                      icon={<Zap className="w-4 h-4" />}
+                    />
+                    <StatCard
+                      title="O'zini oqlash muddati"
+                      value={result.paybackYears}
+                      unit="yil"
+                      variant="amber"
+                      icon={<TrendingUp className="w-4 h-4" />}
+                    />
+                    <StatCard
+                      title="Yillik tejalgan mablag'"
+                      value={Number(result.annualSavingsSum).toLocaleString()}
+                      unit="so'm"
+                      variant="default"
+                      icon={<Percent className="w-4 h-4" />}
+                    />
+                    <StatCard
+                      title="CO2 Qisqarishi"
+                      value={`-${result.co2ReductionTons}`}
+                      unit="t/yil"
+                      variant="cyan"
+                      icon={<Thermometer className="w-4 h-4" />}
+                    />
                   </div>
 
                   {/* ROI Payback Period Curve Visualizer */}
@@ -645,17 +634,18 @@ export const EscoCalculatorView: React.FC = () => {
 
                   {/* Save Alerts */}
                   {saveSuccess && (
-                    <div className="p-3 rounded-xl bg-bunker-status-green/20 border border-bunker-status-green/40 text-xs text-bunker-status-green flex items-center gap-2 font-medium">
-                      <CheckCircle2 className="w-4 h-4 shrink-0" />
-                      <span>Audit hisoboti profilingizda saqlandi! Uni 'Mening Saqlangan Auditlarim' bo‘limida ko‘rishingiz mumkin.</span>
-                    </div>
+                    <Alert
+                      variant="success"
+                      description="Audit hisoboti profilingizda saqlandi! Uni 'Mening Saqlangan Auditlarim' bo‘limida ko‘rishingiz mumkin."
+                    />
                   )}
 
                   {saveError && (
-                    <div className="p-3 rounded-xl bg-bunker-amber-500/15 border border-bunker-amber-500/30 text-xs text-bunker-amber-500 flex items-start gap-2">
-                      <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                      <span>{saveError}</span>
-                    </div>
+                    <Alert
+                      variant="error"
+                      description={saveError}
+                      onDismiss={() => setSaveError(null)}
+                    />
                   )}
 
                   {/* Action Buttons: Save & PDF Energy Passport */}
@@ -721,82 +711,54 @@ export const EscoCalculatorView: React.FC = () => {
               </p>
             </div>
           ) : loadingAudits ? (
-            <div className="text-center py-16 text-bunker-text-secondary font-mono text-xs flex items-center justify-center gap-2">
-              <RefreshCw className="w-4 h-4 animate-spin text-bunker-amber-500" />
+            <div className="text-center py-16 text-bunker-text-secondary font-mono text-xs">
               Saqlangan auditlar yuklanmoqda...
             </div>
           ) : savedError ? (
-            <div className="p-4 rounded-2xl bg-bunker-status-red/15 border border-bunker-status-red/30 text-xs text-bunker-status-red">
-              {savedError}
-            </div>
+            <Alert variant="error" description={savedError} onDismiss={() => setSavedError(null)} />
           ) : savedAudits.length === 0 ? (
-            <div className="text-center py-16 border border-dashed border-bunker-border-strong rounded-3xl space-y-3 text-bunker-text-secondary">
-              <Layers className="w-10 h-10 mx-auto text-bunker-amber-500/50" />
-              <p className="text-sm font-semibold text-bunker-text-primary">Hozircha saqlangan auditlar mavjud emas</p>
-              <p className="text-xs text-bunker-text-muted">
-                'AI ESCO Kalkulyatori' yorlig'iga o‘ting, parametrlarni hisoblang va 'Profilga Saqlash' tugmasini bosing.
-              </p>
+            <div className="text-center py-16 text-bunker-text-muted font-mono text-xs border border-dashed border-bunker-border-strong rounded-3xl">
+              Hozircha saqlangan auditlar mavjud emas. Kalkulyatordan foydalanib yangi audit saqlang.
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {savedAudits.map((audit) => (
-                <Card key={audit.id} className="space-y-4 border border-bunker-border-strong">
-                  <div className="flex items-center justify-between pb-3 border-b border-bunker-border-subtle">
+                <Card key={audit.id} className="p-5 space-y-3 font-mono">
+                  <div className="flex items-start justify-between">
                     <div>
-                      <Badge variant="success" className="font-mono text-[10px]">
+                      <span className="text-[10px] text-bunker-amber-500 font-bold uppercase">
                         {BUILDING_TYPES[audit.buildingType] || audit.buildingType}
-                      </Badge>
-                      <h4 className="font-bold text-sm text-bunker-text-primary mt-1">Maydon: {audit.areaM2} m²</h4>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-[10px] text-bunker-text-muted block">
-                        {new Date(audit.createdAt).toLocaleDateString()}
                       </span>
-                      <span className="text-xs font-black text-bunker-status-green">
-                        +{audit.estimatedSavingsPct}% tejamkorlik
-                      </span>
+                      <p className="text-xs text-bunker-text-muted mt-0.5">
+                        Maydon: {audit.areaM2} m² | {new Date(audit.createdAt).toLocaleDateString()}
+                      </p>
                     </div>
+                    <Badge variant="success" className="text-xs">
+                      +{audit.estimatedSavingsPct}%
+                    </Badge>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="bg-bunker-base p-2.5 rounded-xl border border-bunker-border-subtle">
-                      <span className="text-[10px] text-bunker-text-muted uppercase block">Yillik tejam:</span>
-                      <span className="font-bold text-bunker-amber-500">
-                        {Number(audit.annualSavingsSum).toLocaleString()} so'm
-                      </span>
-                    </div>
-                    <div className="bg-bunker-base p-2.5 rounded-xl border border-bunker-border-subtle">
-                      <span className="text-[10px] text-bunker-text-muted uppercase block">Oqlash muddati:</span>
+                  <div className="grid grid-cols-3 gap-2 py-2 border-y border-bunker-border-subtle text-[11px]">
+                    <div>
+                      <span className="text-[10px] text-bunker-text-muted block">Tejamkorlik:</span>
                       <span className="font-bold text-bunker-text-primary">
-                        {audit.paybackYears} yil
+                        {Number(audit.annualSavingsSum).toLocaleString()} so'm/yil
                       </span>
                     </div>
-                    <div className="bg-bunker-base p-2.5 rounded-xl border border-bunker-border-subtle">
-                      <span className="text-[10px] text-bunker-text-muted uppercase block">CO2 Qisqarishi:</span>
-                      <span className="font-bold text-bunker-status-cyan">
-                        -{audit.co2ReductionTons} t/yil
-                      </span>
+                    <div>
+                      <span className="text-[10px] text-bunker-text-muted block">Qoplash:</span>
+                      <span className="font-bold text-bunker-amber-500">{audit.paybackYears} yil</span>
                     </div>
-                    <div className="bg-bunker-base p-2.5 rounded-xl border border-bunker-border-subtle">
-                      <span className="text-[10px] text-bunker-text-muted uppercase block">Joriy sarf:</span>
-                      <span className="font-bold text-bunker-text-secondary">
-                        {Number(audit.currentEnergyUsageKwh).toLocaleString()} kVt/soat
-                      </span>
+                    <div>
+                      <span className="text-[10px] text-bunker-text-muted block">CO2 Qisqarishi:</span>
+                      <span className="font-bold text-bunker-status-cyan">-{audit.co2ReductionTons} t</span>
                     </div>
                   </div>
 
-                  {audit.recommendations && audit.recommendations.length > 0 && (
-                    <div className="space-y-1.5 pt-1 text-xs">
-                      <span className="text-[10px] text-bunker-text-muted uppercase block font-bold">
-                        Tavsiya materiallar:
-                      </span>
-                      {audit.recommendations.slice(0, 3).map((rec, idx) => (
-                        <div key={idx} className="flex items-center gap-1.5 text-bunker-text-secondary">
-                          <Check className="w-3.5 h-3.5 text-bunker-status-green shrink-0" />
-                          <span className="truncate">{rec}</span>
-                        </div>
-                      ))}
-                    </div>
+                  {audit.insulationAdvice && (
+                    <p className="text-[11px] text-bunker-text-secondary leading-relaxed">
+                      💡 {audit.insulationAdvice}
+                    </p>
                   )}
                 </Card>
               ))}
@@ -805,117 +767,20 @@ export const EscoCalculatorView: React.FC = () => {
         </div>
       )}
 
-      {/* 3. OFFICIAL PDF ENERGY PASSPORT MODAL (PRINT-READY) */}
+      {/* 3. OFFICIAL PDF ENERGY PASSPORT MODAL (PRINT-READY) USING MODAL */}
       {showPassportModal && result && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in">
-          <div className="relative w-full max-w-2xl bg-white text-slate-900 rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-            {/* Header with emblem & standards */}
-            <div className="flex items-start justify-between border-b-2 border-slate-900 pb-4">
-              <div>
-                <span className="text-[10px] font-mono tracking-widest text-slate-500 uppercase block">
-                  O‘ZBEKISTON RESPUBLIKASI QURILISH VA UY-JOY KOMMUNAL XO‘JALIGI VAZIRLIGI
-                </span>
-                <h2 className="text-xl font-black tracking-tight text-slate-900 mt-1">
-                  BINO ENERGIYA SAMARADORLIGI PASPORTI
-                </h2>
-                <span className="text-xs font-mono font-bold text-emerald-700 block">
-                  Davlat Standarti ShNQ 2.01.04-18 / ESCO ENERGY PASSPORT
-                </span>
-              </div>
-
-              <div className="text-right font-mono text-xs">
-                <span className="block text-[10px] text-slate-500 uppercase">Hujjat Raqami:</span>
-                <span className="font-bold text-slate-900">EP-UZ-2026-94821</span>
-                <span className="block text-[10px] text-slate-400 mt-0.5">{new Date().toLocaleDateString()}</span>
-              </div>
-            </div>
-
-            {/* Passport Body */}
-            <div className="space-y-4 text-xs font-mono">
-              <div className="grid grid-cols-2 gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
-                <div>
-                  <span className="text-[10px] text-slate-500 block uppercase">Bino Turi:</span>
-                  <p className="font-bold text-slate-900">{BUILDING_TYPES[buildingType] || buildingType}</p>
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-500 block uppercase">Joylashgan Hudud:</span>
-                  <p className="font-bold text-slate-900">{region}</p>
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-500 block uppercase">Umumiy Maydon:</span>
-                  <p className="font-bold text-slate-900">{areaM2} m²</p>
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-500 block uppercase">Energiya Samaradorlik Klassi:</span>
-                  <p className="text-base font-black text-emerald-600">Sinf {result.auditScore} (A++)</p>
-                </div>
-              </div>
-
-              {/* Engineering Metrics Table */}
-              <table className="w-full text-left border-collapse border border-slate-300 text-xs">
-                <thead>
-                  <tr className="bg-slate-100 border-b border-slate-300 text-slate-700">
-                    <th className="p-2 border-r border-slate-300">Termodinamik Ko‘rsatkich</th>
-                    <th className="p-2 border-r border-slate-300">Auditsiz (Joriy)</th>
-                    <th className="p-2 font-bold text-emerald-700">ESCO Tavsiyasidan So‘ng</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  <tr>
-                    <td className="p-2 border-r border-slate-300">Devor Termal Qarshiligi (R)</td>
-                    <td className="p-2 border-r border-slate-300">1.1 m²·K/W</td>
-                    <td className="p-2 font-bold text-emerald-700">3.8 m²·K/W (+245%)</td>
-                  </tr>
-                  <tr>
-                    <td className="p-2 border-r border-slate-300">Yillik Energiya Sarfi</td>
-                    <td className="p-2 border-r border-slate-300">{energyUsageKwh.toLocaleString()} kVt/soat</td>
-                    <td className="p-2 font-bold text-emerald-700">
-                      {Math.round(energyUsageKwh * (1 - result.energySavingsPercent / 100)).toLocaleString()} kVt/soat (-{result.energySavingsPercent}%)
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="p-2 border-r border-slate-300">Yillik Moliyaviy Tejamkorlik</td>
-                    <td className="p-2 border-r border-slate-300">—</td>
-                    <td className="p-2 font-bold text-emerald-700">{Number(result.annualSavingsSum).toLocaleString()} so‘m / yil</td>
-                  </tr>
-                  <tr>
-                    <td className="p-2 border-r border-slate-300">Investitsiya Oqlash Muddati (ROI)</td>
-                    <td className="p-2 border-r border-slate-300">—</td>
-                    <td className="p-2 font-bold text-emerald-700">{result.paybackYears} yil</td>
-                  </tr>
-                  <tr>
-                    <td className="p-2 border-r border-slate-300">Ekologik Foyda (CO2 Qisqarishi)</td>
-                    <td className="p-2 border-r border-slate-300">—</td>
-                    <td className="p-2 font-bold text-emerald-700">-{result.co2ReductionTons} tonna CO2 / yil</td>
-                  </tr>
-                </tbody>
-              </table>
-
-              {/* Certification & QR validation stamp */}
-              <div className="flex items-center justify-between pt-4 border-t border-slate-200">
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-8 h-8 text-emerald-600" />
-                  <div>
-                    <span className="font-bold text-slate-900 block text-[11px]">BunkerStroy Texnik Audit Markazi</span>
-                    <span className="text-[10px] text-slate-500">Elektron Raqamli Muhr & E-IMZO bilan tasdiqlangan</span>
-                  </div>
-                </div>
-
-                <div className="border-2 border-slate-900 p-2 text-center text-[9px] font-bold tracking-wider uppercase">
-                  TASDIQLANDI
-                  <br />
-                  DSQ & ESCO
-                </div>
-              </div>
-            </div>
-
-            {/* Modal Actions */}
-            <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
+        <Modal
+          isOpen={showPassportModal}
+          onClose={() => setShowPassportModal(false)}
+          size="lg"
+          title="BINO ENERGIYA SAMARADORLIGI PASPORTI"
+          subtitle="O‘ZBEKISTON RESPUBLIKASI QURILISH VA UY-JOY KOMMUNAL XO‘JALIGI VAZIRLIGI — ShNQ 2.01.04-18"
+          footer={
+            <>
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={() => setShowPassportModal(false)}
-                className="text-slate-700 border-slate-300 hover:bg-slate-100"
               >
                 Yopish
               </Button>
@@ -927,9 +792,99 @@ export const EscoCalculatorView: React.FC = () => {
                 <Printer className="w-4 h-4 mr-1.5" />
                 <span>Chop Etish / PDF Saqlash</span>
               </Button>
+            </>
+          }
+        >
+          <div className="space-y-4 text-xs font-mono">
+            {/* Header info */}
+            <div className="flex justify-between items-center p-3 bg-bunker-base rounded-xl border border-bunker-border-subtle">
+              <div>
+                <span className="text-[10px] text-bunker-text-muted block uppercase">Hujjat Raqami:</span>
+                <span className="font-bold text-bunker-amber-500">EP-UZ-2026-94821</span>
+              </div>
+              <div className="text-right">
+                <span className="text-[10px] text-bunker-text-muted block uppercase">Sana:</span>
+                <span className="font-bold text-bunker-text-primary">{new Date().toLocaleDateString()}</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 p-3 bg-bunker-surface-2 rounded-xl border border-bunker-border-strong">
+              <div>
+                <span className="text-[10px] text-bunker-text-muted block uppercase">Bino Turi:</span>
+                <p className="font-bold text-bunker-text-primary">{BUILDING_TYPES[buildingType] || buildingType}</p>
+              </div>
+              <div>
+                <span className="text-[10px] text-bunker-text-muted block uppercase">Joylashgan Hudud:</span>
+                <p className="font-bold text-bunker-text-primary">{region}</p>
+              </div>
+              <div>
+                <span className="text-[10px] text-bunker-text-muted block uppercase">Umumiy Maydon:</span>
+                <p className="font-bold text-bunker-text-primary">{areaM2} m²</p>
+              </div>
+              <div>
+                <span className="text-[10px] text-bunker-text-muted block uppercase">Energiya Samaradorlik Klassi:</span>
+                <p className="text-base font-black text-bunker-status-green">Sinf {result.auditScore} (A++)</p>
+              </div>
+            </div>
+
+            {/* Engineering Metrics Table */}
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="border-r border-bunker-border-subtle">Termodinamik Ko‘rsatkich</TableHead>
+                  <TableHead className="border-r border-bunker-border-subtle">Auditsiz (Joriy)</TableHead>
+                  <TableHead className="font-bold text-bunker-status-green">ESCO Tavsiyasidan So‘ng</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell className="border-r border-bunker-border-subtle">Devor Termal Qarshiligi (R)</TableCell>
+                  <TableCell className="border-r border-bunker-border-subtle">1.1 m²·K/W</TableCell>
+                  <TableCell className="font-bold text-bunker-status-green">3.8 m²·K/W (+245%)</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="border-r border-bunker-border-subtle">Yillik Energiya Sarfi</TableCell>
+                  <TableCell className="border-r border-bunker-border-subtle">{energyUsageKwh.toLocaleString()} kVt/soat</TableCell>
+                  <TableCell className="font-bold text-bunker-status-green">
+                    {Math.round(energyUsageKwh * (1 - result.energySavingsPercent / 100)).toLocaleString()} kVt/soat (-{result.energySavingsPercent}%)
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="border-r border-bunker-border-subtle">Yillik Moliyaviy Tejamkorlik</TableCell>
+                  <TableCell className="border-r border-bunker-border-subtle">—</TableCell>
+                  <TableCell className="font-bold text-bunker-status-green">{Number(result.annualSavingsSum).toLocaleString()} so‘m / yil</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="border-r border-bunker-border-subtle">Investitsiya Oqlash Muddati (ROI)</TableCell>
+                  <TableCell className="border-r border-bunker-border-subtle">—</TableCell>
+                  <TableCell className="font-bold text-bunker-amber-500">{result.paybackYears} yil</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="border-r border-bunker-border-subtle">Ekologik Foyda (CO2 Qisqarishi)</TableCell>
+                  <TableCell className="border-r border-bunker-border-subtle">—</TableCell>
+                  <TableCell className="font-bold text-bunker-status-cyan">-{result.co2ReductionTons} tonna CO2 / yil</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+
+            {/* Certification & QR validation stamp */}
+            <div className="flex items-center justify-between pt-4 border-t border-bunker-border-subtle">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-8 h-8 text-bunker-status-green" />
+                <div>
+                  <span className="font-bold text-bunker-text-primary block text-[11px]">BunkerStroy Texnik Audit Markazi</span>
+                  <span className="text-[10px] text-bunker-text-muted">Elektron Raqamli Muhr & E-IMZO bilan tasdiqlangan</span>
+                </div>
+              </div>
+
+              <div className="border border-bunker-amber-500/50 bg-bunker-amber-500/10 p-2 rounded-lg text-center text-[9px] font-bold tracking-wider uppercase text-bunker-amber-500">
+                TASDIQLANDI
+                <br />
+                DSQ & ESCO
+              </div>
             </div>
           </div>
-        </div>
+        </Modal>
       )}
     </div>
   );

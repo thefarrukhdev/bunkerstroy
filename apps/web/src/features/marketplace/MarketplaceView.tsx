@@ -5,19 +5,30 @@ import {
   ShoppingCart,
   Check,
   LayoutGrid,
-  Table,
+  Table as TableIcon,
   Truck,
-  ShieldCheck,
   FileSpreadsheet,
   Plus,
-  Minus,
-  CheckCircle2,
-  Percent,
-  Layers,
-  ArrowUpDown
+  Minus
 } from 'lucide-react';
 import { Product } from '@bunkerstroy/types';
-import { Button, Badge, Card } from '@bunkerstroy/ui';
+import {
+  Button,
+  Badge,
+  Card,
+  Input,
+  Select,
+  Alert,
+  Skeleton,
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  TableEmpty,
+  Tooltip
+} from '@bunkerstroy/ui';
 
 interface MarketplaceViewProps {
   onAddToCart: (product: Product, quantity?: number) => void;
@@ -166,35 +177,37 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
 
       {/* 2. Command Filter Bar & Dual-Mode Toggle */}
       <div className="bg-bunker-surface-1 border border-bunker-border-subtle p-4 rounded-2xl flex flex-wrap gap-3 items-center justify-between">
-        {/* Search input */}
-        <div className="flex items-center gap-2 flex-1 min-w-[240px] bg-bunker-input border border-bunker-border-subtle focus-within:border-bunker-amber-500 rounded-xl px-3 py-2 transition-colors">
-          <Search className="w-4 h-4 text-bunker-text-muted" />
-          <input
-            type="text"
+        {/* Search input using Input component */}
+        <div className="flex-1 min-w-[240px]">
+          <Input
+            leftIcon={<Search className="w-4 h-4" />}
             placeholder="Mahsulot nomi, GOST yoki markasi bo'yicha qidiruv..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && fetchProducts()}
-            className="w-full bg-transparent text-sm text-bunker-text-primary outline-none placeholder-bunker-text-muted"
+            sizeVariant="sm"
           />
         </div>
 
         {/* Region selector & ESCO filter */}
         <div className="flex flex-wrap items-center gap-2.5">
-          <select
-            value={selectedRegion}
-            onChange={(e) => setSelectedRegion(e.target.value)}
-            className="bg-bunker-surface-2 border border-bunker-border-subtle text-xs font-semibold text-bunker-text-primary rounded-xl px-3 py-2.5 outline-none cursor-pointer focus:border-bunker-amber-500"
-          >
-            <option value="all">Barcha hududlar</option>
-            <option value="Toshkent shahri">Toshkent shahri</option>
-            <option value="Toshkent viloyati">Toshkent viloyati</option>
-            <option value="Samarqand viloyati">Samarqand viloyati</option>
-          </select>
+          <div className="w-44">
+            <Select
+              sizeVariant="sm"
+              value={selectedRegion}
+              onChange={(e) => setSelectedRegion(e.target.value)}
+            >
+              <option value="all">Barcha hududlar</option>
+              <option value="Toshkent shahri">Toshkent shahri</option>
+              <option value="Toshkent viloyati">Toshkent viloyati</option>
+              <option value="Samarqand viloyati">Samarqand viloyati</option>
+            </Select>
+          </div>
 
           <button
+            type="button"
             onClick={() => setEscoOnly(!escoOnly)}
-            className={`px-3 py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
               escoOnly
                 ? 'bg-bunker-status-green/20 border-bunker-status-green text-bunker-status-green'
                 : 'bg-bunker-surface-2 border-bunker-border-subtle text-bunker-text-secondary hover:text-bunker-text-primary'
@@ -207,6 +220,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
           {/* DUAL-MODE VIEW TOGGLE */}
           <div className="bg-bunker-surface-2 p-1 rounded-xl border border-bunker-border-subtle flex items-center gap-1">
             <button
+              type="button"
               onClick={() => setViewMode('cards')}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 viewMode === 'cards'
@@ -220,6 +234,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
             </button>
 
             <button
+              type="button"
               onClick={() => setViewMode('matrix')}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 viewMode === 'matrix'
@@ -228,28 +243,43 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
               }`}
               title="Smeta Matritsasi (B2B Jadval Rejimi)"
             >
-              <Table className="w-3.5 h-3.5" />
+              <TableIcon className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Smeta Matritsasi</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Batch notice alert */}
+      {/* Batch notice alert using Alert Component */}
       {batchSuccessNotice && (
-        <div className="bg-bunker-status-green/20 border border-bunker-status-green text-bunker-status-green p-3.5 rounded-2xl flex items-center gap-2.5 text-xs font-mono animate-in fade-in">
-          <CheckCircle2 className="w-4 h-4 shrink-0" />
-          <span>Smeta matritsasidagi barcha tanlangan tovarlar xarid savatiga muvaffaqiyatli qo‘shildi!</span>
-        </div>
+        <Alert
+          variant="success"
+          title="Smeta Matritsasi Savatga Biriktirildi"
+          description="Smeta matritsasidagi barcha tanlangan tovarlar xarid savatiga muvaffaqiyatli qo‘shildi!"
+          onDismiss={() => setBatchSuccessNotice(false)}
+        />
       )}
 
       {/* 3. Products Rendering */}
       {loading ? (
-        <div className="text-center py-20 text-bunker-text-secondary font-mono text-sm">
-          BunkerStroy katalogi yuklanmoqda...
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {[1, 2, 3, 4, 5, 6].map((n) => (
+            <Card key={n} className="space-y-4 p-5">
+              <Skeleton variant="rect" height={176} />
+              <div className="space-y-2">
+                <Skeleton variant="text" width="40%" />
+                <Skeleton variant="text" width="90%" />
+                <Skeleton variant="text" width="60%" />
+              </div>
+              <div className="pt-3 border-t border-bunker-border-subtle flex justify-between items-center">
+                <Skeleton variant="text" width="30%" />
+                <Skeleton variant="rect" width={80} height={32} />
+              </div>
+            </Card>
+          ))}
         </div>
       ) : products.length === 0 ? (
-        <div className="text-center py-20 text-bunker-text-muted">
+        <div className="text-center py-20 text-bunker-text-muted font-mono">
           So‘rovingiz bo‘yicha tovarlar topilmadi.
         </div>
       ) : viewMode === 'cards' ? (
@@ -277,9 +307,11 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                       {p.isEscoCertified && (
                         <Badge variant="success">ESCO {p.energyEfficiencyRating}</Badge>
                       )}
-                      <span className="bg-bunker-vault/80 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-mono font-bold text-bunker-amber-500 border border-bunker-border-strong">
-                        {gost}
-                      </span>
+                      <Tooltip content="Davlat standarti (GOST) muvofiqlik sertifikati">
+                        <span className="bg-bunker-vault/80 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-mono font-bold text-bunker-amber-500 border border-bunker-border-strong cursor-help">
+                          {gost}
+                        </span>
+                      </Tooltip>
                     </div>
 
                     <div className="absolute bottom-2.5 right-2.5 bg-bunker-vault/80 backdrop-blur-md px-2 py-1 rounded text-[11px] font-mono text-bunker-text-primary border border-bunker-border-subtle">
@@ -291,7 +323,9 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                   <div>
                     <div className="flex items-center justify-between text-[11px] font-mono">
                       <span className="text-bunker-amber-500 uppercase font-semibold">{p.supplierName}</span>
-                      <span className="text-bunker-status-green font-bold">QQS 12% kiritilgan</span>
+                      <Tooltip content="O‘zbekiston Respublikasi Soliq Kodeksi bo‘yicha 12% QQS hisoblangan">
+                        <span className="text-bunker-status-green font-bold cursor-help">QQS 12% kiritilgan</span>
+                      </Tooltip>
                     </div>
                     <h3 className="font-bold text-bunker-text-primary text-base line-clamp-1 group-hover:text-bunker-amber-500 transition-colors mt-0.5">
                       {p.title}
@@ -361,165 +395,164 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
           })}
         </div>
       ) : (
-        /* MODE B: PROCUREMENT SMETA MATRIX (Compact Excel-like Table) */
+        /* MODE B: PROCUREMENT SMETA MATRIX (Compact Industrial Table Component) */
         <div className="space-y-4">
-          <div className="bg-bunker-surface-1 border border-bunker-border-strong rounded-2xl overflow-hidden shadow-2xl">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs font-mono">
-                <thead>
-                  <tr className="bg-bunker-surface-2 border-b border-bunker-border-strong text-bunker-text-secondary uppercase text-[10px] tracking-wider select-none">
-                    <th className="py-3.5 px-4 font-bold">Mahsulot & Standart</th>
-                    <th className="py-3.5 px-3 font-bold">Ombor & Birligi</th>
-                    <th className="py-3.5 px-3 font-bold">Transport Tavsiyasi</th>
-                    <th className="py-3.5 px-3 font-bold text-center">1-10 t (Baza)</th>
-                    <th className="py-3.5 px-3 font-bold text-center text-bunker-amber-500">10-50 t (-5%)</th>
-                    <th className="py-3.5 px-3 font-bold text-center text-bunker-status-green">&gt;50 t (-10%)</th>
-                    <th className="py-3.5 px-3 font-bold text-center">Buyurtma Hajmi</th>
-                    <th className="py-3.5 px-3 font-bold text-right">Qator Jami (QQS 12%)</th>
-                    <th className="py-3.5 px-4 font-bold text-right">Amal</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-bunker-border-subtle">
-                  {products.map((p) => {
-                    const gost = getGostStandard(p);
-                    const vehicle = getRecommendedVehicle(p);
-                    const priceNum = Number(p.price);
-                    const qty = matrixQuantities[p.id] || p.minOrder || 1;
-                    const calculatedUnitPrice = getTieredPrice(priceNum, qty);
-                    const rowTotal = calculatedUnitPrice * qty;
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Mahsulot & Standart</TableHead>
+                <TableHead>Ombor & Birligi</TableHead>
+                <TableHead>Transport Tavsiyasi</TableHead>
+                <TableHead className="text-center">1-10 t (Baza)</TableHead>
+                <TableHead className="text-center text-bunker-amber-500">10-50 t (-5%)</TableHead>
+                <TableHead className="text-center text-bunker-status-green">&gt;50 t (-10%)</TableHead>
+                <TableHead className="text-center">Buyurtma Hajmi</TableHead>
+                <TableHead className="text-right">Qator Jami (QQS 12%)</TableHead>
+                <TableHead className="text-right">Amal</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {products.length === 0 ? (
+                <TableEmpty colSpan={9} title="Mahsulot topilmadi" />
+              ) : (
+                products.map((p) => {
+                  const gost = getGostStandard(p);
+                  const vehicle = getRecommendedVehicle(p);
+                  const priceNum = Number(p.price);
+                  const qty = matrixQuantities[p.id] || p.minOrder || 1;
+                  const calculatedUnitPrice = getTieredPrice(priceNum, qty);
+                  const rowTotal = calculatedUnitPrice * qty;
 
-                    return (
-                      <tr
-                        key={p.id}
-                        className="hover:bg-bunker-surface-hover/60 transition-colors group"
-                      >
-                        {/* Name and standard */}
-                        <td className="py-3 px-4">
-                          <div className="font-bold text-bunker-text-primary group-hover:text-bunker-amber-500 transition-colors">
-                            {p.title}
-                          </div>
-                          <div className="flex items-center gap-2 mt-0.5 text-[10px]">
-                            <span className="text-bunker-amber-500">{gost}</span>
-                            <span className="text-bunker-border-strong">|</span>
-                            <span className="text-bunker-text-muted">{p.supplierName}</span>
-                          </div>
-                        </td>
+                  return (
+                    <TableRow key={p.id}>
+                      {/* Name and standard */}
+                      <TableCell>
+                        <div className="font-bold text-bunker-text-primary group-hover:text-bunker-amber-500 transition-colors">
+                          {p.title}
+                        </div>
+                        <div className="flex items-center gap-2 mt-0.5 text-[10px]">
+                          <span className="text-bunker-amber-500">{gost}</span>
+                          <span className="text-bunker-border-strong">|</span>
+                          <span className="text-bunker-text-muted">{p.supplierName}</span>
+                        </div>
+                      </TableCell>
 
-                        {/* Stock */}
-                        <td className="py-3 px-3 whitespace-nowrap">
-                          <span className="font-bold text-bunker-text-primary">{p.stock.toLocaleString()}</span>{' '}
-                          <span className="text-bunker-text-muted">{p.unit}</span>
-                        </td>
+                      {/* Stock */}
+                      <TableCell>
+                        <span className="font-bold text-bunker-text-primary">{p.stock.toLocaleString()}</span>{' '}
+                        <span className="text-bunker-text-muted">{p.unit}</span>
+                      </TableCell>
 
-                        {/* Transport */}
-                        <td className="py-3 px-3 whitespace-nowrap">
-                          <div className="flex items-center gap-1.5 text-bunker-text-secondary text-[11px]">
-                            <Truck className="w-3.5 h-3.5 text-bunker-amber-500 shrink-0" />
-                            <span>{vehicle.name}</span>
-                          </div>
-                        </td>
+                      {/* Transport */}
+                      <TableCell>
+                        <div className="flex items-center gap-1.5 text-bunker-text-secondary text-[11px]">
+                          <Truck className="w-3.5 h-3.5 text-bunker-amber-500 shrink-0" />
+                          <span>{vehicle.name}</span>
+                        </div>
+                      </TableCell>
 
-                        {/* Tier 1 */}
-                        <td className="py-3 px-3 text-center text-bunker-text-primary whitespace-nowrap">
-                          {priceNum.toLocaleString()} so'm
-                        </td>
+                      {/* Tier 1 */}
+                      <TableCell className="text-center">
+                        {priceNum.toLocaleString()} so'm
+                      </TableCell>
 
-                        {/* Tier 2 */}
-                        <td className="py-3 px-3 text-center text-bunker-amber-500 font-bold whitespace-nowrap bg-bunker-amber-500/5">
-                          {getTieredPrice(priceNum, 20).toLocaleString()} so'm
-                        </td>
+                      {/* Tier 2 */}
+                      <TableCell className="text-center text-bunker-amber-500 font-bold bg-bunker-amber-500/5">
+                        {getTieredPrice(priceNum, 20).toLocaleString()} so'm
+                      </TableCell>
 
-                        {/* Tier 3 */}
-                        <td className="py-3 px-3 text-center text-bunker-status-green font-bold whitespace-nowrap bg-bunker-status-green/5">
-                          {getTieredPrice(priceNum, 60).toLocaleString()} so'm
-                        </td>
+                      {/* Tier 3 */}
+                      <TableCell className="text-center text-bunker-status-green font-bold bg-bunker-status-green/5">
+                        {getTieredPrice(priceNum, 60).toLocaleString()} so'm
+                      </TableCell>
 
-                        {/* Quantity input */}
-                        <td className="py-3 px-3 text-center whitespace-nowrap">
-                          <div className="inline-flex items-center gap-1 bg-bunker-input border border-bunker-border-strong rounded-xl p-1">
-                            <button
-                              onClick={() => handleMatrixQtyChange(p.id, qty - 1)}
-                              className="p-1 text-bunker-text-secondary hover:text-bunker-text-primary hover:bg-bunker-surface-2 rounded cursor-pointer"
-                            >
-                              <Minus className="w-3 h-3" />
-                            </button>
-                            <input
-                              type="number"
-                              min="1"
-                              max={p.stock}
-                              value={qty}
-                              onChange={(e) => handleMatrixQtyChange(p.id, parseInt(e.target.value, 10))}
-                              className="w-14 bg-transparent text-center font-bold text-bunker-text-primary outline-none text-xs"
-                            />
-                            <button
-                              onClick={() => handleMatrixQtyChange(p.id, qty + 1)}
-                              className="p-1 text-bunker-text-secondary hover:text-bunker-text-primary hover:bg-bunker-surface-2 rounded cursor-pointer"
-                            >
-                              <Plus className="w-3 h-3" />
-                            </button>
-                          </div>
-                        </td>
-
-                        {/* Row total */}
-                        <td className="py-3 px-3 text-right whitespace-nowrap font-bold text-bunker-amber-500 text-sm">
-                          {rowTotal.toLocaleString()} so'm
-                        </td>
-
-                        {/* Action */}
-                        <td className="py-3 px-4 text-right whitespace-nowrap">
-                          <Button
-                            size="sm"
-                            variant={addedId === p.id ? 'secondary' : 'primary'}
-                            onClick={() => handleAdd(p, qty)}
+                      {/* Quantity input */}
+                      <TableCell className="text-center">
+                        <div className="inline-flex items-center gap-1 bg-bunker-input border border-bunker-border-strong rounded-xl p-1">
+                          <button
+                            type="button"
+                            onClick={() => handleMatrixQtyChange(p.id, qty - 1)}
+                            className="p-1 text-bunker-text-secondary hover:text-bunker-text-primary hover:bg-bunker-surface-2 rounded cursor-pointer"
                           >
-                            {addedId === p.id ? (
-                              <Check className="w-3.5 h-3.5 text-bunker-status-green" />
-                            ) : (
-                              <ShoppingCart className="w-3.5 h-3.5" />
-                            )}
-                          </Button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                            <Minus className="w-3 h-3" />
+                          </button>
+                          <input
+                            type="number"
+                            min="1"
+                            max={p.stock}
+                            value={qty}
+                            onChange={(e) => handleMatrixQtyChange(p.id, parseInt(e.target.value, 10))}
+                            className="w-14 bg-transparent text-center font-bold text-bunker-text-primary outline-none text-xs"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleMatrixQtyChange(p.id, qty + 1)}
+                            className="p-1 text-bunker-text-secondary hover:text-bunker-text-primary hover:bg-bunker-surface-2 rounded cursor-pointer"
+                          >
+                            <Plus className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </TableCell>
+
+                      {/* Row total */}
+                      <TableCell className="text-right font-bold text-bunker-amber-500 text-sm">
+                        {rowTotal.toLocaleString()} so'm
+                      </TableCell>
+
+                      {/* Action */}
+                      <TableCell className="text-right">
+                        <Button
+                          size="sm"
+                          variant={addedId === p.id ? 'secondary' : 'primary'}
+                          onClick={() => handleAdd(p, qty)}
+                        >
+                          {addedId === p.id ? (
+                            <Check className="w-3.5 h-3.5 text-bunker-status-green" />
+                          ) : (
+                            <ShoppingCart className="w-3.5 h-3.5" />
+                          )}
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
+
+          {/* Matrix Smeta Summary Bottom Bar */}
+          <div className="bg-bunker-surface-2 border border-bunker-border-strong rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-bunker-amber-500/20 border border-bunker-amber-500/40 flex items-center justify-center">
+                <FileSpreadsheet className="w-5 h-5 text-bunker-amber-500" />
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-bunker-text-primary uppercase font-mono">
+                  Smeta Matritsasi Jamlanmasi:
+                </h4>
+                <p className="text-[11px] text-bunker-text-secondary font-mono">
+                  Jami qatorlar: <strong className="text-bunker-text-primary">{products.length} ta</strong> | B2B Ulgurji
+                  Chegirmalar hisoblandi
+                </p>
+              </div>
             </div>
 
-            {/* Matrix Smeta Summary Bottom Bar */}
-            <div className="bg-bunker-surface-2 border-t border-bunker-border-strong p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-bunker-amber-500/20 border border-bunker-amber-500/40 flex items-center justify-center">
-                  <FileSpreadsheet className="w-5 h-5 text-bunker-amber-500" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-bunker-text-primary uppercase font-mono">
-                    Smeta Matritsasi Jamlanmasi:
-                  </h4>
-                  <p className="text-[11px] text-bunker-text-secondary font-mono">
-                    Jami qatorlar: <strong className="text-bunker-text-primary">{products.length} ta</strong> | B2B Ulgurji
-                    Chegirmalar hisoblandi
-                  </p>
-                </div>
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <span className="text-[10px] text-bunker-text-muted uppercase font-mono block">Jami Smeta Qiymati:</span>
+                <p className="text-xl font-black text-bunker-amber-500 font-mono">
+                  {totalMatrixSum.toLocaleString()} <span className="text-xs text-bunker-text-primary">so'm</span>
+                </p>
               </div>
 
-              <div className="flex items-center gap-4">
-                <div className="text-right">
-                  <span className="text-[10px] text-bunker-text-muted uppercase font-mono block">Jami Smeta Qiymati:</span>
-                  <p className="text-xl font-black text-bunker-amber-500 font-mono">
-                    {totalMatrixSum.toLocaleString()} <span className="text-xs text-bunker-text-primary">so'm</span>
-                  </p>
-                </div>
-
-                <Button
-                  size="md"
-                  variant="primary"
-                  onClick={handleBatchAddMatrix}
-                >
-                  <ShoppingCart className="w-4 h-4 mr-1.5" />
-                  <span>Smetani Savatga Biriktirish</span>
-                </Button>
-              </div>
+              <Button
+                size="md"
+                variant="primary"
+                onClick={handleBatchAddMatrix}
+              >
+                <ShoppingCart className="w-4 h-4 mr-1.5" />
+                <span>Smetani Savatga Biriktirish</span>
+              </Button>
             </div>
           </div>
         </div>

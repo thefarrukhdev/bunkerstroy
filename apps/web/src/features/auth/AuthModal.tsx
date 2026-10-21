@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  X,
   ShieldCheck,
   Phone,
   Building2,
@@ -9,11 +8,9 @@ import {
   Smartphone,
   ArrowRight,
   RefreshCw,
-  CheckCircle2,
-  AlertCircle,
-  KeyRound,
+  KeyRound
 } from 'lucide-react';
-import { Button, Badge } from '@bunkerstroy/ui';
+import { Button, Badge, Modal, Input, Alert, Tabs, TabsList, TabTrigger } from '@bunkerstroy/ui';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -268,283 +265,244 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     }
   };
 
-  if (!isOpen) return null;
+  const headerBadge = (
+    <Badge variant="warning" className="gap-1.5 font-mono">
+      <ShieldCheck className="w-3.5 h-3.5" />
+      BunkerStroy B2B Identity
+    </Badge>
+  );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-      <div className="relative w-full max-w-md bg-bunker-surface-1 border border-bunker-border-strong rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl">
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-5 right-5 text-bunker-text-secondary hover:text-bunker-text-primary cursor-pointer transition-colors"
-          aria-label="Yopish"
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        {/* Modal Header */}
-        <div>
-          <Badge variant="warning" className="gap-1.5 mb-2 font-mono">
-            <ShieldCheck className="w-3.5 h-3.5" />
-            BunkerStroy B2B Identity
-          </Badge>
-          <h2 className="text-xl font-black text-bunker-text-primary">Kabinetga Kirish</h2>
-          <p className="text-xs text-bunker-text-secondary mt-1">
-            Xarid qilish, buyurtmalar tarixi, transport dispetcherligi va ESCO auditi
-          </p>
-        </div>
-
-        {/* Tab switch */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 bg-bunker-base p-1 rounded-xl border border-bunker-border-strong text-[11px] font-semibold text-bunker-text-secondary font-mono">
-          <button
-            onClick={() => handleTabChange('otp')}
-            className={`py-2 px-1 rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer ${
-              authMode === 'otp' ? 'bg-bunker-surface-2 text-bunker-amber-500 shadow-sm font-bold' : 'hover:text-bunker-text-primary'
-            }`}
-          >
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="sm"
+      headerExtra={headerBadge}
+      title="Kabinetga Kirish"
+      subtitle="Xarid qilish, buyurtmalar tarixi, transport dispetcherligi va ESCO auditi"
+    >
+      {/* Tab switch */}
+      <Tabs
+        variant="pills"
+        value={authMode}
+        onValueChange={(val) => handleTabChange(val as AuthMode)}
+      >
+        <TabsList className="grid grid-cols-2 sm:grid-cols-4 w-full">
+          <TabTrigger value="otp" className="justify-center">
             <Smartphone className="w-3 h-3" />
             <span>SMS OTP</span>
-          </button>
-          <button
-            onClick={() => handleTabChange('login')}
-            className={`py-2 px-1 rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer ${
-              authMode === 'login' ? 'bg-bunker-surface-2 text-bunker-amber-500 shadow-sm font-bold' : 'hover:text-bunker-text-primary'
-            }`}
-          >
+          </TabTrigger>
+          <TabTrigger value="login" className="justify-center">
             <Lock className="w-3 h-3" />
             <span>Parol</span>
-          </button>
-          <button
-            onClick={() => handleTabChange('stir')}
-            className={`py-2 px-1 rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer ${
-              authMode === 'stir' ? 'bg-bunker-surface-2 text-bunker-amber-500 shadow-sm font-bold' : 'hover:text-bunker-text-primary'
-            }`}
-          >
+          </TabTrigger>
+          <TabTrigger value="stir" className="justify-center">
             <Building2 className="w-3 h-3" />
             <span>STIR</span>
-          </button>
-          <button
-            onClick={() => handleTabChange('eimzo')}
-            className={`py-2 px-1 rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer ${
-              authMode === 'eimzo' ? 'bg-bunker-surface-2 text-bunker-amber-500 shadow-sm font-bold' : 'hover:text-bunker-text-primary'
-            }`}
-          >
+          </TabTrigger>
+          <TabTrigger value="eimzo" className="justify-center">
             <Fingerprint className="w-3 h-3" />
             <span>E-IMZO</span>
-          </button>
-        </div>
+          </TabTrigger>
+        </TabsList>
+      </Tabs>
 
-        {/* Error Alert */}
-        {error && (
-          <div className="p-3 rounded-xl bg-red-500/15 border border-red-500/30 text-xs text-red-400 flex items-start gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-            <span>{error}</span>
-          </div>
-        )}
+      {/* Error Alert */}
+      {error && (
+        <Alert
+          variant="error"
+          description={error}
+          onDismiss={() => setError(null)}
+        />
+      )}
 
-        {/* Info Alert */}
-        {infoMessage && (
-          <div className="p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-xs text-emerald-400 flex items-start gap-2">
-            <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
-            <span>{infoMessage}</span>
-          </div>
-        )}
+      {/* Info Alert */}
+      {infoMessage && (
+        <Alert
+          variant="success"
+          description={infoMessage}
+          onDismiss={() => setInfoMessage(null)}
+        />
+      )}
 
-        {/* TAB 1: SMS OTP Authentication */}
-        {authMode === 'otp' && (
-          <div className="space-y-4">
-            {!otpSent ? (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold text-bunker-text-secondary mb-1.5 font-mono">
-                    Telefon raqamingiz:
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={handlePhoneChange}
-                      placeholder="+998 90 123-45-67"
-                      className="w-full bg-bunker-base border border-bunker-border-strong focus:border-bunker-amber-500 p-3 rounded-xl text-sm font-mono text-bunker-text-primary outline-none tracking-wide transition-colors"
-                    />
-                  </div>
-                  <p className="text-[11px] text-bunker-text-muted mt-1.5 font-mono">
-                    SMS orqali 6 xonali bir martalik tasdiqlash kodi yuboriladi.
-                  </p>
+      {/* TAB 1: SMS OTP Authentication */}
+      {authMode === 'otp' && (
+        <div className="space-y-4">
+          {!otpSent ? (
+            <div className="space-y-4">
+              <Input
+                label="Telefon raqamingiz:"
+                type="tel"
+                value={phone}
+                onChange={handlePhoneChange}
+                placeholder="+998 90 123-45-67"
+                isMono
+                helperText="SMS orqali 6 xonali bir martalik tasdiqlash kodi yuboriladi."
+              />
+
+              <Button
+                className="w-full"
+                size="md"
+                onClick={handleSendOtp}
+                isLoading={loading}
+              >
+                <Smartphone className="w-4 h-4 mr-1.5" />
+                <span>SMS Kodni Yuborish</span>
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="bg-bunker-base border border-bunker-border-strong p-3 rounded-xl flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-bunker-amber-500" />
+                  <span className="text-xs font-mono font-bold text-bunker-text-primary">{phone}</span>
                 </div>
-
-                <Button
-                  className="w-full"
-                  size="md"
-                  onClick={handleSendOtp}
-                  isLoading={loading}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOtpSent(false);
+                    setOtpCode('');
+                    setError(null);
+                    setInfoMessage(null);
+                  }}
+                  className="text-[11px] text-bunker-amber-500 hover:underline cursor-pointer font-mono"
                 >
-                  <Smartphone className="w-4 h-4 mr-1.5" />
-                  <span>SMS Kodni Yuborish</span>
-                </Button>
+                  O'zgartirish
+                </button>
               </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="bg-bunker-base border border-bunker-border-strong p-3 rounded-xl flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-bunker-amber-500" />
-                    <span className="text-xs font-mono font-bold text-bunker-text-primary">{phone}</span>
-                  </div>
+
+              <div>
+                <Input
+                  label="SMS tasdiqlash kodi:"
+                  maxLength={6}
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                  placeholder="••••••"
+                  isMono
+                  className="text-center text-xl tracking-[0.5em] text-bunker-amber-500 font-bold"
+                />
+                <p className="text-[11px] text-bunker-text-muted mt-1 text-center font-mono">
+                  💡 Test kodi: <span className="text-bunker-amber-500 font-bold">123456</span>
+                </p>
+              </div>
+
+              <Button
+                className="w-full"
+                size="md"
+                onClick={handleVerifyOtp}
+                isLoading={loading}
+                disabled={otpCode.length !== 6}
+              >
+                <ArrowRight className="w-4 h-4 mr-1.5" />
+                <span>Tasdiqlash va Kirish</span>
+              </Button>
+
+              <div className="text-center">
+                {cooldown > 0 ? (
+                  <span className="text-xs text-bunker-text-muted font-mono flex items-center justify-center gap-1.5">
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin text-bunker-amber-500" />
+                    Kodni qayta yuborish ({cooldown}s)
+                  </span>
+                ) : (
                   <button
-                    onClick={() => {
-                      setOtpSent(false);
-                      setOtpCode('');
-                      setError(null);
-                      setInfoMessage(null);
-                    }}
-                    className="text-[11px] text-bunker-amber-500 hover:underline cursor-pointer font-mono"
+                    type="button"
+                    onClick={handleSendOtp}
+                    disabled={loading}
+                    className="text-xs text-bunker-amber-500 hover:underline cursor-pointer font-semibold flex items-center justify-center gap-1 mx-auto font-mono"
                   >
-                    O'zgartirish
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    <span>Kodni qayta yuborish</span>
                   </button>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-bunker-text-secondary mb-1.5 font-mono">
-                    SMS tasdiqlash kodi:
-                  </label>
-                  <input
-                    type="text"
-                    maxLength={6}
-                    value={otpCode}
-                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
-                    placeholder="••••••"
-                    className="w-full bg-bunker-base border border-bunker-border-strong focus:border-bunker-amber-500 p-3 rounded-xl text-center text-xl font-mono text-bunker-amber-500 tracking-[0.5em] outline-none transition-colors"
-                  />
-                  <p className="text-[11px] text-bunker-text-muted mt-1 text-center font-mono">
-                    💡 Test kodi: <span className="text-bunker-amber-500 font-bold">123456</span>
-                  </p>
-                </div>
-
-                <Button
-                  className="w-full"
-                  size="md"
-                  onClick={handleVerifyOtp}
-                  isLoading={loading}
-                  disabled={otpCode.length !== 6}
-                >
-                  <ArrowRight className="w-4 h-4 mr-1.5" />
-                  <span>Tasdiqlash va Kirish</span>
-                </Button>
-
-                <div className="text-center">
-                  {cooldown > 0 ? (
-                    <span className="text-xs text-bunker-text-muted font-mono flex items-center justify-center gap-1.5">
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin text-bunker-amber-500" />
-                      Kodni qayta yuborish ({cooldown}s)
-                    </span>
-                  ) : (
-                    <button
-                      onClick={handleSendOtp}
-                      disabled={loading}
-                      className="text-xs text-bunker-amber-500 hover:underline cursor-pointer font-semibold flex items-center justify-center gap-1 mx-auto font-mono"
-                    >
-                      <RefreshCw className="w-3.5 h-3.5" />
-                      <span>Kodni qayta yuborish</span>
-                    </button>
-                  )}
-                </div>
+                )}
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
+      )}
 
-        {/* TAB 2: Password Login */}
-        {authMode === 'login' && (
-          <div className="space-y-4 font-mono">
-            <div>
-              <label className="block text-xs font-semibold text-bunker-text-secondary mb-1">Login yoki Telefon:</label>
-              <input
-                type="text"
-                placeholder="admin yoki telefon raqam"
-                value={login}
-                onChange={(e) => setLogin(e.target.value)}
-                className="w-full bg-bunker-base border border-bunker-border-strong focus:border-bunker-amber-500 p-3 rounded-xl text-sm text-bunker-text-primary outline-none transition-colors"
-              />
+      {/* TAB 2: Password Login */}
+      {authMode === 'login' && (
+        <div className="space-y-4 font-mono">
+          <Input
+            label="Login yoki Telefon:"
+            type="text"
+            placeholder="admin yoki telefon raqam"
+            value={login}
+            onChange={(e) => setLogin(e.target.value)}
+          />
+          <Input
+            label="Parol:"
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handlePasswordLogin()}
+          />
+          <Button className="w-full" size="md" onClick={handlePasswordLogin} isLoading={loading}>
+            <KeyRound className="w-4 h-4 mr-1.5" />
+            <span>Kirish</span>
+          </Button>
+          <p className="text-[11px] text-bunker-text-muted text-center font-mono">
+            Demo admin: <span className="font-mono text-bunker-amber-500 font-bold">admin</span> / parol:{' '}
+            <span className="font-mono text-bunker-amber-500 font-bold">bunker2026</span>
+          </p>
+        </div>
+      )}
+
+      {/* TAB 3: STIR (INN) Lookup */}
+      {authMode === 'stir' && (
+        <div className="space-y-4 font-mono">
+          <Input
+            label="Korxona STIR (INN):"
+            isMono
+            maxLength={9}
+            value={inn}
+            onChange={(e) => setInn(e.target.value.replace(/\D/g, ''))}
+            className="text-bunker-amber-500 font-bold"
+          />
+          <Button variant="secondary" className="w-full" size="md" onClick={handleStirLookup} isLoading={loading}>
+            <Building2 className="w-4 h-4 mr-1.5 text-bunker-amber-500" />
+            <span>Soliq bazasidan tekshirish</span>
+          </Button>
+
+          {companyInfo && (
+            <div className="bg-bunker-base border border-bunker-border-strong p-4 rounded-xl space-y-2.5 text-xs">
+              <div className="flex justify-between items-start gap-2">
+                <span className="font-bold text-bunker-text-primary text-sm leading-snug">{companyInfo.companyName}</span>
+                <Badge variant="success" className="shrink-0">{companyInfo.status}</Badge>
+              </div>
+              <div className="space-y-1 text-bunker-text-secondary pt-1 border-t border-bunker-border-subtle">
+                <p><span className="text-bunker-text-muted">Rahbar:</span> {companyInfo.director}</p>
+                <p><span className="text-bunker-text-muted">Manzil:</span> {companyInfo.address}</p>
+                <p><span className="text-bunker-text-muted">Faoliyat:</span> {companyInfo.activityType || 'Qurilish va ta’minot'}</p>
+                <p><span className="text-bunker-text-muted">QQS to‘lovchisi:</span> {companyInfo.vatPayer ? 'Ha (Faol)' : 'Yo‘q'}</p>
+              </div>
             </div>
-            <div>
-              <label className="block text-xs font-semibold text-bunker-text-secondary mb-1">Parol:</label>
-              <input
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handlePasswordLogin()}
-                className="w-full bg-bunker-base border border-bunker-border-strong focus:border-bunker-amber-500 p-3 rounded-xl text-sm text-bunker-text-primary outline-none transition-colors"
-              />
+          )}
+        </div>
+      )}
+
+      {/* TAB 4: E-IMZO */}
+      {authMode === 'eimzo' && (
+        <div className="space-y-4 text-center font-mono">
+          <div className="p-5 border border-bunker-border-strong rounded-2xl bg-bunker-base space-y-3">
+            <div className="w-12 h-12 mx-auto rounded-2xl bg-bunker-amber-500/10 border border-bunker-amber-500/30 flex items-center justify-center">
+              <Fingerprint className="w-6 h-6 text-bunker-amber-500" />
             </div>
-            <Button className="w-full" size="md" onClick={handlePasswordLogin} isLoading={loading}>
-              <KeyRound className="w-4 h-4 mr-1.5" />
-              <span>Kirish</span>
-            </Button>
-            <p className="text-[11px] text-bunker-text-muted text-center font-mono">
-              Demo admin: <span className="font-mono text-bunker-amber-500 font-bold">admin</span> / parol:{' '}
-              <span className="font-mono text-bunker-amber-500 font-bold">bunker2026</span>
+            <h4 className="text-sm font-bold text-bunker-text-primary">E-IMZO Kalitini Tasdiqlash</h4>
+            <p className="text-xs text-bunker-text-secondary leading-relaxed">
+              Yuridik shaxs yoki yakka tartibdagi tadbirkorlik elektron raqamli imzosi orqali xavfsiz autentifikatsiya.
             </p>
-          </div>
-        )}
-
-        {/* TAB 3: STIR (INN) Lookup */}
-        {authMode === 'stir' && (
-          <div className="space-y-4 font-mono">
-            <div>
-              <label className="block text-xs font-semibold text-bunker-text-secondary mb-1">Korxona STIR (INN):</label>
-              <input
-                type="text"
-                maxLength={9}
-                value={inn}
-                onChange={(e) => setInn(e.target.value.replace(/\D/g, ''))}
-                className="w-full bg-bunker-base border border-bunker-border-strong focus:border-bunker-amber-500 p-3 rounded-xl text-sm font-mono text-bunker-amber-500 outline-none transition-colors font-bold"
-              />
+            <div className="pt-2">
+              <span className="text-[11px] font-mono text-bunker-amber-500 font-bold">STIR: {inn}</span>
             </div>
-            <Button variant="secondary" className="w-full" size="md" onClick={handleStirLookup} isLoading={loading}>
-              <Building2 className="w-4 h-4 mr-1.5 text-bunker-amber-500" />
-              <span>Soliq bazasidan tekshirish</span>
-            </Button>
-
-            {companyInfo && (
-              <div className="bg-bunker-base border border-bunker-border-strong p-4 rounded-xl space-y-2.5 text-xs">
-                <div className="flex justify-between items-start gap-2">
-                  <span className="font-bold text-bunker-text-primary text-sm leading-snug">{companyInfo.companyName}</span>
-                  <Badge variant="success" className="shrink-0">{companyInfo.status}</Badge>
-                </div>
-                <div className="space-y-1 text-bunker-text-secondary pt-1 border-t border-bunker-border-subtle">
-                  <p><span className="text-bunker-text-muted">Rahbar:</span> {companyInfo.director}</p>
-                  <p><span className="text-bunker-text-muted">Manzil:</span> {companyInfo.address}</p>
-                  <p><span className="text-bunker-text-muted">Faoliyat:</span> {companyInfo.activityType || 'Qurilish va ta’minot'}</p>
-                  <p><span className="text-bunker-text-muted">QQS to‘lovchisi:</span> {companyInfo.vatPayer ? 'Ha (Faol)' : 'Yo‘q'}</p>
-                </div>
-              </div>
-            )}
           </div>
-        )}
-
-        {/* TAB 4: E-IMZO */}
-        {authMode === 'eimzo' && (
-          <div className="space-y-4 text-center font-mono">
-            <div className="p-5 border border-bunker-border-strong rounded-2xl bg-bunker-base space-y-3">
-              <div className="w-12 h-12 mx-auto rounded-2xl bg-bunker-amber-500/10 border border-bunker-amber-500/30 flex items-center justify-center">
-                <Fingerprint className="w-6 h-6 text-bunker-amber-500" />
-              </div>
-              <h4 className="text-sm font-bold text-bunker-text-primary">E-IMZO Kalitini Tasdiqlash</h4>
-              <p className="text-xs text-bunker-text-secondary leading-relaxed">
-                Yuridik shaxs yoki yakka tartibdagi tadbirkorlik elektron raqamli imzosi orqali xavfsiz autentifikatsiya.
-              </p>
-              <div className="pt-2">
-                <span className="text-[11px] font-mono text-bunker-amber-500 font-bold">STIR: {inn}</span>
-              </div>
-            </div>
-            <Button className="w-full" size="md" onClick={handleEimzoLogin} isLoading={loading}>
-              <Fingerprint className="w-4 h-4 mr-1.5" />
-              <span>E-IMZO bilan Kirish</span>
-            </Button>
-          </div>
-        )}
-      </div>
-    </div>
+          <Button className="w-full" size="md" onClick={handleEimzoLogin} isLoading={loading}>
+            <Fingerprint className="w-4 h-4 mr-1.5" />
+            <span>E-IMZO bilan Kirish</span>
+          </Button>
+        </div>
+      )}
+    </Modal>
   );
 };

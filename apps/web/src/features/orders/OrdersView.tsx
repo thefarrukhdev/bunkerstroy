@@ -9,15 +9,26 @@ import {
   ChevronUp,
   CreditCard,
   RotateCw,
-  AlertCircle,
   ExternalLink,
   ShieldCheck,
-  X,
   Sparkles,
   Receipt
 } from 'lucide-react';
 import { Order, OrderStatus } from '@bunkerstroy/types';
-import { Badge, Button, Card } from '@bunkerstroy/ui';
+import {
+  Badge,
+  Button,
+  Card,
+  Modal,
+  Alert,
+  Skeleton,
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell
+} from '@bunkerstroy/ui';
 
 interface PaymentModalState {
   isOpen: boolean;
@@ -149,102 +160,116 @@ export const OrdersView: React.FC = () => {
           fetchOrders(true);
         }, 1500);
       } else {
-        setPaymentError(json.error?.message || json.message || 'To‘lovda xatolik yuz berdi');
+        setPaymentError(json.message || json.error_note || 'To‘lov jarayonida xatolik yuz berdi');
       }
-    } catch {
+    } catch (e: any) {
+      console.error(e);
       setPaymentError('Server bilan aloqa uzildi');
     } finally {
       setSimulatingPayment(false);
     }
   };
 
-  // Helper for Order Status Badge
   const getStatusBadge = (status: OrderStatus) => {
     switch (status) {
-      case 'CONFIRMED':
-        return <Badge variant="info" className="font-mono text-[10px]">TASDIQLANGAN</Badge>;
-      case 'ASSIGNED_TO_FLEET':
-        return <Badge variant="warning" className="font-mono text-[10px]">TRANSPORT BIRIKTIRILDI</Badge>;
-      case 'IN_TRANSIT':
-        return (
-          <Badge variant="warning" className="font-mono text-[10px] gap-1">
-            <Truck className="w-3 h-3 text-bunker-amber-500" />
-            YUK YO‘LDA
-          </Badge>
-        );
-      case 'DELIVERED':
-        return (
-          <Badge variant="success" className="font-mono text-[10px] gap-1">
-            <CheckCircle2 className="w-3 h-3 text-bunker-status-green" />
-            YETKAZILDI
-          </Badge>
-        );
-      case 'CANCELLED':
-        return <Badge variant="danger" className="font-mono text-[10px]">BEKOR QILINDI</Badge>;
       case 'PENDING':
+        return <Badge variant="warning">KUTILMOQDA</Badge>;
+      case 'CONFIRMED':
+        return <Badge variant="info">TASDIQLANDI</Badge>;
+      case 'ASSIGNED_TO_FLEET':
+        return <Badge variant="warning">TRANSPORT BIRIKTIRILDI</Badge>;
+      case 'IN_TRANSIT':
+        return <Badge variant="info">YUK YASHINMOQDA (YO‘LDA)</Badge>;
+      case 'DELIVERED':
+        return <Badge variant="success">YETKAZILDI</Badge>;
+      case 'CANCELLED':
+        return <Badge variant="danger">BEKOR QILINGAN</Badge>;
       default:
-        return <Badge variant="neutral" className="font-mono text-[10px]">KUTILMOQDA</Badge>;
+        return <Badge variant="neutral">{status}</Badge>;
     }
   };
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-bunker-border-strong">
-        <div>
-          <h2 className="text-xl font-black text-bunker-text-primary font-mono">Buyurtmalar Tarixi va Statusi</h2>
-          <p className="text-xs text-bunker-text-secondary mt-0.5">
-            Barcha buyurtmalar, transport jo‘natmalari va to‘lov holati
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Badge variant="warning" className="font-mono text-xs">
-            {orders.length} ta buyurtma
+      {/* 1. Tactical Orders Banner */}
+      <div className="relative rounded-3xl overflow-hidden border border-bunker-border-strong bg-gradient-to-r from-bunker-surface-1 via-bunker-surface-2 to-[#1E232B] p-6 sm:p-10 shadow-2xl">
+        <div className="h-1.5 w-full hazard-stripe-sm absolute top-0 left-0" />
+        <div className="max-w-3xl space-y-3">
+          <Badge variant="warning" className="gap-1.5 font-mono">
+            <Package className="w-3.5 h-3.5" />
+            BunkerStroy B2B Shartnomalar & Buyurtmalar Tizimi
           </Badge>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => fetchOrders(true)}
-            isLoading={refreshing}
-            className="text-xs"
-          >
-            <RotateCw className={`w-3.5 h-3.5 mr-1.5 ${refreshing ? 'animate-spin' : ''}`} />
-            <span>Yangilash</span>
-          </Button>
+          <h1 className="text-2xl sm:text-4xl font-black text-bunker-text-primary tracking-tight">
+            Xaridlar Reestri & Real Vaqt Logistika Holati
+          </h1>
+          <p className="text-sm text-bunker-text-secondary leading-relaxed">
+            Rasmiylashtirilgan B2B buyurtmalari, HOWO va mikserlar harakati, to‘lov holati hamda hisob-fakturalar (Invoys).
+          </p>
         </div>
       </div>
 
-      {/* Orders List */}
+      {/* 2. Control bar */}
+      <div className="flex items-center justify-between bg-bunker-surface-1 border border-bunker-border-subtle p-4 rounded-2xl">
+        <div className="flex items-center gap-2 font-mono">
+          <span className="text-xs font-bold uppercase text-bunker-text-primary">
+            Jami Buyurtmalar:
+          </span>
+          <span className="bg-bunker-surface-2 text-bunker-amber-500 px-2.5 py-0.5 rounded-lg text-xs font-bold border border-bunker-border-strong">
+            {orders.length}
+          </span>
+        </div>
+
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => fetchOrders(true)}
+          isLoading={refreshing}
+        >
+          <RotateCw className="w-3.5 h-3.5 mr-1" />
+          <span>Yangilash</span>
+        </Button>
+      </div>
+
+      {/* 3. Orders List */}
       {loading ? (
-        <div className="text-center py-20 text-bunker-text-secondary font-mono text-sm flex items-center justify-center gap-2">
-          <RotateCw className="w-5 h-5 animate-spin text-bunker-amber-500" />
-          Buyurtmalar yuklanmoqda...
+        <div className="space-y-4">
+          {[1, 2, 3].map((n) => (
+            <Card key={n} className="p-5 space-y-4">
+              <div className="flex justify-between items-center pb-3 border-b border-bunker-border-subtle">
+                <div className="flex items-center gap-2.5">
+                  <Skeleton variant="circle" width={32} height={32} />
+                  <Skeleton variant="text" width={160} />
+                </div>
+                <Skeleton variant="rect" width={90} height={24} />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <Skeleton variant="text" width="80%" />
+                <Skeleton variant="text" width="60%" />
+                <Skeleton variant="text" width="50%" />
+              </div>
+            </Card>
+          ))}
         </div>
       ) : orders.length === 0 ? (
-        <div className="text-center py-20 border border-dashed border-bunker-border-strong rounded-3xl space-y-3 text-bunker-text-secondary bg-bunker-surface-1/40">
-          <Package className="w-12 h-12 mx-auto text-bunker-amber-500/50" />
-          <p className="text-sm font-semibold text-bunker-text-primary">Hozircha buyurtmalar mavjud emas</p>
+        <div className="text-center py-20 bg-bunker-surface-1 border border-dashed border-bunker-border-strong rounded-3xl p-8 space-y-3 text-bunker-text-secondary font-mono">
+          <Package className="w-12 h-12 mx-auto text-bunker-amber-500/40" />
+          <h3 className="font-bold text-base text-bunker-text-primary">Hozircha buyurtmalar yo‘q</h3>
           <p className="text-xs max-w-sm mx-auto text-bunker-text-muted">
-            Marketplacedan kerakli mollarni tanlab xarid savatiga qo'shing yoki logistika reysini band qiling.
+            Marketplacedan materiallarni tanlang va B2B shartnomani rasmiylashtiring.
           </p>
         </div>
       ) : (
         <div className="space-y-4">
           {orders.map((o) => {
             const isExpanded = !!expandedOrderIds[o.id];
-            const isPendingPayment = o.paymentStatus === 'PENDING';
+            const isPendingPayment = o.paymentStatus !== 'PAID';
 
             return (
               <Card
                 key={o.id}
-                className={`space-y-4 border transition-all ${
-                  isPendingPayment
-                    ? 'border-bunker-border-strong hover:border-bunker-amber-500/50'
-                    : 'border-bunker-border-strong hover:border-bunker-border-active'
-                }`}
+                className="space-y-4 border-bunker-border-strong hover:border-bunker-border-active/60 transition-all shadow-md"
               >
-                {/* Order Top Bar */}
+                {/* Header Row */}
                 <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-bunker-border-subtle">
                   <div className="flex items-center gap-2.5">
                     <div className="w-8 h-8 rounded-xl bg-bunker-amber-500/10 border border-bunker-amber-500/30 flex items-center justify-center">
@@ -307,6 +332,7 @@ export const OrdersView: React.FC = () => {
 
                     <div className="flex items-center gap-2">
                       <button
+                        type="button"
                         onClick={() => handleOpenPayment(o, 'PAYME')}
                         className="px-3 py-1.5 rounded-xl bg-bunker-status-cyan/15 border border-bunker-status-cyan/40 text-bunker-status-cyan hover:bg-bunker-status-cyan/25 font-bold text-xs font-mono transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
                       >
@@ -315,6 +341,7 @@ export const OrdersView: React.FC = () => {
                       </button>
 
                       <button
+                        type="button"
                         onClick={() => handleOpenPayment(o, 'CLICK')}
                         className="px-3 py-1.5 rounded-xl bg-bunker-amber-500/15 border border-bunker-amber-500/40 text-bunker-amber-500 hover:bg-bunker-amber-500/25 font-bold text-xs font-mono transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
                       >
@@ -328,6 +355,7 @@ export const OrdersView: React.FC = () => {
                 {/* EXPANDABLE DETAILS ACCORDION */}
                 <div className="pt-2 border-t border-bunker-border-subtle">
                   <button
+                    type="button"
                     onClick={() => toggleExpand(o.id)}
                     className="flex items-center justify-between w-full text-xs text-bunker-text-secondary hover:text-bunker-text-primary font-semibold py-1 cursor-pointer transition-colors font-mono"
                   >
@@ -340,26 +368,39 @@ export const OrdersView: React.FC = () => {
 
                   {isExpanded && (
                     <div className="mt-3 space-y-3 pt-3 border-t border-bunker-border-subtle text-xs animate-in fade-in font-mono">
-                      {/* Items breakdown */}
-                      <div className="bg-bunker-base p-3.5 rounded-2xl border border-bunker-border-subtle space-y-2">
+                      {/* Items breakdown using Table Component */}
+                      <div className="space-y-2">
                         <span className="text-[10px] text-bunker-text-muted uppercase block font-bold">
                           Buyurtma qilingan tovarlar:
                         </span>
-                        <div className="divide-y divide-bunker-border-subtle">
-                          {o.items.map((item, idx) => (
-                            <div key={idx} className="flex justify-between items-center py-2 text-xs">
-                              <div>
-                                <p className="font-semibold text-bunker-text-primary">{item.productTitle}</p>
-                                <span className="text-[11px] text-bunker-text-muted">
-                                  {item.quantity} {item.unit} x {Number(item.unitPrice).toLocaleString()} so'm
-                                </span>
-                              </div>
-                              <span className="font-bold text-bunker-amber-500">
-                                {Number(item.totalPrice).toLocaleString()} so'm
-                              </span>
-                            </div>
-                          ))}
-                        </div>
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Mahsulot Nomi</TableHead>
+                              <TableHead className="text-center">Miqdori & Birligi</TableHead>
+                              <TableHead className="text-right">Birlik Narxi</TableHead>
+                              <TableHead className="text-right">Jami Summa</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {o.items.map((item, idx) => (
+                              <TableRow key={idx}>
+                                <TableCell className="font-semibold text-bunker-text-primary">
+                                  {item.productTitle}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                  {item.quantity} {item.unit}
+                                </TableCell>
+                                <TableCell className="text-right">
+                                  {Number(item.unitPrice).toLocaleString()} so'm
+                                </TableCell>
+                                <TableCell className="text-right font-bold text-bunker-amber-500">
+                                  {Number(item.totalPrice).toLocaleString()} so'm
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
                       </div>
 
                       {/* Delivery and Financial Breakdown */}
@@ -417,105 +458,96 @@ export const OrdersView: React.FC = () => {
         </div>
       )}
 
-      {/* INTERACTIVE PAYMENT GATEWAY MODAL */}
+      {/* INTERACTIVE PAYMENT GATEWAY MODAL USING MODAL COMPONENT */}
       {paymentModal.isOpen && paymentModal.order && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="relative w-full max-w-md bg-bunker-surface-1 border-2 border-bunker-border-strong rounded-3xl p-6 sm:p-7 space-y-5 shadow-2xl font-mono">
-            <button
-              onClick={() => setPaymentModal({ isOpen: false, order: null, provider: 'PAYME' })}
-              className="absolute top-5 right-5 text-bunker-text-secondary hover:text-bunker-text-primary cursor-pointer p-1 rounded-lg"
+        <Modal
+          isOpen={paymentModal.isOpen && !!paymentModal.order}
+          onClose={() => setPaymentModal({ isOpen: false, order: null, provider: 'PAYME' })}
+          size="sm"
+          headerExtra={
+            <div
+              className={`w-10 h-10 rounded-2xl flex items-center justify-center ${
+                paymentModal.provider === 'PAYME'
+                  ? 'bg-bunker-status-cyan/20 border border-bunker-status-cyan/50 text-bunker-status-cyan'
+                  : 'bg-bunker-amber-500/20 border border-bunker-amber-500/50 text-bunker-amber-500'
+              }`}
             >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center gap-3">
-              <div
-                className={`w-10 h-10 rounded-2xl flex items-center justify-center ${
-                  paymentModal.provider === 'PAYME'
-                    ? 'bg-bunker-status-cyan/20 border border-bunker-status-cyan/50 text-bunker-status-cyan'
-                    : 'bg-bunker-amber-500/20 border border-bunker-amber-500/50 text-bunker-amber-500'
-                }`}
-              >
-                <CreditCard className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="font-bold text-bunker-text-primary text-base">
-                  {paymentModal.provider} To‘lov Shlyuzi
-                </h3>
-                <p className="text-[11px] text-bunker-text-muted">Xavfsiz onlayn to‘lov tizimi (O‘zbekiston)</p>
-              </div>
+              <CreditCard className="w-5 h-5" />
             </div>
+          }
+          title={`${paymentModal.provider} To‘lov Shlyuzi`}
+          subtitle="Xavfsiz onlayn to‘lov tizimi (O‘zbekiston)"
+        >
+          {/* Error / Success Alerts */}
+          {paymentError && (
+            <Alert
+              variant="error"
+              description={paymentError}
+              onDismiss={() => setPaymentError(null)}
+            />
+          )}
 
-            {/* Error / Success Alerts */}
-            {paymentError && (
-              <div className="p-3 rounded-xl bg-bunker-status-red/15 border border-bunker-status-red/30 text-xs text-bunker-status-red flex items-start gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                <span>{paymentError}</span>
-              </div>
-            )}
+          {paymentSuccessMsg && (
+            <Alert
+              variant="success"
+              description={paymentSuccessMsg}
+            />
+          )}
 
-            {paymentSuccessMsg && (
-              <div className="p-3.5 rounded-xl bg-bunker-status-green/20 border border-bunker-status-green/40 text-xs text-bunker-status-green flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 shrink-0" />
-                <span>{paymentSuccessMsg}</span>
-              </div>
-            )}
-
-            {/* Invoice Summary */}
-            <div className="bg-bunker-base border border-bunker-border-strong p-4 rounded-2xl space-y-2 text-xs">
-              <div className="flex justify-between text-bunker-text-secondary">
-                <span>Buyurtma raqami:</span>
-                <span className="text-bunker-text-primary font-bold">{paymentModal.order.orderNumber}</span>
-              </div>
-              <div className="flex justify-between text-bunker-text-secondary">
-                <span>Qabul qiluvchi:</span>
-                <span className="text-bunker-text-primary">{paymentModal.order.buyerName}</span>
-              </div>
-              <div className="flex justify-between text-bunker-text-secondary">
-                <span>To‘lov oluvchi:</span>
-                <span className="text-bunker-text-primary">«BUNKER STROY INVEST» MChJ</span>
-              </div>
-              <div className="pt-2 border-t border-bunker-border-subtle flex justify-between items-baseline">
-                <span className="font-bold text-bunker-text-primary">Jami to‘lov summasi:</span>
-                <span className="text-xl font-black text-bunker-amber-500">
-                  {Number(paymentModal.order.finalAmount).toLocaleString()} so'm
-                </span>
-              </div>
+          {/* Invoice Summary */}
+          <div className="bg-bunker-base border border-bunker-border-strong p-4 rounded-2xl space-y-2 text-xs font-mono">
+            <div className="flex justify-between text-bunker-text-secondary">
+              <span>Buyurtma raqami:</span>
+              <span className="text-bunker-text-primary font-bold">{paymentModal.order.orderNumber}</span>
             </div>
-
-            {/* Actions */}
-            <div className="space-y-2.5 pt-1">
-              <Button
-                className="w-full"
-                size="md"
-                onClick={handleSimulatePayment}
-                isLoading={simulatingPayment}
-                disabled={!!paymentSuccessMsg}
-              >
-                <Sparkles className="w-4 h-4 mr-1.5" />
-                <span>To‘lovni Amalga Oshirish (Instant Checkout)</span>
-              </Button>
-
-              <a
-                href={
-                  paymentModal.provider === 'PAYME'
-                    ? `https://checkout.paycom.uz/${btoa(
-                        `m=65c8f921a8d;ac.order_id=${paymentModal.order.id};a=${
-                          Number(paymentModal.order.finalAmount) * 100
-                        }`
-                      )}`
-                    : `https://my.click.uz/services/pay?service_id=12345&merchant_id=67890&amount=${paymentModal.order.finalAmount}&transaction_param=${paymentModal.order.id}`
-                }
-                target="_blank"
-                rel="noreferrer"
-                className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-bunker-border-strong hover:border-bunker-amber-500 text-xs text-bunker-text-secondary hover:text-bunker-text-primary transition-colors"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                <span>Rasmiy {paymentModal.provider} ilovasida ochish</span>
-              </a>
+            <div className="flex justify-between text-bunker-text-secondary">
+              <span>Qabul qiluvchi:</span>
+              <span className="text-bunker-text-primary">{paymentModal.order.buyerName}</span>
+            </div>
+            <div className="flex justify-between text-bunker-text-secondary">
+              <span>To‘lov oluvchi:</span>
+              <span className="text-bunker-text-primary">«BUNKER STROY INVEST» MChJ</span>
+            </div>
+            <div className="pt-2 border-t border-bunker-border-subtle flex justify-between items-baseline">
+              <span className="font-bold text-bunker-text-primary">Jami to‘lov summasi:</span>
+              <span className="text-xl font-black text-bunker-amber-500">
+                {Number(paymentModal.order.finalAmount).toLocaleString()} so'm
+              </span>
             </div>
           </div>
-        </div>
+
+          {/* Actions */}
+          <div className="space-y-2.5 pt-1 font-mono">
+            <Button
+              className="w-full"
+              size="md"
+              onClick={handleSimulatePayment}
+              isLoading={simulatingPayment}
+              disabled={!!paymentSuccessMsg}
+            >
+              <Sparkles className="w-4 h-4 mr-1.5" />
+              <span>To‘lovni Amalga Oshirish (Instant Checkout)</span>
+            </Button>
+
+            <a
+              href={
+                paymentModal.provider === 'PAYME'
+                  ? `https://checkout.paycom.uz/${btoa(
+                      `m=65c8f921a8d;ac.order_id=${paymentModal.order.id};a=${
+                        Number(paymentModal.order.finalAmount) * 100
+                      }`
+                    )}`
+                  : `https://my.click.uz/services/pay?service_id=12345&merchant_id=67890&amount=${paymentModal.order.finalAmount}&transaction_param=${paymentModal.order.id}`
+              }
+              target="_blank"
+              rel="noreferrer"
+              className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-bunker-border-strong hover:border-bunker-amber-500 text-xs text-bunker-text-secondary hover:text-bunker-text-primary transition-colors cursor-pointer"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              <span>Rasmiy {paymentModal.provider} ilovasida ochish</span>
+            </a>
+          </div>
+        </Modal>
       )}
     </div>
   );
