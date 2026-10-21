@@ -1,46 +1,84 @@
 @import "tailwindcss";
 @source "../../packages/ui/src";
 
+@theme {
+  --color-bunker-vault: #0B0C0E;
+  --color-bunker-base: #121417;
+  --color-bunker-surface-1: #181B1F;
+  --color-bunker-surface-2: #21252B;
+  --color-bunker-surface-hover: #2A2F37;
+  --color-bunker-input: #14171A;
+  --color-bunker-amber-500: #FFB800;
+  --color-bunker-amber-400: #FFC833;
+  --color-bunker-border-subtle: #24282E;
+  --color-bunker-border-strong: #363C44;
+  --color-bunker-border-active: #FFB800;
+  --color-bunker-text-primary: #F5F5F2;
+  --color-bunker-text-secondary: #B8B8B3;
+  --color-bunker-text-muted: #6E737A;
+  --color-bunker-status-green: #10B981;
+  --color-bunker-status-amber: #F59E0B;
+  --color-bunker-status-red: #EF4444;
+  --color-bunker-status-cyan: #06B6D4;
+}
+
 @layer base {
   body {
-    background-color: #151719;
-    color: #F5F5F2;
+    background-color: var(--color-bunker-base, #121417);
+    color: var(--color-bunker-text-primary, #F5F5F2);
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
+
+  button:active,
+  .btn-tactile:active {
+    transform: translateY(1px) scale(0.985);
+  }
+}
+
+/* Industrial Tactile Tabs */
+.chamfer-tab {
+  position: relative;
+  clip-path: polygon(10px 0%, calc(100% - 10px) 0%, 100% 100%, 0% 100%);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chamfer-tab-corner {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
 }
 
 .hazard-stripe {
   background: repeating-linear-gradient(
     -45deg,
-    #FFB800,
-    #FFB800 12px,
-    #151719 12px,
-    #151719 24px
+    var(--color-bunker-amber-500, #FFB800),
+    var(--color-bunker-amber-500, #FFB800) 12px,
+    var(--color-bunker-base, #121417) 12px,
+    var(--color-bunker-base, #121417) 24px
   );
 }
 
 .hazard-stripe-sm {
   background: repeating-linear-gradient(
     -45deg,
-    #FFB800,
-    #FFB800 6px,
-    #151719 6px,
-    #151719 12px
+    var(--color-bunker-amber-500, #FFB800),
+    var(--color-bunker-amber-500, #FFB800) 6px,
+    var(--color-bunker-base, #121417) 6px,
+    var(--color-bunker-base, #121417) 12px
   );
 }
 
 .brushed-steel {
-  background: linear-gradient(180deg, #222528 0%, #1A1D20 100%);
-  border-bottom: 1px solid #33373B;
+  background: linear-gradient(180deg, var(--color-bunker-surface-2, #21252B) 0%, var(--color-bunker-surface-1, #181B1F) 100%);
+  border-bottom: 1px solid var(--color-bunker-border-strong, #363C44);
 }
 
 .industrial-rivet {
   width: 6px;
   height: 6px;
   border-radius: 9999px;
-  background: #51504A;
-  border: 1px solid #1A1D20;
-  box-shadow: inset 0 1px 1px rgba(0,0,0,0.8);
+  background: var(--color-bunker-border-strong, #363C44);
+  border: 1px solid var(--color-bunker-surface-2, #21252B);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.8);
 }
 
 @keyframes soundwave {
@@ -64,4 +102,47 @@
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* High-Vis Construction Field Mode (WCAG AAA 14:1 high contrast light palette) */
+html.high-vis-mode {
+  --color-bunker-vault: #FFFFFF;
+  --color-bunker-base: #F4F6F8;
+  --color-bunker-surface-1: #FFFFFF;
+  --color-bunker-surface-2: #E5E9EE;
+  --color-bunker-surface-hover: #D8DFE6;
+  --color-bunker-input: #FFFFFF;
+  --color-bunker-amber-500: #C2410C;
+  --color-bunker-amber-400: #9A3412;
+  --color-bunker-border-subtle: #94A3B8;
+  --color-bunker-border-strong: #0F172A;
+  --color-bunker-border-active: #0F172A;
+  --color-bunker-text-primary: #0F172A;
+  --color-bunker-text-secondary: #1E293B;
+  --color-bunker-text-muted: #334155;
+  --color-bunker-status-green: #047857;
+  --color-bunker-status-amber: #B45309;
+  --color-bunker-status-red: #B91C1C;
+  --color-bunker-status-cyan: #0E7490;
+}
+
+html.high-vis-mode body {
+  background-color: #F4F6F8 !important;
+  color: #0F172A !important;
+}
+
+html.high-vis-mode .brushed-steel {
+  background: #FFFFFF !important;
+  border-bottom: 2px solid #0F172A !important;
+}
+
+html.high-vis-mode .hazard-stripe,
+html.high-vis-mode .hazard-stripe-sm {
+  background: repeating-linear-gradient(
+    -45deg,
+    #0F172A,
+    #0F172A 6px,
+    #EAB308 6px,
+    #EAB308 12px
+  ) !important;
 }

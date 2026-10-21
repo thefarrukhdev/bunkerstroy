@@ -2,22 +2,24 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   Mic,
   MicOff,
-  Volume2,
   Sparkles,
   X,
   RefreshCw,
   Send,
-  Radio,
-  Zap,
-  Activity,
-  AlertCircle,
-  CheckCircle2,
+  Minimize2,
+  Maximize2,
+  Layers,
+  Truck,
+  Leaf,
+  Building2,
+  Volume2
 } from 'lucide-react';
 import { Badge, Button } from '@bunkerstroy/ui';
 
 interface VoiceAssistantModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onNavigateTab?: (tab: 'marketplace' | 'logistics' | 'esco' | 'global_bunker' | 'orders') => void;
 }
 
 interface ChatMessage {
@@ -25,19 +27,28 @@ interface ChatMessage {
   sender: 'user' | 'assistant';
   text: string;
   timestamp: string;
+  contextAction?: {
+    label: string;
+    tab: 'marketplace' | 'logistics' | 'esco' | 'global_bunker' | 'orders';
+  };
 }
 
 const QUICK_PROMPTS = [
-  'Sement M500 narxi qancha?',
-  'HOWO samosval zakaz qilish',
-  'ESCO energiya auditi nima?',
-  'Toshkent bo‘ylab yetkazish narxi',
-  'Armatura A500C 12mm tonnasi',
+  'Sement M500 ulgurji narxi',
+  'HOWO 25t samosval hisoblash',
+  'ESCO binoni izolyatsiyalash',
+  'Armatura A500C tonnasi',
+  'Toshkent bo‘ylab yetkazish'
 ];
 
 type WsStatus = 'CONNECTING' | 'CONNECTED' | 'DISCONNECTED' | 'ERROR';
 
-export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen, onClose }) => {
+export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
+  isOpen,
+  onClose,
+  onNavigateTab
+}) => {
+  const [isMinimized, setIsMinimized] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<WsStatus>('DISCONNECTED');
   const [isRecording, setIsRecording] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -46,9 +57,10 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen
     {
       id: 'welcome',
       sender: 'assistant',
-      text: "Assalomu alaykum! Men BunkerStroy AI ovozli maslahatchisiman. Qurilish materiallari, HOWO samosvallari logistikasi yoki ESCO energiya auditi bo'yicha qanday yordam bera olaman?",
+      text: "Assalomu alaykum! Men BunkerStroy AI Copilot yordamchisiman. Qurilish materiallari, HOWO samosvallari logistikasi yoki ESCO energiya auditi bo'yicha qanday yordam bera olaman?",
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    },
+      contextAction: { label: 'Katalogga O‘tish', tab: 'marketplace' }
+    }
   ]);
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -57,16 +69,18 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
 
-  // Auto-scroll to bottom of messages
+  // Auto-scroll
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, isSpeaking]);
+    if (!isMinimized) {
+      scrollToBottom();
+    }
+  }, [messages, isSpeaking, isMinimized]);
 
-  // Connect WebSocket when modal opens
+  // Connect WebSocket when open
   useEffect(() => {
     if (isOpen) {
       connectWebSocket();
@@ -125,10 +139,10 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen
                 id: `msg-${Date.now()}-${Math.random()}`,
                 sender: 'assistant',
                 text: data.text,
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-              },
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              }
             ]);
-            setTimeout(() => setIsSpeaking(false), 3000);
+            setTimeout(() => setIsSpeaking(false), 2500);
           } else if (data.type === 'audio') {
             setIsSpeaking(true);
             playAudioChunk(data.audio);
@@ -140,28 +154,24 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen
         }
       };
 
-      ws.onerror = (err) => {
-        console.warn('WebSocket error event:', err);
+      ws.onerror = () => {
         setConnectionStatus('ERROR');
       };
 
       ws.onclose = (e) => {
         setConnectionStatus('DISCONNECTED');
         setIsSpeaking(false);
-        // Only attempt reconnect if modal is still open and wasn't closed cleanly
         if (isOpen && e.code !== 1000) {
           reconnectTimeoutRef.current = setTimeout(() => {
             if (isOpen) connectWebSocket();
           }, 3000);
         }
       };
-    } catch (err) {
-      console.error('Failed to instantiate WebSocket:', err);
+    } catch {
       setConnectionStatus('ERROR');
     }
   };
 
-  // Play audio chunk helper via AudioContext
   const playAudioChunk = (base64Audio: string) => {
     try {
       if (!audioContextRef.current) {
@@ -184,7 +194,7 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen
       id: `usr-${Date.now()}`,
       sender: 'user',
       text,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
     setMessages((prev) => [...prev, userMsg]);
@@ -194,23 +204,29 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen
       wsRef.current.send(JSON.stringify({ text }));
       setIsSpeaking(true);
     } else {
-      // Intelligent fallback answer if WS live audio stream is unavailable in current network
+      // Intelligent fallback answer if WS live audio is unavailable
       setIsSpeaking(true);
       setTimeout(() => {
         let reply = `Siz so‘ragan "${text}" bo‘yicha BunkerStroy omborlarida yetarli zaxira va HOWO transportlari mavjud.`;
+        let action: ChatMessage['contextAction'] = undefined;
+
         const lower = text.toLowerCase();
         if (lower.includes('sement') || lower.includes('m500')) {
           reply =
-            'Qizilqum Sement M500 (50kg qoplarda) 68,000 so‘m/qop, quyma sement esa 950,000 so‘m/tonna. HOWO samosvallarda to‘g‘ridan-to‘g‘ri ob’ektingizga yetkazib beramiz.';
-        } else if (lower.includes('samosval') || lower.includes('howo') || lower.includes('transport')) {
+            'Qizilqum Sement M500 (50kg qop) 64,000 so‘m/qop, quyma sement esa 950,000 so‘m/tonna. HOWO 25t samosvallarda to‘g‘ridan-to‘g‘ri ob’ektingizga yetkazib beramiz.';
+          action = { label: 'Katalogga O‘tish', tab: 'marketplace' };
+        } else if (lower.includes('samosval') || lower.includes('howo') || lower.includes('transport') || lower.includes('logistika')) {
           reply =
-            'HOWO Sinotruk 25t samosvallari mavjud. Baza narxi 450,000 so‘m, har kilometr uchun 18,000 so‘m. Logistika bo‘limi orqali marshrutni darhol hisoblab buyurtma berishingiz mumkin.';
-        } else if (lower.includes('esco') || lower.includes('energiya')) {
+            'HOWO 25t va Shacman 10m³ mikserlari parkimizda faol. 25 km masofa uchun baza tarifi 450,000 so‘m va kilometriga 18,000 so‘m.';
+          action = { label: 'Logistika Hubga O‘tish', tab: 'logistics' };
+        } else if (lower.includes('esco') || lower.includes('energiya') || lower.includes('izolyatsiya')) {
           reply =
-            'BunkerStroy ESCO xizmati binolarning issiqlik yo‘qotishini audit qilib, 100mm bazalt mineral plitalari orqali energiya xarajatlarini 35-40% gacha tejash loyihasini taqdim etadi.';
+            'BunkerStroy ESCO modeli binoning devor (42%), deraza (28%) va tom (18%) yo‘qotishlarini audit qilib, 100mm bazalt plitalari bilan 35% tejamkorlik beradi.';
+          action = { label: 'ESCO Modeliga O‘tish', tab: 'esco' };
         } else if (lower.includes('armatura')) {
           reply =
-            'Bekobod metallurgiya zavodining A500C armaturalari barcha diametrlarda (12mm, 14mm, 16mm, 20mm) sertifikatlangan holda mavjud. Tonnasi 8,850,000 so‘mdan boshlanadi.';
+            'Bekobod metallurgiya zavodining A500C armaturalari (12mm, 14mm, 16mm) sertifikatlangan holda mavjud. Tonnasi 8,900,000 so‘mdan boshlanadi.';
+          action = { label: 'Katalogga O‘tish', tab: 'marketplace' };
         }
 
         setMessages((prev) => [
@@ -220,10 +236,11 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen
             sender: 'assistant',
             text: reply,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          },
+            contextAction: action
+          }
         ]);
         setIsSpeaking(false);
-      }, 750);
+      }, 600);
     }
   };
 
@@ -236,7 +253,7 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen
 
     try {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        throw new Error('Mikrofon ushbu brauzerda qo‘llab-quvvatlanmaydi');
+        throw new Error('Mikrofon qo‘llab-quvvatlanmaydi');
       }
 
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -247,7 +264,6 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen
 
       mediaRecorder.ondataavailable = (e) => {
         if (e.data.size > 0 && wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-          // Forward audio stream chunk to backend
           const reader = new FileReader();
           reader.onloadend = () => {
             const base64 = (reader.result as string).split(',')[1];
@@ -259,15 +275,13 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen
         }
       };
 
-      mediaRecorder.start(250); // Emit audio slice every 250ms
-    } catch (err: any) {
-      console.warn('Microphone access note:', err?.message);
+      mediaRecorder.start(250);
+    } catch {
       setIsRecording(true);
-      // Simulate live recording pulse for test/demo environments
       setTimeout(() => {
         setIsRecording(false);
-        handleSendMessage("Sement M500 narxi va HOWO yetkazib berish shartlari");
-      }, 3000);
+        handleSendMessage('Sement M500 narxi va HOWO yetkazib berish');
+      }, 2500);
     }
   };
 
@@ -284,158 +298,187 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="relative w-full max-w-lg bg-[#1A1D20] border-2 border-[#33373B] rounded-3xl p-5 sm:p-6 space-y-4 shadow-2xl flex flex-col h-[580px]">
-        {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-[#33373B]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[#FFB800]/20 border border-[#FFB800]/50 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-[#FFB800]" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-bold text-[#F5F5F2] text-sm">Bunker Voice AI Agent</h3>
-                {connectionStatus === 'CONNECTED' ? (
-                  <span className="flex items-center gap-1 text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                    ONLINE
-                  </span>
-                ) : connectionStatus === 'CONNECTING' ? (
-                  <span className="flex items-center gap-1 text-[10px] font-mono text-[#FFB800] bg-[#FFB800]/10 px-2 py-0.5 rounded-full">
-                    ULANMOQDA...
-                  </span>
-                ) : (
-                  <button
-                    onClick={connectWebSocket}
-                    className="flex items-center gap-1 text-[10px] font-mono text-[#777A7C] hover:text-[#FFB800] bg-[#222528] px-2 py-0.5 rounded-full border border-[#33373B] cursor-pointer"
-                  >
-                    <RefreshCw className="w-2.5 h-2.5" />
-                    Qayta ulanish
-                  </button>
-                )}
-              </div>
-              <p className="text-[10px] text-[#B8B8B3]">Gemini 3.8 Live Jonli Ovozli Maslahatchi</p>
-            </div>
+  // 1. Minimized Floating Dock Pill
+  if (isMinimized) {
+    return (
+      <div className="fixed bottom-6 right-6 z-50">
+        <button
+          onClick={() => setIsMinimized(false)}
+          className="h-12 bg-bunker-surface-1 border-2 border-bunker-amber-500 rounded-full px-4 flex items-center gap-3 shadow-2xl hover:scale-105 transition-all cursor-pointer group"
+        >
+          <div className="w-7 h-7 rounded-full bg-bunker-amber-500/20 flex items-center justify-center">
+            <Sparkles className="w-4 h-4 text-bunker-amber-500" />
           </div>
+          <span className="text-xs font-mono font-bold text-bunker-text-primary">
+            Bunker AI Copilot
+          </span>
+          <span className="w-2 h-2 rounded-full bg-bunker-status-green animate-pulse" />
+          <Maximize2 className="w-3.5 h-3.5 text-bunker-text-muted group-hover:text-bunker-text-primary ml-1" />
+        </button>
+      </div>
+    );
+  }
 
+  // 2. Expanded Non-Blocking Floating Dock
+  return (
+    <div className="fixed bottom-6 right-6 z-50 w-96 max-w-[calc(100vw-2rem)] h-[520px] bg-bunker-surface-1 border-2 border-bunker-border-strong rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-5">
+      {/* Dock Top Hazard Accent */}
+      <div className="h-1 w-full hazard-stripe-sm opacity-90 shrink-0" />
+
+      {/* Dock Header */}
+      <div className="flex items-center justify-between p-3.5 px-4 bg-bunker-surface-2 border-b border-bunker-border-subtle shrink-0">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-bunker-amber-500/20 border border-bunker-amber-500/50 flex items-center justify-center">
+            <Sparkles className="w-4 h-4 text-bunker-amber-500" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="font-bold text-bunker-text-primary text-xs font-mono">Bunker AI Copilot</h3>
+              {connectionStatus === 'CONNECTED' ? (
+                <span className="flex items-center gap-1 text-[9px] font-mono text-bunker-status-green bg-bunker-status-green/10 px-1.5 py-0.2 rounded-full border border-bunker-status-green/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-bunker-status-green animate-pulse" />
+                  LIVE
+                </span>
+              ) : (
+                <span className="text-[9px] font-mono text-bunker-amber-500 bg-bunker-amber-500/10 px-1.5 py-0.2 rounded-full">
+                  COPILOT
+                </span>
+              )}
+            </div>
+            <p className="text-[9px] text-bunker-text-muted font-mono">Gemini 3.8 Qurilish & Logistika Maslahatchisi</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-1 text-bunker-text-secondary">
+          <button
+            onClick={() => setIsMinimized(true)}
+            className="p-1 hover:text-bunker-text-primary rounded hover:bg-bunker-surface-1 cursor-pointer transition-colors"
+            title="Kichraytirish"
+          >
+            <Minimize2 className="w-3.5 h-3.5" />
+          </button>
           <button
             onClick={onClose}
-            className="text-[#B8B8B3] hover:text-[#F5F5F2] cursor-pointer transition-colors"
-            aria-label="Yopish"
+            className="p-1 hover:text-bunker-status-red rounded hover:bg-bunker-surface-1 cursor-pointer transition-colors"
+            title="Yopish"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
+      </div>
 
-        {/* Message Feed */}
-        <div className="flex-1 overflow-y-auto space-y-3 pr-1 text-xs">
-          {messages.map((m) => (
-            <div
-              key={m.id}
-              className={`p-3.5 rounded-2xl max-w-[85%] leading-relaxed ${
-                m.sender === 'user'
-                  ? 'ml-auto bg-[#FFB800] text-[#151719] font-semibold rounded-br-none shadow-md shadow-[#FFB800]/10'
-                  : 'mr-auto bg-[#151719] text-[#F5F5F2] border border-[#33373B] rounded-bl-none'
+      {/* Message Feed */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 text-xs font-mono">
+        {messages.map((m) => (
+          <div
+            key={m.id}
+            className={`p-3 rounded-2xl max-w-[88%] leading-relaxed ${
+              m.sender === 'user'
+                ? 'ml-auto bg-bunker-amber-500 text-bunker-vault font-semibold rounded-br-none shadow-sm'
+                : 'mr-auto bg-bunker-base text-bunker-text-primary border border-bunker-border-subtle rounded-bl-none'
+            }`}
+          >
+            <p>{m.text}</p>
+            {m.contextAction && onNavigateTab && (
+              <button
+                onClick={() => onNavigateTab(m.contextAction!.tab)}
+                className="mt-2 inline-flex items-center gap-1.5 bg-bunker-amber-500/15 hover:bg-bunker-amber-500/25 border border-bunker-amber-500/40 text-bunker-amber-500 px-2.5 py-1 rounded-lg text-[10px] font-bold cursor-pointer transition-colors"
+              >
+                <span>{m.contextAction.label}</span>
+                <span>→</span>
+              </button>
+            )}
+            <span
+              className={`text-[9px] block text-right mt-1 ${
+                m.sender === 'user' ? 'text-bunker-vault/70' : 'text-bunker-text-muted'
               }`}
             >
-              <p>{m.text}</p>
+              {m.timestamp}
+            </span>
+          </div>
+        ))}
+
+        {/* Sound Wave Animation when Listening or Speaking */}
+        {(isRecording || isSpeaking) && (
+          <div className="p-2.5 bg-bunker-base border border-bunker-amber-500/50 rounded-xl flex items-center justify-between gap-2 animate-in fade-in font-mono">
+            <div className="flex items-center gap-1.5">
               <span
-                className={`text-[9px] block text-right mt-1 font-mono ${
-                  m.sender === 'user' ? 'text-[#151719]/70' : 'text-[#777A7C]'
+                className={`w-2 h-2 rounded-full ${
+                  isRecording ? 'bg-bunker-status-red animate-ping' : 'bg-bunker-amber-500 animate-pulse'
                 }`}
-              >
-                {m.timestamp}
+              />
+              <span className="text-[10px] font-bold text-bunker-amber-500">
+                {isRecording ? 'Tinglanmoqda...' : 'AI javob qaytarmoqda...'}
               </span>
             </div>
-          ))}
 
-          {/* Sound Wave Animation when Listening or Speaking */}
-          {(isRecording || isSpeaking) && (
-            <div className="p-3 bg-[#151719] border border-[#FFB800]/50 rounded-2xl flex items-center justify-between gap-3 animate-in fade-in">
-              <div className="flex items-center gap-2">
-                <span
-                  className={`w-2.5 h-2.5 rounded-full ${
-                    isRecording ? 'bg-red-500 animate-ping' : 'bg-[#FFB800] animate-pulse'
-                  }`}
+            {/* Sound Wave Bars */}
+            <div className="flex items-center gap-1 h-4">
+              {[0.4, 0.8, 1.2, 0.6, 1.0, 0.5, 0.9, 0.7].map((scale, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    animation: `soundwave 0.8s ease-in-out infinite alternate`,
+                    animationDelay: `${idx * 0.1}s`,
+                    height: `${Math.round(scale * 12)}px`
+                  }}
+                  className={`w-0.5 rounded-full ${isRecording ? 'bg-bunker-status-red' : 'bg-bunker-amber-500'}`}
                 />
-                <span className="text-xs font-mono font-semibold text-[#FFB800]">
-                  {isRecording ? 'Tinglanmoqda (Mikrofon faol)...' : 'AI javob qaytarmoqda...'}
-                </span>
-              </div>
-
-              {/* Animated Sound Wave Bars */}
-              <div className="flex items-center gap-1 h-5">
-                {[0.4, 0.8, 1.2, 0.6, 1.0, 0.5, 0.9, 0.7].map((heightScale, idx) => (
-                  <div
-                    key={idx}
-                    style={{
-                      animation: `soundwave 0.8s ease-in-out infinite alternate`,
-                      animationDelay: `${idx * 0.1}s`,
-                      height: `${Math.round(heightScale * 14)}px`,
-                    }}
-                    className={`w-1 rounded-full ${isRecording ? 'bg-red-400' : 'bg-[#FFB800]'}`}
-                  />
-                ))}
-              </div>
+              ))}
             </div>
-          )}
-
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Quick Prompt Chips */}
-        <div className="pt-2 border-t border-[#33373B]">
-          <span className="text-[10px] text-[#777A7C] uppercase font-mono block mb-1.5">
-            Tezkor savollar:
-          </span>
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
-            {QUICK_PROMPTS.map((prompt, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleSendMessage(prompt)}
-                className="whitespace-nowrap px-3 py-1 rounded-full bg-[#151719] hover:bg-[#FFB800]/15 border border-[#33373B] hover:border-[#FFB800] text-[11px] text-[#B8B8B3] hover:text-[#FFB800] cursor-pointer transition-all"
-              >
-                {prompt}
-              </button>
-            ))}
           </div>
-        </div>
+        )}
 
-        {/* Bottom controls */}
-        <div className="pt-1">
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              placeholder="Savolingizni yozing yoki mikrofondan foydalaning..."
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-              className="flex-1 bg-[#151719] border border-[#33373B] focus:border-[#FFB800] px-3.5 py-2.5 rounded-xl text-xs text-[#F5F5F2] outline-none transition-colors"
-            />
+        <div ref={messagesEndRef} />
+      </div>
 
-            <Button
-              size="sm"
-              onClick={() => handleSendMessage()}
-              disabled={!inputText.trim()}
-              className="shrink-0"
-            >
-              <Send className="w-3.5 h-3.5 mr-1" />
-              Yuborish
-            </Button>
-
+      {/* Quick Prompt Chips */}
+      <div className="px-3 py-1.5 border-t border-bunker-border-subtle bg-bunker-surface-2/50 shrink-0">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+          {QUICK_PROMPTS.map((prompt, idx) => (
             <button
-              onClick={toggleRecording}
-              className={`p-2.5 rounded-xl border transition-all cursor-pointer shrink-0 ${
-                isRecording
-                  ? 'bg-red-500 text-white border-red-400 shadow-lg shadow-red-500/20 animate-pulse'
-                  : 'bg-[#292C2F] text-[#FFB800] border-[#51504A] hover:border-[#FFB800]'
-              }`}
-              title={isRecording ? "Mikrofonni o'chirish" : 'Ovozli gapirish'}
+              key={idx}
+              onClick={() => handleSendMessage(prompt)}
+              className="whitespace-nowrap px-2.5 py-1 rounded-full bg-bunker-surface-1 hover:bg-bunker-amber-500/15 border border-bunker-border-subtle hover:border-bunker-amber-500 text-[10px] font-mono text-bunker-text-secondary hover:text-bunker-amber-500 cursor-pointer transition-all"
             >
-              {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+              {prompt}
             </button>
-          </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom Input & Voice Controls */}
+      <div className="p-3 bg-bunker-surface-2 border-t border-bunker-border-subtle shrink-0">
+        <div className="flex items-center gap-1.5">
+          <input
+            type="text"
+            placeholder="AI maslahatchiga savol bering..."
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+            className="flex-1 bg-bunker-input border border-bunker-border-subtle focus:border-bunker-amber-500 px-3 py-2 rounded-xl text-xs text-bunker-text-primary outline-none transition-colors font-mono placeholder:text-bunker-text-muted"
+          />
+
+          <Button
+            size="sm"
+            onClick={() => handleSendMessage()}
+            disabled={!inputText.trim()}
+            className="shrink-0 px-2.5"
+          >
+            <Send className="w-3.5 h-3.5" />
+          </Button>
+
+          <button
+            onClick={toggleRecording}
+            className={`p-2 rounded-xl border transition-all cursor-pointer shrink-0 ${
+              isRecording
+                ? 'bg-bunker-status-red text-white border-bunker-status-red shadow-lg shadow-bunker-status-red/20 animate-pulse'
+                : 'bg-bunker-surface-1 text-bunker-amber-500 border-bunker-border-strong hover:border-bunker-amber-500'
+            }`}
+            title={isRecording ? "Mikrofonni o'chirish" : 'Ovozli gapirish'}
+          >
+            {isRecording ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
+          </button>
         </div>
       </div>
     </div>

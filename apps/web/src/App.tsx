@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Product } from '@bunkerstroy/types';
-import { Navbar } from './components/Navbar';
+import { Navbar, ActiveTabType } from './components/Navbar';
 import { CartDrawer, CartItem } from './components/CartDrawer';
 import { MarketplaceView } from './features/marketplace/MarketplaceView';
 import { LogisticsView } from './features/logistics/LogisticsView';
@@ -12,27 +12,41 @@ import { VoiceAssistantModal } from './features/ai/VoiceAssistantModal';
 import {
   HardHat,
   ShieldCheck,
-  Truck,
-  Leaf,
-  Globe,
-  Activity,
+  Search,
+  CheckCircle2,
   PhoneCall,
   MapPin,
   Clock,
   Layers,
-  CheckCircle2
+  Activity,
+  X,
+  Building2,
+  Truck,
+  Leaf,
+  Globe,
+  ClipboardList
 } from 'lucide-react';
-
-type TabType = 'marketplace' | 'logistics' | 'esco' | 'global_bunker' | 'orders';
+import { Button } from '@bunkerstroy/ui';
 
 export const App: React.FC = () => {
   // Navigation tab state
-  const [activeTab, setActiveTab] = useState<TabType>('marketplace');
+  const [activeTab, setActiveTab] = useState<ActiveTabType>('marketplace');
 
   // Modals state
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isVoiceOpen, setIsVoiceOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchPaletteQuery, setSearchPaletteQuery] = useState('');
+
+  // High-Vis Construction Field Mode state
+  const [highVisMode, setHighVisMode] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('bunkerstroy_high_vis') === 'true';
+    } catch {
+      return false;
+    }
+  });
 
   // User state
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -46,6 +60,46 @@ export const App: React.FC = () => {
       return [];
     }
   });
+
+  // Sync high-vis mode to HTML element & localStorage
+  useEffect(() => {
+    if (highVisMode) {
+      document.documentElement.classList.add('high-vis-mode');
+      localStorage.setItem('bunkerstroy_high_vis', 'true');
+    } else {
+      document.documentElement.classList.remove('high-vis-mode');
+      localStorage.setItem('bunkerstroy_high_vis', 'false');
+    }
+  }, [highVisMode]);
+
+  // Global Keyboard Shortcuts: Shift + S (High-Vis) & Ctrl + K (Search)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Shift + S toggle high-vis mode (prevent conflict if typing in input)
+      if (e.shiftKey && (e.key === 'S' || e.key === 's')) {
+        const target = e.target as HTMLElement;
+        if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
+          return;
+        }
+        e.preventDefault();
+        setHighVisMode((prev) => !prev);
+      }
+
+      // Ctrl + K or Cmd + K opens Global Command Search Palette
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      }
+
+      // Escape closes modals
+      if (e.key === 'Escape') {
+        setIsSearchOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Sync cart to localStorage
   useEffect(() => {
@@ -138,9 +192,18 @@ export const App: React.FC = () => {
 
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
+  // Command palette navigation items
+  const quickNavItems: { label: string; tab: ActiveTabType; icon: React.ReactNode; desc: string }[] = [
+    { label: 'B2B Marketplace & Mahsulotlar', tab: 'marketplace', icon: <Building2 className="w-4 h-4 text-bunker-amber-500" />, desc: 'Sement, armatura, g‘isht va izolyatsiya materiallari' },
+    { label: 'Logistika Hub & Maxsus Texnikalar', tab: 'logistics', icon: <Truck className="w-4 h-4 text-bunker-amber-500" />, desc: 'HOWO 25t, Shacman mikser, Isuzu kran marshruti' },
+    { label: 'ESCO Bino Energiya Auditi', tab: 'esco', icon: <Leaf className="w-4 h-4 text-bunker-status-green" />, desc: 'ShNQ 2.01.04-18 davlat standarti, termal pasport' },
+    { label: 'Global Bunker Xalqaro Import', tab: 'global_bunker', icon: <Globe className="w-4 h-4 text-bunker-status-cyan" />, desc: 'Temir yo‘l hopperlari va xorijiy klinker ta’minoti' },
+    { label: 'Mening Buyurtmalarim & Invoyslar', tab: 'orders', icon: <ClipboardList className="w-4 h-4 text-bunker-amber-500" />, desc: 'Shartnomalar, hisob-fakturalar va to‘lov holati' }
+  ];
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#151719] text-[#F5F5F2] selection:bg-[#FFB800] selection:text-[#151719]">
-      {/* 1. Industrial Header & Navigation */}
+    <div className="min-h-screen flex flex-col bg-bunker-base text-bunker-text-primary selection:bg-bunker-amber-500 selection:text-bunker-vault font-sans transition-colors duration-200">
+      {/* 1. Double-Decker Mission Control Navigation & Header */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -148,42 +211,14 @@ export const App: React.FC = () => {
         onOpenCart={() => setIsCartOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
         onOpenVoice={() => setIsVoiceOpen(true)}
+        onOpenSearch={() => setIsSearchOpen(true)}
         currentUser={currentUser}
         onLogout={handleLogout}
+        highVisMode={highVisMode}
+        onToggleHighVis={() => setHighVisMode((prev) => !prev)}
       />
 
-      {/* 2. Industrial Telemetry / Live Status Bar */}
-      <aside aria-label="BunkerStroy Tizim Telemetriyasi" className="bg-[#1C1F22] border-b border-[#33373B] text-[11px] font-mono text-[#B8B8B3] py-2 px-4 select-none">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block" />
-              BUNKER-NET ONLINE
-            </span>
-            <span className="hidden sm:inline text-[#51504A]">|</span>
-            <span className="hidden sm:inline">
-              Ombor zaxirasi: <strong className="text-[#FFB800]">38,400+ tonna</strong>
-            </span>
-            <span className="hidden md:inline text-[#51504A]">|</span>
-            <span className="hidden md:inline">
-              Maxsus transport parki: <strong className="text-[#F5F5F2]">64 ta faol texnika</strong>
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4 text-[10px]">
-            <span className="flex items-center gap-1 text-[#FFB800]">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              E-IMZO & Soliq STIR integratsiyalangan
-            </span>
-            <span className="hidden lg:inline text-emerald-400 flex items-center gap-1">
-              <Leaf className="w-3.5 h-3.5" />
-              ESCO Bino Energiya Auditi faol
-            </span>
-          </div>
-        </div>
-      </aside>
-
-      {/* 3. Main Views Content */}
+      {/* 2. Main Views Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-all">
         {activeTab === 'marketplace' && (
           <MarketplaceView onAddToCart={handleAddToCart} />
@@ -206,8 +241,8 @@ export const App: React.FC = () => {
         )}
       </main>
 
-      {/* 4. Brushed Steel Industrial Footer */}
-      <footer className="mt-auto brushed-steel border-t border-[#33373B] text-[#B8B8B3] relative">
+      {/* 3. Brushed Steel Industrial Footer */}
+      <footer className="mt-auto brushed-steel border-t border-bunker-border-strong text-bunker-text-secondary relative">
         <div className="h-1 w-full hazard-stripe-sm opacity-80" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -215,31 +250,32 @@ export const App: React.FC = () => {
             {/* Column 1: Brand Info */}
             <div className="lg:col-span-2 space-y-4">
               <div className="flex items-center gap-3">
-                <div className="relative w-10 h-10 rounded-xl bg-[#222528] border border-[#51504A] flex items-center justify-center shadow-inner">
+                <div className="relative w-10 h-10 rounded-xl bg-bunker-surface-2 border border-bunker-border-strong flex items-center justify-center shadow-inner">
                   <div className="absolute top-1 left-1 industrial-rivet" />
                   <div className="absolute top-1 right-1 industrial-rivet" />
-                  <HardHat className="w-5 h-5 text-[#FFB800]" />
+                  <HardHat className="w-5 h-5 text-bunker-amber-500" />
                 </div>
                 <div>
-                  <span className="text-xl font-black tracking-wider leading-none text-[#F5F5F2]">
-                    <span className="text-[#FFB800]">BUNKER</span> STROY
+                  <span className="text-xl font-black tracking-wider leading-none text-bunker-text-primary">
+                    <span className="text-bunker-amber-500">BUNKER</span> STROY
                   </span>
-                  <span className="text-[10px] tracking-widest text-[#B8B8B3] uppercase font-mono block mt-0.5">
+                  <span className="text-[10px] tracking-widest text-bunker-text-muted uppercase font-mono block mt-0.5">
                     Sanoat & B2B Qurilish Ekologik Tizimi
                   </span>
                 </div>
               </div>
 
-              <p className="text-xs leading-relaxed text-[#B8B8B3] max-w-md">
-                BunkerStroy — O‘zbekiston Respublikasi bo‘ylab yirik qurilish ob’ektlari, pudratchilar va ishlab chiqaruvchilarni to‘g‘ridan-to‘g‘ri birlashtiruvchi avtomatlashtirilgan B2B xaridlar, og‘ir logistika va ESCO energiya auditi platformasi.
+              <p className="text-xs leading-relaxed text-bunker-text-secondary max-w-md">
+                BunkerStroy — O‘zbekiston Respublikasi bo‘ylab yirik qurilish ob’ektlari, pudratchilar va ishlab chiqaruvchilarni
+                to‘g‘ridan-to‘g‘ri birlashtiruvchi avtomatlashtirilgan B2B xaridlar, og‘ir logistika va ESCO energiya auditi platformasi.
               </p>
 
               <div className="flex flex-wrap items-center gap-2 pt-2">
-                <div className="flex items-center gap-1.5 bg-[#151719] border border-[#33373B] px-2.5 py-1 rounded-lg text-[10px] font-mono text-[#FFB800]">
-                  <ShieldCheck className="w-3.5 h-3.5" />
+                <div className="flex items-center gap-1.5 bg-bunker-surface-1 border border-bunker-border-strong px-2.5 py-1 rounded-lg text-[10px] font-mono text-bunker-amber-500">
+                  <ShieldCheck className="w-3.5 h-3.5 text-bunker-status-green" />
                   <span>ISO 9001:2015 Sertifikatlangan</span>
                 </div>
-                <div className="flex items-center gap-1.5 bg-[#151719] border border-[#33373B] px-2.5 py-1 rounded-lg text-[10px] font-mono text-emerald-400">
+                <div className="flex items-center gap-1.5 bg-bunker-surface-1 border border-bunker-border-strong px-2.5 py-1 rounded-lg text-[10px] font-mono text-bunker-status-green">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>Davlat Standartlari Muqobilligi</span>
                 </div>
@@ -248,15 +284,15 @@ export const App: React.FC = () => {
 
             {/* Column 2: Platform Modules */}
             <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#F5F5F2] font-mono flex items-center gap-1.5">
-                <Layers className="w-3.5 h-3.5 text-[#FFB800]" />
+              <h4 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary font-mono flex items-center gap-1.5">
+                <Layers className="w-3.5 h-3.5 text-bunker-amber-500" />
                 Modullar
               </h4>
-              <ul className="space-y-2 text-xs">
+              <ul className="space-y-2 text-xs font-mono">
                 <li>
                   <button
                     onClick={() => setActiveTab('marketplace')}
-                    className="hover:text-[#FFB800] transition-colors cursor-pointer"
+                    className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
                   >
                     B2B Marketplace & Katalog
                   </button>
@@ -264,7 +300,7 @@ export const App: React.FC = () => {
                 <li>
                   <button
                     onClick={() => setActiveTab('logistics')}
-                    className="hover:text-[#FFB800] transition-colors cursor-pointer"
+                    className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
                   >
                     Og'ir Yuk Tashish & HOWO
                   </button>
@@ -272,7 +308,7 @@ export const App: React.FC = () => {
                 <li>
                   <button
                     onClick={() => setActiveTab('esco')}
-                    className="hover:text-[#FFB800] transition-colors cursor-pointer"
+                    className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
                   >
                     ESCO Energiya Auditi
                   </button>
@@ -280,7 +316,7 @@ export const App: React.FC = () => {
                 <li>
                   <button
                     onClick={() => setActiveTab('global_bunker')}
-                    className="hover:text-[#FFB800] transition-colors cursor-pointer"
+                    className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
                   >
                     Global Bunker Import Hub
                   </button>
@@ -288,7 +324,7 @@ export const App: React.FC = () => {
                 <li>
                   <button
                     onClick={() => setActiveTab('orders')}
-                    className="hover:text-[#FFB800] transition-colors cursor-pointer"
+                    className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
                   >
                     Mening Buyurtmalarim
                   </button>
@@ -298,29 +334,29 @@ export const App: React.FC = () => {
 
             {/* Column 3: Texnologiyalar & Xavfsizlik */}
             <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#F5F5F2] font-mono flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#FFB800]" />
+              <h4 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary font-mono flex items-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-bunker-amber-500" />
                 Integratsiyalar
               </h4>
-              <ul className="space-y-2 text-xs text-[#B8B8B3]">
+              <ul className="space-y-2 text-xs font-mono text-bunker-text-secondary">
                 <li className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FFB800]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-bunker-amber-500" />
                   <span>E-IMZO Raqamli Imzo</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FFB800]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-bunker-amber-500" />
                   <span>Davlat Soliq Qo‘mitasi (STIR)</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-bunker-status-green" />
                   <span>Google Gemini 3.8 AI & Maps</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-bunker-status-green" />
                   <span>Eskiz.uz SMS Gateway</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-bunker-status-cyan" />
                   <span>Payme, Click & B2B Invoicing</span>
                 </li>
               </ul>
@@ -328,45 +364,112 @@ export const App: React.FC = () => {
 
             {/* Column 4: Bog'lanish & Aloqa */}
             <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#F5F5F2] font-mono flex items-center gap-1.5">
-                <PhoneCall className="w-3.5 h-3.5 text-[#FFB800]" />
+              <h4 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary font-mono flex items-center gap-1.5">
+                <PhoneCall className="w-3.5 h-3.5 text-bunker-amber-500" />
                 Aloqa Markazi
               </h4>
-              <div className="space-y-2.5 text-xs text-[#B8B8B3]">
+              <div className="space-y-2.5 text-xs text-bunker-text-secondary font-mono">
                 <div className="flex items-start gap-2">
-                  <MapPin className="w-4 h-4 text-[#FFB800] shrink-0 mt-0.5" />
+                  <MapPin className="w-4 h-4 text-bunker-amber-500 shrink-0 mt-0.5" />
                   <span>Toshkent sh., Chilonzor tumani, Bunyodkor shoh ko'chasi 42-A</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <PhoneCall className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span className="font-mono text-[#F5F5F2] font-bold">+998 (71) 200-45-46</span>
+                  <PhoneCall className="w-4 h-4 text-bunker-status-green shrink-0" />
+                  <span className="text-bunker-text-primary font-bold">+998 (71) 200-45-46</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-[#FFB800] shrink-0" />
-                  <span>Dispatcherlik: 24/7 uzluksiz</span>
+                  <Clock className="w-4 h-4 text-bunker-amber-500 shrink-0" />
+                  <span>Dispetcherlik: 24/7 uzluksiz</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Bottom Copyright & Dispatcher Status */}
-          <div className="mt-10 pt-6 border-t border-[#33373B] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono">
-            <p className="text-[#777A7C] text-center sm:text-left">
+          {/* Bottom Copyright & SLA */}
+          <div className="mt-10 pt-6 border-t border-bunker-border-strong flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono">
+            <p className="text-bunker-text-muted text-center sm:text-left">
               &copy; 2026 BunkerStroy Technologies LLC. Barcha huquqlar himoyalangan.
             </p>
             <div className="flex items-center gap-3">
-              <span className="inline-flex items-center gap-1.5 text-emerald-400">
+              <span className="inline-flex items-center gap-1.5 text-bunker-status-green">
                 <Activity className="w-3.5 h-3.5 animate-pulse" />
                 SLA: 99.98% Ishonchlilik
               </span>
-              <span className="text-[#51504A]">|</span>
-              <span className="text-[#777A7C]">v1.0.0 (Production Core)</span>
+              <span className="text-bunker-border-strong">|</span>
+              <span className="text-bunker-text-muted">v1.2.0 (Tactile Precision Core)</span>
             </div>
           </div>
         </div>
       </footer>
 
-      {/* 5. Modals & Drawers */}
+      {/* 4. Global Command Search Palette Modal (Ctrl + K) */}
+      {isSearchOpen && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+          <div className="relative w-full max-w-xl bg-bunker-surface-1 border-2 border-bunker-amber-500 rounded-3xl p-5 shadow-2xl space-y-4">
+            <div className="flex items-center gap-2.5 pb-3 border-b border-bunker-border-subtle">
+              <Search className="w-5 h-5 text-bunker-amber-500 shrink-0" />
+              <input
+                type="text"
+                autoFocus
+                placeholder="Modul, mahsulot yoki xizmat nomini yozing..."
+                value={searchPaletteQuery}
+                onChange={(e) => setSearchPaletteQuery(e.target.value)}
+                className="w-full bg-transparent text-sm text-bunker-text-primary outline-none font-mono placeholder:text-bunker-text-muted"
+              />
+              <button
+                onClick={() => setIsSearchOpen(false)}
+                className="text-bunker-text-secondary hover:text-bunker-text-primary p-1 rounded-lg cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-2">
+              <span className="text-[10px] text-bunker-text-muted uppercase font-mono block font-bold">
+                Tezkor O‘tish Modullari:
+              </span>
+              <div className="space-y-1">
+                {quickNavItems
+                  .filter((item) =>
+                    !searchPaletteQuery ||
+                    item.label.toLowerCase().includes(searchPaletteQuery.toLowerCase()) ||
+                    item.desc.toLowerCase().includes(searchPaletteQuery.toLowerCase())
+                  )
+                  .map((item, idx) => (
+                    <div
+                      key={idx}
+                      onClick={() => {
+                        setActiveTab(item.tab);
+                        setIsSearchOpen(false);
+                      }}
+                      className="p-3 rounded-2xl bg-bunker-base hover:bg-bunker-surface-hover border border-bunker-border-subtle hover:border-bunker-amber-500 flex items-center justify-between cursor-pointer transition-all group font-mono"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-xl bg-bunker-surface-2 border border-bunker-border-strong group-hover:border-bunker-amber-500">
+                          {item.icon}
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-bunker-text-primary group-hover:text-bunker-amber-500 transition-colors">
+                            {item.label}
+                          </h4>
+                          <p className="text-[11px] text-bunker-text-muted">{item.desc}</p>
+                        </div>
+                      </div>
+                      <span className="text-xs text-bunker-text-muted group-hover:text-bunker-amber-500">↵</span>
+                    </div>
+                  ))}
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-bunker-border-subtle flex items-center justify-between text-[10px] font-mono text-bunker-text-muted">
+              <span>Navigatsiya: <kbd className="bg-bunker-surface-2 px-1.5 py-0.5 rounded">↑</kbd> <kbd className="bg-bunker-surface-2 px-1.5 py-0.5 rounded">↓</kbd></span>
+              <span>Yopish: <kbd className="bg-bunker-surface-2 px-1.5 py-0.5 rounded">ESC</kbd></span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 5. Drawers & Modals */}
       <CartDrawer
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
@@ -383,9 +486,13 @@ export const App: React.FC = () => {
         onSuccess={handleAuthSuccess}
       />
 
+      {/* Non-Blocking Floating AI Copilot Dock */}
       <VoiceAssistantModal
         isOpen={isVoiceOpen}
         onClose={() => setIsVoiceOpen(false)}
+        onNavigateTab={(tab) => {
+          setActiveTab(tab);
+        }}
       />
     </div>
   );

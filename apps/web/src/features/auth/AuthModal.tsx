@@ -271,12 +271,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="relative w-full max-w-md bg-[#1A1D20] border border-[#33373B] rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+      <div className="relative w-full max-w-md bg-bunker-surface-1 border border-bunker-border-strong rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 text-[#B8B8B3] hover:text-[#F5F5F2] cursor-pointer transition-colors"
+          className="absolute top-5 right-5 text-bunker-text-secondary hover:text-bunker-text-primary cursor-pointer transition-colors"
           aria-label="Yopish"
         >
           <X className="w-5 h-5" />
@@ -288,18 +288,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
             <ShieldCheck className="w-3.5 h-3.5" />
             BunkerStroy B2B Identity
           </Badge>
-          <h2 className="text-xl font-black text-[#F5F5F2]">Kabinetga Kirish</h2>
-          <p className="text-xs text-[#B8B8B3] mt-1">
+          <h2 className="text-xl font-black text-bunker-text-primary">Kabinetga Kirish</h2>
+          <p className="text-xs text-bunker-text-secondary mt-1">
             Xarid qilish, buyurtmalar tarixi, transport dispetcherligi va ESCO auditi
           </p>
         </div>
 
         {/* Tab switch */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 bg-[#151719] p-1 rounded-xl border border-[#33373B] text-[11px] font-semibold text-[#B8B8B3]">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 bg-bunker-base p-1 rounded-xl border border-bunker-border-strong text-[11px] font-semibold text-bunker-text-secondary font-mono">
           <button
             onClick={() => handleTabChange('otp')}
             className={`py-2 px-1 rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer ${
-              authMode === 'otp' ? 'bg-[#292C2F] text-[#FFB800] shadow-sm' : 'hover:text-[#F5F5F2]'
+              authMode === 'otp' ? 'bg-bunker-surface-2 text-bunker-amber-500 shadow-sm font-bold' : 'hover:text-bunker-text-primary'
             }`}
           >
             <Smartphone className="w-3 h-3" />
@@ -308,7 +308,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           <button
             onClick={() => handleTabChange('login')}
             className={`py-2 px-1 rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer ${
-              authMode === 'login' ? 'bg-[#292C2F] text-[#FFB800] shadow-sm' : 'hover:text-[#F5F5F2]'
+              authMode === 'login' ? 'bg-bunker-surface-2 text-bunker-amber-500 shadow-sm font-bold' : 'hover:text-bunker-text-primary'
             }`}
           >
             <Lock className="w-3 h-3" />
@@ -317,7 +317,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           <button
             onClick={() => handleTabChange('stir')}
             className={`py-2 px-1 rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer ${
-              authMode === 'stir' ? 'bg-[#292C2F] text-[#FFB800] shadow-sm' : 'hover:text-[#F5F5F2]'
+              authMode === 'stir' ? 'bg-bunker-surface-2 text-bunker-amber-500 shadow-sm font-bold' : 'hover:text-bunker-text-primary'
             }`}
           >
             <Building2 className="w-3 h-3" />
@@ -326,7 +326,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           <button
             onClick={() => handleTabChange('eimzo')}
             className={`py-2 px-1 rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer ${
-              authMode === 'eimzo' ? 'bg-[#292C2F] text-[#FFB800] shadow-sm' : 'hover:text-[#F5F5F2]'
+              authMode === 'eimzo' ? 'bg-bunker-surface-2 text-bunker-amber-500 shadow-sm font-bold' : 'hover:text-bunker-text-primary'
             }`}
           >
             <Fingerprint className="w-3 h-3" />
@@ -356,7 +356,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
             {!otpSent ? (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#B8B8B3] mb-1.5">
+                  <label className="block text-xs font-semibold text-bunker-text-secondary mb-1.5 font-mono">
                     Telefon raqamingiz:
                   </label>
                   <div className="relative">
@@ -365,10 +365,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                       value={phone}
                       onChange={handlePhoneChange}
                       placeholder="+998 90 123-45-67"
-                      className="w-full bg-[#151719] border border-[#33373B] focus:border-[#FFB800] p-3 rounded-xl text-sm font-mono text-[#F5F5F2] outline-none tracking-wide transition-colors"
+                      className="w-full bg-bunker-base border border-bunker-border-strong focus:border-bunker-amber-500 p-3 rounded-xl text-sm font-mono text-bunker-text-primary outline-none tracking-wide transition-colors"
                     />
                   </div>
-                  <p className="text-[11px] text-[#777A7C] mt-1.5">
+                  <p className="text-[11px] text-bunker-text-muted mt-1.5 font-mono">
                     SMS orqali 6 xonali bir martalik tasdiqlash kodi yuboriladi.
                   </p>
                 </div>
@@ -380,15 +380,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                   isLoading={loading}
                 >
                   <Smartphone className="w-4 h-4 mr-1.5" />
-                  SMS Kodni Yuborish
+                  <span>SMS Kodni Yuborish</span>
                 </Button>
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="bg-[#151719] border border-[#33373B] p-3 rounded-xl flex items-center justify-between">
+                <div className="bg-bunker-base border border-bunker-border-strong p-3 rounded-xl flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-[#FFB800]" />
-                    <span className="text-xs font-mono font-bold text-[#F5F5F2]">{phone}</span>
+                    <Phone className="w-4 h-4 text-bunker-amber-500" />
+                    <span className="text-xs font-mono font-bold text-bunker-text-primary">{phone}</span>
                   </div>
                   <button
                     onClick={() => {
@@ -397,14 +397,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                       setError(null);
                       setInfoMessage(null);
                     }}
-                    className="text-[11px] text-[#FFB800] hover:underline cursor-pointer"
+                    className="text-[11px] text-bunker-amber-500 hover:underline cursor-pointer font-mono"
                   >
                     O'zgartirish
                   </button>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#B8B8B3] mb-1.5">
+                  <label className="block text-xs font-semibold text-bunker-text-secondary mb-1.5 font-mono">
                     SMS tasdiqlash kodi:
                   </label>
                   <input
@@ -413,10 +413,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                     value={otpCode}
                     onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
                     placeholder="••••••"
-                    className="w-full bg-[#151719] border border-[#33373B] focus:border-[#FFB800] p-3 rounded-xl text-center text-xl font-mono text-[#FFB800] tracking-[0.5em] outline-none transition-colors"
+                    className="w-full bg-bunker-base border border-bunker-border-strong focus:border-bunker-amber-500 p-3 rounded-xl text-center text-xl font-mono text-bunker-amber-500 tracking-[0.5em] outline-none transition-colors"
                   />
-                  <p className="text-[11px] text-[#777A7C] mt-1 text-center font-mono">
-                    💡 Test kodi: <span className="text-[#FFB800] font-bold">123456</span>
+                  <p className="text-[11px] text-bunker-text-muted mt-1 text-center font-mono">
+                    💡 Test kodi: <span className="text-bunker-amber-500 font-bold">123456</span>
                   </p>
                 </div>
 
@@ -428,23 +428,23 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                   disabled={otpCode.length !== 6}
                 >
                   <ArrowRight className="w-4 h-4 mr-1.5" />
-                  Tasdiqlash va Kirish
+                  <span>Tasdiqlash va Kirish</span>
                 </Button>
 
                 <div className="text-center">
                   {cooldown > 0 ? (
-                    <span className="text-xs text-[#777A7C] font-mono flex items-center justify-center gap-1.5">
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#FFB800]" />
+                    <span className="text-xs text-bunker-text-muted font-mono flex items-center justify-center gap-1.5">
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin text-bunker-amber-500" />
                       Kodni qayta yuborish ({cooldown}s)
                     </span>
                   ) : (
                     <button
                       onClick={handleSendOtp}
                       disabled={loading}
-                      className="text-xs text-[#FFB800] hover:underline cursor-pointer font-semibold flex items-center justify-center gap-1 mx-auto"
+                      className="text-xs text-bunker-amber-500 hover:underline cursor-pointer font-semibold flex items-center justify-center gap-1 mx-auto font-mono"
                     >
                       <RefreshCw className="w-3.5 h-3.5" />
-                      Kodni qayta yuborish
+                      <span>Kodni qayta yuborish</span>
                     </button>
                   )}
                 </div>
@@ -455,68 +455,68 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
         {/* TAB 2: Password Login */}
         {authMode === 'login' && (
-          <div className="space-y-4">
+          <div className="space-y-4 font-mono">
             <div>
-              <label className="block text-xs font-semibold text-[#B8B8B3] mb-1">Login yoki Telefon:</label>
+              <label className="block text-xs font-semibold text-bunker-text-secondary mb-1">Login yoki Telefon:</label>
               <input
                 type="text"
                 placeholder="admin yoki telefon raqam"
                 value={login}
                 onChange={(e) => setLogin(e.target.value)}
-                className="w-full bg-[#151719] border border-[#33373B] focus:border-[#FFB800] p-3 rounded-xl text-sm text-[#F5F5F2] outline-none transition-colors"
+                className="w-full bg-bunker-base border border-bunker-border-strong focus:border-bunker-amber-500 p-3 rounded-xl text-sm text-bunker-text-primary outline-none transition-colors"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-[#B8B8B3] mb-1">Parol:</label>
+              <label className="block text-xs font-semibold text-bunker-text-secondary mb-1">Parol:</label>
               <input
                 type="password"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handlePasswordLogin()}
-                className="w-full bg-[#151719] border border-[#33373B] focus:border-[#FFB800] p-3 rounded-xl text-sm text-[#F5F5F2] outline-none transition-colors"
+                className="w-full bg-bunker-base border border-bunker-border-strong focus:border-bunker-amber-500 p-3 rounded-xl text-sm text-bunker-text-primary outline-none transition-colors"
               />
             </div>
             <Button className="w-full" size="md" onClick={handlePasswordLogin} isLoading={loading}>
               <KeyRound className="w-4 h-4 mr-1.5" />
-              Kirish
+              <span>Kirish</span>
             </Button>
-            <p className="text-[11px] text-[#777A7C] text-center">
-              Demo admin: <span className="font-mono text-[#B8B8B3]">admin</span> / parol:{' '}
-              <span className="font-mono text-[#B8B8B3]">bunker2026</span>
+            <p className="text-[11px] text-bunker-text-muted text-center font-mono">
+              Demo admin: <span className="font-mono text-bunker-amber-500 font-bold">admin</span> / parol:{' '}
+              <span className="font-mono text-bunker-amber-500 font-bold">bunker2026</span>
             </p>
           </div>
         )}
 
         {/* TAB 3: STIR (INN) Lookup */}
         {authMode === 'stir' && (
-          <div className="space-y-4">
+          <div className="space-y-4 font-mono">
             <div>
-              <label className="block text-xs font-semibold text-[#B8B8B3] mb-1">Korxona STIR (INN):</label>
+              <label className="block text-xs font-semibold text-bunker-text-secondary mb-1">Korxona STIR (INN):</label>
               <input
                 type="text"
                 maxLength={9}
                 value={inn}
                 onChange={(e) => setInn(e.target.value.replace(/\D/g, ''))}
-                className="w-full bg-[#151719] border border-[#33373B] focus:border-[#FFB800] p-3 rounded-xl text-sm font-mono text-[#FFB800] outline-none transition-colors"
+                className="w-full bg-bunker-base border border-bunker-border-strong focus:border-bunker-amber-500 p-3 rounded-xl text-sm font-mono text-bunker-amber-500 outline-none transition-colors font-bold"
               />
             </div>
             <Button variant="secondary" className="w-full" size="md" onClick={handleStirLookup} isLoading={loading}>
-              <Building2 className="w-4 h-4 mr-1.5" />
+              <Building2 className="w-4 h-4 mr-1.5 text-bunker-amber-500" />
               <span>Soliq bazasidan tekshirish</span>
             </Button>
 
             {companyInfo && (
-              <div className="bg-[#151719] border border-[#33373B] p-4 rounded-xl space-y-2.5 text-xs">
+              <div className="bg-bunker-base border border-bunker-border-strong p-4 rounded-xl space-y-2.5 text-xs">
                 <div className="flex justify-between items-start gap-2">
-                  <span className="font-bold text-[#F5F5F2] text-sm leading-snug">{companyInfo.companyName}</span>
+                  <span className="font-bold text-bunker-text-primary text-sm leading-snug">{companyInfo.companyName}</span>
                   <Badge variant="success" className="shrink-0">{companyInfo.status}</Badge>
                 </div>
-                <div className="space-y-1 text-[#B8B8B3] pt-1 border-t border-[#33373B]">
-                  <p><span className="text-[#777A7C]">Rahbar:</span> {companyInfo.director}</p>
-                  <p><span className="text-[#777A7C]">Manzil:</span> {companyInfo.address}</p>
-                  <p><span className="text-[#777A7C]">Faoliyat:</span> {companyInfo.activityType || 'Qurilish va ta’minot'}</p>
-                  <p><span className="text-[#777A7C]">QQS to‘lovchisi:</span> {companyInfo.vatPayer ? 'Ha (Faol)' : 'Yo‘q'}</p>
+                <div className="space-y-1 text-bunker-text-secondary pt-1 border-t border-bunker-border-subtle">
+                  <p><span className="text-bunker-text-muted">Rahbar:</span> {companyInfo.director}</p>
+                  <p><span className="text-bunker-text-muted">Manzil:</span> {companyInfo.address}</p>
+                  <p><span className="text-bunker-text-muted">Faoliyat:</span> {companyInfo.activityType || 'Qurilish va ta’minot'}</p>
+                  <p><span className="text-bunker-text-muted">QQS to‘lovchisi:</span> {companyInfo.vatPayer ? 'Ha (Faol)' : 'Yo‘q'}</p>
                 </div>
               </div>
             )}
@@ -525,22 +525,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
         {/* TAB 4: E-IMZO */}
         {authMode === 'eimzo' && (
-          <div className="space-y-4 text-center">
-            <div className="p-5 border border-[#33373B] rounded-2xl bg-[#151719] space-y-3">
-              <div className="w-12 h-12 mx-auto rounded-2xl bg-[#FFB800]/10 border border-[#FFB800]/30 flex items-center justify-center">
-                <Fingerprint className="w-6 h-6 text-[#FFB800]" />
+          <div className="space-y-4 text-center font-mono">
+            <div className="p-5 border border-bunker-border-strong rounded-2xl bg-bunker-base space-y-3">
+              <div className="w-12 h-12 mx-auto rounded-2xl bg-bunker-amber-500/10 border border-bunker-amber-500/30 flex items-center justify-center">
+                <Fingerprint className="w-6 h-6 text-bunker-amber-500" />
               </div>
-              <h4 className="text-sm font-bold text-[#F5F5F2]">E-IMZO Kalitini Tasdiqlash</h4>
-              <p className="text-xs text-[#B8B8B3] leading-relaxed">
+              <h4 className="text-sm font-bold text-bunker-text-primary">E-IMZO Kalitini Tasdiqlash</h4>
+              <p className="text-xs text-bunker-text-secondary leading-relaxed">
                 Yuridik shaxs yoki yakka tartibdagi tadbirkorlik elektron raqamli imzosi orqali xavfsiz autentifikatsiya.
               </p>
               <div className="pt-2">
-                <span className="text-[11px] font-mono text-[#777A7C]">STIR: {inn}</span>
+                <span className="text-[11px] font-mono text-bunker-amber-500 font-bold">STIR: {inn}</span>
               </div>
             </div>
             <Button className="w-full" size="md" onClick={handleEimzoLogin} isLoading={loading}>
               <Fingerprint className="w-4 h-4 mr-1.5" />
-              E-IMZO bilan Kirish
+              <span>E-IMZO bilan Kirish</span>
             </Button>
           </div>
         )}

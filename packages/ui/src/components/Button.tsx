@@ -16,14 +16,20 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-bold tracking-wide transition-all rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.98] cursor-pointer';
+  const baseStyles =
+    'inline-flex items-center justify-center font-bold tracking-wide transition-all rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.98] active:translate-y-0.5 cursor-pointer';
 
   const variantStyles = {
-    primary: 'bg-[#FFB800] hover:bg-[#FFA500] text-[#151719] focus:ring-[#FFB800] shadow-md shadow-[#FFB800]/20',
-    secondary: 'bg-[#292C2F] hover:bg-[#34383C] text-[#F5F5F2] border border-[#51504A] focus:ring-[#777A7C]',
-    danger: 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500 shadow-md shadow-red-600/20',
-    outline: 'border border-[#FFB800] text-[#FFB800] hover:bg-[#FFB800]/10 focus:ring-[#FFB800]',
-    ghost: 'text-[#B8B8B3] hover:text-[#F5F5F2] hover:bg-[#222528]'
+    primary:
+      'bg-bunker-amber-500 hover:bg-bunker-amber-400 text-bunker-vault font-black focus:ring-bunker-amber-500 shadow-md shadow-bunker-amber-500/20 active:shadow-sm',
+    secondary:
+      'bg-bunker-surface-2 hover:bg-bunker-surface-hover text-bunker-text-primary border border-bunker-border-strong focus:ring-bunker-border-strong active:bg-bunker-surface-1',
+    danger:
+      'bg-bunker-status-red hover:bg-red-600 text-white focus:ring-bunker-status-red shadow-md shadow-red-600/20',
+    outline:
+      'border border-bunker-amber-500 text-bunker-amber-500 hover:bg-bunker-amber-500/10 focus:ring-bunker-amber-500',
+    ghost:
+      'text-bunker-text-secondary hover:text-bunker-text-primary hover:bg-bunker-surface-2'
   };
 
   const sizeStyles = {
@@ -42,7 +48,11 @@ export const Button: React.FC<ButtonProps> = ({
         <>
           <svg className="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
           </svg>
           <span>Kutilmoqda...</span>
         </>
