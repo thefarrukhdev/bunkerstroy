@@ -89,11 +89,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             disabled={disabled}
             className={cn(
-              'w-full bg-bunker-input border rounded-xl text-bunker-text-primary placeholder-bunker-text-muted outline-none transition-all duration-150',
-              'focus:ring-1 focus:ring-bunker-amber-500/50',
+              'w-full bg-bunker-input border rounded-xl text-bunker-text-primary placeholder-bunker-text-muted outline-none transition-all duration-150 shadow-2xs',
+              'focus:ring-2 focus:ring-bunker-amber-500/20',
               error
-                ? 'border-bunker-status-red text-bunker-status-red focus:border-bunker-status-red focus:ring-bunker-status-red/50'
-                : 'border-bunker-border-strong hover:border-bunker-border-active/60 focus:border-bunker-amber-500',
+                ? 'border-bunker-status-red text-bunker-status-red focus:border-bunker-status-red focus:ring-bunker-status-red/20'
+                : 'border-bunker-border-strong hover:border-slate-300 focus:border-bunker-amber-500',
               disabled && 'opacity-50 cursor-not-allowed bg-bunker-surface-2',
               isMono && 'font-mono',
               sizeStyles[sizeVariant],

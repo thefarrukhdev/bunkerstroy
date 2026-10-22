@@ -114,9 +114,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
   };
 
   const handleAdd = (product: Product, qty: number = 1) => {
-    for (let i = 0; i < qty; i++) {
-      onAddToCart(product);
-    }
+    onAddToCart(product, qty);
     setAddedId(product.id);
     setTimeout(() => setAddedId(null), 1500);
   };
@@ -135,9 +133,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
     products.forEach((p) => {
       const qty = matrixQuantities[p.id] || 0;
       if (qty > 0) {
-        for (let i = 0; i < qty; i++) {
-          onAddToCart(p);
-        }
+        onAddToCart(p, qty);
         count++;
       }
     });

@@ -137,15 +137,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         method: 'POST',
         headers,
         body: JSON.stringify({
-          buyerName: directorName || companyName || 'B2B Buyurtmachi',
-          buyerPhone: buyerPhone,
+          buyerName: (directorName || companyName || 'B2B Buyurtmachi').trim(),
+          buyerPhone: (buyerPhone || '').trim() || '+998901234567',
           items: items.map((it) => ({
             productId: it.product.id,
             quantity: it.quantity
           })),
           deliveryAddress: {
             region: 'Toshkent shahri',
-            district: legalAddress
+            district: (legalAddress || '').trim() || 'Yunusobod tumani'
           },
           paymentMethod: paymentMethod === 'BANK_TRANSFER' ? 'BANK_TRANSFER' : paymentMethod
         })

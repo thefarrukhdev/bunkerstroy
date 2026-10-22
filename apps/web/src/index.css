@@ -59,8 +59,10 @@
 
 .hazard-stripe,
 .hazard-stripe-sm {
-  background: transparent;
-  height: 1px;
+  display: none !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  pointer-events: none !important;
 }
 
 .brushed-steel {
