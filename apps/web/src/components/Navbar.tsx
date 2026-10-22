@@ -245,6 +245,7 @@ export const CartButton: React.FC<CartButtonProps> = ({ count, onClick, classNam
   return (
     <button
       type="button"
+      data-cart-button="true"
       onClick={onClick}
       title={hasItems ? `${count} ta mahsulot xarid savatida` : "Xarid savati bo'sh"}
       aria-label={hasItems ? `Xarid savati, ${count} ta mahsulot` : 'Xarid savati'}
@@ -306,8 +307,10 @@ export const UserAccountBadge: React.FC<UserAccountBadgeProps> = ({
     );
   }
 
-  const stirNumber = currentUser.stir || '304928172';
-  const companyTitle = currentUser.companyName || currentUser.displayName || 'B2B Buyurtmachi';
+  const userIdentifier = currentUser.stir
+    ? `STIR: ${currentUser.stir}`
+    : currentUser.phone || currentUser.email || 'Foydalanuvchi';
+  const companyTitle = currentUser.companyName || currentUser.displayName || 'Xaridor';
 
   if (variant === 'desktop') {
     return (
@@ -318,8 +321,8 @@ export const UserAccountBadge: React.FC<UserAccountBadgeProps> = ({
           </div>
           <div className="text-left hidden sm:flex sm:flex-col leading-none min-w-0 max-w-[130px] xl:max-w-[160px]">
             <div className="flex items-center gap-1">
-              <span className="text-[10px] font-mono font-bold text-bunker-amber-500 tracking-tight">
-                STIR: {stirNumber}
+              <span className="text-[10px] font-mono font-bold text-bunker-amber-500 tracking-tight truncate">
+                {userIdentifier}
               </span>
               <CheckCircle2 className="w-2.5 h-2.5 text-emerald-600 shrink-0" />
             </div>
@@ -353,7 +356,7 @@ export const UserAccountBadge: React.FC<UserAccountBadgeProps> = ({
           <div className="min-w-0 text-left">
             <div className="flex items-center gap-1.5">
               <span className="text-xs font-mono font-bold text-bunker-amber-500">
-                STIR: {stirNumber}
+                {userIdentifier}
               </span>
               <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-mono font-bold bg-emerald-100 text-emerald-700">
                 <CheckCircle2 className="w-2.5 h-2.5" /> Tasdiqlangan

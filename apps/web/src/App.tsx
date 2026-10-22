@@ -7,10 +7,6 @@ import { MarketplaceView } from './features/marketplace/MarketplaceView';
 import { ProductDetailView } from './features/marketplace/ProductDetailView';
 import { SuppliersView } from './features/suppliers/SuppliersView';
 import { LogisticsView } from './features/logistics/LogisticsView';
-import { TendersView } from './features/tenders/TendersView';
-import { EscoCalculatorView } from './features/esco/EscoCalculatorView';
-import { GlobalBunkerHubView } from './features/global_bunker/GlobalBunkerHubView';
-import { CertificationsView } from './features/certifications/CertificationsView';
 import { OrdersView } from './features/orders/OrdersView';
 import { SellerPanelView } from './features/seller/SellerPanelView';
 import { AuthModal } from './features/auth/AuthModal';
@@ -230,20 +226,20 @@ export const App: React.FC = () => {
             {/* Column 3: Standards & Integrations */}
             <div className="space-y-2">
               <h4 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary font-mono">
-                Integratsiyalar
+                Afzalliklar
               </h4>
               <ul className="space-y-1.5 text-xs font-mono text-bunker-text-secondary">
                 <li className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-bunker-amber-500" />
-                  <span>E-IMZO PKCS#7 Raqamli Imzo</span>
+                  <span>Zavod va ishlab chiqaruvchi narxlari</span>
                 </li>
                 <li className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-bunker-amber-500" />
-                  <span>Davlat Soliq Qo‘mitasi (STIR)</span>
+                  <span>Ob'ektgacha yuk yetkazib berish</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-bunker-status-green" />
-                  <span>Payme, Click &amp; B2B Faktura</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+                  <span>Payme, Click, Naqd va B2B to‘lov</span>
                 </li>
               </ul>
             </div>

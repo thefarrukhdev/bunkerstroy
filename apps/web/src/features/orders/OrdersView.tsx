@@ -196,14 +196,14 @@ export const OrdersView: React.FC = () => {
         <div>
           <div className="mb-1.5">
             <span className="text-xs font-mono font-bold text-bunker-amber-500 uppercase tracking-wider">
-              Shartnomalar &amp; Invoyslar
+              Xaridlar Tarixi
             </span>
           </div>
           <h1 className="text-xl sm:text-2xl font-extrabold text-bunker-text-primary tracking-tight">
             Mening Buyurtmalarim &amp; Yetkazib Berish Holati
           </h1>
           <p className="text-xs sm:text-sm text-bunker-text-secondary mt-1">
-            Rasmiylashtirilgan B2B buyurtmalari, HOWO va mikserlar harakati, Didox/Soliq hisob-fakturalari.
+            Sotib olingan qurilish mollari, buyurtma holati va yetkazib berish jarayoni.
           </p>
         </div>
         <div className="flex items-center gap-2 font-mono text-xs">

@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  ShieldCheck,
   Phone,
-  Building2,
-  Fingerprint,
   Lock,
   Smartphone,
   ArrowRight,
   RefreshCw,
-  KeyRound
+  KeyRound,
+  UserCheck
 } from 'lucide-react';
 import { Button, Badge, Modal, Input, Alert, Tabs, TabsList, TabTrigger } from '@bunkerstroy/ui';
 
@@ -18,7 +16,7 @@ interface AuthModalProps {
   onSuccess: (user: any) => void;
 }
 
-type AuthMode = 'otp' | 'login' | 'stir' | 'eimzo';
+type AuthMode = 'otp' | 'login';
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => {
   const [authMode, setAuthMode] = useState<AuthMode>('otp');
@@ -33,18 +31,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
 
-  // STIR state
-  const [inn, setInn] = useState('201122334');
-  const [companyInfo, setCompanyInfo] = useState<any>(null);
-
-  // Common status
+  // Status
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // 60-second cooldown timer for SMS OTP
+  // Cooldown timer
   useEffect(() => {
     if (cooldown > 0) {
       timerRef.current = setTimeout(() => {
@@ -52,31 +46,24 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
       }, 1000);
     }
     return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, [cooldown]);
 
-  // Clean error when changing tab
   const handleTabChange = (mode: AuthMode) => {
     setAuthMode(mode);
     setError(null);
     setInfoMessage(null);
   };
 
-  // Phone input mask / formatter (+998 XX XXX-XX-XX)
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
     const digitsOnly = rawValue.replace(/\D/g, '');
 
-    // Always maintain Uzbekistan prefix +998
     let numbers = digitsOnly;
     if (numbers.startsWith('998')) {
       numbers = numbers.slice(3);
     }
-
-    // Limit to 9 local digits
     numbers = numbers.slice(0, 9);
 
     let formatted = '+998';
@@ -159,7 +146,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
         setError(json.message || json.error || 'Tasdiqlash kodi noto‘g‘ri yoki muddati o‘tgan');
       }
     } catch {
-      setError('Tasdiqlashda xatolik yuz berdi. Internet aloqasini tekshiring.');
+      setError('Server bilan ulanishda xato yuz berdi');
     } finally {
       setLoading(false);
     }
@@ -167,8 +154,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
   // 3. Password Login
   const handlePasswordLogin = async () => {
-    if (!login.trim() || !password.trim()) {
-      setError('Login va parol kiritilishi shart');
+    if (!login.trim()) {
+      setError('Login yoki telefon raqamingizni kiriting');
+      return;
+    }
+    if (!password) {
+      setError('Parolni kiriting');
       return;
     }
 
@@ -176,90 +167,34 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     setError(null);
 
     try {
+      let phonePayload = login.trim();
+      if (phonePayload === 'admin') {
+        phonePayload = '+998901234567';
+      } else if (phonePayload === 'supplier') {
+        phonePayload = '+998971112233';
+      }
+
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ login: login.trim(), password }),
+        body: JSON.stringify({
+          phone: phonePayload,
+          password,
+        }),
       });
 
       const json = await res.json();
       if (res.ok && json.success && json.data) {
-        localStorage.setItem('bunkerstroy_token', json.data.token);
+        if (json.data.token) {
+          localStorage.setItem('bunkerstroy_token', json.data.token);
+        }
         onSuccess(json.data.user);
         onClose();
       } else {
         setError(json.message || json.error || 'Login yoki parol noto‘g‘ri');
       }
     } catch {
-      setError('Server bilan ulanishda xatolik yuz berdi');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 4. STIR Lookup
-  const handleStirLookup = async () => {
-    if (!inn || inn.length < 9) {
-      setError('9 xonali STIR (INN) raqamini kiriting');
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const res = await fetch(`/api/auth/stir-lookup?inn=${encodeURIComponent(inn)}`);
-      const json = await res.json();
-      if (res.ok && json.success && json.data) {
-        setCompanyInfo(json.data);
-      } else {
-        setError(json.message || json.error || 'Soliq bazasida ushbu STIR topilmadi');
-      }
-    } catch {
-      setError('Soliq serveri bilan aloqa uzildi');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 5. E-IMZO Login
-  const handleEimzoLogin = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const chRes = await fetch('/api/auth/eimzo/challenge', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ inn }),
-      });
-      const chData = await chRes.json();
-
-      if (!chRes.ok || !chData.success) {
-        throw new Error(chData.message || 'Challenge yaratib bo‘lmadi');
-      }
-
-      const vfRes = await fetch('/api/auth/eimzo/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          challengeId: chData.data.challengeId,
-          pkcs7B64: 'MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAA',
-          inn,
-        }),
-      });
-
-      const vfData = await vfRes.json();
-      if (vfRes.ok && vfData.success && vfData.data) {
-        localStorage.setItem('bunkerstroy_token', vfData.data.token);
-        const user = vfData.data.user || vfData.data.verification;
-        onSuccess(user);
-        onClose();
-      } else {
-        setError(vfData.message || vfData.error || 'E-IMZO imzosini tekshirish muvaffaqiyatsiz tugadi');
-      }
-    } catch (err: any) {
-      setError(err?.message || 'E-IMZO tizimida xatolik yuz berdi');
+      setError('Server bilan ulanishda xato yuz berdi');
     } finally {
       setLoading(false);
     }
@@ -267,8 +202,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
   const headerBadge = (
     <Badge variant="warning" className="gap-1.5 font-mono">
-      <ShieldCheck className="w-3.5 h-3.5" />
-      BunkerStroy B2B Identity
+      <UserCheck className="w-3.5 h-3.5" />
+      Kirish
     </Badge>
   );
 
@@ -279,30 +214,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
       size="sm"
       headerExtra={headerBadge}
       title="Kabinetga Kirish"
-      subtitle="Xarid qilish, buyurtmalar tarixi, transport dispetcherligi va ESCO auditi"
+      subtitle="Xaridlarni boshqarish, buyurtmalar tarixi va sotuvchi kabineti"
     >
-      {/* Tab switch */}
+      {/* 2 Clean Tabs */}
       <Tabs
         variant="pills"
         value={authMode}
         onValueChange={(val) => handleTabChange(val as AuthMode)}
       >
-        <TabsList className="grid grid-cols-2 sm:grid-cols-4 w-full">
+        <TabsList className="grid grid-cols-2 w-full">
           <TabTrigger value="otp" className="justify-center">
-            <Smartphone className="w-3 h-3" />
-            <span>SMS OTP</span>
+            <Smartphone className="w-3.5 h-3.5 mr-1.5" />
+            <span>SMS Kod</span>
           </TabTrigger>
           <TabTrigger value="login" className="justify-center">
-            <Lock className="w-3 h-3" />
+            <Lock className="w-3.5 h-3.5 mr-1.5" />
             <span>Parol</span>
-          </TabTrigger>
-          <TabTrigger value="stir" className="justify-center">
-            <Building2 className="w-3 h-3" />
-            <span>STIR</span>
-          </TabTrigger>
-          <TabTrigger value="eimzo" className="justify-center">
-            <Fingerprint className="w-3 h-3" />
-            <span>E-IMZO</span>
           </TabTrigger>
         </TabsList>
       </Tabs>
@@ -313,6 +240,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           variant="error"
           description={error}
           onDismiss={() => setError(null)}
+          className="my-3"
         />
       )}
 
@@ -322,12 +250,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           variant="success"
           description={infoMessage}
           onDismiss={() => setInfoMessage(null)}
+          className="my-3"
         />
       )}
 
       {/* TAB 1: SMS OTP Authentication */}
       {authMode === 'otp' && (
-        <div className="space-y-4">
+        <div className="space-y-4 pt-2">
           {!otpSent ? (
             <div className="space-y-4">
               <Input
@@ -337,7 +266,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 onChange={handlePhoneChange}
                 placeholder="+998 90 123-45-67"
                 isMono
-                helperText="SMS orqali 6 xonali bir martalik tasdiqlash kodi yuboriladi."
+                helperText="SMS orqali 6 xonali tasdiqlash kodi yuboriladi."
               />
 
               <Button
@@ -367,7 +296,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                   }}
                   className="text-[11px] text-bunker-amber-500 hover:underline cursor-pointer font-mono font-medium"
                 >
-                  O'zgartirish
+                  O‘zgartirish
                 </button>
               </div>
 
@@ -422,11 +351,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
       {/* TAB 2: Password Login */}
       {authMode === 'login' && (
-        <div className="space-y-4 font-mono">
+        <div className="space-y-4 pt-2 font-mono">
           <Input
             label="Login yoki Telefon:"
             type="text"
-            placeholder="admin yoki telefon raqam"
+            placeholder="admin yoki telefon raqamingiz"
             value={login}
             onChange={(e) => setLogin(e.target.value)}
           />
@@ -442,65 +371,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
             <KeyRound className="w-4 h-4 mr-1.5" />
             <span>Kirish</span>
           </Button>
-          <p className="text-[11px] text-slate-500 text-center font-mono">
-            Demo admin: <span className="font-mono text-bunker-amber-500 font-bold">admin</span> / parol:{' '}
-            <span className="font-mono text-bunker-amber-500 font-bold">bunker2026</span>
-          </p>
-        </div>
-      )}
 
-      {/* TAB 3: STIR (INN) Lookup */}
-      {authMode === 'stir' && (
-        <div className="space-y-4 font-mono">
-          <Input
-            label="Korxona STIR (INN):"
-            isMono
-            maxLength={9}
-            value={inn}
-            onChange={(e) => setInn(e.target.value.replace(/\D/g, ''))}
-            className="text-bunker-amber-500 font-bold"
-          />
-          <Button variant="secondary" className="w-full" size="md" onClick={handleStirLookup} isLoading={loading}>
-            <Building2 className="w-4 h-4 mr-1.5 text-bunker-amber-500" />
-            <span>Soliq bazasidan tekshirish</span>
-          </Button>
-
-          {companyInfo && (
-            <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-2.5 text-xs shadow-xs">
-              <div className="flex justify-between items-start gap-2">
-                <span className="font-bold text-slate-900 text-sm leading-snug">{companyInfo.companyName}</span>
-                <Badge variant="success" className="shrink-0">{companyInfo.status}</Badge>
-              </div>
-              <div className="space-y-1 text-slate-600 pt-1 border-t border-slate-200">
-                <p><span className="text-slate-500">Rahbar:</span> {companyInfo.director}</p>
-                <p><span className="text-slate-500">Manzil:</span> {companyInfo.address}</p>
-                <p><span className="text-slate-500">Faoliyat:</span> {companyInfo.activityType || 'Qurilish va ta’minot'}</p>
-                <p><span className="text-slate-500">QQS to‘lovchisi:</span> {companyInfo.vatPayer ? 'Ha (Faol)' : 'Yo‘q'}</p>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* TAB 4: E-IMZO */}
-      {authMode === 'eimzo' && (
-        <div className="space-y-4 text-center font-mono">
-          <div className="p-5 border border-slate-200 rounded-xl bg-slate-50 space-y-3 shadow-xs">
-            <div className="w-12 h-12 mx-auto rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center">
-              <Fingerprint className="w-6 h-6 text-bunker-amber-500" />
-            </div>
-            <h4 className="text-sm font-bold text-slate-900">E-IMZO Kalitini Tasdiqlash</h4>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Yuridik shaxs yoki yakka tartibdagi tadbirkorlik elektron raqamli imzosi orqali xavfsiz autentifikatsiya.
+          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-[11px] text-slate-600 space-y-1">
+            <p>
+              Demo admin: <span className="font-bold text-slate-900">admin</span> / parol:{' '}
+              <span className="font-bold text-bunker-amber-500">bunker2026</span>
             </p>
-            <div className="pt-2">
-              <span className="text-[11px] font-mono text-bunker-amber-500 font-bold">STIR: {inn}</span>
-            </div>
+            <p>
+              Demo sotuvchi: <span className="font-bold text-slate-900">supplier</span> / parol:{' '}
+              <span className="font-bold text-bunker-amber-500">bunker2026</span>
+            </p>
           </div>
-          <Button className="w-full" size="md" onClick={handleEimzoLogin} isLoading={loading}>
-            <Fingerprint className="w-4 h-4 mr-1.5" />
-            <span>E-IMZO bilan Kirish</span>
-          </Button>
         </div>
       )}
     </Modal>
