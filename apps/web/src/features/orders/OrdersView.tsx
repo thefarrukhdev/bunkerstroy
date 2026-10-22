@@ -192,7 +192,7 @@ export const OrdersView: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 1. Minimalist Orders Header */}
-      <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="mb-1.5">
             <span className="text-xs font-mono font-bold text-bunker-amber-500 uppercase tracking-wider">
@@ -335,11 +335,11 @@ export const OrdersView: React.FC = () => {
                       <span>Ushbu buyurtma to‘lovi kutilmoqda. Onlayn to‘lovni amalga oshiring:</span>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
                       <button
                         type="button"
                         onClick={() => handleOpenPayment(o, 'PAYME')}
-                        className="px-3 py-1.5 rounded-xl bg-white border border-sky-300 text-sky-800 hover:bg-sky-50 font-bold text-xs font-mono transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
+                        className="px-3 py-2 rounded-xl bg-white border border-sky-300 text-sky-800 hover:bg-sky-50 font-bold text-xs font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-xs w-full sm:w-auto"
                       >
                         <CreditCard className="w-3.5 h-3.5 text-sky-600" />
                         <span>Payme orqali to'lash</span>
@@ -348,7 +348,7 @@ export const OrdersView: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleOpenPayment(o, 'CLICK')}
-                        className="px-3 py-1.5 rounded-xl bg-white border border-orange-300 text-orange-800 hover:bg-orange-50 font-bold text-xs font-mono transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
+                        className="px-3 py-2 rounded-xl bg-white border border-orange-300 text-orange-800 hover:bg-orange-50 font-bold text-xs font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-xs w-full sm:w-auto"
                       >
                         <CreditCard className="w-3.5 h-3.5 text-orange-600" />
                         <span>Click orqali to'lash</span>
@@ -531,7 +531,8 @@ export const OrdersView: React.FC = () => {
               disabled={!!paymentSuccessMsg}
             >
               <Sparkles className="w-4 h-4 mr-1.5" />
-              <span>To‘lovni Amalga Oshirish (Instant Checkout)</span>
+              <span className="hidden sm:inline">To‘lovni Amalga Oshirish (Instant Checkout)</span>
+              <span className="sm:hidden">To‘lovni Amalga Oshirish</span>
             </Button>
 
             <a

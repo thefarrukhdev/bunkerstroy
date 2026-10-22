@@ -202,7 +202,7 @@ export const LogisticsView: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 1. Minimalist Logistics Header */}
-      <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="mb-1.5">
             <span className="text-xs font-mono font-bold text-sky-600 uppercase tracking-wider">
@@ -225,7 +225,7 @@ export const LogisticsView: React.FC = () => {
 
       {/* 2. CONFIRMED DISPATCH ACTIVE CARD */}
       {confirmedDispatch && (
-        <div className="bg-white border-2 border-bunker-amber-500 p-6 rounded-2xl space-y-5 shadow-xs">
+        <div className="bg-white border-2 border-bunker-amber-500 p-4 sm:p-6 rounded-2xl space-y-4 sm:space-y-5 shadow-xs">
           <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-bunker-border-strong">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center">
@@ -254,7 +254,7 @@ export const LogisticsView: React.FC = () => {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 font-mono">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 font-mono">
             <StatCard
               title="Haydovchi"
               value={confirmedDispatch.driverName}
@@ -413,7 +413,7 @@ export const LogisticsView: React.FC = () => {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="text-bunker-text-muted block text-[10px] uppercase font-bold mb-1">
                   Masofa (km):
@@ -492,8 +492,9 @@ export const LogisticsView: React.FC = () => {
             isLoading={isBooking}
             className="w-full text-xs font-mono font-bold"
           >
-            <Truck className="w-4 h-4 mr-2" />
-            <span>Reysni Tasdiqlash &amp; Dispetcherga Yuborish</span>
+            <Truck className="w-4 h-4 mr-2 shrink-0" />
+            <span className="hidden sm:inline">Reysni Tasdiqlash &amp; Dispetcherga Yuborish</span>
+            <span className="sm:hidden">Reysni Dispetcherga Yuborish</span>
           </Button>
         </div>
       </div>

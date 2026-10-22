@@ -94,7 +94,7 @@ export const Drawer: React.FC<DrawerProps> = ({
     >
       <div
         className={cn(
-          'w-full h-full bg-bunker-surface-1 border-bunker-border-strong flex flex-col justify-between p-6 shadow-2xl overflow-y-auto text-bunker-text-primary transition-transform duration-300',
+          'w-full h-full bg-bunker-surface-1 border-bunker-border-strong flex flex-col justify-between p-4 sm:p-6 shadow-2xl overflow-y-auto text-bunker-text-primary transition-transform duration-300',
           sizeClasses[size],
           positionClasses[position],
           className

@@ -200,7 +200,7 @@ export const TendersView: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 1. Minimalist Tenders Header */}
-      <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="mb-1.5">
             <span className="text-xs font-mono font-bold text-bunker-amber-500 uppercase tracking-wider">
@@ -219,7 +219,7 @@ export const TendersView: React.FC = () => {
           size="md"
           variant="primary"
           onClick={() => setIsRfqModalOpen(true)}
-          className="shrink-0"
+          className="w-full sm:w-auto shrink-0"
         >
           <Plus className="w-4 h-4 mr-2" />
           <span>Smeta So‘rovi (RFQ) Yaratish</span>
@@ -245,7 +245,7 @@ export const TendersView: React.FC = () => {
       )}
 
       {/* 3. Industry Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard
           title="Faol B2B Tenderlar"
           value="14 ta"
@@ -306,7 +306,7 @@ export const TendersView: React.FC = () => {
       {/* 5. Tenders List */}
       <div className="space-y-4">
         {filteredTenders.map((t) => (
-          <Card key={t.id} className="p-6 hover:border-slate-300 transition-all">
+          <Card key={t.id} className="p-4 sm:p-6 hover:border-slate-300 transition-all">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div className="space-y-2 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
@@ -366,7 +366,7 @@ export const TendersView: React.FC = () => {
                 </div>
 
                 {t.status === 'OPEN' && (
-                  <Button variant="primary" size="sm" onClick={() => handleOpenBid(t)}>
+                  <Button variant="primary" size="sm" onClick={() => handleOpenBid(t)} className="w-full sm:w-auto">
                     <Send className="w-3.5 h-3.5 mr-1.5" />
                     <span>Tijoriy Taklif Yuborish</span>
                   </Button>
@@ -395,7 +395,7 @@ export const TendersView: React.FC = () => {
         subtitle="O‘zbekistonning tasdiqlangan ishlab chiqaruvchilari va zavodlaridan eng yaxshi ulgurji narx takliflarini oling"
         size="lg"
         footer={
-          <div className="flex items-center justify-end gap-3 w-full">
+          <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 w-full">
             <Button variant="ghost" size="sm" onClick={() => setIsRfqModalOpen(false)}>
               Bekor qilish
             </Button>
@@ -483,7 +483,7 @@ export const TendersView: React.FC = () => {
         subtitle={activeTender ? `${activeTender.projectName} tenderi bo‘yicha zavod taklifi` : undefined}
         size="md"
         footer={
-          <div className="flex items-center justify-end gap-3 w-full">
+          <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 w-full">
             <Button variant="ghost" size="sm" onClick={() => setIsBidModalOpen(false)}>
               Bekor qilish
             </Button>

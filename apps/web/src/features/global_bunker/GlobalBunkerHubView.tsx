@@ -139,7 +139,7 @@ export const GlobalBunkerHubView: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 1. Minimalist Global Bunker Header */}
-      <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="mb-1.5">
             <span className="text-xs font-mono font-bold text-blue-700 uppercase tracking-wider">
@@ -171,7 +171,7 @@ export const GlobalBunkerHubView: React.FC = () => {
       )}
 
       {/* 3. Global Bunker KPI StatCard Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard
           title="Oylik Import Quvvati"
           value="55,000+"
@@ -210,7 +210,7 @@ export const GlobalBunkerHubView: React.FC = () => {
 
       {/* 4. Verified Global Partners Catalog */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <h2 className="text-lg font-bold text-bunker-text-primary flex items-center gap-2">
             <Building2 className="w-5 h-5 text-bunker-amber-500" />
             Akkreditatsiyalangan Xorijiy Zavodlar
@@ -225,7 +225,7 @@ export const GlobalBunkerHubView: React.FC = () => {
           {partners.map((p) => (
             <Card key={p.id} className="flex flex-col justify-between space-y-4 shadow-xs hover:shadow-md">
               <div className="space-y-3">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <Badge variant="warning" isMono className="bg-orange-50 text-orange-800 border-orange-200">{p.country}</Badge>
                   <span className="text-[11px] font-mono text-bunker-text-muted flex items-center gap-1">
                     <Train className="w-3.5 h-3.5 text-bunker-amber-500" />
@@ -289,7 +289,7 @@ export const GlobalBunkerHubView: React.FC = () => {
         subtitle="To'g'ridan-to'g'ri xorijiy zavoddan ulgurji ta'minot shartnomasi rasmiylashtirish"
         size="lg"
         footer={
-          <div className="flex items-center justify-end gap-3 w-full">
+          <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 w-full">
             <Button variant="ghost" size="sm" onClick={() => setIsModalOpen(false)}>
               Bekor qilish
             </Button>

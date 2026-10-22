@@ -204,7 +204,7 @@ export const EscoCalculatorView: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 1. Header */}
-      <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="mb-1.5">
             <span className="text-xs font-mono font-bold text-emerald-700 uppercase tracking-wider">
@@ -231,7 +231,7 @@ export const EscoCalculatorView: React.FC = () => {
         value={activeSubTab}
         onValueChange={(val) => setActiveSubTab(val as 'calculator' | 'saved')}
       >
-        <TabsList>
+        <TabsList className="w-full sm:w-auto overflow-x-auto no-scrollbar">
           <TabTrigger value="calculator">
             <Calculator className="w-4 h-4" />
             <span>Energiya Kalkulyatori</span>
@@ -253,7 +253,7 @@ export const EscoCalculatorView: React.FC = () => {
       {activeSubTab === 'calculator' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Left Form (6 cols) */}
-          <div className="lg:col-span-6 bg-white border border-bunker-border-strong p-6 rounded-2xl space-y-4 shadow-xs">
+          <div className="lg:col-span-6 bg-white border border-bunker-border-strong p-4 sm:p-6 rounded-2xl space-y-4 shadow-xs">
             <h3 className="font-bold text-bunker-text-primary flex items-center gap-2 border-b border-bunker-border-subtle pb-3 text-sm font-mono">
               <Building2 className="w-4 h-4 text-emerald-600" />
               Bino Parametrlarini Kiriting
@@ -277,7 +277,7 @@ export const EscoCalculatorView: React.FC = () => {
                 </Select>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="text-bunker-text-muted block text-[10px] uppercase font-bold mb-1">
                     Umumiy Maydon (m²):
@@ -320,7 +320,7 @@ export const EscoCalculatorView: React.FC = () => {
                 </Select>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="text-bunker-text-muted block text-[10px] uppercase font-bold mb-1">
                     Deraza Turi:
@@ -362,7 +362,7 @@ export const EscoCalculatorView: React.FC = () => {
           {/* Right Results Deck (6 cols) */}
           <div className="lg:col-span-6 space-y-4">
             {result ? (
-              <div className="bg-white border-2 border-emerald-500 p-6 rounded-2xl space-y-5 shadow-xs font-mono animate-in fade-in">
+              <div className="bg-white border-2 border-emerald-500 p-4 sm:p-6 rounded-2xl space-y-4 sm:space-y-5 shadow-xs font-mono animate-in fade-in">
                 <div className="flex items-center justify-between pb-3 border-b border-bunker-border-subtle">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center">
@@ -380,7 +380,7 @@ export const EscoCalculatorView: React.FC = () => {
                 </div>
 
                 {/* KPI metrics */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="bg-slate-50 p-3 rounded-xl border border-bunker-border-subtle">
                     <span className="text-[10px] text-bunker-text-muted uppercase block">Kutilayotgan Tejamkorlik:</span>
                     <span className="text-xl font-extrabold text-emerald-700">
@@ -464,7 +464,7 @@ export const EscoCalculatorView: React.FC = () => {
 
       {/* 4. SAVED AUDITS TAB */}
       {activeSubTab === 'saved' && (
-        <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 shadow-xs space-y-4 font-mono">
+        <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-6 shadow-xs space-y-4 font-mono">
           <div className="flex items-center justify-between pb-3 border-b border-bunker-border-subtle">
             <h3 className="font-bold text-sm text-bunker-text-primary">
               Mening Saqlangan ESCO Auditlarim

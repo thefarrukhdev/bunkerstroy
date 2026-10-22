@@ -145,7 +145,7 @@ export const App: React.FC = () => {
       />
 
       {/* 2. Main Page Content (Real URL Routes) */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 transition-all">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 transition-all">
         <Routes>
           <Route path="/" element={<MarketplaceView onAddToCart={handleAddToCart} />} />
           <Route path="/products/:id" element={<ProductDetailView onAddToCart={handleAddToCart} />} />

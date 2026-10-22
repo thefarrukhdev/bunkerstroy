@@ -191,7 +191,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       footer={
         step !== 'success' && items.length > 0 ? (
           <div className="w-full space-y-3 font-mono">
-            <div className="flex gap-2">
+            <div className="flex flex-col-reverse sm:flex-row gap-2">
               {step > 1 && (
                 <Button
                   variant="secondary"
@@ -277,7 +277,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   : 'bg-slate-100 text-slate-500 border-slate-200'
               }`}
             >
-              1. Spetsifikatsiya
+              <span className="hidden sm:inline">1. Spetsifikatsiya</span>
+              <span className="sm:hidden">1. Tovar</span>
             </div>
             <div
               className={`p-1.5 rounded-lg font-semibold transition-all border ${
@@ -288,7 +289,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   : 'bg-slate-100 text-slate-500 border-slate-200'
               }`}
             >
-              2. STIR Rekvizit
+              <span className="hidden sm:inline">2. STIR Rekvizit</span>
+              <span className="sm:hidden">2. STIR</span>
             </div>
             <div
               className={`p-1.5 rounded-lg font-semibold transition-all border ${
@@ -308,7 +310,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   : 'bg-slate-100 text-slate-500 border-slate-200'
               }`}
             >
-              4. To‘lov & Invoys
+              <span className="hidden sm:inline">4. To‘lov & Invoys</span>
+              <span className="sm:hidden">4. To‘lov</span>
             </div>
           </div>
         </div>
@@ -445,7 +448,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               onChange={(e) => setCompanyName(e.target.value)}
             />
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Input
                 label="Bank MFO:"
                 isMono
@@ -656,7 +659,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               Hisob-Kitob Usuli:
             </span>
 
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               <button
                 type="button"
                 onClick={() => setPaymentMethod('BANK_TRANSFER')}

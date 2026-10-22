@@ -153,7 +153,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
   return (
     <div className="space-y-6">
       {/* 1. Clean Minimalist Header */}
-      <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="mb-1.5">
             <span className="text-xs font-mono font-bold text-bunker-amber-500 uppercase tracking-wider">
@@ -168,7 +168,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
           </p>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0 font-mono text-xs">
+        <div className="flex flex-wrap items-center gap-2 shrink-0 font-mono text-xs">
           <Badge variant="neutral" size="sm" isMono>
             {products.length} ta mahsulot
           </Badge>
@@ -180,9 +180,9 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
       </div>
 
       {/* 2. Clean Command Filter Bar */}
-      <div className="bg-white border border-bunker-border-strong p-3 rounded-xl flex flex-wrap gap-2.5 items-center justify-between shadow-xs">
+      <div className="bg-white border border-bunker-border-strong p-3 rounded-xl flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-between shadow-xs">
         {/* Search input */}
-        <div className="flex-1 min-w-[200px]">
+        <div className="w-full sm:flex-1 sm:min-w-[200px]">
           <Input
             leftIcon={<Search className="w-4 h-4 text-bunker-amber-500" />}
             placeholder="Mahsulot nomi yoki markasi bo'yicha qidiruv..."
@@ -194,8 +194,8 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
         </div>
 
         {/* Region selector & ESCO filter */}
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="w-36 sm:w-40">
+        <div className="flex items-center justify-between sm:justify-start gap-2 w-full sm:w-auto">
+          <div className="flex-1 sm:w-40 sm:flex-initial">
             <Select
               sizeVariant="sm"
               value={selectedRegion}
@@ -218,11 +218,11 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
             }`}
           >
             <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Faqat ESCO</span>
+            <span className="hidden xs:inline">Faqat </span><span>ESCO</span>
           </button>
 
           {/* DUAL-MODE VIEW TOGGLE */}
-          <div className="bg-slate-100 p-0.5 rounded-xl border border-bunker-border-strong flex items-center">
+          <div className="bg-slate-100 p-0.5 rounded-xl border border-bunker-border-strong flex items-center shrink-0">
             <button
               type="button"
               onClick={() => setViewMode('cards')}
@@ -513,8 +513,8 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="text-right">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+              <div className="text-left sm:text-right">
                 <span className="text-[10px] text-bunker-text-muted uppercase block">Jami:</span>
                 <p className="text-lg font-extrabold text-bunker-amber-500">
                   {totalMatrixSum.toLocaleString()} <span className="text-xs text-bunker-text-primary font-normal">so'm</span>
@@ -525,6 +525,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                 size="sm"
                 variant="primary"
                 onClick={handleBatchAddMatrix}
+                className="w-full sm:w-auto justify-center"
               >
                 <ShoppingCart className="w-4 h-4 mr-1.5" />
                 <span>Smetani Savatga Biriktirish</span>

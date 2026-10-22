@@ -220,7 +220,7 @@ export const SuppliersView: React.FC<{ onNavigateToCatalog?: () => void }> = ({
   return (
     <div className="space-y-6">
       {/* 1. Header Banner */}
-      <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="mb-1.5">
             <span className="text-xs font-mono font-bold text-bunker-amber-500 uppercase tracking-wider">
@@ -252,7 +252,7 @@ export const SuppliersView: React.FC<{ onNavigateToCatalog?: () => void }> = ({
       )}
 
       {/* 3. Key Industry KPIs */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard
           title="Rasmiy Hamkor Zavodlar"
           value="18 ta"
@@ -330,7 +330,7 @@ export const SuppliersView: React.FC<{ onNavigateToCatalog?: () => void }> = ({
       {/* 5. Verified Factories Directory */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {filteredFactories.map((f) => (
-          <Card key={f.id} className="p-6 flex flex-col justify-between space-y-5 hover:border-slate-300 transition-all">
+          <Card key={f.id} className="p-4 sm:p-6 flex flex-col justify-between space-y-4 sm:space-y-5 hover:border-slate-300 transition-all">
             <div className="space-y-4">
               {/* Header */}
               <div className="flex items-start justify-between gap-3">
@@ -356,7 +356,7 @@ export const SuppliersView: React.FC<{ onNavigateToCatalog?: () => void }> = ({
               <p className="text-xs text-slate-600 leading-relaxed">{f.description}</p>
 
               {/* Data Specifications Grid */}
-              <div className="grid grid-cols-2 gap-2 text-xs font-mono pt-3 border-t border-slate-100">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono pt-3 border-t border-slate-100">
                 <div>
                   <span className="text-slate-400 block text-[10px] uppercase">STIR (INN):</span>
                   <span className="font-bold text-slate-800">{f.inn}</span>
@@ -411,19 +411,19 @@ export const SuppliersView: React.FC<{ onNavigateToCatalog?: () => void }> = ({
             </div>
 
             {/* Bottom Actions */}
-            <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+            <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex items-center gap-1.5 text-xs font-mono text-slate-500">
                 <Phone className="w-3.5 h-3.5 text-slate-400" />
                 <span>{f.phone}</span>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                 {onNavigateToCatalog && (
-                  <Button variant="secondary" size="sm" onClick={onNavigateToCatalog}>
+                  <Button variant="secondary" size="sm" onClick={onNavigateToCatalog} className="flex-1 sm:flex-initial">
                     <span>Katalogda Ko‘rish</span>
                   </Button>
                 )}
-                <Button variant="primary" size="sm" onClick={() => handleOpenInquiry(f)}>
+                <Button variant="primary" size="sm" onClick={() => handleOpenInquiry(f)} className="flex-1 sm:flex-initial">
                   <FileText className="w-3.5 h-3.5 mr-1.5" />
                   <span>Zavod Shartnomasi</span>
                 </Button>
@@ -441,7 +441,7 @@ export const SuppliersView: React.FC<{ onNavigateToCatalog?: () => void }> = ({
         subtitle={selectedFactory ? `${selectedFactory.name} rasmiy korxonasiga ulgurji xarid so‘rovi yuborish` : undefined}
         size="lg"
         footer={
-          <div className="flex items-center justify-end gap-3 w-full">
+          <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 w-full">
             <Button variant="ghost" size="sm" onClick={() => setInquiryModalOpen(false)}>
               Bekor qilish
             </Button>

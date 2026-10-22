@@ -134,7 +134,7 @@ export const CertificationsView: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 1. Minimalist Certifications Header */}
-      <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="mb-1.5">
             <span className="text-xs font-mono font-bold text-emerald-700 uppercase tracking-wider">
@@ -156,7 +156,7 @@ export const CertificationsView: React.FC = () => {
       </div>
 
       {/* 2. Key Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard
           title="GOST & O‘zDSt Standarti"
           value="100%"
@@ -193,7 +193,7 @@ export const CertificationsView: React.FC = () => {
       </div>
 
       {/* 3. Laboratory Test Results Table */}
-      <Card className="p-6 space-y-4">
+      <Card className="p-4 sm:p-6 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
@@ -295,7 +295,7 @@ export const CertificationsView: React.FC = () => {
         subtitle={selectedDoc || undefined}
         size="md"
         footer={
-          <div className="flex items-center justify-end gap-2 w-full">
+          <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 w-full">
             <Button variant="ghost" size="sm" onClick={() => setDownloadModalOpen(false)}>
               Yopish
             </Button>

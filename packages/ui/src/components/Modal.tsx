@@ -85,7 +85,7 @@ export const Modal: React.FC<ModalProps> = ({
     >
       <div
         className={cn(
-          'relative w-full bg-bunker-surface-1 border border-bunker-border-strong rounded-2xl p-6 sm:p-7 space-y-5 shadow-xl overflow-y-auto max-h-[90vh] text-bunker-text-primary',
+          'relative w-full bg-bunker-surface-1 border border-bunker-border-strong rounded-2xl p-4 sm:p-6 space-y-4 sm:space-y-5 shadow-xl overflow-y-auto max-h-[90vh] text-bunker-text-primary',
           sizeClasses[size],
           className
         )}

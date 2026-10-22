@@ -211,20 +211,20 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-12 font-sans">
       {/* 1. Breadcrumbs & Back Navigation */}
-      <nav className="flex items-center justify-between text-xs font-mono text-bunker-text-muted">
-        <div className="flex items-center gap-2">
-          <Link to="/" className="hover:text-bunker-amber-500 transition-colors">
+      <nav className="flex flex-wrap items-center justify-between gap-2.5 text-xs font-mono text-bunker-text-muted">
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+          <Link to="/" className="hover:text-bunker-amber-500 transition-colors shrink-0">
             Katalog
           </Link>
-          <span>/</span>
-          <span className="text-bunker-text-secondary uppercase">{product.region || 'O‘zbekiston'}</span>
-          <span>/</span>
-          <span className="text-bunker-text-primary font-bold truncate max-w-xs">{product.title}</span>
+          <span className="shrink-0">/</span>
+          <span className="text-bunker-text-secondary uppercase shrink-0">{product.region || 'O‘zbekiston'}</span>
+          <span className="shrink-0">/</span>
+          <span className="text-bunker-text-primary font-bold truncate max-w-[140px] sm:max-w-xs">{product.title}</span>
         </div>
 
         <button
           onClick={() => navigate('/')}
-          className="flex items-center gap-1.5 text-bunker-text-secondary hover:text-bunker-amber-500 transition-colors cursor-pointer"
+          className="flex items-center gap-1.5 text-bunker-text-secondary hover:text-bunker-amber-500 transition-colors cursor-pointer shrink-0"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Katalogga qaytish</span>
@@ -264,12 +264,12 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
 
           {/* Thumbnail Strip */}
           {product.images && product.images.length > 1 && (
-            <div className="flex gap-2">
+            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
               {product.images.map((img, idx) => (
                 <button
                   key={idx}
                   onClick={() => setSelectedImageIdx(idx)}
-                  className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                  className={`w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
                     selectedImageIdx === idx
                       ? 'border-bunker-amber-500 ring-2 ring-orange-200'
                       : 'border-bunker-border-strong opacity-70 hover:opacity-100'
@@ -331,7 +331,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
             <span className="text-[11px] font-mono text-bunker-text-muted uppercase font-bold tracking-wider block">
               Hajm Bo‘yicha Ulgurji Narx Pog‘onalari:
             </span>
-            <div className="grid grid-cols-3 gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5">
               {/* Tier 1 */}
               <div
                 onClick={() => setQuantity(product.minOrder || 1)}
@@ -504,7 +504,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
           </div>
 
           {/* Quick Logistics Preview */}
-          <div className="bg-slate-50 border border-bunker-border-strong rounded-xl p-4 flex items-center justify-between gap-4 font-mono text-xs">
+          <div className="bg-slate-50 border border-bunker-border-strong rounded-xl p-3.5 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-mono text-xs">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-white border border-bunker-border-subtle shrink-0">
                 {transport.icon}
@@ -626,7 +626,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
       </div>
 
       {/* 4. Laboratory Certificate & Verification Notice */}
-      <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
+      <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0">
             <CheckCircle2 className="w-6 h-6 text-emerald-600" />
