@@ -33,6 +33,11 @@ export class GetProductsQueryDto {
   @IsBoolean()
   escoOnly?: boolean;
 
+  @ApiPropertyOptional({ description: 'Sotuvchi (Supplier) ID si bo‘yicha filtrlash' })
+  @IsOptional()
+  @IsString()
+  supplierId?: string;
+
   @ApiPropertyOptional({ description: 'Sahifa raqami (boshlanishi 1)', default: 1 })
   @IsOptional()
   @Type(() => Number)
@@ -146,4 +151,68 @@ export class CreateProductDto {
   @IsOptional()
   @IsBoolean()
   hasBonus?: boolean = false;
+}
+
+export class UpdateProductDto {
+  @ApiPropertyOptional({ example: 'Sement M500 D0 (50kg)', description: 'Mahsulot nomi' })
+  @IsOptional()
+  @IsString()
+  title?: string;
+
+  @ApiPropertyOptional({ example: 'cat-sement', description: 'Kategoriya ID si' })
+  @IsOptional()
+  @IsString()
+  categoryId?: string;
+
+  @ApiPropertyOptional({ example: 64000, description: 'Birlik narxi (so‘m)' })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  price?: number;
+
+  @ApiPropertyOptional({ example: 'dona', description: 'O‘lchov birligi' })
+  @IsOptional()
+  @IsString()
+  unit?: string;
+
+  @ApiPropertyOptional({ example: 1000, description: 'Ombordagi mavjud zaxira miqdori' })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  stock?: number;
+
+  @ApiPropertyOptional({ example: 1, description: 'Minimal buyurtma hajmi' })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(1)
+  minOrder?: number;
+
+  @ApiPropertyOptional({ example: 'M500 D0 yuqori sifatli tsement', description: 'Tavsif' })
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @ApiPropertyOptional({ example: ['https://example.com/cement.jpg'], description: 'Rasmlar' })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  images?: string[];
+
+  @ApiPropertyOptional({ example: true, description: 'Yetkazib berish mavjudligi' })
+  @IsOptional()
+  @IsBoolean()
+  hasDelivery?: boolean;
+
+  @ApiPropertyOptional({ example: 'Toshkent shahri', description: 'Hudud' })
+  @IsOptional()
+  @IsString()
+  region?: string;
+
+  @ApiPropertyOptional({ example: 'Chilonzor tumani', description: 'Tuman' })
+  @IsOptional()
+  @IsString()
+  district?: string;
 }

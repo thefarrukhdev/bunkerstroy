@@ -133,6 +133,11 @@ async function runAllBackendVerificationTests() {
     );
     assert(newProd.title.includes('Ohagi') && newProd.stock === 500, 'createProduct successfully creates product in database');
 
+    const categoriesList = await catalogService.getCategories();
+    assert(Boolean(categoriesList.length > 0 && categoriesList[0].name), 'getCategories returns categories list');
+
+    const supplierProducts = await catalogService.findSupplierProducts(supplierLogin.user.id);
+    assert(Boolean(supplierProducts.some(p => p.id === newProd.id)), 'findSupplierProducts finds supplier product');
 
     console.log('\n--- 4. Testing OrdersService (Prisma Transaction, Stock Decrement, CWE-472) ---');
     const initialStock = newProd.stock;
@@ -162,6 +167,15 @@ async function runAllBackendVerificationTests() {
       updatedProdInDb?.stock === initialStock - orderQty,
       `Stock decremented from ${initialStock} to ${updatedProdInDb?.stock}`
     );
+
+    // Test updateProduct on newProd
+    const updatedProd = await catalogService.updateProduct(
+      newProd.id,
+      { price: 35000, stock: 450 },
+      supplierLogin.user.id,
+      supplierLogin.user.role
+    );
+    assert(Boolean(Number(updatedProd.price) === 35000 && updatedProd.stock === 450), 'updateProduct successfully updates price and stock');
 
     // Update order status
     const updatedOrder = await ordersService.updateStatus(

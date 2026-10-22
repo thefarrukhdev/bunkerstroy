@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, ForbiddenException, Logger } from '@nestjs/common';
 import { Product } from '@bunkerstroy/types';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AuditLogService } from '../admin/audit-log.service';
-import { GetProductsQueryDto, CreateProductDto } from './dto/catalog.dto';
+import { GetProductsQueryDto, CreateProductDto, UpdateProductDto } from './dto/catalog.dto';
 
 @Injectable()
 export class CatalogService {
@@ -202,6 +202,10 @@ export class CatalogService {
       where.isEscoCertified = true;
     }
 
+    if (queryDto.supplierId) {
+      where.supplierId = queryDto.supplierId;
+    }
+
     if (queryDto.query) {
       const q = queryDto.query.trim();
       const searchConditions = [
@@ -381,5 +385,126 @@ export class CatalogService {
     });
 
     return this.mapPrismaProduct(created);
+  }
+
+  async getCategories() {
+    try {
+      const cats = await this.prisma.category.findMany({
+        orderBy: { orderIndex: 'asc' },
+        include: { _count: { select: { products: true } } },
+      });
+      if (cats && cats.length > 0) {
+        return cats.map((c) => ({
+          id: c.id,
+          name: c.name,
+          slug: c.slug,
+          icon: c.icon || null,
+          productsCount: c._count.products,
+        }));
+      }
+    } catch (err: any) {
+      this.logger.warn(`Failed to fetch categories: ${err?.message}`);
+    }
+
+    return [
+      { id: 'cat-sement', name: 'Sement & Qorishmalar', slug: 'sement-qorishmalar', productsCount: 18 },
+      { id: 'cat-armatura', name: 'Metall & Armatura', slug: 'armatura-metall', productsCount: 24 },
+      { id: 'cat-gisht', name: 'G‘isht & Gazoblok', slug: 'gisht-gazoblok', productsCount: 15 },
+      { id: 'cat-izolyatsiya', name: 'Izolyatsiya & Tom yopish', slug: 'izolyatsiya-tom', productsCount: 12 },
+      { id: 'cat-boyoq', name: 'Bo‘yoq & Pardozlash', slug: 'boyoq-pardozlash', productsCount: 9 },
+      { id: 'cat-santexnika', name: 'Santexnika & Quvurlar', slug: 'santexnika-quvurlar', productsCount: 14 },
+      { id: 'cat-elektr', name: 'Elektr & Kabellar', slug: 'elektr-kabellar', productsCount: 20 },
+    ];
+  }
+
+  async findSupplierProducts(supplierId: string): Promise<Product[]> {
+    try {
+      const products = await this.prisma.product.findMany({
+        where: { supplierId },
+        include: { supplier: true, variants: true, category: true },
+        orderBy: { createdAt: 'desc' },
+      });
+      return products.map((p) => this.mapPrismaProduct(p));
+    } catch (err: any) {
+      this.logger.warn(`Failed to fetch supplier products: ${err?.message}`);
+      return this.defaultProducts.filter((p) => p.supplierId === supplierId);
+    }
+  }
+
+  async updateProduct(
+    id: string,
+    dto: UpdateProductDto,
+    actorUserId: string,
+    userRole: string
+  ): Promise<Product> {
+    const product = await this.prisma.product.findUnique({ where: { id } });
+    if (!product) {
+      throw new NotFoundException(`Mahsulot topilmadi: ${id}`);
+    }
+
+    if (userRole !== 'ADMIN' && product.supplierId !== actorUserId) {
+      throw new ForbiddenException('Siz ushbu mahsulotni tahrirlash huquqiga ega emassiz');
+    }
+
+    const data: any = {};
+    if (dto.title !== undefined) data.title = dto.title;
+    if (dto.categoryId !== undefined) {
+      const cat = await this.prisma.category.findFirst({
+        where: { OR: [{ id: dto.categoryId }, { slug: dto.categoryId }] },
+      });
+      if (cat) data.categoryId = cat.id;
+    }
+    if (dto.price !== undefined) data.price = dto.price;
+    if (dto.unit !== undefined) data.unit = dto.unit;
+    if (dto.stock !== undefined) data.stock = dto.stock;
+    if (dto.minOrder !== undefined) data.minOrder = dto.minOrder;
+    if (dto.description !== undefined) data.description = dto.description;
+    if (dto.images !== undefined) data.images = dto.images;
+    if (dto.hasDelivery !== undefined) data.hasDelivery = dto.hasDelivery;
+    if (dto.region !== undefined) data.region = dto.region;
+    if (dto.district !== undefined) data.district = dto.district;
+
+    const updated = await this.prisma.product.update({
+      where: { id },
+      data,
+      include: { supplier: true, variants: true, category: true },
+    });
+
+    await this.auditLogService.logAction({
+      actorId: actorUserId,
+      action: 'PRODUCT_UPDATED',
+      category: 'CATALOG',
+      details: `Mahsulot yangilandi: ${updated.title} (${updated.id})`,
+      level: 'INFO',
+    });
+
+    return this.mapPrismaProduct(updated);
+  }
+
+  async deleteProduct(
+    id: string,
+    actorUserId: string,
+    userRole: string
+  ): Promise<{ success: boolean; id: string }> {
+    const product = await this.prisma.product.findUnique({ where: { id } });
+    if (!product) {
+      throw new NotFoundException(`Mahsulot topilmadi: ${id}`);
+    }
+
+    if (userRole !== 'ADMIN' && product.supplierId !== actorUserId) {
+      throw new ForbiddenException('Siz ushbu mahsulotni o‘chirish huquqiga ega emassiz');
+    }
+
+    await this.prisma.product.delete({ where: { id } });
+
+    await this.auditLogService.logAction({
+      actorId: actorUserId,
+      action: 'PRODUCT_DELETED',
+      category: 'CATALOG',
+      details: `Mahsulot o‘chirildi: ${product.title} (${product.id})`,
+      level: 'WARN',
+    });
+
+    return { success: true, id };
   }
 }

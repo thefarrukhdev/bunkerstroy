@@ -12,6 +12,7 @@ import { EscoCalculatorView } from './features/esco/EscoCalculatorView';
 import { GlobalBunkerHubView } from './features/global_bunker/GlobalBunkerHubView';
 import { CertificationsView } from './features/certifications/CertificationsView';
 import { OrdersView } from './features/orders/OrdersView';
+import { SellerPanelView } from './features/seller/SellerPanelView';
 import { AuthModal } from './features/auth/AuthModal';
 import {
   HardHat,
@@ -150,12 +151,14 @@ export const App: React.FC = () => {
           <Route path="/" element={<MarketplaceView onAddToCart={handleAddToCart} />} />
           <Route path="/products/:id" element={<ProductDetailView onAddToCart={handleAddToCart} />} />
           <Route path="/suppliers" element={<SuppliersView onNavigateToCatalog={() => navigate('/')} />} />
-          <Route path="/logistics" element={<LogisticsView />} />
-          <Route path="/tenders" element={<TendersView />} />
-          <Route path="/esco" element={<EscoCalculatorView />} />
-          <Route path="/global-bunker" element={<GlobalBunkerHubView />} />
-          <Route path="/certifications" element={<CertificationsView />} />
           <Route path="/orders" element={<OrdersView />} />
+          <Route path="/seller-panel" element={<SellerPanelView />} />
+          <Route path="/logistics" element={<LogisticsView />} />
+          {/* Legacy redirects */}
+          <Route path="/tenders" element={<Navigate to="/" replace />} />
+          <Route path="/esco" element={<Navigate to="/" replace />} />
+          <Route path="/global-bunker" element={<Navigate to="/" replace />} />
+          <Route path="/certifications" element={<Navigate to="/" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
@@ -176,8 +179,8 @@ export const App: React.FC = () => {
               </div>
 
               <p className="text-xs text-bunker-text-secondary max-w-sm leading-relaxed">
-                O‘zbekiston bo‘ylab yirik ishlab chiqaruvchilar va qurilish developerlarini to‘g‘ridan-to‘g‘ri
-                birlashtiruvchi B2B xaridlar va og‘ir logistika platformasi.
+                Qurilish mollari ishlab chiqaruvchilar, do‘konlar va xaridorlarni to‘g‘ridan-to‘g‘ri
+                birlashtiruvchi zamonaviy marketplace va og‘ir yuk logistika platformasi.
               </p>
 
               <div className="flex items-center gap-2 pt-1 font-mono text-[10px]">
@@ -193,37 +196,32 @@ export const App: React.FC = () => {
             {/* Column 2: Platform Links */}
             <div className="space-y-2">
               <h4 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary font-mono">
-                Sahifalar
+                Platforma
               </h4>
               <ul className="space-y-1 text-xs font-mono">
                 <li>
                   <Link to="/" className="hover:text-bunker-amber-500 transition-colors">
-                    Katalog &amp; Smeta
+                    Katalog &amp; Vitrina
                   </Link>
                 </li>
                 <li>
                   <Link to="/suppliers" className="hover:text-bunker-amber-500 transition-colors">
-                    Zavodlar
+                    Do‘konlar &amp; Zavodlar
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/orders" className="hover:text-bunker-amber-500 transition-colors">
+                    Mening Buyurtmalarim
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/seller-panel" className="text-bunker-amber-500 font-bold hover:underline transition-colors">
+                    + Sotuvchi Kabineti
                   </Link>
                 </li>
                 <li>
                   <Link to="/logistics" className="hover:text-bunker-amber-500 transition-colors">
-                    Logistika &amp; HOWO
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/tenders" className="hover:text-bunker-amber-500 transition-colors">
-                    Tenderlar &amp; RFQ
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/esco" className="hover:text-bunker-amber-500 transition-colors">
-                    ESCO Audit
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/global-bunker" className="hover:text-bunker-amber-500 transition-colors">
-                    Import Hub
+                    Yetkazib berish (Logistika)
                   </Link>
                 </li>
               </ul>

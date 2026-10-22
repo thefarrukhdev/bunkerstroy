@@ -17,7 +17,8 @@ import {
   X,
   ChevronRight,
   CheckCircle2,
-  PhoneCall
+  PhoneCall,
+  Package
 } from 'lucide-react';
 import { cn } from '@bunkerstroy/ui';
 
@@ -54,51 +55,27 @@ export const NAV_ITEMS: readonly NavItemConfig[] = [
   {
     to: '/',
     label: 'Katalog',
-    description: 'Sanoat tovarlari va xomashyo katalogi',
+    description: 'Barcha qurilish mollari va materiallar',
     icon: Building2
   },
   {
     to: '/suppliers',
-    label: 'Zavodlar',
+    label: 'Do‘konlar & Zavodlar',
     description: 'Tasdiqlangan ishlab chiqaruvchilar',
     icon: Factory
   },
   {
-    to: '/logistics',
-    label: 'Logistika',
-    description: 'B2B yuk tashish va yetkazib berish',
-    icon: Truck
-  },
-  {
-    to: '/tenders',
-    label: 'Tenderlar',
-    description: 'Korporativ xaridlar va auksionlar',
-    icon: FileSpreadsheet
-  },
-  {
-    to: '/esco',
-    label: 'ESCO Audit',
-    description: 'Energiya samaradorligi kalkulyatori',
-    icon: Leaf
-  },
-  {
-    to: '/global-bunker',
-    label: 'Import Hub',
-    description: 'Xalqaro import va bojxona logistikasi',
-    icon: Globe,
-    badge: 'NEW'
-  },
-  {
-    to: '/certifications',
-    label: 'Standartlar',
-    description: "GOST va O'zDSt sifat sertifikatlari",
-    icon: ShieldCheck
-  },
-  {
     to: '/orders',
-    label: 'Buyurtmalar',
-    description: 'Shartnomalar va elektron schyotlar',
+    label: 'Buyurtmalarim',
+    description: 'Xaridlar va yetkazib berish holati',
     icon: ClipboardList
+  },
+  {
+    to: '/seller-panel',
+    label: '+ Mahsulot sotish',
+    description: 'Sotuvchi va ishlab chiqaruvchi kabineti',
+    icon: Package,
+    badge: 'KABINET'
   }
 ] as const;
 

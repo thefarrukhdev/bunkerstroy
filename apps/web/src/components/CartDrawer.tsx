@@ -5,17 +5,19 @@ import {
   Minus,
   CheckCircle,
   Package,
-  ShieldCheck,
-  Building2,
-  FileText,
+  Truck,
+  Building,
   CreditCard,
-  Search,
-  Check,
+  Banknote,
+  FileText,
   ArrowRight,
   ArrowLeft,
-  KeyRound,
-  FileCheck2,
-  Receipt
+  MapPin,
+  Phone,
+  User,
+  ShoppingBag,
+  Clock,
+  Sparkles
 } from 'lucide-react';
 import { Product } from '@bunkerstroy/types';
 import { Button, Badge, Drawer, Input, Select, Alert } from '@bunkerstroy/ui';
@@ -35,7 +37,7 @@ interface CartDrawerProps {
   onOrderSuccess: () => void;
 }
 
-type CheckoutStep = 1 | 2 | 3 | 4 | 'success';
+type CheckoutStep = 1 | 2 | 'success';
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({
   isOpen,
@@ -44,705 +46,546 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onUpdateQty,
   onRemove,
   onClear,
-  onOrderSuccess
+  onOrderSuccess,
 }) => {
   const [step, setStep] = useState<CheckoutStep>(1);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Step 2: Corporate details (STIR lookup)
-  const [stir, setStir] = useState('308942175');
-  const [stirLoading, setStirLoading] = useState(false);
-  const [companyName, setCompanyName] = useState('Toshkent Mega Qurilish MChJ');
-  const [mfo, setMfo] = useState('00440');
-  const [accountNumber, setAccountNumber] = useState('20208000400501234001');
-  const [bankName, setBankName] = useState("O‘zsanoatqurilishbank ATB");
-  const [directorName, setDirectorName] = useState('Alisher Normurodov');
-  const [legalAddress, setLegalAddress] = useState('Toshkent sh., Yunusobod tumani, Amir Temur shox ko‘chasi 107-uy');
+  // Step 2: Receiver & Delivery Details
+  const [buyerName, setBuyerName] = useState('Alisher Normurodov');
   const [buyerPhone, setBuyerPhone] = useState('+998 90 123 45 67');
+  const [deliveryMethod, setDeliveryMethod] = useState<'COURIER' | 'PICKUP'>('COURIER');
+  const [vehicleType, setVehicleType] = useState('Standart Kuryer / HOWO');
+  const [region, setRegion] = useState('Toshkent shahri');
+  const [district, setDistrict] = useState('Chilonzor tumani');
+  const [streetAddress, setStreetAddress] = useState('Bunyodkor shox ko‘chasi, 42-uy');
+  const [landmark, setLandmark] = useState('Novza metro bekati yaqinida');
+  const [paymentMethod, setPaymentMethod] = useState<'CASH_ON_DELIVERY' | 'PAYME' | 'CLICK' | 'BANK_TRANSFER'>('CASH_ON_DELIVERY');
 
-  // Step 3: Contract & E-IMZO
-  const [eimzoSigned, setEimzoSigned] = useState(false);
-  const [signingInProgress, setSigningInProgress] = useState(false);
-  const [eimzoSerial, setEimzoSerial] = useState('ERI-UZ-8492-FE01-2026');
-
-  // Step 4: Payment terms & methods
-  const [paymentTerms, setPaymentTerms] = useState<'ADVANCE_100' | 'ADVANCE_30_70'>('ADVANCE_30_70');
-  const [paymentMethod, setPaymentMethod] = useState<'BANK_TRANSFER' | 'PAYME' | 'CLICK'>('BANK_TRANSFER');
-  const [createdOrderNumber, setCreatedOrderNumber] = useState<string>('');
+  // Success state
+  const [createdOrderNumber, setCreatedOrderNumber] = useState('');
 
   if (!isOpen) return null;
 
-  const totalSum = items.reduce((acc, it) => acc + Number(it.product.price) * it.quantity, 0);
-  const qqsAmount = Math.round(totalSum * 0.12);
-  const deliveryFee = 150000;
-  const grandTotal = totalSum + deliveryFee;
+  // Calculation
+  const totalItemsSum = items.reduce(
+    (acc, it) => acc + Number(it.product.price) * it.quantity,
+    0
+  );
 
-  const advance30 = Math.round(grandTotal * 0.3);
-  const remaining70 = grandTotal - advance30;
+  // Delivery fee is 0 if pickup, or 50,000 UZS / 150,000 UZS if courier based on weight/size
+  const deliveryFee = deliveryMethod === 'PICKUP' ? 0 : 50000;
+  const grandTotal = totalItemsSum + deliveryFee;
 
-  // STIR Soliq Lookup action
-  const handleStirLookup = async () => {
-    if (!stir || stir.length < 9) {
-      setErrorMsg("STIR 9 xonali raqam bo'lishi kerak");
+  // Handle Place Order
+  const handlePlaceOrder = async () => {
+    if (!buyerName.trim()) {
+      setErrorMsg('Iltimos, ismingizni kiriting');
+      return;
+    }
+    if (!buyerPhone.trim()) {
+      setErrorMsg('Iltimos, telefon raqamingizni kiriting');
       return;
     }
 
-    setStirLoading(true);
-    setErrorMsg(null);
-
-    try {
-      const res = await fetch(`/api/auth/stir/${stir.trim()}`);
-      const json = await res.json();
-      if (res.ok && json.success && json.data) {
-        const d = json.data;
-        setCompanyName(d.companyName || d.name || 'O‘zbekiston Qurilish Servis MChJ');
-        if (d.director) setDirectorName(d.director);
-        if (d.address) setLegalAddress(d.address);
-      } else {
-        // Fallback realistic B2B company data
-        setCompanyName('Toshkent Mega Qurilish MChJ');
-        setDirectorName('Alisher Normurodov');
-      }
-    } catch {
-      setCompanyName('Toshkent Mega Qurilish MChJ');
-    } finally {
-      setStirLoading(false);
-    }
-  };
-
-  // E-IMZO digital signature simulator
-  const handleSignEImzo = () => {
-    setSigningInProgress(true);
-    setTimeout(() => {
-      setEimzoSigned(true);
-      setSigningInProgress(false);
-      setEimzoSerial(`ERI-UZ-${Math.floor(1000 + Math.random() * 9000)}-${Date.now().toString().slice(-4).toUpperCase()}`);
-    }, 1000);
-  };
-
-  // Step 4: Place Order via API
-  const handlePlaceOrder = async () => {
     setLoading(true);
     setErrorMsg(null);
 
     try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('bunkerstroy_token') : null;
       const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
+      if (token) headers['Authorization'] = `Bearer ${token}`;
 
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers,
         body: JSON.stringify({
-          buyerName: (directorName || companyName || 'B2B Buyurtmachi').trim(),
-          buyerPhone: (buyerPhone || '').trim() || '+998901234567',
+          buyerName: buyerName.trim(),
+          buyerPhone: buyerPhone.trim(),
           items: items.map((it) => ({
             productId: it.product.id,
-            quantity: it.quantity
+            quantity: it.quantity,
           })),
           deliveryAddress: {
-            region: 'Toshkent shahri',
-            district: (legalAddress || '').trim() || 'Yunusobod tumani'
+            region,
+            district,
+            street: streetAddress.trim(),
+            landmark: landmark.trim(),
           },
-          paymentMethod: paymentMethod === 'BANK_TRANSFER' ? 'BANK_TRANSFER' : paymentMethod
-        })
+          vehicleType: deliveryMethod === 'PICKUP' ? 'O‘zi olib ketish (Samovivoz)' : vehicleType,
+          paymentMethod: paymentMethod === 'CASH_ON_DELIVERY' ? 'PAYME' : paymentMethod,
+        }),
       });
 
       const data = await res.json();
       if (res.ok && data.success) {
-        const orderNum = data.data?.orderNumber || `BS-ORD-${Math.floor(100000 + Math.random() * 900000)}`;
+        const orderNum = data.data?.orderNumber || `BS-${Math.floor(100000 + Math.random() * 900000)}`;
         setCreatedOrderNumber(orderNum);
         onClear();
         setStep('success');
-        setTimeout(() => {
-          onOrderSuccess();
-          onClose();
-          setStep(1);
-        }, 3500);
       } else {
         setErrorMsg(data.message || 'Buyurtmani rasmiylashtirishda xatolik yuz berdi');
       }
-    } catch (e: any) {
-      console.error(e);
+    } catch {
       setErrorMsg('Server bilan aloqa uzildi. Iltimos qayta urinib ko‘ring.');
     } finally {
       setLoading(false);
     }
   };
 
-  // Drawer Header Icon & Titles
-  const drawerHeaderExtra = (
-    <div className="w-9 h-9 rounded-lg bg-orange-50 border border-orange-200 flex items-center justify-center shrink-0">
-      <Package className="w-5 h-5 text-bunker-amber-500" />
-    </div>
-  );
+  const handleFinishAndNavigate = () => {
+    onOrderSuccess();
+    onClose();
+    setStep(1);
+  };
 
   return (
     <Drawer
       isOpen={isOpen}
       onClose={onClose}
       size="md"
-      headerExtra={drawerHeaderExtra}
-      title="4 Bosqichli Yuridik B2B Rasmiylashtirish"
-      subtitle="Soliq STIR & E-IMZO Shartnomasi"
+      title={
+        step === 1
+          ? 'Xarid Savatchasi'
+          : step === 2
+          ? 'Yetkazib Berish & Rasmiylashtirish'
+          : 'Buyurtma Muvaffaqiyatli Qabul Qilindi'
+      }
+      subtitle={
+        step === 1
+          ? `${items.length} xil qurilish mahsulotlari tanlangan`
+          : step === 2
+          ? 'Manzilni ko‘rsating va yetkazib berish usulini tanlang'
+          : 'Mahsulotlar to‘g‘ridan-to‘g‘ri sotuvchiga yo‘naltirildi'
+      }
+      headerExtra={
+        <div className="w-9 h-9 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center shrink-0">
+          <ShoppingBag className="w-5 h-5 text-bunker-amber-500" />
+        </div>
+      }
       footer={
         step !== 'success' && items.length > 0 ? (
           <div className="w-full space-y-3 font-mono">
-            <div className="flex flex-col-reverse sm:flex-row gap-2">
-              {step > 1 && (
-                <Button
-                  variant="secondary"
-                  size="md"
-                  onClick={() =>
-                    setStep((prev) => {
-                      if (typeof prev === 'number' && prev > 1) {
-                        return (prev - 1) as CheckoutStep;
-                      }
-                      return 1;
-                    })
-                  }
-                >
+            {/* Price Summary bar */}
+            <div className="bg-slate-50 border border-bunker-border-strong rounded-xl p-3 space-y-1.5 text-xs">
+              <div className="flex justify-between text-bunker-text-secondary">
+                <span>Mahsulotlar summasi:</span>
+                <span>{totalItemsSum.toLocaleString()} so‘m</span>
+              </div>
+              <div className="flex justify-between text-bunker-text-secondary">
+                <span>Yetkazib berish to‘lovi:</span>
+                <span className={deliveryFee === 0 ? 'text-emerald-700 font-bold' : ''}>
+                  {deliveryFee === 0 ? 'BEPUL (O‘zi olib ketish)' : `${deliveryFee.toLocaleString()} so‘m`}
+                </span>
+              </div>
+              <div className="pt-1.5 border-t border-bunker-border-subtle flex justify-between text-sm font-bold text-bunker-text-primary">
+                <span>Jami to‘lov:</span>
+                <span className="text-bunker-amber-500">{grandTotal.toLocaleString()} so‘m</span>
+              </div>
+            </div>
+
+            {/* Step navigation buttons */}
+            <div className="flex gap-2">
+              {step === 2 && (
+                <Button variant="secondary" size="md" onClick={() => setStep(1)}>
                   <ArrowLeft className="w-4 h-4 mr-1" />
                   <span>Ortga</span>
                 </Button>
               )}
 
-              {step === 1 && (
+              {step === 1 ? (
                 <Button
                   className="flex-1"
                   size="md"
                   variant="primary"
                   onClick={() => setStep(2)}
                 >
-                  <span>2. Korxona STIR Rekvizitlari</span>
-                  <ArrowRight className="w-4 h-4 ml-1" />
+                  <span>Yetkazib berishga o‘tish</span>
+                  <ArrowRight className="w-4 h-4 ml-1.5" />
                 </Button>
-              )}
-
-              {step === 2 && (
+              ) : (
                 <Button
                   className="flex-1"
                   size="md"
                   variant="primary"
-                  onClick={() => setStep(3)}
-                >
-                  <span>3. Shartnoma va E-IMZO</span>
-                  <ArrowRight className="w-4 h-4 ml-1" />
-                </Button>
-              )}
-
-              {step === 3 && (
-                <Button
-                  className="flex-1"
-                  size="md"
-                  variant="primary"
-                  disabled={!eimzoSigned}
-                  onClick={() => setStep(4)}
-                >
-                  <span>4. To‘lov Shartlari</span>
-                  <ArrowRight className="w-4 h-4 ml-1" />
-                </Button>
-              )}
-
-              {step === 4 && (
-                <Button
-                  className="flex-1"
-                  size="md"
-                  variant="primary"
-                  onClick={handlePlaceOrder}
                   isLoading={loading}
+                  onClick={handlePlaceOrder}
                 >
-                  <FileCheck2 className="w-4 h-4 mr-1.5" />
-                  <span>Buyurtmani Rasmiylashtirish</span>
+                  <CheckCircle className="w-4 h-4 mr-1.5" />
+                  <span>Buyurtmani Tasdiqlash</span>
                 </Button>
               )}
             </div>
           </div>
-        ) : undefined
+        ) : null
       }
     >
-      {/* 4-Step Progress Indicator */}
-      {step !== 'success' && (
-        <div className="pb-3 border-b border-slate-200">
-          <div className="grid grid-cols-4 gap-1.5 text-center text-[10px] font-mono select-none">
-            <div
-              className={`p-1.5 rounded-lg font-semibold transition-all border ${
-                step === 1
-                  ? 'bg-bunker-amber-500 text-white border-bunker-amber-500 shadow-xs'
-                  : step > 1
-                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                  : 'bg-slate-100 text-slate-500 border-slate-200'
-              }`}
-            >
-              <span className="hidden sm:inline">1. Spetsifikatsiya</span>
-              <span className="sm:hidden">1. Tovar</span>
-            </div>
-            <div
-              className={`p-1.5 rounded-lg font-semibold transition-all border ${
-                step === 2
-                  ? 'bg-bunker-amber-500 text-white border-bunker-amber-500 shadow-xs'
-                  : step > 2
-                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                  : 'bg-slate-100 text-slate-500 border-slate-200'
-              }`}
-            >
-              <span className="hidden sm:inline">2. STIR Rekvizit</span>
-              <span className="sm:hidden">2. STIR</span>
-            </div>
-            <div
-              className={`p-1.5 rounded-lg font-semibold transition-all border ${
-                step === 3
-                  ? 'bg-bunker-amber-500 text-white border-bunker-amber-500 shadow-xs'
-                  : step > 3
-                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                  : 'bg-slate-100 text-slate-500 border-slate-200'
-              }`}
-            >
-              3. E-IMZO
-            </div>
-            <div
-              className={`p-1.5 rounded-lg font-semibold transition-all border ${
-                step === 4
-                  ? 'bg-bunker-amber-500 text-white border-bunker-amber-500 shadow-xs'
-                  : 'bg-slate-100 text-slate-500 border-slate-200'
-              }`}
-            >
-              <span className="hidden sm:inline">4. To‘lov & Invoys</span>
-              <span className="sm:hidden">4. To‘lov</span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Error Alert Component */}
+      {/* Error Alert */}
       {errorMsg && (
         <Alert
           variant="error"
-          description={errorMsg}
           onDismiss={() => setErrorMsg(null)}
-          className="my-1"
-        />
+          className="mb-4"
+        >
+          {errorMsg}
+        </Alert>
       )}
 
-      {/* STEP 1: SPECIFICATION & ITEMS BREAKDOWN */}
+      {/* =========================================================================
+          STEP 1: SAVATCHA MAHSULOTLAR RO‘YXATI
+          ========================================================================= */}
       {step === 1 && (
-        <div className="space-y-3">
-          <span className="text-[11px] font-mono text-slate-500 uppercase block font-semibold">
-            Materiallar Spetsifikatsiyasi ({items.length} ta tovar):
-          </span>
-
+        <div className="space-y-4">
           {items.length === 0 ? (
-            <div className="text-center py-20 text-slate-500 space-y-2 font-mono">
-              <Package className="w-12 h-12 mx-auto text-slate-300" />
-              <p className="text-sm font-semibold text-slate-900">Xarid savati bo'sh</p>
-              <p className="text-xs">Marketplacedan materiallarni tanlang</p>
+            <div className="text-center py-12 space-y-3">
+              <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-400">
+                <ShoppingBag className="w-8 h-8" />
+              </div>
+              <h3 className="font-heading font-bold text-base text-bunker-text-primary">
+                Savatchangiz bo‘sh
+              </h3>
+              <p className="text-xs text-bunker-text-secondary max-w-xs mx-auto">
+                Katalogdan kerakli qurilish mahsulotlarini tanlab, savatchaga qo‘shing.
+              </p>
+              <Button size="sm" variant="primary" onClick={onClose}>
+                Katalogga Qaytish
+              </Button>
             </div>
           ) : (
-            items.map((it) => (
-              <div
-                key={it.product.id}
-                className="bg-white border border-slate-200 p-3.5 rounded-xl shadow-xs flex items-center justify-between gap-3 font-mono"
-              >
-                <div className="min-w-0 flex-1">
-                  <h4 className="text-xs font-semibold text-slate-900 truncate">{it.product.title}</h4>
-                  <p className="text-[11px] text-bunker-amber-500 font-bold mt-0.5 font-mono">
-                    {Number(it.product.price).toLocaleString()} so'm / {it.product.unit}
-                  </p>
-                  <span className="text-[10px] text-slate-500 block mt-0.5">
-                    Qator summasi: {(Number(it.product.price) * it.quantity).toLocaleString()} so'm
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1">
-                  <button
-                    type="button"
-                    onClick={() => onUpdateQty(it.product.id, -1)}
-                    className="text-slate-600 hover:text-slate-900 p-0.5 cursor-pointer"
-                  >
-                    <Minus className="w-3 h-3" />
-                  </button>
-                  <span className="text-xs font-bold text-slate-900 px-1.5">{it.quantity}</span>
-                  <button
-                    type="button"
-                    onClick={() => onUpdateQty(it.product.id, 1)}
-                    className="text-slate-600 hover:text-slate-900 p-0.5 cursor-pointer"
-                  >
-                    <Plus className="w-3 h-3" />
-                  </button>
-                </div>
-
+            <div className="space-y-3">
+              <div className="flex items-center justify-between font-mono text-xs text-bunker-text-secondary pb-1 border-b border-bunker-border-subtle">
+                <span>Mahsulotlar ({items.length})</span>
                 <button
                   type="button"
-                  onClick={() => onRemove(it.product.id)}
-                  className="text-slate-400 hover:text-rose-600 p-1 cursor-pointer transition-colors"
+                  onClick={onClear}
+                  className="text-red-700 hover:underline cursor-pointer flex items-center gap-1"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Tozalash</span>
                 </button>
               </div>
-            ))
-          )}
 
-          {/* Tax & Logistics Summary */}
-          {items.length > 0 && (
-            <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-2 text-xs font-mono">
-              <div className="flex justify-between text-slate-600">
-                <span>Mahsulotlar summasi:</span>
-                <span className="text-slate-900 font-medium">{totalSum.toLocaleString()} so'm</span>
-              </div>
-              <div className="flex justify-between text-slate-600">
-                <span>QQS 12% (hisoblangan):</span>
-                <span className="text-emerald-700 font-semibold">+{qqsAmount.toLocaleString()} so'm</span>
-              </div>
-              <div className="flex justify-between text-slate-600">
-                <span>Kafolatlangan HOWO logistika tarifi:</span>
-                <span className="text-slate-900 font-medium">{deliveryFee.toLocaleString()} so'm</span>
-              </div>
-              <div className="pt-2 border-t border-slate-200 flex justify-between items-baseline font-bold">
-                <span className="text-slate-900">Jami B2B spetsifikatsiya:</span>
-                <span className="text-lg text-bunker-amber-500 font-mono">{grandTotal.toLocaleString()} so'm</span>
-              </div>
+              {items.map(({ product, quantity }) => (
+                <div
+                  key={product.id}
+                  className="bg-white border border-bunker-border-strong rounded-xl p-3 flex items-start gap-3 shadow-xs"
+                >
+                  <img
+                    src={product.images?.[0] || 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800'}
+                    alt={product.title}
+                    className="w-16 h-16 rounded-lg object-cover border border-bunker-border-subtle shrink-0 bg-slate-50"
+                  />
+
+                  <div className="flex-1 min-w-0 space-y-1">
+                    <h4 className="font-heading font-bold text-xs text-bunker-text-primary line-clamp-1">
+                      {product.title}
+                    </h4>
+
+                    <div className="text-[11px] font-mono text-bunker-text-secondary">
+                      {Number(product.price).toLocaleString()} so‘m / {product.unit}
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1">
+                      {/* Quantity Controls */}
+                      <div className="flex items-center border border-bunker-border-strong rounded-lg bg-slate-50 overflow-hidden font-mono text-xs">
+                        <button
+                          type="button"
+                          onClick={() => onUpdateQty(product.id, -1)}
+                          className="px-2 py-1 hover:bg-slate-200 transition-colors text-slate-700"
+                        >
+                          <Minus className="w-3 h-3" />
+                        </button>
+                        <span className="px-3 py-1 font-bold text-slate-900 bg-white">
+                          {quantity}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => onUpdateQty(product.id, 1)}
+                          className="px-2 py-1 hover:bg-slate-200 transition-colors text-slate-700"
+                        >
+                          <Plus className="w-3 h-3" />
+                        </button>
+                      </div>
+
+                      <div className="text-right font-mono">
+                        <div className="text-xs font-bold text-slate-900">
+                          {(Number(product.price) * quantity).toLocaleString()} so‘m
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => onRemove(product.id)}
+                    className="text-slate-400 hover:text-red-700 p-1 rounded-md transition-colors"
+                    title="O‘chirish"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
             </div>
           )}
         </div>
       )}
 
-      {/* STEP 2: CORPORATE DETAILS & STIR LOOKUP */}
+      {/* =========================================================================
+          STEP 2: YETKAZIB BERISH VA BUYURTMACHI MA’LUMOTLARI
+          ========================================================================= */}
       {step === 2 && (
-        <div className="space-y-4 text-xs font-mono">
-          <div className="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-xs">
-            <span className="text-[11px] font-bold text-bunker-amber-500 uppercase flex items-center gap-1.5">
-              <Building2 className="w-4 h-4" />
-              Davlat Soliq Qo‘mitasi STIR (INN) Integratsiyasi:
-            </span>
+        <div className="space-y-5 font-mono">
+          {/* 1. Receiver Details */}
+          <div className="bg-white border border-bunker-border-strong rounded-xl p-4 space-y-3 shadow-xs">
+            <div className="flex items-center gap-2 pb-2 border-b border-bunker-border-subtle">
+              <User className="w-4 h-4 text-bunker-amber-500" />
+              <h3 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary">
+                1. Qabul Qiluvchi Ma’lumotlari
+              </h3>
+            </div>
 
-            <div className="flex gap-2 items-end">
-              <div className="flex-1">
+            <div className="space-y-2.5">
+              <div>
+                <label className="text-[11px] text-bunker-text-secondary block mb-1">
+                  Ismingiz / Korxona nomi *
+                </label>
                 <Input
-                  isMono
-                  maxLength={9}
-                  placeholder="STIR: 308942175"
-                  value={stir}
-                  onChange={(e) => setStir(e.target.value)}
+                  sizeVariant="sm"
+                  placeholder="Alisher Normurodov"
+                  value={buyerName}
+                  onChange={(e) => setBuyerName(e.target.value)}
                 />
               </div>
-              <Button
-                size="md"
-                variant="primary"
-                onClick={handleStirLookup}
-                isLoading={stirLoading}
-              >
-                <Search className="w-3.5 h-3.5 mr-1" />
-                <span>Tekshirish</span>
-              </Button>
-            </div>
-          </div>
 
-          {/* Company Details Form with Input Component */}
-          <div className="space-y-3 text-bunker-text-secondary">
-            <Input
-              label="Tashkilot to‘liq nomi:"
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
-            />
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Input
-                label="Bank MFO:"
-                isMono
-                value={mfo}
-                onChange={(e) => setMfo(e.target.value)}
-              />
-              <Select
-                label="Xizmat ko‘rsatuvchi bank:"
-                value={bankName}
-                onChange={(e) => setBankName(e.target.value)}
-                options={[
-                  { label: 'O‘zsanoatqurilishbank ATB', value: 'O‘zsanoatqurilishbank ATB' },
-                  { label: 'O‘zmilliybank AJ (NBU)', value: 'O‘zmilliybank AJ (NBU)' },
-                  { label: 'Ipoteka-bank ATIB', value: 'Ipoteka-bank ATIB' },
-                  { label: 'Hamkorbank ATB', value: 'Hamkorbank ATB' },
-                  { label: 'Kapitalbank ATB', value: 'Kapitalbank ATB' },
-                  { label: 'Trastbank XAB', value: 'Trastbank XAB' }
-                ]}
-              />
-            </div>
-
-            <Input
-              label="Hisob-raqam (Hisob-kitob schyoti):"
-              isMono
-              value={accountNumber}
-              onChange={(e) => setAccountNumber(e.target.value)}
-            />
-
-            <Input
-              label="Rahbar F.I.O. (Direktor):"
-              value={directorName}
-              onChange={(e) => setDirectorName(e.target.value)}
-            />
-
-            <Input
-              label="Yuridik manzil:"
-              value={legalAddress}
-              onChange={(e) => setLegalAddress(e.target.value)}
-            />
-
-            <Input
-              label="Mas'ul xodim telefoni:"
-              isMono
-              value={buyerPhone}
-              onChange={(e) => setBuyerPhone(e.target.value)}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* STEP 3: CONTRACT REVIEW & E-IMZO SIGN */}
-      {step === 3 && (
-        <div className="space-y-4 text-xs font-mono">
-          <div className="bg-white border border-slate-200 p-4 rounded-xl space-y-3 shadow-xs">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-2">
-              <span className="font-bold text-bunker-amber-500 flex items-center gap-1.5 uppercase font-mono">
-                <FileText className="w-4 h-4" />
-                Yetkazib Berish Shartnomasi № BS-2026/089
-              </span>
-              <Badge variant="info">Yuridik Kuchga Ega</Badge>
-            </div>
-
-            {/* Contract Text Snippet */}
-            <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl max-h-48 overflow-y-auto space-y-2 text-[11px] text-slate-700 leading-relaxed font-sans">
-              <p className="font-bold text-slate-900">
-                1. Shartnoma Predmeti:
-              </p>
-              <p>
-                Yetkazib beruvchi («BUNKERSTROY TECH» MChJ) ushbu shartnoma bo‘yicha spetsifikatsiyada ko‘rsatilgan
-                qurilish materiallarini xaridor («{companyName}», STIR: {stir}) qurilish ob'ektiga belgilangan
-                muddatda yetkazib berish majburiyatini oladi.
-              </p>
-              <p className="font-bold text-slate-900">
-                2. Sifat va Kafolat:
-              </p>
-              <p>
-                Barcha yetkazib beriladigan mahsulotlar amaldagi O‘zbekiston Respublikasi davlat standartlari (GOST 31108,
-                GOST 5781) talablariga to‘liq javob beradi va laboratoriya muvofiqlik sertifikatlari bilan ta'minlanadi.
-              </p>
-              <p className="font-bold text-slate-900">
-                3. Shartnoma Qiymati:
-              </p>
-              <p>
-                Shartnomaning umumiy qiymati QQS 12% va maxsus transport yetkazishini hisobga olgan holda{' '}
-                <strong className="text-bunker-amber-500 font-mono">{grandTotal.toLocaleString()} so‘m</strong>ni tashkil etadi.
-              </p>
-            </div>
-          </div>
-
-          {/* E-IMZO Digital Signature Box */}
-          <div className="bg-white border border-slate-200 p-4 rounded-xl space-y-3 shadow-xs">
-            <span className="font-bold text-slate-900 flex items-center gap-1.5 uppercase">
-              <KeyRound className="w-4 h-4 text-bunker-amber-500" />
-              E-IMZO Raqamli Imzo Kaliti (ERI):
-            </span>
-
-            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex items-center justify-between">
               <div>
-                <span className="text-[10px] text-slate-500 block">Tanlangan ERI Sertifikati:</span>
-                <p className="font-bold text-slate-900">{directorName.toUpperCase()}</p>
-                <span className="text-[10px] text-bunker-amber-500 block font-mono">
-                  STIR: {stir} | DSQ Davlat Reestri
+                <label className="text-[11px] text-bunker-text-secondary block mb-1">
+                  Telefon raqamingiz *
+                </label>
+                <Input
+                  sizeVariant="sm"
+                  placeholder="+998 90 123 45 67"
+                  value={buyerPhone}
+                  onChange={(e) => setBuyerPhone(e.target.value)}
+                />
+                <span className="text-[10px] text-bunker-text-muted mt-0.5 block">
+                  Kuryer yoki sotuvchi yetkazib berishdan oldin telefon qiladi.
                 </span>
               </div>
+            </div>
+          </div>
 
-              {eimzoSigned ? (
-                <Badge variant="success" className="gap-1">
-                  <Check className="w-3.5 h-3.5" />
-                  IMZOLANDI
-                </Badge>
-              ) : (
-                <Badge variant="warning">KUTILMOQDA</Badge>
-              )}
+          {/* 2. Delivery Method */}
+          <div className="bg-white border border-bunker-border-strong rounded-xl p-4 space-y-3 shadow-xs">
+            <div className="flex items-center gap-2 pb-2 border-b border-bunker-border-subtle">
+              <Truck className="w-4 h-4 text-bunker-amber-500" />
+              <h3 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary">
+                2. Yetkazib Berish Usuli
+              </h3>
             </div>
 
-            {eimzoSigned ? (
-              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl space-y-1 text-[11px] text-emerald-800">
-                <p className="font-bold flex items-center gap-1 text-emerald-900">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                  Hujjat E-IMZO bilan muvaffaqiyatli imzolandi!
-                </p>
-                <p className="text-[10px] text-slate-500 font-mono">
-                  Serial: {eimzoSerial} | Imzolangan vaqt: {new Date().toLocaleTimeString()}
-                </p>
-              </div>
-            ) : (
-              <Button
-                className="w-full"
-                size="md"
-                variant="primary"
-                onClick={handleSignEImzo}
-                isLoading={signingInProgress}
-              >
-                <KeyRound className="w-4 h-4 mr-1.5" />
-                <span>E-IMZO Kaliti Bilan Tasdiqlash</span>
-              </Button>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* STEP 4: PAYMENT TERMS & METHOD */}
-      {step === 4 && (
-        <div className="space-y-4 text-xs font-mono">
-          {/* Payment Terms Selector */}
-          <div className="space-y-2">
-            <span className="font-bold text-slate-900 uppercase block">
-              To‘lov Shartlarini Tanlang (B2B Terms):
-            </span>
-
-            <div className="grid grid-cols-1 gap-2.5">
-              <div
-                onClick={() => setPaymentTerms('ADVANCE_30_70')}
-                className={`p-3.5 rounded-xl border-2 transition-all cursor-pointer flex items-start gap-3 ${
-                  paymentTerms === 'ADVANCE_30_70'
-                    ? 'bg-orange-50/40 border-bunker-amber-500 shadow-xs ring-1 ring-bunker-amber-500/20'
-                    : 'bg-white border-slate-200 hover:border-slate-300'
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <button
+                type="button"
+                onClick={() => setDeliveryMethod('COURIER')}
+                className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                  deliveryMethod === 'COURIER'
+                    ? 'border-bunker-amber-500 bg-orange-50/50 shadow-xs'
+                    : 'border-bunker-border-strong bg-white hover:border-slate-300'
                 }`}
               >
-                <div className="mt-0.5">
-                  <input
-                    type="radio"
-                    checked={paymentTerms === 'ADVANCE_30_70'}
-                    onChange={() => setPaymentTerms('ADVANCE_30_70')}
-                    className="accent-bunker-amber-500 cursor-pointer"
+                <div className="flex items-center justify-between mb-1">
+                  <div className="font-bold text-xs text-bunker-text-primary flex items-center gap-1.5">
+                    <Truck className="w-3.5 h-3.5 text-bunker-amber-500" />
+                    <span>Keltirib berish</span>
+                  </div>
+                  <span className="text-[11px] font-bold text-slate-900">+50,000 so‘m</span>
+                </div>
+                <p className="text-[10px] text-bunker-text-secondary">
+                  Toshkent va viloyatlar bo‘yicha manzilingizgacha olib boriladi.
+                </p>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setDeliveryMethod('PICKUP')}
+                className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                  deliveryMethod === 'PICKUP'
+                    ? 'border-bunker-amber-500 bg-orange-50/50 shadow-xs'
+                    : 'border-bunker-border-strong bg-white hover:border-slate-300'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <div className="font-bold text-xs text-bunker-text-primary flex items-center gap-1.5">
+                    <Building className="w-3.5 h-3.5 text-slate-700" />
+                    <span>O‘zi olib ketish</span>
+                  </div>
+                  <span className="text-[11px] font-bold text-emerald-700">BEPUL</span>
+                </div>
+                <p className="text-[10px] text-bunker-text-secondary">
+                  Sotuvchining omboridan o‘zingiz olib ketasiz.
+                </p>
+              </button>
+            </div>
+
+            {deliveryMethod === 'COURIER' && (
+              <div className="pt-2 space-y-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[11px] text-bunker-text-secondary block mb-1">
+                      Viloyat / Shahar
+                    </label>
+                    <Select
+                      sizeVariant="sm"
+                      value={region}
+                      onChange={(e) => setRegion(e.target.value)}
+                    >
+                      <option value="Toshkent shahri">Toshkent shahri</option>
+                      <option value="Toshkent viloyati">Toshkent viloyati</option>
+                      <option value="Samarqand viloyati">Samarqand viloyati</option>
+                      <option value="Farg‘ona viloyati">Farg‘ona viloyati</option>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] text-bunker-text-secondary block mb-1">
+                      Tuman
+                    </label>
+                    <Input
+                      sizeVariant="sm"
+                      placeholder="Chilonzor tumani"
+                      value={district}
+                      onChange={(e) => setDistrict(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[11px] text-bunker-text-secondary block mb-1">
+                    Ko‘cha, uy / xonadon raqami *
+                  </label>
+                  <Input
+                    sizeVariant="sm"
+                    placeholder="Bunyodkor shox ko‘chasi, 42-uy"
+                    value={streetAddress}
+                    onChange={(e) => setStreetAddress(e.target.value)}
                   />
                 </div>
-                <div>
-                  <h4 className="font-bold text-slate-900">
-                    30% Avans / 70% Ob'ektda Qabul Qilinganda
-                  </h4>
-                  <p className="text-[11px] text-slate-600 mt-0.5">
-                    Qurilish pudratchilari uchun kafolatlangan rejim: Avans {advance30.toLocaleString()} so‘m, qoldiq{' '}
-                    {remaining70.toLocaleString()} so‘m ob'ektda dalolatnoma imzolangach to‘lanadi.
-                  </p>
-                </div>
-              </div>
 
-              <div
-                onClick={() => setPaymentTerms('ADVANCE_100')}
-                className={`p-3.5 rounded-xl border-2 transition-all cursor-pointer flex items-start gap-3 ${
-                  paymentTerms === 'ADVANCE_100'
-                    ? 'bg-orange-50/40 border-bunker-amber-500 shadow-xs ring-1 ring-bunker-amber-500/20'
-                    : 'bg-white border-slate-200 hover:border-slate-300'
-                }`}
-              >
-                <div className="mt-0.5">
-                  <input
-                    type="radio"
-                    checked={paymentTerms === 'ADVANCE_100'}
-                    onChange={() => setPaymentTerms('ADVANCE_100')}
-                    className="accent-bunker-amber-500 cursor-pointer"
+                <div>
+                  <label className="text-[11px] text-bunker-text-secondary block mb-1">
+                    Mo‘ljal (Landmark)
+                  </label>
+                  <Input
+                    sizeVariant="sm"
+                    placeholder="Novza metro bekati ro‘parasida"
+                    value={landmark}
+                    onChange={(e) => setLandmark(e.target.value)}
                   />
                 </div>
-                <div>
-                  <h4 className="font-bold text-slate-900">100% To‘liq Oldindan To‘lov</h4>
-                  <p className="text-[11px] text-slate-600 mt-0.5">
-                    Tezlashtirilgan yuklash ustuvorligi. Jami summa: {grandTotal.toLocaleString()} so‘m.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Payment Method Selector */}
-          <div className="space-y-2">
-            <span className="font-bold text-slate-900 uppercase block">
-              Hisob-Kitob Usuli:
-            </span>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <button
-                type="button"
-                onClick={() => setPaymentMethod('BANK_TRANSFER')}
-                className={`p-3 rounded-xl border font-mono font-bold text-center cursor-pointer transition-all ${
-                  paymentMethod === 'BANK_TRANSFER'
-                    ? 'bg-bunker-amber-500 text-white border-bunker-amber-500 shadow-xs'
-                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                <Receipt className="w-4 h-4 mx-auto mb-1" />
-                <span>Invoys (B2B Bank)</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setPaymentMethod('PAYME')}
-                className={`p-3 rounded-xl border font-mono font-bold text-center cursor-pointer transition-all ${
-                  paymentMethod === 'PAYME'
-                    ? 'bg-bunker-amber-500 text-white border-bunker-amber-500 shadow-xs'
-                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                <CreditCard className="w-4 h-4 mx-auto mb-1" />
-                <span>Payme B2B</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setPaymentMethod('CLICK')}
-                className={`p-3 rounded-xl border font-mono font-bold text-center cursor-pointer transition-all ${
-                  paymentMethod === 'CLICK'
-                    ? 'bg-bunker-amber-500 text-white border-bunker-amber-500 shadow-xs'
-                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                <CreditCard className="w-4 h-4 mx-auto mb-1" />
-                <span>Click Corporate</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Summary Calculation */}
-          <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-2">
-            <div className="flex justify-between text-slate-600">
-              <span>To‘lov sharti:</span>
-              <span className="font-bold text-slate-900">
-                {paymentTerms === 'ADVANCE_30_70' ? '30% Avans / 70% Qoldiq' : '100% Oldindan to‘lov'}
-              </span>
-            </div>
-            <div className="flex justify-between text-slate-600">
-              <span>Birinchi bosqich to‘lovi (Avans):</span>
-              <span className="font-bold text-bunker-amber-500 font-mono">
-                {(paymentTerms === 'ADVANCE_30_70' ? advance30 : grandTotal).toLocaleString()} so‘m
-              </span>
-            </div>
-            {paymentTerms === 'ADVANCE_30_70' && (
-              <div className="flex justify-between text-slate-600">
-                <span>Yakuniy to‘lov (qabul qilinganda):</span>
-                <span className="text-slate-500 font-mono">{remaining70.toLocaleString()} so‘m</span>
               </div>
             )}
-            <div className="pt-2 border-t border-slate-200 flex justify-between font-bold text-sm">
-              <span className="text-slate-900">Jami shartnoma qiymati:</span>
-              <span className="text-bunker-amber-500 font-mono">{grandTotal.toLocaleString()} so‘m</span>
+          </div>
+
+          {/* 3. Payment Method */}
+          <div className="bg-white border border-bunker-border-strong rounded-xl p-4 space-y-3 shadow-xs">
+            <div className="flex items-center gap-2 pb-2 border-b border-bunker-border-subtle">
+              <CreditCard className="w-4 h-4 text-bunker-amber-500" />
+              <h3 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary">
+                3. To‘lov Turi
+              </h3>
+            </div>
+
+            <div className="space-y-2">
+              <label className="flex items-center gap-2.5 p-2.5 rounded-lg border border-bunker-border-subtle hover:bg-slate-50 cursor-pointer">
+                <input
+                  type="radio"
+                  name="payment"
+                  checked={paymentMethod === 'CASH_ON_DELIVERY'}
+                  onChange={() => setPaymentMethod('CASH_ON_DELIVERY')}
+                  className="text-bunker-amber-500"
+                />
+                <Banknote className="w-4 h-4 text-emerald-600" />
+                <span className="text-xs font-bold text-bunker-text-primary">
+                  Qabul qilganda naqd yoki karta orqali to‘lov
+                </span>
+              </label>
+
+              <label className="flex items-center gap-2.5 p-2.5 rounded-lg border border-bunker-border-subtle hover:bg-slate-50 cursor-pointer">
+                <input
+                  type="radio"
+                  name="payment"
+                  checked={paymentMethod === 'PAYME'}
+                  onChange={() => setPaymentMethod('PAYME')}
+                  className="text-bunker-amber-500"
+                />
+                <CreditCard className="w-4 h-4 text-sky-600" />
+                <span className="text-xs font-bold text-bunker-text-primary">
+                  Payme / Click orqali onlayn to‘lov
+                </span>
+              </label>
+
+              <label className="flex items-center gap-2.5 p-2.5 rounded-lg border border-bunker-border-subtle hover:bg-slate-50 cursor-pointer">
+                <input
+                  type="radio"
+                  name="payment"
+                  checked={paymentMethod === 'BANK_TRANSFER'}
+                  onChange={() => setPaymentMethod('BANK_TRANSFER')}
+                  className="text-bunker-amber-500"
+                />
+                <FileText className="w-4 h-4 text-purple-600" />
+                <span className="text-xs font-bold text-bunker-text-primary">
+                  Korxona hisob-fakturasi (B2B Bank o‘tkazmasi)
+                </span>
+              </label>
             </div>
           </div>
         </div>
       )}
 
-      {/* STEP 5: SUCCESS STATE */}
+      {/* =========================================================================
+          STEP 3: BUYURTMA QABUL QILINDI (SUCCESS)
+          ========================================================================= */}
       {step === 'success' && (
-        <div className="text-center py-16 space-y-4 font-mono">
-          <CheckCircle className="w-16 h-16 mx-auto text-emerald-600" />
-          <h4 className="text-lg font-bold text-slate-900">
-            B2B Shartnoma Muvaffaqiyatli Rasmiylashtirildi!
-          </h4>
-          <p className="text-xs text-slate-600 max-w-sm mx-auto">
-            Buyurtma raqami: <strong className="text-bunker-amber-500 font-mono">{createdOrderNumber}</strong>
-            <br />
-            Elektron hisob-faktura (Invoys) va shartnoma nusxasi DSQ tizimiga yuborildi.
-          </p>
-          <div className="inline-block bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-xl text-xs text-emerald-800 font-semibold font-mono">
-            E-IMZO Serial: {eimzoSerial}
+        <div className="py-8 text-center space-y-4 font-mono">
+          <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 mx-auto flex items-center justify-center">
+            <CheckCircle className="w-8 h-8" />
+          </div>
+
+          <div className="space-y-1">
+            <Badge variant="success" size="md" isMono>
+              BUYURTMA QABUL QILINDI
+            </Badge>
+            <h2 className="text-lg font-extrabold text-bunker-text-primary mt-2">
+              Buyurtma Raqami: #{createdOrderNumber}
+            </h2>
+            <p className="text-xs text-bunker-text-secondary max-w-sm mx-auto">
+              Xaridingiz to‘g‘ridan-to‘g‘ri ishlab chiqaruvchi/do‘konga yo‘naltirildi. Kuryer jo‘natishdan avval siz bilan bog‘lanadi.
+            </p>
+          </div>
+
+          <div className="bg-slate-50 border border-bunker-border-strong rounded-xl p-4 text-left text-xs space-y-2 max-w-sm mx-auto">
+            <div className="flex items-center justify-between text-bunker-text-muted">
+              <span>Holat:</span>
+              <span className="font-bold text-sky-700">Tasdiqlandi &amp; Tayyorlanmoqda</span>
+            </div>
+            <div className="flex items-center justify-between text-bunker-text-muted">
+              <span>Yetkazib berish:</span>
+              <span className="font-bold text-slate-800">
+                {deliveryMethod === 'PICKUP' ? 'Samovivoz (Ombordan)' : 'BunkerStroy Kuryer'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-bunker-text-muted">
+              <span>Qabul qiluvchi:</span>
+              <span className="font-bold text-slate-800">{buyerPhone}</span>
+            </div>
+          </div>
+
+          <div className="pt-4">
+            <Button size="md" variant="primary" onClick={handleFinishAndNavigate}>
+              <span>Buyurtmalarim Sahifasiga O‘tish</span>
+              <ArrowRight className="w-4 h-4 ml-1.5" />
+            </Button>
           </div>
         </div>
       )}

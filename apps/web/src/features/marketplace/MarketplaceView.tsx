@@ -38,6 +38,7 @@ interface MarketplaceViewProps {
 export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart }) => {
   const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Array<{ id: string; name: string; slug: string }>>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -49,6 +50,17 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
   const [viewMode, setViewMode] = useState<'cards' | 'matrix'>('cards');
   const [matrixQuantities, setMatrixQuantities] = useState<Record<string, number>>({});
   const [batchSuccessNotice, setBatchSuccessNotice] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/catalog/categories')
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.success && Array.isArray(json.data)) {
+          setCategories(json.data);
+        }
+      })
+      .catch((err) => console.error('Failed to fetch categories:', err));
+  }, []);
 
   useEffect(() => {
     fetchProducts();
@@ -254,6 +266,35 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
         </div>
       </div>
 
+      {/* 2.5 Horizontal Category Pills */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none font-mono text-xs">
+        <button
+          type="button"
+          onClick={() => setSelectedCategory('all')}
+          className={`px-3 py-1.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
+            selectedCategory === 'all'
+              ? 'bg-slate-900 text-white border-slate-900'
+              : 'bg-white text-slate-700 border-bunker-border-strong hover:border-slate-400'
+          }`}
+        >
+          Barcha mahsulotlar
+        </button>
+        {categories.map((cat) => (
+          <button
+            key={cat.id}
+            type="button"
+            onClick={() => setSelectedCategory(cat.slug || cat.id)}
+            className={`px-3 py-1.5 rounded-xl border font-medium transition-all whitespace-nowrap cursor-pointer shadow-xs ${
+              selectedCategory === cat.slug || selectedCategory === cat.id
+                ? 'bg-bunker-amber-500 text-white border-bunker-amber-500 font-bold'
+                : 'bg-white text-slate-700 border-bunker-border-strong hover:border-slate-400'
+            }`}
+          >
+            {cat.name}
+          </button>
+        ))}
+      </div>
+
       {/* Batch notice alert */}
       {batchSuccessNotice && (
         <Alert
@@ -323,10 +364,18 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                     </div>
                   </div>
 
-                  {/* Supplier & QQS label */}
+                  {/* Supplier & Delivery / QQS label */}
                   <div className="flex items-center justify-between text-[11px] font-mono text-bunker-text-muted mb-1">
-                    <span className="truncate max-w-[180px]">{p.supplierName}</span>
-                    <span className="text-emerald-700 font-bold shrink-0">12% QQS</span>
+                    <span className="truncate max-w-[170px] text-slate-700 font-medium">{p.supplierName}</span>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {p.hasDelivery && (
+                        <span className="text-emerald-700 font-bold flex items-center gap-0.5 text-[10px]">
+                          <Truck className="w-3 h-3" /> Yetkazish
+                        </span>
+                      )}
+                      <span className="text-slate-300">•</span>
+                      <span className="text-emerald-700 font-bold text-[10px]">12% QQS</span>
+                    </div>
                   </div>
 
                   {/* Title */}
