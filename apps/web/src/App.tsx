@@ -18,7 +18,6 @@ import {
   MapPin,
   Clock,
   Layers,
-  Activity,
   Building2,
   Truck,
   Leaf,
@@ -67,7 +66,6 @@ export const App: React.FC = () => {
       localStorage.setItem('bunkerstroy_high_vis', 'true');
     } else {
       document.documentElement.classList.remove('high-vis-mode');
-      localStorage.setItem('bunkerstroy_high_vis', 'false');
     }
   }, [highVisMode]);
 
@@ -201,7 +199,7 @@ export const App: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-bunker-base text-bunker-text-primary selection:bg-bunker-amber-500 selection:text-bunker-vault font-sans transition-colors duration-200">
+    <div className="min-h-screen flex flex-col bg-bunker-base text-bunker-text-primary selection:bg-bunker-amber-500 selection:text-white font-sans transition-colors duration-200">
       {/* 1. Double-Decker Mission Control Navigation & Header */}
       <Navbar
         activeTab={activeTab}
@@ -240,43 +238,39 @@ export const App: React.FC = () => {
         )}
       </main>
 
-      {/* 3. Brushed Steel Industrial Footer */}
-      <footer className="mt-auto brushed-steel border-t border-bunker-border-strong text-bunker-text-secondary relative">
-        <div className="h-1 w-full hazard-stripe-sm opacity-80" />
-
+      {/* 3. Clean Nordic Industrial Enterprise Footer */}
+      <footer className="mt-auto bg-white border-t border-bunker-border-strong text-bunker-text-secondary">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
             {/* Column 1: Brand Info */}
             <div className="lg:col-span-2 space-y-4">
               <div className="flex items-center gap-3">
-                <div className="relative w-10 h-10 rounded-xl bg-bunker-surface-2 border border-bunker-border-strong flex items-center justify-center shadow-inner">
-                  <div className="absolute top-1 left-1 industrial-rivet" />
-                  <div className="absolute top-1 right-1 industrial-rivet" />
+                <div className="relative w-10 h-10 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center shadow-xs">
                   <HardHat className="w-5 h-5 text-bunker-amber-500" />
                 </div>
                 <div>
-                  <span className="text-xl font-black tracking-wider leading-none text-bunker-text-primary">
-                    <span className="text-bunker-amber-500">BUNKER</span> STROY
+                  <span className="text-xl font-extrabold tracking-tight leading-none text-bunker-text-primary">
+                    <span className="text-bunker-amber-500">BUNKER</span>STROY
                   </span>
-                  <span className="text-[10px] tracking-widest text-bunker-text-muted uppercase font-mono block mt-0.5">
-                    Sanoat & B2B Qurilish Ekologik Tizimi
+                  <span className="text-[10px] tracking-wider text-bunker-text-muted uppercase font-mono block mt-0.5">
+                    B2B Sanoat Xaridlari &amp; Logistika Platformasi
                   </span>
                 </div>
               </div>
 
               <p className="text-xs leading-relaxed text-bunker-text-secondary max-w-md">
-                BunkerStroy — O‘zbekiston Respublikasi bo‘ylab yirik qurilish ob’ektlari, pudratchilar va ishlab chiqaruvchilarni
-                to‘g‘ridan-to‘g‘ri birlashtiruvchi avtomatlashtirilgan B2B xaridlar, og‘ir logistika va ESCO energiya auditi platformasi.
+                BunkerStroy — O‘zbekiston Respublikasi bo‘ylab yirik qurilish developerlari, bosh pudratchilar va ishlab chiqaruvchilarni
+                to‘g‘ridan-to‘g‘ri birlashtiruvchi avtomatlashtirilgan B2B xaridlar, og‘ir logistika va ESCO energiya auditi ekotizimi.
               </p>
 
               <div className="flex flex-wrap items-center gap-2 pt-2">
-                <div className="flex items-center gap-1.5 bg-bunker-surface-1 border border-bunker-border-strong px-2.5 py-1 rounded-lg text-[10px] font-mono text-bunker-amber-500">
+                <div className="flex items-center gap-1.5 bg-slate-50 border border-bunker-border-strong px-2.5 py-1 rounded-lg text-[10px] font-mono text-bunker-text-secondary">
                   <ShieldCheck className="w-3.5 h-3.5 text-bunker-status-green" />
                   <span>ISO 9001:2015 Sertifikatlangan</span>
                 </div>
-                <div className="flex items-center gap-1.5 bg-bunker-surface-1 border border-bunker-border-strong px-2.5 py-1 rounded-lg text-[10px] font-mono text-bunker-status-green">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>Davlat Standartlari Muqobilligi</span>
+                <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg text-[10px] font-mono text-emerald-800">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>O‘zDSt &amp; GOST Muvofiqligi</span>
                 </div>
               </div>
             </div>
@@ -293,7 +287,7 @@ export const App: React.FC = () => {
                     onClick={() => setActiveTab('marketplace')}
                     className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
                   >
-                    B2B Marketplace & Katalog
+                    B2B Marketplace &amp; Smeta
                   </button>
                 </li>
                 <li>
@@ -301,7 +295,7 @@ export const App: React.FC = () => {
                     onClick={() => setActiveTab('logistics')}
                     className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
                   >
-                    Og'ir Yuk Tashish & HOWO
+                    Og'ir Yuk Tashish &amp; HOWO
                   </button>
                 </li>
                 <li>
@@ -340,7 +334,7 @@ export const App: React.FC = () => {
               <ul className="space-y-2 text-xs font-mono text-bunker-text-secondary">
                 <li className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-bunker-amber-500" />
-                  <span>E-IMZO Raqamli Imzo</span>
+                  <span>E-IMZO PKCS#7 Raqamli Imzo</span>
                 </li>
                 <li className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-bunker-amber-500" />
@@ -348,7 +342,7 @@ export const App: React.FC = () => {
                 </li>
                 <li className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-bunker-status-green" />
-                  <span>Google Gemini 3.8 AI & Maps</span>
+                  <span>Google Gemini 3.8 AI Maslahatchi</span>
                 </li>
                 <li className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-bunker-status-green" />
@@ -356,7 +350,7 @@ export const App: React.FC = () => {
                 </li>
                 <li className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-bunker-status-cyan" />
-                  <span>Payme, Click & B2B Invoicing</span>
+                  <span>Payme, Click &amp; B2B Hisob-Faktura</span>
                 </li>
               </ul>
             </div>
@@ -387,18 +381,18 @@ export const App: React.FC = () => {
           {/* Bottom Copyright & SLA */}
           <div className="mt-10 pt-6 border-t border-bunker-border-strong flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono">
             <p className="text-bunker-text-muted text-center sm:text-left">
-              &copy; 2026 BunkerStroy Technologies LLC. Barcha huquqlar himoyalangan.
+              &copy; 2026 BunkerStroy Enterprise LLC. Barcha huquqlar himoyalangan.
             </p>
             <div className="flex items-center gap-3">
               <Tooltip content="99.98% High Availability klasteri va 24/7 uzluksiz B2B operatsiyalari kafolati" position="top">
-                <Badge variant="success" size="sm" isMono dot className="cursor-default">
+                <Badge variant="success" size="sm" isMono dot className="cursor-default bg-emerald-50 text-emerald-700 border-emerald-200">
                   SLA: 99.98% Ishonchlilik
                 </Badge>
               </Tooltip>
               <span className="text-bunker-border-strong">|</span>
-              <Tooltip content="BunkerStroy Tactile Precision Core dizayn tizimi" position="top">
-                <Badge variant="default" size="sm" isMono className="cursor-default">
-                  v1.2.0 (Tactile Precision Core)
+              <Tooltip content="BunkerStroy Nordic Industrial Enterprise dizayn tizimi" position="top">
+                <Badge variant="neutral" size="sm" isMono className="cursor-default">
+                  v2.0 (Nordic Enterprise)
                 </Badge>
               </Tooltip>
             </div>
@@ -413,15 +407,14 @@ export const App: React.FC = () => {
         title="Global Komanda Qidiruvi"
         subtitle="Platforma modullari va xizmatlari bo'yicha tezkor navigatsiya"
         size="lg"
-        rivetAccents
         footer={
           <div className="flex items-center justify-between w-full text-[11px] font-mono text-bunker-text-muted">
             <span>
-              Navigatsiya: <kbd className="bg-bunker-surface-2 px-1.5 py-0.5 rounded border border-bunker-border-subtle">↑</kbd>{' '}
-              <kbd className="bg-bunker-surface-2 px-1.5 py-0.5 rounded border border-bunker-border-subtle">↓</kbd>
+              Navigatsiya: <kbd className="bg-slate-100 px-1.5 py-0.5 rounded border border-bunker-border-subtle">↑</kbd>{' '}
+              <kbd className="bg-slate-100 px-1.5 py-0.5 rounded border border-bunker-border-subtle">↓</kbd>
             </span>
             <span>
-              Yopish: <kbd className="bg-bunker-surface-2 px-1.5 py-0.5 rounded border border-bunker-border-subtle">ESC</kbd>
+              Yopish: <kbd className="bg-slate-100 px-1.5 py-0.5 rounded border border-bunker-border-subtle">ESC</kbd>
             </span>
           </div>
         }
@@ -456,10 +449,10 @@ export const App: React.FC = () => {
                       setActiveTab(item.tab);
                       setIsSearchOpen(false);
                     }}
-                    className="p-3 rounded-2xl bg-bunker-base hover:bg-bunker-surface-hover border border-bunker-border-subtle hover:border-bunker-amber-500 flex items-center justify-between cursor-pointer transition-all group font-mono"
+                    className="p-3 rounded-xl bg-white hover:bg-slate-50 border border-bunker-border-strong hover:border-bunker-amber-500 flex items-center justify-between cursor-pointer transition-all group font-mono shadow-xs"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-xl bg-bunker-surface-2 border border-bunker-border-strong group-hover:border-bunker-amber-500">
+                      <div className="p-2 rounded-xl bg-slate-50 border border-bunker-border-strong group-hover:border-bunker-amber-500">
                         {item.icon}
                       </div>
                       <div>

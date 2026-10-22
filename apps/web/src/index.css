@@ -2,83 +2,74 @@
 @source "../../packages/ui/src";
 
 @theme {
-  --color-bunker-vault: #0B0C0E;
-  --color-bunker-base: #121417;
-  --color-bunker-surface-1: #181B1F;
-  --color-bunker-surface-2: #21252B;
-  --color-bunker-surface-hover: #2A2F37;
-  --color-bunker-input: #14171A;
-  --color-bunker-amber-500: #FFB800;
-  --color-bunker-amber-400: #FFC833;
-  --color-bunker-border-subtle: #24282E;
-  --color-bunker-border-strong: #363C44;
-  --color-bunker-border-active: #FFB800;
-  --color-bunker-text-primary: #F5F5F2;
-  --color-bunker-text-secondary: #B8B8B3;
-  --color-bunker-text-muted: #6E737A;
-  --color-bunker-status-green: #10B981;
-  --color-bunker-status-amber: #F59E0B;
-  --color-bunker-status-red: #EF4444;
-  --color-bunker-status-cyan: #06B6D4;
+  /* Nordic Industrial Enterprise Design Tokens (Procore + Stripe Benchmark) */
+  --color-bunker-vault: #0F172A;
+  --color-bunker-base: #F8FAFC;
+  --color-bunker-surface-1: #FFFFFF;
+  --color-bunker-surface-2: #F1F5F9;
+  --color-bunker-surface-hover: #F1F5F9;
+  --color-bunker-input: #FFFFFF;
+  --color-bunker-amber-500: #C2410C;
+  --color-bunker-amber-400: #EA580C;
+  --color-bunker-border-subtle: #E2E8F0;
+  --color-bunker-border-strong: #E2E8F0;
+  --color-bunker-border-active: #C2410C;
+  --color-bunker-text-primary: #0F172A;
+  --color-bunker-text-secondary: #334155;
+  --color-bunker-text-muted: #64748B;
+  --color-bunker-status-green: #059669;
+  --color-bunker-status-amber: #D97706;
+  --color-bunker-status-red: #DC2626;
+  --color-bunker-status-cyan: #0284C7;
+
+  /* Semantic Aliases */
+  --color-canvas: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-surface-hover: #F1F5F9;
+  --color-surface-muted: #E2E8F0;
+  --color-brand-primary: #C2410C;
+  --color-brand-hover: #EA580C;
 }
 
 @layer base {
   body {
-    background-color: var(--color-bunker-base, #121417);
-    color: var(--color-bunker-text-primary, #F5F5F2);
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: var(--color-bunker-base, #F8FAFC);
+    color: var(--color-bunker-text-primary, #0F172A);
+    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    font-variant-numeric: tabular-nums;
     transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   button:active,
   .btn-tactile:active {
-    transform: translateY(1px) scale(0.985);
+    transform: translateY(1px) scale(0.99);
   }
 }
 
-/* Industrial Tactile Tabs */
+/* Neutralized Tactical Fallbacks (Clean Enterprise Rounding) */
 .chamfer-tab {
-  position: relative;
-  clip-path: polygon(10px 0%, calc(100% - 10px) 0%, 100% 100%, 0% 100%);
+  border-radius: 8px;
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .chamfer-tab-corner {
-  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+  border-radius: 12px;
 }
 
-.hazard-stripe {
-  background: repeating-linear-gradient(
-    -45deg,
-    var(--color-bunker-amber-500, #FFB800),
-    var(--color-bunker-amber-500, #FFB800) 12px,
-    var(--color-bunker-base, #121417) 12px,
-    var(--color-bunker-base, #121417) 24px
-  );
-}
-
+.hazard-stripe,
 .hazard-stripe-sm {
-  background: repeating-linear-gradient(
-    -45deg,
-    var(--color-bunker-amber-500, #FFB800),
-    var(--color-bunker-amber-500, #FFB800) 6px,
-    var(--color-bunker-base, #121417) 6px,
-    var(--color-bunker-base, #121417) 12px
-  );
+  background: transparent;
+  height: 1px;
 }
 
 .brushed-steel {
-  background: linear-gradient(180deg, var(--color-bunker-surface-2, #21252B) 0%, var(--color-bunker-surface-1, #181B1F) 100%);
-  border-bottom: 1px solid var(--color-bunker-border-strong, #363C44);
+  background-color: #FFFFFF;
+  border-bottom: 1px solid var(--color-bunker-border-strong, #E2E8F0);
 }
 
 .industrial-rivet {
-  width: 6px;
-  height: 6px;
-  border-radius: 9999px;
-  background: var(--color-bunker-border-strong, #363C44);
-  border: 1px solid var(--color-bunker-surface-2, #21252B);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.8);
+  display: none !important;
 }
 
 @keyframes soundwave {
@@ -104,45 +95,34 @@
   scrollbar-width: none;
 }
 
-/* High-Vis Construction Field Mode (WCAG AAA 14:1 high contrast light palette) */
+/* High-Vis Field Mode (Maximum WCAG AAA Contrast for Sunlight Visibility) */
 html.high-vis-mode {
-  --color-bunker-vault: #FFFFFF;
-  --color-bunker-base: #F4F6F8;
+  --color-bunker-vault: #000000;
+  --color-bunker-base: #FFFFFF;
   --color-bunker-surface-1: #FFFFFF;
-  --color-bunker-surface-2: #E5E9EE;
-  --color-bunker-surface-hover: #D8DFE6;
+  --color-bunker-surface-2: #E2E8F0;
+  --color-bunker-surface-hover: #CBD5E1;
   --color-bunker-input: #FFFFFF;
-  --color-bunker-amber-500: #C2410C;
-  --color-bunker-amber-400: #9A3412;
+  --color-bunker-amber-500: #9A3412;
+  --color-bunker-amber-400: #7C2D12;
   --color-bunker-border-subtle: #94A3B8;
   --color-bunker-border-strong: #0F172A;
   --color-bunker-border-active: #0F172A;
-  --color-bunker-text-primary: #0F172A;
-  --color-bunker-text-secondary: #1E293B;
+  --color-bunker-text-primary: #000000;
+  --color-bunker-text-secondary: #0F172A;
   --color-bunker-text-muted: #334155;
-  --color-bunker-status-green: #047857;
-  --color-bunker-status-amber: #B45309;
-  --color-bunker-status-red: #B91C1C;
-  --color-bunker-status-cyan: #0E7490;
+  --color-bunker-status-green: #065F46;
+  --color-bunker-status-amber: #92400E;
+  --color-bunker-status-red: #991B1B;
+  --color-bunker-status-cyan: #075985;
 }
 
 html.high-vis-mode body {
-  background-color: #F4F6F8 !important;
-  color: #0F172A !important;
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
 }
 
 html.high-vis-mode .brushed-steel {
   background: #FFFFFF !important;
   border-bottom: 2px solid #0F172A !important;
-}
-
-html.high-vis-mode .hazard-stripe,
-html.high-vis-mode .hazard-stripe-sm {
-  background: repeating-linear-gradient(
-    -45deg,
-    #0F172A,
-    #0F172A 6px,
-    #EAB308 6px,
-    #EAB308 12px
-  ) !important;
 }

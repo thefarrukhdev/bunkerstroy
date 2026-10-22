@@ -157,30 +157,29 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
 
   return (
     <div className="space-y-6">
-      {/* 1. Industrial Tactical Banner */}
-      <div className="relative rounded-3xl overflow-hidden border border-bunker-border-strong bg-gradient-to-r from-bunker-surface-1 via-bunker-surface-2 to-[#2E2412] p-6 sm:p-10 shadow-2xl">
-        <div className="h-1.5 w-full hazard-stripe-sm absolute top-0 left-0" />
+      {/* 1. Luminous Nordic Enterprise Header Card */}
+      <div className="relative rounded-2xl overflow-hidden border border-orange-200/80 bg-gradient-to-r from-orange-50/70 via-white to-amber-50/50 p-6 sm:p-8 shadow-xs">
         <div className="max-w-3xl space-y-3">
-          <Badge variant="warning" className="gap-1.5 font-mono">
-            <Sparkles className="w-3.5 h-3.5" />
-            BunkerStroy B2B Ulgurji Xaridlar Tizimi
+          <Badge variant="warning" className="gap-1.5 font-mono bg-orange-100/80 text-orange-800 border-orange-300">
+            <Sparkles className="w-3.5 h-3.5 text-bunker-amber-500" />
+            BunkerStroy B2B Ulgurji Ta'minot Ekotizimi
           </Badge>
-          <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-bunker-text-primary">
-            Sanoat Ob'ektlari Uchun Kafolatlangan Materiallar & Smeta Matritsasi
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-bunker-text-primary">
+            Sanoat Ob'ektlari Uchun Kafolatlangan Materiallar &amp; Smeta Matritsasi
           </h1>
           <p className="text-sm text-bunker-text-secondary leading-relaxed">
             Qizilqum Sement M500, Bekobod A500C armaturasi va energiya tejamkor bazalt plitalarini to‘g‘ridan-to‘g‘ri
-            zavod ulgurji narxlarida xarid qiling. QQS 12% hisoblangan, GOST sertifikatlangan va HOWO maxsus parki bilan yetkaziladi.
+            zavod ulgurji narxlarida xarid qiling. QQS 12% kiritilgan, GOST &amp; O‘zDSt sertifikatlangan va HOWO maxsus avtoparki bilan yetkaziladi.
           </p>
         </div>
       </div>
 
       {/* 2. Command Filter Bar & Dual-Mode Toggle */}
-      <div className="bg-bunker-surface-1 border border-bunker-border-subtle p-4 rounded-2xl flex flex-wrap gap-3 items-center justify-between">
+      <div className="bg-white border border-bunker-border-strong p-4 rounded-xl flex flex-wrap gap-3 items-center justify-between shadow-xs">
         {/* Search input using Input component */}
         <div className="flex-1 min-w-[240px]">
           <Input
-            leftIcon={<Search className="w-4 h-4" />}
+            leftIcon={<Search className="w-4 h-4 text-bunker-amber-500" />}
             placeholder="Mahsulot nomi, GOST yoki markasi bo'yicha qidiruv..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -207,24 +206,24 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
           <button
             type="button"
             onClick={() => setEscoOnly(!escoOnly)}
-            className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 shadow-xs ${
               escoOnly
-                ? 'bg-bunker-status-green/20 border-bunker-status-green text-bunker-status-green'
-                : 'bg-bunker-surface-2 border-bunker-border-subtle text-bunker-text-secondary hover:text-bunker-text-primary'
+                ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
+                : 'bg-white border-bunker-border-strong text-bunker-text-secondary hover:text-bunker-text-primary'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5" />
+            <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
             <span>Faqat ESCO</span>
           </button>
 
           {/* DUAL-MODE VIEW TOGGLE */}
-          <div className="bg-bunker-surface-2 p-1 rounded-xl border border-bunker-border-subtle flex items-center gap-1">
+          <div className="bg-slate-100/80 p-1 rounded-xl border border-bunker-border-strong flex items-center gap-1">
             <button
               type="button"
               onClick={() => setViewMode('cards')}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 viewMode === 'cards'
-                  ? 'bg-bunker-amber-500 text-bunker-vault shadow-sm'
+                  ? 'bg-white text-bunker-amber-500 shadow-xs border border-bunker-border-strong'
                   : 'text-bunker-text-secondary hover:text-bunker-text-primary'
               }`}
               title="Vizual Texnik Kartochkalar"
@@ -238,7 +237,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
               onClick={() => setViewMode('matrix')}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 viewMode === 'matrix'
-                  ? 'bg-bunker-amber-500 text-bunker-vault shadow-sm'
+                  ? 'bg-white text-bunker-amber-500 shadow-xs border border-bunker-border-strong'
                   : 'text-bunker-text-secondary hover:text-bunker-text-primary'
               }`}
               title="Smeta Matritsasi (B2B Jadval Rejimi)"
@@ -279,7 +278,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
           ))}
         </div>
       ) : products.length === 0 ? (
-        <div className="text-center py-20 text-bunker-text-muted font-mono">
+        <div className="text-center py-20 text-bunker-text-muted font-mono bg-white border border-bunker-border-strong rounded-xl">
           So‘rovingiz bo‘yicha tovarlar topilmadi.
         </div>
       ) : viewMode === 'cards' ? (
@@ -293,11 +292,11 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
             return (
               <Card
                 key={p.id}
-                className="flex flex-col justify-between hover:border-bunker-amber-500/60 transition-all group shadow-md"
+                className="flex flex-col justify-between hover:border-bunker-amber-500/60 transition-all group shadow-xs hover:shadow-md"
               >
                 <div className="space-y-3">
                   {/* Image & Badges */}
-                  <div className="relative h-44 rounded-xl overflow-hidden bg-bunker-surface-2 border border-bunker-border-subtle">
+                  <div className="relative h-44 rounded-xl overflow-hidden bg-slate-100 border border-bunker-border-subtle">
                     <img
                       src={p.images[0] || 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800'}
                       alt={p.title}
@@ -308,14 +307,14 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                         <Badge variant="success">ESCO {p.energyEfficiencyRating}</Badge>
                       )}
                       <Tooltip content="Davlat standarti (GOST) muvofiqlik sertifikati">
-                        <span className="bg-bunker-vault/80 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-mono font-bold text-bunker-amber-500 border border-bunker-border-strong cursor-help">
+                        <span className="bg-white/95 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-mono font-bold text-slate-800 border border-slate-200 shadow-xs cursor-help">
                           {gost}
                         </span>
                       </Tooltip>
                     </div>
 
-                    <div className="absolute bottom-2.5 right-2.5 bg-bunker-vault/80 backdrop-blur-md px-2 py-1 rounded text-[11px] font-mono text-bunker-text-primary border border-bunker-border-subtle">
-                      Omborda: <strong>{p.stock}</strong> {p.unit}
+                    <div className="absolute bottom-2.5 right-2.5 bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] font-mono text-slate-900 border border-slate-200 shadow-xs font-semibold">
+                      Omborda: <strong>{p.stock.toLocaleString()}</strong> {p.unit}
                     </div>
                   </div>
 
@@ -336,20 +335,20 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                   </div>
 
                   {/* Tiered Wholesale Pricing Matrix Chips */}
-                  <div className="bg-bunker-base p-2.5 rounded-xl border border-bunker-border-subtle space-y-1.5 text-[11px] font-mono">
+                  <div className="bg-slate-50 p-2.5 rounded-xl border border-bunker-border-subtle space-y-1.5 text-[11px] font-mono">
                     <span className="text-[10px] uppercase text-bunker-text-muted block font-bold">
                       Ulgurji Narxlar Pog'onasi:
                     </span>
                     <div className="grid grid-cols-3 gap-1 text-center">
-                      <div className="bg-bunker-surface-1 p-1 rounded border border-bunker-border-subtle">
+                      <div className="bg-white p-1 rounded border border-bunker-border-subtle">
                         <span className="text-[9px] text-bunker-text-muted block">1-10 dona/t</span>
                         <span className="font-bold text-bunker-text-primary">{priceNum.toLocaleString()}</span>
                       </div>
-                      <div className="bg-bunker-surface-1 p-1 rounded border border-bunker-border-subtle">
+                      <div className="bg-white p-1 rounded border border-orange-200">
                         <span className="text-[9px] text-bunker-amber-500 block">10-50 t (-5%)</span>
                         <span className="font-bold text-bunker-amber-500">{getTieredPrice(priceNum, 15).toLocaleString()}</span>
                       </div>
-                      <div className="bg-bunker-surface-1 p-1 rounded border border-bunker-border-subtle">
+                      <div className="bg-white p-1 rounded border border-emerald-200">
                         <span className="text-[9px] text-bunker-status-green block">&gt;50 t (-10%)</span>
                         <span className="font-bold text-bunker-status-green">{getTieredPrice(priceNum, 55).toLocaleString()}</span>
                       </div>
@@ -357,7 +356,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                   </div>
 
                   {/* Recommended Vehicle */}
-                  <div className="flex items-center gap-2 text-[11px] font-mono text-bunker-text-secondary bg-bunker-surface-2 px-2.5 py-1.5 rounded-lg border border-bunker-border-subtle">
+                  <div className="flex items-center gap-2 text-[11px] font-mono text-bunker-text-secondary bg-slate-50 px-2.5 py-1.5 rounded-lg border border-bunker-border-subtle">
                     <Truck className="w-3.5 h-3.5 text-bunker-amber-500 shrink-0" />
                     <span className="truncate">Tavsiya: <strong className="text-bunker-text-primary">{vehicle.name}</strong></span>
                   </div>
@@ -367,8 +366,8 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                 <div className="pt-4 mt-4 border-t border-bunker-border-subtle flex items-center justify-between">
                   <div>
                     <span className="text-[10px] uppercase font-mono text-bunker-text-muted">Baza ulgurji narxi:</span>
-                    <p className="text-lg font-black text-bunker-amber-500 font-mono">
-                      {priceNum.toLocaleString()} <span className="text-xs text-bunker-text-primary">so'm</span>
+                    <p className="text-lg font-extrabold text-bunker-amber-500 font-mono">
+                      {priceNum.toLocaleString()} <span className="text-xs text-bunker-text-primary font-normal">so'm</span>
                     </p>
                   </div>
 
@@ -400,8 +399,8 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Mahsulot & Standart</TableHead>
-                <TableHead>Ombor & Birligi</TableHead>
+                <TableHead>Mahsulot &amp; Standart</TableHead>
+                <TableHead>Ombor &amp; Birligi</TableHead>
                 <TableHead>Transport Tavsiyasi</TableHead>
                 <TableHead className="text-center">1-10 t (Baza)</TableHead>
                 <TableHead className="text-center text-bunker-amber-500">10-50 t (-5%)</TableHead>
@@ -431,7 +430,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                           {p.title}
                         </div>
                         <div className="flex items-center gap-2 mt-0.5 text-[10px]">
-                          <span className="text-bunker-amber-500">{gost}</span>
+                          <span className="text-bunker-amber-500 font-semibold">{gost}</span>
                           <span className="text-bunker-border-strong">|</span>
                           <span className="text-bunker-text-muted">{p.supplierName}</span>
                         </div>
@@ -452,27 +451,27 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                       </TableCell>
 
                       {/* Tier 1 */}
-                      <TableCell className="text-center">
+                      <TableCell className="text-center font-medium">
                         {priceNum.toLocaleString()} so'm
                       </TableCell>
 
                       {/* Tier 2 */}
-                      <TableCell className="text-center text-bunker-amber-500 font-bold bg-bunker-amber-500/5">
+                      <TableCell className="text-center text-bunker-amber-500 font-bold bg-orange-50/50">
                         {getTieredPrice(priceNum, 20).toLocaleString()} so'm
                       </TableCell>
 
                       {/* Tier 3 */}
-                      <TableCell className="text-center text-bunker-status-green font-bold bg-bunker-status-green/5">
+                      <TableCell className="text-center text-bunker-status-green font-bold bg-emerald-50/50">
                         {getTieredPrice(priceNum, 60).toLocaleString()} so'm
                       </TableCell>
 
                       {/* Quantity input */}
                       <TableCell className="text-center">
-                        <div className="inline-flex items-center gap-1 bg-bunker-input border border-bunker-border-strong rounded-xl p-1">
+                        <div className="inline-flex items-center gap-1 bg-white border border-bunker-border-strong rounded-lg p-0.5 shadow-xs">
                           <button
                             type="button"
                             onClick={() => handleMatrixQtyChange(p.id, qty - 1)}
-                            className="p-1 text-bunker-text-secondary hover:text-bunker-text-primary hover:bg-bunker-surface-2 rounded cursor-pointer"
+                            className="p-1 text-bunker-text-secondary hover:text-bunker-text-primary hover:bg-slate-100 rounded cursor-pointer transition-colors"
                           >
                             <Minus className="w-3 h-3" />
                           </button>
@@ -487,7 +486,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                           <button
                             type="button"
                             onClick={() => handleMatrixQtyChange(p.id, qty + 1)}
-                            className="p-1 text-bunker-text-secondary hover:text-bunker-text-primary hover:bg-bunker-surface-2 rounded cursor-pointer"
+                            className="p-1 text-bunker-text-secondary hover:text-bunker-text-primary hover:bg-slate-100 rounded cursor-pointer transition-colors"
                           >
                             <Plus className="w-3 h-3" />
                           </button>
@@ -495,7 +494,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                       </TableCell>
 
                       {/* Row total */}
-                      <TableCell className="text-right font-bold text-bunker-amber-500 text-sm">
+                      <TableCell className="text-right font-extrabold text-bunker-amber-500 text-sm">
                         {rowTotal.toLocaleString()} so'm
                       </TableCell>
 
@@ -521,9 +520,9 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
           </Table>
 
           {/* Matrix Smeta Summary Bottom Bar */}
-          <div className="bg-bunker-surface-2 border border-bunker-border-strong rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4">
+          <div className="bg-white border border-bunker-border-strong rounded-xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 shadow-xs">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-bunker-amber-500/20 border border-bunker-amber-500/40 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center">
                 <FileSpreadsheet className="w-5 h-5 text-bunker-amber-500" />
               </div>
               <div>
@@ -531,8 +530,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                   Smeta Matritsasi Jamlanmasi:
                 </h4>
                 <p className="text-[11px] text-bunker-text-secondary font-mono">
-                  Jami qatorlar: <strong className="text-bunker-text-primary">{products.length} ta</strong> | B2B Ulgurji
-                  Chegirmalar hisoblandi
+                  Jami qatorlar: <strong className="text-bunker-text-primary">{products.length} ta</strong> | B2B Ulgurji Chegirmalar va 12% QQS hisoblandi
                 </p>
               </div>
             </div>
@@ -540,8 +538,8 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
             <div className="flex items-center gap-4">
               <div className="text-right">
                 <span className="text-[10px] text-bunker-text-muted uppercase font-mono block">Jami Smeta Qiymati:</span>
-                <p className="text-xl font-black text-bunker-amber-500 font-mono">
-                  {totalMatrixSum.toLocaleString()} <span className="text-xs text-bunker-text-primary">so'm</span>
+                <p className="text-xl font-extrabold text-bunker-amber-500 font-mono">
+                  {totalMatrixSum.toLocaleString()} <span className="text-xs text-bunker-text-primary font-normal">so'm</span>
                 </p>
               </div>
 

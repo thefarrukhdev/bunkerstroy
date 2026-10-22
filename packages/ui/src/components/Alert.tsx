@@ -21,10 +21,10 @@ export const Alert: React.FC<AlertProps> = ({
   ...props
 }) => {
   const variantStyles = {
-    info: 'bg-bunker-status-cyan/15 border-bunker-status-cyan/30 text-bunker-status-cyan',
-    success: 'bg-bunker-status-green/15 border-bunker-status-green/30 text-bunker-status-green',
-    warning: 'bg-bunker-amber-500/15 border-bunker-amber-500/30 text-bunker-amber-500',
-    error: 'bg-bunker-status-red/15 border-bunker-status-red/30 text-bunker-status-red'
+    info: 'bg-bunker-status-cyan/10 border-bunker-status-cyan/25 text-bunker-status-cyan',
+    success: 'bg-bunker-status-green/10 border-bunker-status-green/25 text-bunker-status-green',
+    warning: 'bg-bunker-amber-500/10 border-bunker-amber-500/25 text-bunker-amber-500',
+    error: 'bg-bunker-status-red/10 border-bunker-status-red/25 text-bunker-status-red'
   };
 
   const defaultIcons = {
@@ -40,7 +40,7 @@ export const Alert: React.FC<AlertProps> = ({
     <div
       role="alert"
       className={cn(
-        'p-3.5 rounded-2xl border flex items-start gap-3 text-xs font-mono transition-all',
+        'p-3.5 rounded-xl border flex items-start gap-3 text-xs font-mono transition-all',
         variantStyles[variant],
         className
       )}

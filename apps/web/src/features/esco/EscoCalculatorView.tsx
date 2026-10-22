@@ -159,37 +159,31 @@ export const EscoCalculatorView: React.FC = () => {
       const data = await res.json();
       if (res.ok && data.success) {
         setResult(data.data);
-        // Turn on all insulation preview toggles to show optimal state
-        setInsulatedWalls(true);
-        setInsulatedWindows(true);
-        setInsulatedRoof(true);
       } else {
         setCalcError(data.message || 'Hisoblashda xatolik yuz berdi');
       }
-    } catch (e) {
-      console.error(e);
-      setCalcError('Server bilan ulanishda xato. Iltimos qayta urining.');
+    } catch {
+      setCalcError('Server bilan aloqa uzildi');
     } finally {
       setLoading(false);
     }
   };
 
-  // Save audit to user database profile
+  // Save audit to profile
   const handleSaveAudit = async () => {
+    if (!result) return;
     const token = getToken();
     if (!token) {
-      setSaveError('Auditni saqlash uchun avval shaxsiy kabinetga kiring');
+      setSaveError("Auditni saqlash uchun avval tizimga kiring");
       return;
     }
-
-    if (!result) return;
 
     setIsSaving(true);
     setSaveError(null);
     setSaveSuccess(false);
 
     try {
-      const res = await fetch('/api/esco/audits', {
+      const res = await fetch('/api/esco/save', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -235,16 +229,15 @@ export const EscoCalculatorView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* 1. Header Banner */}
-      <div className="relative rounded-3xl overflow-hidden border border-bunker-border-strong bg-gradient-to-r from-bunker-surface-1 via-bunker-surface-2 to-[#1B291E] p-6 sm:p-10 shadow-2xl">
-        <div className="h-1.5 w-full bg-gradient-to-r from-bunker-status-green via-bunker-amber-500 to-bunker-status-cyan absolute top-0 left-0" />
+      {/* 1. Luminous Nordic Enterprise ESCO Header */}
+      <div className="relative rounded-2xl overflow-hidden border border-emerald-200/80 bg-gradient-to-r from-emerald-50/70 via-white to-slate-50 p-6 sm:p-8 shadow-xs">
         <div className="max-w-3xl space-y-3">
-          <Badge variant="success" className="gap-1.5 font-mono">
-            <Sparkles className="w-3.5 h-3.5" />
+          <Badge variant="success" className="gap-1.5 font-mono bg-emerald-100/80 text-emerald-800 border-emerald-300">
+            <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
             BunkerStroy ESCO — Binolar Energiya Tejamkorlik Modeli
           </Badge>
-          <h1 className="text-2xl sm:text-4xl font-black text-bunker-text-primary tracking-tight">
-            Izometrik Termal Tahlil & Davlat Standarti ShNQ 2.01.04-18 Pasporti
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-bunker-text-primary tracking-tight">
+            Izometrik Termal Tahlil &amp; Davlat Standarti ShNQ 2.01.04-18 Pasporti
           </h1>
           <p className="text-sm text-bunker-text-secondary leading-relaxed">
             Bino devorlari (42%), derazalari (28%) va tomidan (18%) yo‘qotiladigan issiqlik oqimlarini hisoblab,
@@ -255,21 +248,21 @@ export const EscoCalculatorView: React.FC = () => {
 
       {/* 2. Navigation Sub-Tabs */}
       <Tabs
-        variant="chamfer"
+        variant="pills"
         value={activeSubTab}
         onValueChange={(val) => setActiveSubTab(val as 'calculator' | 'saved')}
       >
         <TabsList>
           <TabTrigger value="calculator">
             <Calculator className="w-4 h-4" />
-            <span>AI ESCO Kalkulyatori & Izometrik Model</span>
+            <span>AI ESCO Kalkulyatori &amp; Izometrik Model</span>
           </TabTrigger>
 
           <TabTrigger value="saved">
             <History className="w-4 h-4" />
             <span>Mening Saqlangan Auditlarim</span>
             {savedAudits.length > 0 && (
-              <span className="bg-bunker-base text-bunker-amber-500 text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ml-1">
+              <span className="bg-orange-100 text-orange-800 text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ml-1">
                 {savedAudits.length}
               </span>
             )}
@@ -281,10 +274,10 @@ export const EscoCalculatorView: React.FC = () => {
       {activeSubTab === 'calculator' && (
         <div className="space-y-6">
           {/* Visual Isometric / Cutaway Thermal Loss Zones Visualizer */}
-          <div className="bg-bunker-surface-1 border border-bunker-border-strong rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl">
+          <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 sm:p-8 space-y-6 shadow-xs">
             <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-bunker-border-subtle">
               <div>
-                <h3 className="font-black text-base text-bunker-text-primary font-mono flex items-center gap-2">
+                <h3 className="font-extrabold text-base text-bunker-text-primary font-mono flex items-center gap-2">
                   <Thermometer className="w-5 h-5 text-bunker-amber-500" />
                   Bino Kesimi: Izometrik Termal Yo‘qotish Hududlari (Thermal Cutaway)
                 </h3>
@@ -311,24 +304,24 @@ export const EscoCalculatorView: React.FC = () => {
               {/* Zone 1: Tashqi Devorlar (42%) */}
               <div
                 onClick={() => setInsulatedWalls(!insulatedWalls)}
-                className={`p-5 rounded-2xl border-2 transition-all cursor-pointer relative overflow-hidden ${
+                className={`p-5 rounded-xl border-2 transition-all cursor-pointer relative overflow-hidden shadow-xs ${
                   insulatedWalls
-                    ? 'bg-bunker-status-green/10 border-bunker-status-green shadow-lg shadow-bunker-status-green/10'
-                    : 'bg-bunker-status-red/10 border-bunker-status-red/60 shadow-lg shadow-bunker-status-red/10'
+                    ? 'bg-emerald-50/70 border-emerald-500 text-emerald-950'
+                    : 'bg-red-50/70 border-red-300 text-red-950'
                 }`}
               >
                 <div className="flex items-center justify-between mb-3">
                   <Badge variant={insulatedWalls ? 'success' : 'danger'} className="font-mono text-[10px]">
                     {insulatedWalls ? 'OPTIMAL: 100mm BAZALT' : 'YO‘QOTISH: 42%'}
                   </Badge>
-                  <span className="text-xs font-mono font-bold text-bunker-text-primary">TASHQI DEVORLAR</span>
+                  <span className="text-xs font-mono font-bold">TASHQI DEVORLAR</span>
                 </div>
 
                 <div className="space-y-1.5 text-xs font-mono">
                   <p className="font-bold text-sm text-bunker-text-primary">
                     {insulatedWalls ? 'R = 3.8 m²·K/W (Norma Bajarildi)' : 'R = 1.1 m²·K/W (Kritik Sovuq Oqimi)'}
                   </p>
-                  <p className="text-[11px] text-bunker-text-secondary">
+                  <p className="text-[11px] text-bunker-text-secondary leading-relaxed">
                     {insulatedWalls
                       ? 'Fasad 100mm zichligi 135 kg/m³ bazalt plitasi bilan qoplangan. ShNQ 2.01.04-18 talabiga mos.'
                       : 'Izolyatsiyasiz g‘isht devor. Bino umumiy issiqligining 42% qismi aynan devorlar orqali chiqib ketadi.'}
@@ -336,7 +329,7 @@ export const EscoCalculatorView: React.FC = () => {
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-bunker-border-subtle flex items-center justify-between text-[11px] font-mono">
-                  <span className={insulatedWalls ? 'text-bunker-status-green font-bold' : 'text-bunker-status-red font-bold'}>
+                  <span className={insulatedWalls ? 'text-emerald-700 font-bold' : 'text-red-700 font-bold'}>
                     {insulatedWalls ? '✓ Izolyatsiyalangan' : '✕ Izolyatsiya qilinmagan'}
                   </span>
                   <span className="text-bunker-text-muted underline">Bosib o‘zgartiring</span>
@@ -346,24 +339,24 @@ export const EscoCalculatorView: React.FC = () => {
               {/* Zone 2: Derazalar va Vitrinalar (28%) */}
               <div
                 onClick={() => setInsulatedWindows(!insulatedWindows)}
-                className={`p-5 rounded-2xl border-2 transition-all cursor-pointer relative overflow-hidden ${
+                className={`p-5 rounded-xl border-2 transition-all cursor-pointer relative overflow-hidden shadow-xs ${
                   insulatedWindows
-                    ? 'bg-bunker-status-green/10 border-bunker-status-green shadow-lg shadow-bunker-status-green/10'
-                    : 'bg-bunker-status-amber/10 border-bunker-status-amber/60 shadow-lg shadow-bunker-status-amber/10'
+                    ? 'bg-emerald-50/70 border-emerald-500 text-emerald-950'
+                    : 'bg-amber-50/70 border-amber-300 text-amber-950'
                 }`}
               >
                 <div className="flex items-center justify-between mb-3">
                   <Badge variant={insulatedWindows ? 'success' : 'warning'} className="font-mono text-[10px]">
                     {insulatedWindows ? 'OPTIMAL: LOW-E 3-KAMERA' : 'YO‘QOTISH: 28%'}
                   </Badge>
-                  <span className="text-xs font-mono font-bold text-bunker-text-primary">DERAZALAR</span>
+                  <span className="text-xs font-mono font-bold">DERAZALAR</span>
                 </div>
 
                 <div className="space-y-1.5 text-xs font-mono">
                   <p className="font-bold text-sm text-bunker-text-primary">
                     {insulatedWindows ? 'R = 0.95 m²·K/W (Argon Gazli)' : 'R = 0.38 m²·K/W (Katta Sovuq Ko‘prigi)'}
                   </p>
-                  <p className="text-[11px] text-bunker-text-secondary">
+                  <p className="text-[11px] text-bunker-text-secondary leading-relaxed">
                     {insulatedWindows
                       ? '3 kamerali Low-E kumush qoplamali oynalar. Issiqlik nurini xona ichida saqlaydi.'
                       : 'Oddiy 2 kamerali plastik oyna. Issiqlikning 28% i deraza orqali yo‘qotiladi.'}
@@ -371,7 +364,7 @@ export const EscoCalculatorView: React.FC = () => {
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-bunker-border-subtle flex items-center justify-between text-[11px] font-mono">
-                  <span className={insulatedWindows ? 'text-bunker-status-green font-bold' : 'text-bunker-amber-500 font-bold'}>
+                  <span className={insulatedWindows ? 'text-emerald-700 font-bold' : 'text-amber-700 font-bold'}>
                     {insulatedWindows ? '✓ Izolyatsiyalangan' : '✕ Izolyatsiya qilinmagan'}
                   </span>
                   <span className="text-bunker-text-muted underline">Bosib o‘zgartiring</span>
@@ -381,24 +374,24 @@ export const EscoCalculatorView: React.FC = () => {
               {/* Zone 3: Tom va Cherdak (18%) */}
               <div
                 onClick={() => setInsulatedRoof(!insulatedRoof)}
-                className={`p-5 rounded-2xl border-2 transition-all cursor-pointer relative overflow-hidden ${
+                className={`p-5 rounded-xl border-2 transition-all cursor-pointer relative overflow-hidden shadow-xs ${
                   insulatedRoof
-                    ? 'bg-bunker-status-green/10 border-bunker-status-green shadow-lg shadow-bunker-status-green/10'
-                    : 'bg-bunker-status-amber/10 border-bunker-status-amber/60 shadow-lg shadow-bunker-status-amber/10'
+                    ? 'bg-emerald-50/70 border-emerald-500 text-emerald-950'
+                    : 'bg-amber-50/70 border-amber-300 text-amber-950'
                 }`}
               >
                 <div className="flex items-center justify-between mb-3">
                   <Badge variant={insulatedRoof ? 'success' : 'warning'} className="font-mono text-[10px]">
                     {insulatedRoof ? 'OPTIMAL: XPS 100mm GIDRO' : 'YO‘QOTISH: 18%'}
                   </Badge>
-                  <span className="text-xs font-mono font-bold text-bunker-text-primary">TOM VA CHERDAK</span>
+                  <span className="text-xs font-mono font-bold">TOM VA CHERDAK</span>
                 </div>
 
                 <div className="space-y-1.5 text-xs font-mono">
                   <p className="font-bold text-sm text-bunker-text-primary">
                     {insulatedRoof ? 'R = 4.2 m²·K/W (Maksimal To‘siq)' : 'R = 1.3 m²·K/W (Yuqori Qatlam Sizishi)'}
                   </p>
-                  <p className="text-[11px] text-bunker-text-secondary">
+                  <p className="text-[11px] text-bunker-text-secondary leading-relaxed">
                     {insulatedRoof
                       ? '100mm XPS ekstrudirovanniy plita va bug‘ to‘siq membranasi. Qishda issiq, yozda salqin.'
                       : 'Beton plita va qora qog‘oz. Issiq havo yuqoriga ko‘tarilib, tom orqali 18% yo‘qotiladi.'}
@@ -406,7 +399,7 @@ export const EscoCalculatorView: React.FC = () => {
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-bunker-border-subtle flex items-center justify-between text-[11px] font-mono">
-                  <span className={insulatedRoof ? 'text-bunker-status-green font-bold' : 'text-bunker-amber-500 font-bold'}>
+                  <span className={insulatedRoof ? 'text-emerald-700 font-bold' : 'text-amber-700 font-bold'}>
                     {insulatedRoof ? '✓ Izolyatsiyalangan' : '✕ Izolyatsiya qilinmagan'}
                   </span>
                   <span className="text-bunker-text-muted underline">Bosib o‘zgartiring</span>
@@ -418,7 +411,7 @@ export const EscoCalculatorView: React.FC = () => {
           {/* Form & AI Calculator Results Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Input Form with Input & Select Components */}
-            <div className="lg:col-span-6 bg-bunker-surface-1 border border-bunker-border-strong p-6 rounded-3xl space-y-4">
+            <div className="lg:col-span-6 bg-white border border-bunker-border-strong p-6 rounded-2xl space-y-4 shadow-xs">
               <h3 className="font-bold text-bunker-text-primary flex items-center gap-2 border-b border-bunker-border-subtle pb-3 text-sm font-mono">
                 <Building2 className="w-4 h-4 text-bunker-status-green" />
                 Bino Parametrlari va Energetika Pasporti Kiritish
@@ -523,18 +516,18 @@ export const EscoCalculatorView: React.FC = () => {
             {/* Results Panel & ROI Payback Curve */}
             <div className="lg:col-span-6 space-y-4">
               {result ? (
-                <div className="bg-bunker-surface-1 border border-bunker-status-green/40 p-6 rounded-3xl space-y-5 shadow-xl">
+                <div className="bg-white border border-emerald-300 p-6 rounded-2xl space-y-5 shadow-xs">
                   {/* Results Header */}
                   <div className="flex items-center justify-between border-b border-bunker-border-subtle pb-3">
                     <div>
                       <span className="text-xs font-bold font-mono uppercase text-bunker-text-secondary">
-                        Audit Hisoboti & ShNQ 2.01.04-18
+                        Audit Hisoboti &amp; ShNQ 2.01.04-18
                       </span>
                       <h4 className="text-sm font-bold text-bunker-text-primary mt-0.5">
                         {BUILDING_TYPES[buildingType] || buildingType} ({areaM2} m²)
                       </h4>
                     </div>
-                    <Badge variant="success" className="font-mono text-xs">
+                    <Badge variant="success" className="font-mono text-xs bg-emerald-50 text-emerald-800 border-emerald-300">
                       Sinf: {result.auditScore}
                     </Badge>
                   </div>
@@ -545,33 +538,33 @@ export const EscoCalculatorView: React.FC = () => {
                       title="Energiya tejamkorligi"
                       value={`+${result.energySavingsPercent}%`}
                       variant="green"
-                      icon={<Zap className="w-4 h-4" />}
+                      icon={<Zap className="w-4 h-4 text-emerald-600" />}
                     />
                     <StatCard
                       title="O'zini oqlash muddati"
                       value={result.paybackYears}
                       unit="yil"
                       variant="amber"
-                      icon={<TrendingUp className="w-4 h-4" />}
+                      icon={<TrendingUp className="w-4 h-4 text-bunker-amber-500" />}
                     />
                     <StatCard
                       title="Yillik tejalgan mablag'"
                       value={Number(result.annualSavingsSum).toLocaleString()}
                       unit="so'm"
                       variant="default"
-                      icon={<Percent className="w-4 h-4" />}
+                      icon={<Percent className="w-4 h-4 text-slate-700" />}
                     />
                     <StatCard
                       title="CO2 Qisqarishi"
                       value={`-${result.co2ReductionTons}`}
                       unit="t/yil"
                       variant="cyan"
-                      icon={<Thermometer className="w-4 h-4" />}
+                      icon={<Thermometer className="w-4 h-4 text-sky-600" />}
                     />
                   </div>
 
                   {/* ROI Payback Period Curve Visualizer */}
-                  <div className="bg-bunker-base border border-bunker-border-strong p-4 rounded-2xl space-y-3 font-mono">
+                  <div className="bg-slate-50 border border-bunker-border-strong p-4 rounded-xl space-y-3 font-mono">
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-bold text-bunker-text-primary uppercase flex items-center gap-1.5">
                         <TrendingUp className="w-4 h-4 text-bunker-status-green" />
@@ -599,15 +592,15 @@ export const EscoCalculatorView: React.FC = () => {
                           <div key={idx} className="space-y-0.5">
                             <div className="flex justify-between text-[10px]">
                               <span className="text-bunker-text-secondary">{pt.year}</span>
-                              <span className={isProfitable ? 'text-bunker-status-green font-bold' : 'text-bunker-text-muted'}>
+                              <span className={isProfitable ? 'text-emerald-700 font-bold' : 'text-bunker-text-muted'}>
                                 {pt.status} ({pt.saved.toLocaleString()} so'm)
                               </span>
                             </div>
-                            <div className="w-full bg-bunker-surface-2 h-2 rounded-full overflow-hidden flex">
+                            <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden flex">
                               <div
                                 style={{ width: `${pct}%` }}
                                 className={`h-full transition-all ${
-                                  isProfitable ? 'bg-bunker-status-green' : 'bg-bunker-amber-500'
+                                  isProfitable ? 'bg-emerald-600' : 'bg-orange-500'
                                 }`}
                               />
                             </div>
@@ -657,7 +650,7 @@ export const EscoCalculatorView: React.FC = () => {
                       isLoading={isSaving}
                       disabled={saveSuccess}
                     >
-                      <BookmarkPlus className="w-4 h-4 mr-1.5 text-bunker-status-green" />
+                      <BookmarkPlus className="w-4 h-4 mr-1.5 text-emerald-600" />
                       <span>Profilga Saqlash</span>
                     </Button>
 
@@ -672,7 +665,7 @@ export const EscoCalculatorView: React.FC = () => {
                   </div>
                 </div>
               ) : (
-                <div className="h-full min-h-[380px] border border-dashed border-bunker-border-strong rounded-3xl flex flex-col items-center justify-center p-8 text-center space-y-3 text-bunker-text-secondary bg-bunker-surface-1/40">
+                <div className="h-full min-h-[380px] border border-dashed border-bunker-border-strong rounded-2xl flex flex-col items-center justify-center p-8 text-center space-y-3 text-bunker-text-secondary bg-white shadow-xs">
                   <Sparkles className="w-12 h-12 text-bunker-amber-500/50" />
                   <p className="text-sm font-semibold text-bunker-text-primary">Bino parametrlarini kiriting va hisoblang</p>
                   <p className="text-xs max-w-sm text-bunker-text-muted">
@@ -703,7 +696,7 @@ export const EscoCalculatorView: React.FC = () => {
           </div>
 
           {!isLoggedIn ? (
-            <div className="p-8 border border-dashed border-bunker-border-strong rounded-3xl text-center space-y-3 bg-bunker-surface-1/50">
+            <div className="p-8 border border-dashed border-bunker-border-strong rounded-2xl text-center space-y-3 bg-white shadow-xs">
               <LogIn className="w-10 h-10 mx-auto text-bunker-amber-500" />
               <h4 className="text-sm font-bold text-bunker-text-primary">Tizimga kirish talab etiladi</h4>
               <p className="text-xs text-bunker-text-secondary max-w-md mx-auto">
@@ -717,7 +710,7 @@ export const EscoCalculatorView: React.FC = () => {
           ) : savedError ? (
             <Alert variant="error" description={savedError} onDismiss={() => setSavedError(null)} />
           ) : savedAudits.length === 0 ? (
-            <div className="text-center py-16 text-bunker-text-muted font-mono text-xs border border-dashed border-bunker-border-strong rounded-3xl">
+            <div className="text-center py-16 text-bunker-text-muted font-mono text-xs border border-dashed border-bunker-border-strong rounded-2xl bg-white shadow-xs">
               Hozircha saqlangan auditlar mavjud emas. Kalkulyatordan foydalanib yangi audit saqlang.
             </div>
           ) : (
@@ -797,7 +790,7 @@ export const EscoCalculatorView: React.FC = () => {
         >
           <div className="space-y-4 text-xs font-mono">
             {/* Header info */}
-            <div className="flex justify-between items-center p-3 bg-bunker-base rounded-xl border border-bunker-border-subtle">
+            <div className="flex justify-between items-center p-3.5 bg-slate-50 rounded-xl border border-bunker-border-subtle">
               <div>
                 <span className="text-[10px] text-bunker-text-muted block uppercase">Hujjat Raqami:</span>
                 <span className="font-bold text-bunker-amber-500">EP-UZ-2026-94821</span>
@@ -808,7 +801,7 @@ export const EscoCalculatorView: React.FC = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 p-3 bg-bunker-surface-2 rounded-xl border border-bunker-border-strong">
+            <div className="grid grid-cols-2 gap-3 p-3.5 bg-slate-50 rounded-xl border border-bunker-border-strong">
               <div>
                 <span className="text-[10px] text-bunker-text-muted block uppercase">Bino Turi:</span>
                 <p className="font-bold text-bunker-text-primary">{BUILDING_TYPES[buildingType] || buildingType}</p>
@@ -823,7 +816,7 @@ export const EscoCalculatorView: React.FC = () => {
               </div>
               <div>
                 <span className="text-[10px] text-bunker-text-muted block uppercase">Energiya Samaradorlik Klassi:</span>
-                <p className="text-base font-black text-bunker-status-green">Sinf {result.auditScore} (A++)</p>
+                <p className="text-base font-extrabold text-bunker-status-green">Sinf {result.auditScore} (A++)</p>
               </div>
             </div>
 
@@ -873,14 +866,14 @@ export const EscoCalculatorView: React.FC = () => {
                 <ShieldCheck className="w-8 h-8 text-bunker-status-green" />
                 <div>
                   <span className="font-bold text-bunker-text-primary block text-[11px]">BunkerStroy Texnik Audit Markazi</span>
-                  <span className="text-[10px] text-bunker-text-muted">Elektron Raqamli Muhr & E-IMZO bilan tasdiqlangan</span>
+                  <span className="text-[10px] text-bunker-text-muted">Elektron Raqamli Muhr &amp; E-IMZO bilan tasdiqlangan</span>
                 </div>
               </div>
 
-              <div className="border border-bunker-amber-500/50 bg-bunker-amber-500/10 p-2 rounded-lg text-center text-[9px] font-bold tracking-wider uppercase text-bunker-amber-500">
+              <div className="border border-orange-300 bg-orange-50 p-2 rounded-lg text-center text-[9px] font-bold tracking-wider uppercase text-bunker-amber-500">
                 TASDIQLANDI
                 <br />
-                DSQ & ESCO
+                DSQ &amp; ESCO
               </div>
             </div>
           </div>

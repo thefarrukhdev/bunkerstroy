@@ -68,8 +68,8 @@ export const Drawer: React.FC<DrawerProps> = ({
   };
 
   const positionClasses = {
-    right: 'justify-end border-l-2',
-    left: 'justify-start border-r-2'
+    right: 'justify-end border-l',
+    left: 'justify-start border-r'
   };
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -84,7 +84,7 @@ export const Drawer: React.FC<DrawerProps> = ({
   return (
     <div
       className={cn(
-        'fixed inset-0 z-50 flex bg-black/80 backdrop-blur-sm animate-in fade-in transition-all',
+        'fixed inset-0 z-50 flex bg-slate-900/50 backdrop-blur-xs animate-in fade-in transition-all',
         position === 'right' ? 'justify-end' : 'justify-start'
       )}
       onClick={handleBackdropClick}
@@ -108,7 +108,7 @@ export const Drawer: React.FC<DrawerProps> = ({
               <div className="min-w-0 flex-1">
                 {title && (
                   typeof title === 'string' ? (
-                    <h3 id={titleId} className="font-bold text-bunker-text-primary text-sm font-mono truncate">
+                    <h3 id={titleId} className="font-bold text-bunker-text-primary text-base truncate">
                       {title}
                     </h3>
                   ) : (
@@ -117,7 +117,7 @@ export const Drawer: React.FC<DrawerProps> = ({
                 )}
                 {subtitle && (
                   typeof subtitle === 'string' ? (
-                    <p className="text-[10px] text-bunker-text-secondary font-mono truncate">
+                    <p className="text-xs text-bunker-text-secondary truncate mt-0.5">
                       {subtitle}
                     </p>
                   ) : (
@@ -131,10 +131,10 @@ export const Drawer: React.FC<DrawerProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="text-bunker-text-secondary hover:text-bunker-text-primary p-1.5 rounded-lg bg-bunker-surface-2 border border-bunker-border-subtle cursor-pointer transition-colors shrink-0 hover:bg-bunker-surface-hover"
+                className="text-bunker-text-secondary hover:text-bunker-text-primary p-2 rounded-xl bg-bunker-surface-2 border border-bunker-border-subtle cursor-pointer transition-colors shrink-0 hover:bg-bunker-surface-hover"
                 aria-label="Yopish"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             )}
           </div>

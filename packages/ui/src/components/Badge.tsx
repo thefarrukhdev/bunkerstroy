@@ -27,10 +27,10 @@ export const Badge: React.FC<BadgeProps> = ({
   const normalizedVariant = variant === 'default' ? 'neutral' : variant;
 
   const variantStyles: Record<string, string> = {
-    warning: 'bg-bunker-amber-500/15 text-bunker-amber-500 border-bunker-amber-500/40',
-    success: 'bg-bunker-status-green/15 text-bunker-status-green border-bunker-status-green/30',
-    danger: 'bg-bunker-status-red/15 text-bunker-status-red border-bunker-status-red/30',
-    info: 'bg-bunker-status-cyan/15 text-bunker-status-cyan border-bunker-status-cyan/30',
+    warning: 'bg-bunker-amber-500/10 text-bunker-amber-500 border-bunker-amber-500/25',
+    success: 'bg-bunker-status-green/10 text-bunker-status-green border-bunker-status-green/25',
+    danger: 'bg-bunker-status-red/10 text-bunker-status-red border-bunker-status-red/25',
+    info: 'bg-bunker-status-cyan/10 text-bunker-status-cyan border-bunker-status-cyan/25',
     neutral: 'bg-bunker-surface-2 text-bunker-text-secondary border-bunker-border-strong'
   };
 

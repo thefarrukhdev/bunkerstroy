@@ -173,17 +173,17 @@ export const OrdersView: React.FC = () => {
   const getStatusBadge = (status: OrderStatus) => {
     switch (status) {
       case 'PENDING':
-        return <Badge variant="warning">KUTILMOQDA</Badge>;
+        return <Badge variant="warning" className="bg-orange-50 text-orange-800 border-orange-200">KUTILMOQDA</Badge>;
       case 'CONFIRMED':
-        return <Badge variant="info">TASDIQLANDI</Badge>;
+        return <Badge variant="info" className="bg-sky-50 text-sky-800 border-sky-200">TASDIQLANDI</Badge>;
       case 'ASSIGNED_TO_FLEET':
-        return <Badge variant="warning">TRANSPORT BIRIKTIRILDI</Badge>;
+        return <Badge variant="warning" className="bg-amber-50 text-amber-800 border-amber-200">TRANSPORT BIRIKTIRILDI</Badge>;
       case 'IN_TRANSIT':
-        return <Badge variant="info">YUK YASHINMOQDA (YO‘LDA)</Badge>;
+        return <Badge variant="info" className="bg-sky-50 text-sky-800 border-sky-200">YUK TASHINMOQDA (YO‘LDA)</Badge>;
       case 'DELIVERED':
-        return <Badge variant="success">YETKAZILDI</Badge>;
+        return <Badge variant="success" className="bg-emerald-50 text-emerald-800 border-emerald-200">YETKAZILDI</Badge>;
       case 'CANCELLED':
-        return <Badge variant="danger">BEKOR QILINGAN</Badge>;
+        return <Badge variant="danger" className="bg-red-50 text-red-800 border-red-200">BEKOR QILINGAN</Badge>;
       default:
         return <Badge variant="neutral">{status}</Badge>;
     }
@@ -191,30 +191,29 @@ export const OrdersView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* 1. Tactical Orders Banner */}
-      <div className="relative rounded-3xl overflow-hidden border border-bunker-border-strong bg-gradient-to-r from-bunker-surface-1 via-bunker-surface-2 to-[#1E232B] p-6 sm:p-10 shadow-2xl">
-        <div className="h-1.5 w-full hazard-stripe-sm absolute top-0 left-0" />
+      {/* 1. Luminous Nordic Enterprise Orders Header */}
+      <div className="relative rounded-2xl overflow-hidden border border-orange-200/80 bg-gradient-to-r from-orange-50/70 via-white to-slate-50 p-6 sm:p-8 shadow-xs">
         <div className="max-w-3xl space-y-3">
-          <Badge variant="warning" className="gap-1.5 font-mono">
-            <Package className="w-3.5 h-3.5" />
-            BunkerStroy B2B Shartnomalar & Buyurtmalar Tizimi
+          <Badge variant="warning" className="gap-1.5 font-mono bg-orange-100/80 text-orange-800 border-orange-300">
+            <Package className="w-3.5 h-3.5 text-bunker-amber-500" />
+            BunkerStroy B2B Shartnomalar &amp; Buyurtmalar Tizimi
           </Badge>
-          <h1 className="text-2xl sm:text-4xl font-black text-bunker-text-primary tracking-tight">
-            Xaridlar Reestri & Real Vaqt Logistika Holati
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-bunker-text-primary tracking-tight">
+            Xaridlar Reestri &amp; Real Vaqt Logistika Holati
           </h1>
           <p className="text-sm text-bunker-text-secondary leading-relaxed">
-            Rasmiylashtirilgan B2B buyurtmalari, HOWO va mikserlar harakati, to‘lov holati hamda hisob-fakturalar (Invoys).
+            Rasmiylashtirilgan B2B buyurtmalari, HOWO va mikserlar harakati, to‘lov holati hamda elektron hisob-fakturalar (Didox/Soliq).
           </p>
         </div>
       </div>
 
       {/* 2. Control bar */}
-      <div className="flex items-center justify-between bg-bunker-surface-1 border border-bunker-border-subtle p-4 rounded-2xl">
+      <div className="flex items-center justify-between bg-white border border-bunker-border-strong p-4 rounded-xl shadow-xs">
         <div className="flex items-center gap-2 font-mono">
           <span className="text-xs font-bold uppercase text-bunker-text-primary">
             Jami Buyurtmalar:
           </span>
-          <span className="bg-bunker-surface-2 text-bunker-amber-500 px-2.5 py-0.5 rounded-lg text-xs font-bold border border-bunker-border-strong">
+          <span className="bg-slate-100 text-bunker-amber-500 px-2.5 py-0.5 rounded-lg text-xs font-bold border border-bunker-border-subtle">
             {orders.length}
           </span>
         </div>
@@ -251,8 +250,8 @@ export const OrdersView: React.FC = () => {
           ))}
         </div>
       ) : orders.length === 0 ? (
-        <div className="text-center py-20 bg-bunker-surface-1 border border-dashed border-bunker-border-strong rounded-3xl p-8 space-y-3 text-bunker-text-secondary font-mono">
-          <Package className="w-12 h-12 mx-auto text-bunker-amber-500/40" />
+        <div className="text-center py-20 bg-white border border-dashed border-bunker-border-strong rounded-2xl p-8 space-y-3 text-bunker-text-secondary font-mono shadow-xs">
+          <Package className="w-12 h-12 mx-auto text-bunker-amber-500/50" />
           <h3 className="font-bold text-base text-bunker-text-primary">Hozircha buyurtmalar yo‘q</h3>
           <p className="text-xs max-w-sm mx-auto text-bunker-text-muted">
             Marketplacedan materiallarni tanlang va B2B shartnomani rasmiylashtiring.
@@ -267,12 +266,12 @@ export const OrdersView: React.FC = () => {
             return (
               <Card
                 key={o.id}
-                className="space-y-4 border-bunker-border-strong hover:border-bunker-border-active/60 transition-all shadow-md"
+                className="space-y-4 border-bunker-border-strong hover:border-bunker-amber-500/60 transition-all shadow-xs hover:shadow-md"
               >
                 {/* Header Row */}
                 <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-bunker-border-subtle">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-bunker-amber-500/10 border border-bunker-amber-500/30 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center">
                       <Package className="w-4 h-4 text-bunker-amber-500" />
                     </div>
                     <div>
@@ -286,11 +285,11 @@ export const OrdersView: React.FC = () => {
                   <div className="flex items-center gap-2">
                     {getStatusBadge(o.status)}
                     {o.paymentStatus === 'PAID' ? (
-                      <Badge variant="success" className="font-mono text-[10px]">
+                      <Badge variant="success" className="font-mono text-[10px] bg-emerald-50 text-emerald-800 border-emerald-200">
                         TO‘LANGAN
                       </Badge>
                     ) : (
-                      <Badge variant="warning" className="font-mono text-[10px]">
+                      <Badge variant="warning" className="font-mono text-[10px] bg-orange-50 text-orange-800 border-orange-200">
                         TO‘LOV KUTILMOQDA
                       </Badge>
                     )}
@@ -315,7 +314,7 @@ export const OrdersView: React.FC = () => {
 
                   <div>
                     <span className="text-bunker-text-muted block uppercase font-mono text-[10px]">Jami summa:</span>
-                    <p className="text-base font-black text-bunker-amber-500 font-mono mt-0.5">
+                    <p className="text-base font-extrabold text-bunker-amber-500 font-mono mt-0.5">
                       {Number(o.finalAmount).toLocaleString()} so'm
                     </p>
                     <p className="text-[11px] text-bunker-text-muted font-mono">Usul: {o.paymentMethod}</p>
@@ -324,9 +323,9 @@ export const OrdersView: React.FC = () => {
 
                 {/* PENDING PAYMENT ACTION BUTTONS */}
                 {isPendingPayment && (
-                  <div className="bg-bunker-base border border-bunker-amber-500/30 p-3.5 rounded-2xl flex flex-wrap items-center justify-between gap-3 font-mono">
-                    <div className="flex items-center gap-2 text-xs text-bunker-amber-500">
-                      <CreditCard className="w-4 h-4 shrink-0" />
+                  <div className="bg-orange-50/60 border border-orange-200/80 p-3.5 rounded-xl flex flex-wrap items-center justify-between gap-3 font-mono">
+                    <div className="flex items-center gap-2 text-xs text-orange-800">
+                      <CreditCard className="w-4 h-4 shrink-0 text-bunker-amber-500" />
                       <span>Ushbu buyurtma to‘lovi kutilmoqda. Onlayn to‘lovni amalga oshiring:</span>
                     </div>
 
@@ -334,18 +333,18 @@ export const OrdersView: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleOpenPayment(o, 'PAYME')}
-                        className="px-3 py-1.5 rounded-xl bg-bunker-status-cyan/15 border border-bunker-status-cyan/40 text-bunker-status-cyan hover:bg-bunker-status-cyan/25 font-bold text-xs font-mono transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
+                        className="px-3 py-1.5 rounded-xl bg-white border border-sky-300 text-sky-800 hover:bg-sky-50 font-bold text-xs font-mono transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
                       >
-                        <CreditCard className="w-3.5 h-3.5" />
+                        <CreditCard className="w-3.5 h-3.5 text-sky-600" />
                         <span>Payme orqali to'lash</span>
                       </button>
 
                       <button
                         type="button"
                         onClick={() => handleOpenPayment(o, 'CLICK')}
-                        className="px-3 py-1.5 rounded-xl bg-bunker-amber-500/15 border border-bunker-amber-500/40 text-bunker-amber-500 hover:bg-bunker-amber-500/25 font-bold text-xs font-mono transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
+                        className="px-3 py-1.5 rounded-xl bg-white border border-orange-300 text-orange-800 hover:bg-orange-50 font-bold text-xs font-mono transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
                       >
-                        <CreditCard className="w-3.5 h-3.5" />
+                        <CreditCard className="w-3.5 h-3.5 text-orange-600" />
                         <span>Click orqali to'lash</span>
                       </button>
                     </div>
@@ -377,7 +376,7 @@ export const OrdersView: React.FC = () => {
                           <TableHeader>
                             <TableRow>
                               <TableHead>Mahsulot Nomi</TableHead>
-                              <TableHead className="text-center">Miqdori & Birligi</TableHead>
+                              <TableHead className="text-center">Miqdori &amp; Birligi</TableHead>
                               <TableHead className="text-right">Birlik Narxi</TableHead>
                               <TableHead className="text-right">Jami Summa</TableHead>
                             </TableRow>
@@ -405,7 +404,7 @@ export const OrdersView: React.FC = () => {
 
                       {/* Delivery and Financial Breakdown */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div className="bg-bunker-base p-3.5 rounded-2xl border border-bunker-border-subtle space-y-1.5">
+                        <div className="bg-slate-50 p-3.5 rounded-xl border border-bunker-border-subtle space-y-1.5">
                           <span className="text-[10px] text-bunker-text-muted uppercase block font-bold">
                             Yetkazib berish parametrlari:
                           </span>
@@ -419,11 +418,11 @@ export const OrdersView: React.FC = () => {
                           </p>
                           <p className="text-xs text-bunker-text-secondary">
                             <span className="text-bunker-text-muted">Kuzatuv kodi:</span>{' '}
-                            <span className="text-bunker-amber-500">{o.trackingCode || o.orderNumber}</span>
+                            <span className="text-bunker-amber-500 font-semibold">{o.trackingCode || o.orderNumber}</span>
                           </p>
                         </div>
 
-                        <div className="bg-bunker-base p-3.5 rounded-2xl border border-bunker-border-subtle space-y-1.5">
+                        <div className="bg-slate-50 p-3.5 rounded-xl border border-bunker-border-subtle space-y-1.5">
                           <span className="text-[10px] text-bunker-text-muted uppercase block font-bold">
                             To‘lov va hisob-kitob tafsilotlari:
                           </span>
@@ -466,10 +465,10 @@ export const OrdersView: React.FC = () => {
           size="sm"
           headerExtra={
             <div
-              className={`w-10 h-10 rounded-2xl flex items-center justify-center ${
+              className={`w-10 h-10 rounded-xl flex items-center justify-center ${
                 paymentModal.provider === 'PAYME'
-                  ? 'bg-bunker-status-cyan/20 border border-bunker-status-cyan/50 text-bunker-status-cyan'
-                  : 'bg-bunker-amber-500/20 border border-bunker-amber-500/50 text-bunker-amber-500'
+                  ? 'bg-sky-50 border border-sky-200 text-sky-700'
+                  : 'bg-orange-50 border border-orange-200 text-orange-700'
               }`}
             >
               <CreditCard className="w-5 h-5" />
@@ -495,7 +494,7 @@ export const OrdersView: React.FC = () => {
           )}
 
           {/* Invoice Summary */}
-          <div className="bg-bunker-base border border-bunker-border-strong p-4 rounded-2xl space-y-2 text-xs font-mono">
+          <div className="bg-slate-50 border border-bunker-border-strong p-4 rounded-xl space-y-2 text-xs font-mono">
             <div className="flex justify-between text-bunker-text-secondary">
               <span>Buyurtma raqami:</span>
               <span className="text-bunker-text-primary font-bold">{paymentModal.order.orderNumber}</span>
@@ -510,7 +509,7 @@ export const OrdersView: React.FC = () => {
             </div>
             <div className="pt-2 border-t border-bunker-border-subtle flex justify-between items-baseline">
               <span className="font-bold text-bunker-text-primary">Jami to‘lov summasi:</span>
-              <span className="text-xl font-black text-bunker-amber-500">
+              <span className="text-xl font-extrabold text-bunker-amber-500">
                 {Number(paymentModal.order.finalAmount).toLocaleString()} so'm
               </span>
             </div>
@@ -541,7 +540,7 @@ export const OrdersView: React.FC = () => {
               }
               target="_blank"
               rel="noreferrer"
-              className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-bunker-border-strong hover:border-bunker-amber-500 text-xs text-bunker-text-secondary hover:text-bunker-text-primary transition-colors cursor-pointer"
+              className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-bunker-border-strong hover:border-bunker-amber-500 text-xs text-bunker-text-secondary hover:text-bunker-text-primary transition-colors cursor-pointer bg-white shadow-xs"
             >
               <ExternalLink className="w-3.5 h-3.5" />
               <span>Rasmiy {paymentModal.provider} ilovasida ochish</span>

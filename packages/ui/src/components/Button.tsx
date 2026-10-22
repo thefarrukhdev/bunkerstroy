@@ -17,19 +17,19 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    'inline-flex items-center justify-center font-bold tracking-wide transition-all rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.98] active:translate-y-0.5 cursor-pointer';
+    'inline-flex items-center justify-center font-semibold tracking-wide transition-all rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.985] active:translate-y-0.5 cursor-pointer';
 
   const variantStyles = {
     primary:
-      'bg-bunker-amber-500 hover:bg-bunker-amber-400 text-bunker-vault font-black focus:ring-bunker-amber-500 shadow-md shadow-bunker-amber-500/20 active:shadow-sm',
+      'bg-bunker-amber-500 hover:bg-bunker-amber-400 text-white font-semibold focus:ring-bunker-amber-500/30 shadow-xs active:shadow-none',
     secondary:
-      'bg-bunker-surface-2 hover:bg-bunker-surface-hover text-bunker-text-primary border border-bunker-border-strong focus:ring-bunker-border-strong active:bg-bunker-surface-1',
+      'bg-bunker-surface-1 hover:bg-bunker-surface-hover text-bunker-text-primary border border-bunker-border-strong focus:ring-bunker-border-strong shadow-xs active:bg-bunker-surface-2',
     danger:
-      'bg-bunker-status-red hover:bg-red-600 text-white focus:ring-bunker-status-red shadow-md shadow-red-600/20',
+      'bg-bunker-status-red hover:bg-red-700 text-white focus:ring-bunker-status-red/30 shadow-xs',
     outline:
-      'border border-bunker-amber-500 text-bunker-amber-500 hover:bg-bunker-amber-500/10 focus:ring-bunker-amber-500',
+      'border border-bunker-border-strong hover:border-bunker-amber-500 text-bunker-text-primary hover:text-bunker-amber-500 hover:bg-bunker-surface-hover focus:ring-bunker-amber-500/20',
     ghost:
-      'text-bunker-text-secondary hover:text-bunker-text-primary hover:bg-bunker-surface-2'
+      'text-bunker-text-secondary hover:text-bunker-text-primary hover:bg-bunker-surface-hover'
   };
 
   const sizeStyles = {

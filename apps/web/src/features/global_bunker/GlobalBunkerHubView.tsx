@@ -138,19 +138,18 @@ export const GlobalBunkerHubView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* 1. Header Banner */}
-      <div className="relative rounded-3xl overflow-hidden border border-bunker-border-strong bg-gradient-to-r from-bunker-surface-1 via-bunker-surface-2 to-[#2B2313] p-6 sm:p-10 shadow-2xl">
-        <div className="h-1.5 w-full hazard-stripe-sm absolute top-0 left-0" />
+      {/* 1. Luminous Nordic Enterprise Global Bunker Header */}
+      <div className="relative rounded-2xl overflow-hidden border border-blue-200/80 bg-gradient-to-r from-blue-50/70 via-white to-slate-50 p-6 sm:p-8 shadow-xs">
         <div className="max-w-3xl space-y-3">
-          <Badge variant="info" isMono className="gap-1.5">
-            <Globe className="w-3.5 h-3.5" />
+          <Badge variant="info" isMono className="gap-1.5 bg-blue-100/80 text-blue-800 border-blue-300">
+            <Globe className="w-3.5 h-3.5 text-blue-600" />
             Global Bunker — Xalqaro Ta'minot Zanjirlari
           </Badge>
-          <h1 className="text-2xl sm:text-4xl font-black text-bunker-text-primary tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-bunker-text-primary tracking-tight">
             To'g'ridan-to'g'ri xorijiy ishlab chiqaruvchilardan import
           </h1>
           <p className="text-sm text-bunker-text-secondary leading-relaxed">
-            Yirik infratuzilma loyihalari uchun Germaniya, Janubiy Koreya, Turkiya va MDH davlatlaridan temir yo‘l va multimodal konteyner orqali kafolatlangan yetkazib berish.
+            Yirik infratuzilma loyihalari uchun Germaniya, Janubiy Koreya, Fransiya va MDH davlatlaridan temir yo‘l va multimodal konteyner orqali kafolatlangan yetkazib berish.
           </p>
         </div>
       </div>
@@ -173,18 +172,16 @@ export const GlobalBunkerHubView: React.FC = () => {
           unit="t"
           subtitle="Temir yo'l va multimodal koridor"
           trend={{ value: '+14%', isPositive: true, label: 'vs 2025' }}
-          icon={<Train className="w-5 h-5" />}
+          icon={<Train className="w-5 h-5 text-bunker-amber-500" />}
           variant="amber"
-          rivetAccents
         />
         <StatCard
           title="Faol Xalqaro Koridorlar"
           value="8 ta"
           subtitle="Germaniya, Koreya, Turkiya, RF, Qozog'iston"
           trend={{ value: 'Uzluksiz', isPositive: true, label: '24/7 dispetcherlik' }}
-          icon={<Globe className="w-5 h-5" />}
+          icon={<Globe className="w-5 h-5 text-sky-600" />}
           variant="cyan"
-          rivetAccents
         />
         <StatCard
           title="O'rtacha Tranzit Vaqti"
@@ -192,18 +189,16 @@ export const GlobalBunkerHubView: React.FC = () => {
           unit="kun"
           subtitle="Toshkent-Tovarniy (Chukursay)"
           trend={{ value: '-2.5 kun', isPositive: true, label: 'jadval bo‘yicha' }}
-          icon={<Container className="w-5 h-5" />}
+          icon={<Container className="w-5 h-5 text-emerald-600" />}
           variant="green"
-          rivetAccents
         />
         <StatCard
           title="ShNQ & ISO Standart"
           value="100%"
           subtitle="EN 197-1 / ASTM A615 akkreditatsiya"
           trend={{ value: 'Kafolatlangan', isPositive: true, label: 'Davlat nazorati' }}
-          icon={<ShieldCheck className="w-5 h-5" />}
+          icon={<ShieldCheck className="w-5 h-5 text-slate-700" />}
           variant="default"
-          rivetAccents
         />
       </div>
 
@@ -222,10 +217,10 @@ export const GlobalBunkerHubView: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {partners.map((p) => (
-            <Card key={p.id} className="flex flex-col justify-between space-y-4" rivetAccents>
+            <Card key={p.id} className="flex flex-col justify-between space-y-4 shadow-xs hover:shadow-md">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <Badge variant="warning" isMono>{p.country}</Badge>
+                  <Badge variant="warning" isMono className="bg-orange-50 text-orange-800 border-orange-200">{p.country}</Badge>
                   <span className="text-[11px] font-mono text-bunker-text-muted flex items-center gap-1">
                     <Train className="w-3.5 h-3.5 text-bunker-amber-500" />
                     {p.transitTime}
@@ -233,8 +228,8 @@ export const GlobalBunkerHubView: React.FC = () => {
                 </div>
 
                 <div>
-                  <h3 className="font-black text-bunker-text-primary text-lg">{p.name}</h3>
-                  <p className="text-xs text-bunker-amber-500 font-mono mt-0.5">{p.category}</p>
+                  <h3 className="font-extrabold text-bunker-text-primary text-lg">{p.name}</h3>
+                  <p className="text-xs text-bunker-amber-500 font-mono mt-0.5 font-semibold">{p.category}</p>
                 </div>
 
                 <div className="space-y-1.5 pt-2 border-t border-bunker-border-subtle text-xs text-bunker-text-secondary font-mono">
@@ -250,14 +245,14 @@ export const GlobalBunkerHubView: React.FC = () => {
                 </div>
 
                 <div className="pt-2 border-t border-bunker-border-subtle">
-                  <span className="text-[10px] uppercase font-mono text-bunker-text-muted block mb-1">
+                  <span className="text-[10px] uppercase font-mono text-bunker-text-muted block mb-1 font-bold">
                     Asosiy Mahsulotlar:
                   </span>
                   <div className="flex flex-wrap gap-1">
                     {p.materials.map((m, idx) => (
                       <span
                         key={idx}
-                        className="text-[10px] font-mono px-2 py-0.5 rounded bg-bunker-surface-2 border border-bunker-border-subtle text-bunker-text-primary"
+                        className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 border border-bunker-border-subtle text-bunker-text-primary"
                       >
                         {m}
                       </span>
@@ -287,7 +282,6 @@ export const GlobalBunkerHubView: React.FC = () => {
         title="Xalqaro B2B Import Shartnomasi So'rovi"
         subtitle="To'g'ridan-to'g'ri xorijiy zavoddan ulgurji ta'minot shartnomasi rasmiylashtirish"
         size="lg"
-        rivetAccents
         footer={
           <div className="flex items-center justify-end gap-3 w-full">
             <Button variant="ghost" size="sm" onClick={() => setIsModalOpen(false)}>

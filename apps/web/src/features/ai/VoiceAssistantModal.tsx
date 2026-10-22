@@ -304,16 +304,16 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
       <div className="fixed bottom-6 right-6 z-50">
         <button
           onClick={() => setIsMinimized(false)}
-          className="h-12 bg-bunker-surface-1 border-2 border-bunker-amber-500 rounded-full px-4 flex items-center gap-3 shadow-2xl hover:scale-105 transition-all cursor-pointer group"
+          className="h-12 bg-white border border-bunker-amber-500 rounded-full px-4 flex items-center gap-3 shadow-lg hover:shadow-xl transition-all cursor-pointer group"
         >
-          <div className="w-7 h-7 rounded-full bg-bunker-amber-500/20 flex items-center justify-center">
+          <div className="w-7 h-7 rounded-full bg-orange-50 border border-orange-200 flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-bunker-amber-500" />
           </div>
-          <span className="text-xs font-mono font-bold text-bunker-text-primary">
+          <span className="text-xs font-mono font-bold text-slate-900">
             Bunker AI Copilot
           </span>
-          <span className="w-2 h-2 rounded-full bg-bunker-status-green animate-pulse" />
-          <Maximize2 className="w-3.5 h-3.5 text-bunker-text-muted group-hover:text-bunker-text-primary ml-1" />
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <Maximize2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-900 ml-1" />
         </button>
       </div>
     );
@@ -321,19 +321,19 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
 
   // 2. Expanded Non-Blocking Floating Dock
   return (
-    <div className="fixed bottom-6 right-6 z-50 w-96 max-w-[calc(100vw-2rem)] h-[520px] bg-bunker-surface-1 border-2 border-bunker-border-strong rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-5">
-      {/* Dock Top Hazard Accent */}
-      <div className="h-1 w-full hazard-stripe-sm opacity-90 shrink-0" />
+    <div className="fixed bottom-6 right-6 z-50 w-96 max-w-[calc(100vw-2rem)] h-[520px] bg-white border border-slate-200 rounded-2xl shadow-xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-5">
+      {/* Dock Top Accent */}
+      <div className="h-1 w-full bg-bunker-amber-500 shrink-0" />
 
       {/* Dock Header */}
-      <div className="flex items-center justify-between p-3.5 px-4 bg-bunker-surface-2 border-b border-bunker-border-subtle shrink-0">
+      <div className="flex items-center justify-between p-3.5 px-4 bg-slate-50 border-b border-slate-200 shrink-0">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-bunker-amber-500/20 border border-bunker-amber-500/50 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-orange-50 border border-orange-200 flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-bunker-amber-500" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="font-bold text-bunker-text-primary text-xs font-mono">Bunker AI Copilot</h3>
+              <h3 className="font-bold text-slate-900 text-xs font-mono">Bunker AI Copilot</h3>
               <Badge
                 variant={connectionStatus === 'CONNECTED' ? 'success' : 'warning'}
                 size="sm"
@@ -343,15 +343,15 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
                 {connectionStatus === 'CONNECTED' ? 'LIVE' : 'COPILOT'}
               </Badge>
             </div>
-            <p className="text-[9px] text-bunker-text-muted font-mono">Gemini 3.8 Qurilish & Logistika Maslahatchisi</p>
+            <p className="text-[9px] text-slate-500 font-mono">Gemini 3.8 Qurilish & Logistika Maslahatchisi</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-1 text-bunker-text-secondary">
+        <div className="flex items-center gap-1 text-slate-500">
           <Tooltip content="Kichraytirish" position="bottom">
             <button
               onClick={() => setIsMinimized(true)}
-              className="p-1 hover:text-bunker-text-primary rounded hover:bg-bunker-surface-1 cursor-pointer transition-colors"
+              className="p-1 hover:text-slate-900 rounded hover:bg-white cursor-pointer transition-colors"
             >
               <Minimize2 className="w-3.5 h-3.5" />
             </button>
@@ -359,7 +359,7 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
           <Tooltip content="Yopish" position="bottom">
             <button
               onClick={onClose}
-              className="p-1 hover:text-bunker-status-red rounded hover:bg-bunker-surface-1 cursor-pointer transition-colors"
+              className="p-1 hover:text-rose-600 rounded hover:bg-white cursor-pointer transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -368,29 +368,29 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
       </div>
 
       {/* Message Feed */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 text-xs font-mono">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 text-xs font-mono bg-slate-50/50">
         {messages.map((m) => (
           <div
             key={m.id}
-            className={`p-3 rounded-2xl max-w-[88%] leading-relaxed ${
+            className={`p-3 rounded-xl max-w-[88%] leading-relaxed ${
               m.sender === 'user'
-                ? 'ml-auto bg-bunker-amber-500 text-bunker-vault font-semibold rounded-br-none shadow-sm'
-                : 'mr-auto bg-bunker-base text-bunker-text-primary border border-bunker-border-subtle rounded-bl-none'
+                ? 'ml-auto bg-bunker-amber-500 text-white font-medium rounded-br-none shadow-xs'
+                : 'mr-auto bg-white text-slate-800 border border-slate-200 rounded-bl-none shadow-xs'
             }`}
           >
             <p>{m.text}</p>
             {m.contextAction && onNavigateTab && (
               <button
                 onClick={() => onNavigateTab(m.contextAction!.tab)}
-                className="mt-2 inline-flex items-center gap-1.5 bg-bunker-amber-500/15 hover:bg-bunker-amber-500/25 border border-bunker-amber-500/40 text-bunker-amber-500 px-2.5 py-1 rounded-lg text-[10px] font-bold cursor-pointer transition-colors"
+                className="mt-2 inline-flex items-center gap-1.5 bg-orange-50 hover:bg-orange-100 border border-orange-200 text-bunker-amber-500 px-2.5 py-1 rounded-lg text-[10px] font-bold cursor-pointer transition-colors font-mono"
               >
                 <span>{m.contextAction.label}</span>
                 <span>→</span>
               </button>
             )}
             <span
-              className={`text-[9px] block text-right mt-1 ${
-                m.sender === 'user' ? 'text-bunker-vault/70' : 'text-bunker-text-muted'
+              className={`text-[9px] block text-right mt-1 font-mono ${
+                m.sender === 'user' ? 'text-orange-100' : 'text-slate-400'
               }`}
             >
               {m.timestamp}
@@ -400,11 +400,11 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
 
         {/* Sound Wave Animation when Listening or Speaking */}
         {(isRecording || isSpeaking) && (
-          <div className="p-2.5 bg-bunker-base border border-bunker-amber-500/50 rounded-xl flex items-center justify-between gap-2 animate-in fade-in font-mono">
+          <div className="p-2.5 bg-white border border-slate-200 rounded-xl flex items-center justify-between gap-2 animate-in fade-in font-mono shadow-xs">
             <div className="flex items-center gap-1.5">
               <span
                 className={`w-2 h-2 rounded-full ${
-                  isRecording ? 'bg-bunker-status-red animate-ping' : 'bg-bunker-amber-500 animate-pulse'
+                  isRecording ? 'bg-rose-500 animate-ping' : 'bg-bunker-amber-500 animate-pulse'
                 }`}
               />
               <span className="text-[10px] font-bold text-bunker-amber-500">
@@ -422,7 +422,7 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
                     animationDelay: `${idx * 0.1}s`,
                     height: `${Math.round(scale * 12)}px`
                   }}
-                  className={`w-0.5 rounded-full ${isRecording ? 'bg-bunker-status-red' : 'bg-bunker-amber-500'}`}
+                  className={`w-0.5 rounded-full ${isRecording ? 'bg-rose-500' : 'bg-bunker-amber-500'}`}
                 />
               ))}
             </div>
@@ -433,13 +433,13 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
       </div>
 
       {/* Quick Prompt Chips */}
-      <div className="px-3 py-1.5 border-t border-bunker-border-subtle bg-bunker-surface-2/50 shrink-0">
+      <div className="px-3 py-1.5 border-t border-slate-200 bg-slate-50 shrink-0">
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
           {QUICK_PROMPTS.map((prompt, idx) => (
             <button
               key={idx}
               onClick={() => handleSendMessage(prompt)}
-              className="whitespace-nowrap px-2.5 py-1 rounded-full bg-bunker-surface-1 hover:bg-bunker-amber-500/15 border border-bunker-border-subtle hover:border-bunker-amber-500 text-[10px] font-mono text-bunker-text-secondary hover:text-bunker-amber-500 cursor-pointer transition-all"
+              className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white hover:bg-orange-50 border border-slate-200 hover:border-bunker-amber-500 text-[10px] font-mono text-slate-600 hover:text-bunker-amber-500 cursor-pointer transition-all shadow-2xs"
             >
               {prompt}
             </button>
@@ -448,7 +448,7 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
       </div>
 
       {/* Bottom Input & Voice Controls */}
-      <div className="p-3 bg-bunker-surface-2 border-t border-bunker-border-subtle shrink-0">
+      <div className="p-3 bg-white border-t border-slate-200 shrink-0">
         <div className="flex items-center gap-1.5">
           <Input
             placeholder="AI maslahatchiga savol bering..."
@@ -479,8 +479,8 @@ export const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({
               onClick={toggleRecording}
               className={`p-2 rounded-xl border transition-all cursor-pointer shrink-0 ${
                 isRecording
-                  ? 'bg-bunker-status-red text-white border-bunker-status-red shadow-lg shadow-bunker-status-red/20 animate-pulse'
-                  : 'bg-bunker-surface-1 text-bunker-amber-500 border-bunker-border-strong hover:border-bunker-amber-500'
+                  ? 'bg-rose-600 text-white border-rose-600 shadow-sm animate-pulse'
+                  : 'bg-white text-bunker-amber-500 border-slate-200 hover:border-bunker-amber-500 shadow-xs'
               }`}
             >
               {isRecording ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}

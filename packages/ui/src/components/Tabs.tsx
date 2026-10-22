@@ -56,7 +56,7 @@ export const TabsList: React.FC<TabsListProps> = ({ className, children, ...prop
   const variantStyles = {
     standard: 'flex border-b border-bunker-border-strong gap-2',
     chamfer: 'flex gap-2 overflow-x-auto no-scrollbar',
-    pills: 'inline-flex items-center gap-1 bg-bunker-base p-1 rounded-xl border border-bunker-border-strong text-xs font-mono'
+    pills: 'inline-flex items-center gap-1 bg-bunker-surface-2 p-1 rounded-xl border border-bunker-border-strong text-xs font-mono'
   };
 
   return (
@@ -100,19 +100,19 @@ export const TabTrigger: React.FC<TabTriggerProps> = ({
     standard: cn(
       'px-4 py-2.5 text-xs font-mono font-bold transition-all border-b-2 -mb-px flex items-center gap-2 cursor-pointer',
       isActive
-        ? 'border-bunker-amber-500 text-bunker-amber-500 bg-bunker-amber-500/5'
+        ? 'border-bunker-amber-500 text-bunker-amber-500'
         : 'border-transparent text-bunker-text-secondary hover:text-bunker-text-primary hover:border-bunker-border-strong'
     ),
     chamfer: cn(
-      'chamfer-tab px-5 py-2.5 text-xs font-mono font-bold transition-all flex items-center gap-2 cursor-pointer select-none',
+      'chamfer-tab px-4 py-2 text-xs font-mono font-bold transition-all flex items-center gap-2 cursor-pointer select-none rounded-xl',
       isActive
-        ? 'bg-bunker-amber-500 text-bunker-vault shadow-md'
-        : 'bg-bunker-surface-2 text-bunker-text-secondary hover:text-bunker-text-primary hover:bg-bunker-surface-hover'
+        ? 'bg-bunker-amber-500 text-white shadow-xs'
+        : 'bg-bunker-surface-1 text-bunker-text-secondary border border-bunker-border-subtle hover:text-bunker-text-primary hover:bg-bunker-surface-hover'
     ),
     pills: cn(
       'px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer select-none',
       isActive
-        ? 'bg-bunker-surface-2 text-bunker-amber-500 shadow-sm'
+        ? 'bg-bunker-surface-1 text-bunker-amber-500 shadow-xs'
         : 'text-bunker-text-secondary hover:text-bunker-text-primary'
     )
   };

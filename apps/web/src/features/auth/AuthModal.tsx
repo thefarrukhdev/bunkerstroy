@@ -352,10 +352,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="bg-bunker-base border border-bunker-border-strong p-3 rounded-xl flex items-center justify-between">
+              <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Phone className="w-4 h-4 text-bunker-amber-500" />
-                  <span className="text-xs font-mono font-bold text-bunker-text-primary">{phone}</span>
+                  <span className="text-xs font-mono font-bold text-slate-900">{phone}</span>
                 </div>
                 <button
                   type="button"
@@ -365,7 +365,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                     setError(null);
                     setInfoMessage(null);
                   }}
-                  className="text-[11px] text-bunker-amber-500 hover:underline cursor-pointer font-mono"
+                  className="text-[11px] text-bunker-amber-500 hover:underline cursor-pointer font-mono font-medium"
                 >
                   O'zgartirish
                 </button>
@@ -379,9 +379,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                   onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
                   placeholder="••••••"
                   isMono
-                  className="text-center text-xl tracking-[0.5em] text-bunker-amber-500 font-bold"
+                  className="text-center text-xl tracking-[0.5em] text-bunker-amber-500 font-bold font-mono"
                 />
-                <p className="text-[11px] text-bunker-text-muted mt-1 text-center font-mono">
+                <p className="text-[11px] text-slate-500 mt-1 text-center font-mono">
                   💡 Test kodi: <span className="text-bunker-amber-500 font-bold">123456</span>
                 </p>
               </div>
@@ -399,7 +399,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
               <div className="text-center">
                 {cooldown > 0 ? (
-                  <span className="text-xs text-bunker-text-muted font-mono flex items-center justify-center gap-1.5">
+                  <span className="text-xs text-slate-500 font-mono flex items-center justify-center gap-1.5">
                     <RefreshCw className="w-3.5 h-3.5 animate-spin text-bunker-amber-500" />
                     Kodni qayta yuborish ({cooldown}s)
                   </span>
@@ -442,7 +442,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
             <KeyRound className="w-4 h-4 mr-1.5" />
             <span>Kirish</span>
           </Button>
-          <p className="text-[11px] text-bunker-text-muted text-center font-mono">
+          <p className="text-[11px] text-slate-500 text-center font-mono">
             Demo admin: <span className="font-mono text-bunker-amber-500 font-bold">admin</span> / parol:{' '}
             <span className="font-mono text-bunker-amber-500 font-bold">bunker2026</span>
           </p>
@@ -466,16 +466,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           </Button>
 
           {companyInfo && (
-            <div className="bg-bunker-base border border-bunker-border-strong p-4 rounded-xl space-y-2.5 text-xs">
+            <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-2.5 text-xs shadow-xs">
               <div className="flex justify-between items-start gap-2">
-                <span className="font-bold text-bunker-text-primary text-sm leading-snug">{companyInfo.companyName}</span>
+                <span className="font-bold text-slate-900 text-sm leading-snug">{companyInfo.companyName}</span>
                 <Badge variant="success" className="shrink-0">{companyInfo.status}</Badge>
               </div>
-              <div className="space-y-1 text-bunker-text-secondary pt-1 border-t border-bunker-border-subtle">
-                <p><span className="text-bunker-text-muted">Rahbar:</span> {companyInfo.director}</p>
-                <p><span className="text-bunker-text-muted">Manzil:</span> {companyInfo.address}</p>
-                <p><span className="text-bunker-text-muted">Faoliyat:</span> {companyInfo.activityType || 'Qurilish va ta’minot'}</p>
-                <p><span className="text-bunker-text-muted">QQS to‘lovchisi:</span> {companyInfo.vatPayer ? 'Ha (Faol)' : 'Yo‘q'}</p>
+              <div className="space-y-1 text-slate-600 pt-1 border-t border-slate-200">
+                <p><span className="text-slate-500">Rahbar:</span> {companyInfo.director}</p>
+                <p><span className="text-slate-500">Manzil:</span> {companyInfo.address}</p>
+                <p><span className="text-slate-500">Faoliyat:</span> {companyInfo.activityType || 'Qurilish va ta’minot'}</p>
+                <p><span className="text-slate-500">QQS to‘lovchisi:</span> {companyInfo.vatPayer ? 'Ha (Faol)' : 'Yo‘q'}</p>
               </div>
             </div>
           )}
@@ -485,12 +485,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
       {/* TAB 4: E-IMZO */}
       {authMode === 'eimzo' && (
         <div className="space-y-4 text-center font-mono">
-          <div className="p-5 border border-bunker-border-strong rounded-2xl bg-bunker-base space-y-3">
-            <div className="w-12 h-12 mx-auto rounded-2xl bg-bunker-amber-500/10 border border-bunker-amber-500/30 flex items-center justify-center">
+          <div className="p-5 border border-slate-200 rounded-xl bg-slate-50 space-y-3 shadow-xs">
+            <div className="w-12 h-12 mx-auto rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center">
               <Fingerprint className="w-6 h-6 text-bunker-amber-500" />
             </div>
-            <h4 className="text-sm font-bold text-bunker-text-primary">E-IMZO Kalitini Tasdiqlash</h4>
-            <p className="text-xs text-bunker-text-secondary leading-relaxed">
+            <h4 className="text-sm font-bold text-slate-900">E-IMZO Kalitini Tasdiqlash</h4>
+            <p className="text-xs text-slate-600 leading-relaxed">
               Yuridik shaxs yoki yakka tartibdagi tadbirkorlik elektron raqamli imzosi orqali xavfsiz autentifikatsiya.
             </p>
             <div className="pt-2">

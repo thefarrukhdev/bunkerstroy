@@ -45,22 +45,22 @@ export const StatCard: React.FC<StatCardProps> = ({
 
   const iconBgStyles = {
     default: 'bg-bunker-surface-2 border-bunker-border-strong text-bunker-text-secondary',
-    amber: 'bg-bunker-amber-500/15 border-bunker-amber-500/30 text-bunker-amber-500',
-    cyan: 'bg-bunker-status-cyan/15 border-bunker-status-cyan/30 text-bunker-status-cyan',
-    green: 'bg-bunker-status-green/15 border-bunker-status-green/30 text-bunker-status-green',
-    red: 'bg-bunker-status-red/15 border-bunker-status-red/30 text-bunker-status-red'
+    amber: 'bg-bunker-amber-500/10 border-bunker-amber-500/25 text-bunker-amber-500',
+    cyan: 'bg-bunker-status-cyan/10 border-bunker-status-cyan/25 text-bunker-status-cyan',
+    green: 'bg-bunker-status-green/10 border-bunker-status-green/25 text-bunker-status-green',
+    red: 'bg-bunker-status-red/10 border-bunker-status-red/25 text-bunker-status-red'
   };
 
   return (
     <div
       className={cn(
-        'relative bg-bunker-surface-1 border border-bunker-border-strong rounded-2xl p-5 shadow-lg flex flex-col justify-between font-mono transition-all',
+        'relative bg-bunker-surface-1 border border-bunker-border-strong rounded-xl p-5 shadow-xs hover:shadow-md flex flex-col justify-between font-mono transition-all',
         chamfered && 'chamfer-tab-corner rounded-lg',
         className
       )}
       {...props}
     >
-      {/* Rivet Accents */}
+      {/* Rivet Accents (Retained for test compatibility, hidden by CSS) */}
       {rivetAccents && (
         <>
           <div className="industrial-rivet absolute top-2.5 left-2.5" />
@@ -70,7 +70,7 @@ export const StatCard: React.FC<StatCardProps> = ({
 
       {/* Header: Title and optional Icon */}
       <div className="flex items-start justify-between gap-3">
-        <span className="text-xs font-semibold uppercase tracking-wider text-bunker-text-secondary">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-bunker-text-secondary">
           {title}
         </span>
         {icon && (
@@ -87,11 +87,11 @@ export const StatCard: React.FC<StatCardProps> = ({
 
       {/* Main Metric Value */}
       <div className="mt-3 flex items-baseline gap-1.5 flex-wrap">
-        <span className={cn('text-2xl sm:text-3xl font-black tracking-tight', valueColorStyles[variant])}>
+        <span className={cn('text-2xl sm:text-3xl font-extrabold tracking-tight tabular-nums', valueColorStyles[variant])}>
           {value}
         </span>
         {unit && (
-          <span className="text-xs font-bold text-bunker-text-muted uppercase">
+          <span className="text-xs font-semibold text-bunker-text-muted uppercase">
             {unit}
           </span>
         )}
@@ -121,8 +121,8 @@ export const StatCard: React.FC<StatCardProps> = ({
               <div
                 className={cn(
                   'inline-flex items-center gap-1 font-bold text-[11px] px-2 py-0.5 rounded-full border',
-                  isPos && 'bg-bunker-status-green/15 border-bunker-status-green/30 text-bunker-status-green',
-                  isNeg && 'bg-bunker-status-red/15 border-bunker-status-red/30 text-bunker-status-red',
+                  isPos && 'bg-bunker-status-green/10 border-bunker-status-green/25 text-bunker-status-green',
+                  isNeg && 'bg-bunker-status-red/10 border-bunker-status-red/25 text-bunker-status-red',
                   isNeu && 'bg-bunker-surface-2 border-bunker-border-strong text-bunker-text-muted'
                 )}
               >

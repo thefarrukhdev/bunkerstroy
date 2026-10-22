@@ -148,181 +148,163 @@ export const LogisticsView: React.FC = () => {
   const [weightTons, setWeightTons] = useState(15);
   const [origin, setOrigin] = useState('Keles daryosi qum-shag‘al karyeri');
   const [destination, setDestination] = useState('Toshkent sh., Yunusobod 14-mavze');
-
-  // Backend quote calculation state
   const [quote, setQuote] = useState<QuoteCalculation | null>(null);
   const [loadingQuote, setLoadingQuote] = useState(false);
 
-  // Booking & Dispatch state
+  // Active user orders for linking dispatch
   const [activeOrders, setActiveOrders] = useState<Order[]>([]);
   const [selectedOrderId, setSelectedOrderId] = useState<string>('EXPRESS');
-  const [isBooking, setIsBooking] = useState(false);
-  const [bookingError, setBookingError] = useState<string | null>(null);
-  const [confirmedDispatch, setConfirmedDispatch] = useState<ConfirmedDispatch | null>(null);
 
-  // Blueprint Modal State
+  // Booking & Confirmation state
+  const [isBooking, setIsBooking] = useState(false);
+  const [confirmedDispatch, setConfirmedDispatch] = useState<ConfirmedDispatch | null>(null);
+  const [bookingError, setBookingError] = useState<string | null>(null);
+
+  // Technical blueprint modal state
   const [selectedBlueprint, setSelectedBlueprint] = useState<TechnicalBlueprint | null>(null);
 
-  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const getToken = () => {
-    return typeof window !== 'undefined' ? localStorage.getItem('bunkerstroy_token') : null;
+  useEffect(() => {
+    fetchVehicles();
+    fetchUserOrders();
+  }, []);
+
+  const fetchVehicles = async () => {
+    try {
+      const res = await fetch('/api/logistics/vehicles');
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        setVehicles(json.data);
+        setSelectedVehicle(json.data[0]);
+      }
+    } catch (e) {
+      console.error('Failed to fetch logistics vehicles:', e);
+    }
   };
 
-  // 1. Fetch available fleet vehicles from backend
-  useEffect(() => {
-    fetch('/api/logistics/vehicles')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && data.data && data.data.length > 0) {
-          setVehicles(data.data);
-          setSelectedVehicle(data.data[0]);
-        }
-      })
-      .catch((err) => console.error('Logistics vehicles load error:', err));
-  }, []);
+  const fetchUserOrders = async () => {
+    try {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('bunkerstroy_token') : null;
+      if (!token) return;
 
-  // 2. Fetch user's active orders for optional dispatch linking
-  useEffect(() => {
-    const token = getToken();
-    if (!token) return;
+      const res = await fetch('/api/orders', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data)) {
+        setActiveOrders(json.data.filter((o: Order) => o.status === 'CONFIRMED' || o.status === 'PENDING' || o.status === 'ASSIGNED_TO_FLEET'));
+      }
+    } catch (e) {
+      console.warn('Orders fetch for dispatch linking:', e);
+    }
+  };
 
-    fetch('/api/orders', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && Array.isArray(data.data)) {
-          const pendings = data.data.filter(
-            (o: Order) => o.status === 'PENDING' || o.status === 'CONFIRMED' || o.status === 'ASSIGNED_TO_FLEET'
-          );
-          setActiveOrders(pendings);
-        }
-      })
-      .catch((err) => console.warn('Active orders fetch error:', err));
-  }, []);
-
-  // 3. Dynamically call POST /api/logistics/calculate-quote when parameters change (debounced 200ms)
+  // Debounced quote calculator
   useEffect(() => {
     if (!selectedVehicle) return;
 
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current);
     }
 
-    setLoadingQuote(true);
-
-    debounceTimerRef.current = setTimeout(async () => {
+    debounceTimeoutRef.current = setTimeout(async () => {
+      setLoadingQuote(true);
       try {
-        const res = await fetch('/api/logistics/calculate-quote', {
+        const res = await fetch('/api/logistics/quote', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             vehicleId: selectedVehicle.id,
-            distanceKm: Number(distanceKm),
-            cargoWeightTons: Number(weightTons)
+            distanceKm,
+            cargoWeightTons: weightTons,
+            origin,
+            destination
           })
         });
 
-        const json = await res.json();
-        if (res.ok && json.success && json.data) {
-          setQuote(json.data);
+        const data = await res.json();
+        if (data.success && data.data) {
+          setQuote(data.data);
         }
       } catch (err) {
-        console.error('Calculate quote error:', err);
+        console.error('Quote calculation network error:', err);
       } finally {
         setLoadingQuote(false);
       }
-    }, 200);
+    }, 250);
 
     return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
+      if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current);
     };
-  }, [selectedVehicle, distanceKm, weightTons]);
+  }, [selectedVehicle, distanceKm, weightTons, origin, destination]);
 
-  // Fallback price calculator if quote hasn't returned yet
-  const totalCostValue =
-    quote?.totalCost ??
-    (selectedVehicle ? selectedVehicle.basePrice + distanceKm * selectedVehicle.pricePerKm : 0);
+  const totalCostValue = quote
+    ? quote.totalCost
+    : selectedVehicle
+    ? selectedVehicle.basePrice + distanceKm * selectedVehicle.pricePerKm
+    : 0;
 
-  // 4. Handle Book Trip (Reysni band qilish)
+  // Handle Dispatch Booking
   const handleBook = async () => {
     if (!selectedVehicle) return;
 
     setIsBooking(true);
     setBookingError(null);
 
-    const token = getToken();
+    const token = typeof window !== 'undefined' ? localStorage.getItem('bunkerstroy_token') : null;
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const payload = {
+      orderId: selectedOrderId === 'EXPRESS' ? `BS-EXP-${Date.now().toString().slice(-6)}` : selectedOrderId,
+      vehicleId: selectedVehicle.id,
+      origin,
+      destination,
+      distanceKm,
+      cargoWeightTons: weightTons,
+      totalCost: totalCostValue,
+      driverName: selectedVehicle.driverName || 'Farhod Yoqubov',
+      driverPhone: selectedVehicle.driverPhone || '+998 90 912 34 56'
+    };
 
     try {
-      if (token) {
-        const res = await fetch('/api/logistics/dispatch', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            orderId: selectedOrderId === 'EXPRESS' ? 'EXPRESS' : selectedOrderId,
-            vehicleId: selectedVehicle.id,
-            origin,
-            destination,
-            distanceKm: Number(distanceKm)
-          })
-        });
+      const res = await fetch('/api/logistics/dispatch', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload)
+      });
 
-        const json = await res.json();
-        if (res.ok && json.success && json.data) {
-          const d = json.data;
-          setConfirmedDispatch({
-            id: d.id,
-            orderId: d.order?.orderNumber || d.orderId,
-            vehicleId: selectedVehicle.id,
-            driverName: d.driver?.displayName || d.vehicle?.driverName || selectedVehicle.driverName || 'Sherzod Baxtiyorov',
-            driverPhone: d.driver?.phone || d.vehicle?.driverPhone || selectedVehicle.driverPhone || '+998901114455',
-            vehicleName: d.vehicle?.name || selectedVehicle.name,
-            plateNumber: d.vehicle?.plateNumber || selectedVehicle.plateNumber || '01 777 BSK',
-            status: d.status || 'ASSIGNED',
-            origin: d.origin,
-            destination: d.destination,
-            distanceKm: d.distanceKm,
-            totalCost: Number(d.totalCost),
-            estimatedHours: quote?.estimatedHours || Math.round((distanceKm / 35) * 10) / 10 + 1,
-            dispatchedAt: d.dispatchedAt || new Date().toISOString()
-          });
-        } else {
-          setBookingError(json.message || 'Reysni biriktirishda xatolik yuz berdi');
-        }
-      } else {
-        // Unauthenticated demo booking: instant confirmation preview
+      const json = await res.json();
+      if (res.ok && json.success) {
         setConfirmedDispatch({
-          id: `BS-DISP-${Math.floor(100000 + Math.random() * 900000)}`,
-          orderId: `BS-EXP-${Math.floor(100000 + Math.random() * 900000)}`,
+          id: json.data?.id || `DSP-${Date.now().toString().slice(-6)}`,
+          orderId: payload.orderId,
           vehicleId: selectedVehicle.id,
-          driverName: selectedVehicle.driverName || 'Sherzod Baxtiyorov',
-          driverPhone: selectedVehicle.driverPhone || '+998901114455',
+          driverName: payload.driverName,
+          driverPhone: payload.driverPhone,
           vehicleName: selectedVehicle.name,
-          plateNumber: selectedVehicle.plateNumber || '01 777 BSK',
-          status: 'ASSIGNED',
+          plateNumber: selectedVehicle.plateNumber || '01 777 AAA',
+          status: 'DISPATCHED',
           origin,
           destination,
           distanceKm,
           totalCost: totalCostValue,
           estimatedHours: quote?.estimatedHours || Math.round((distanceKm / 35) * 10) / 10 + 1,
-          dispatchedAt: new Date().toISOString()
+          dispatchedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         });
+      } else {
+        setBookingError(json.message || 'Dispetcherlik bron qilishda xatolik yuz berdi');
       }
-    } catch (err: any) {
-      console.error('Dispatch booking error:', err);
-      setBookingError('Server bilan aloqa uzildi. Iltimos qayta urinib ko‘ring.');
+    } catch {
+      setBookingError('Server bilan ulanishda xato. Qayta urinib ko‘ring.');
     } finally {
       setIsBooking(false);
     }
   };
 
-  // Helper to open blueprint
   const handleOpenBlueprint = (vehicleType: string) => {
     const bp = TECHNICAL_BLUEPRINTS[vehicleType] || TECHNICAL_BLUEPRINTS['HOWO_25T'];
     setSelectedBlueprint(bp);
@@ -330,16 +312,15 @@ export const LogisticsView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* 1. Tactical Fleet Banner */}
-      <div className="relative rounded-3xl overflow-hidden border border-bunker-border-strong bg-gradient-to-r from-bunker-surface-1 via-bunker-surface-2 to-[#2C2314] p-6 sm:p-10 shadow-2xl">
-        <div className="h-1.5 w-full hazard-stripe-sm absolute top-0 left-0" />
+      {/* 1. Luminous Nordic Enterprise Logistics Header */}
+      <div className="relative rounded-2xl overflow-hidden border border-sky-200/80 bg-gradient-to-r from-sky-50/70 via-white to-slate-50 p-6 sm:p-8 shadow-xs">
         <div className="max-w-3xl space-y-3">
-          <Badge variant="warning" className="gap-1.5 font-mono">
-            <Truck className="w-3.5 h-3.5" />
-            BunkerStroy Og'ir Logistika & Texnik Chizmalar Markazi
+          <Badge variant="info" className="gap-1.5 font-mono bg-sky-100/80 text-sky-800 border-sky-300">
+            <Truck className="w-3.5 h-3.5 text-bunker-status-cyan" />
+            BunkerStroy Og'ir Logistika &amp; Texnik Chizmalar Markazi
           </Badge>
-          <h1 className="text-2xl sm:text-4xl font-black text-bunker-text-primary tracking-tight">
-            Sanoat Texnikalari: HOWO, Shacman Mikser, Isuzu Kran & TIR
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-bunker-text-primary tracking-tight">
+            Sanoat Texnikalari: HOWO, Shacman Mikser, Isuzu Kran &amp; TIR
           </h1>
           <p className="text-sm text-bunker-text-secondary leading-relaxed">
             Qurilish ob'ektlariga to‘g‘ridan-to‘g‘ri yetkazib beruvchi maxsus park. Masofa bo‘yicha avtomatik narx
@@ -350,16 +331,16 @@ export const LogisticsView: React.FC = () => {
 
       {/* 2. CONFIRMED DISPATCH ACTIVE CARD (4-Step Route Progress Tracker) */}
       {confirmedDispatch && (
-        <div className="bg-bunker-surface-1 border-2 border-bunker-amber-500 p-6 sm:p-8 rounded-3xl space-y-6 shadow-2xl shadow-bunker-amber-500/10 animate-in fade-in">
+        <div className="bg-white border-2 border-bunker-amber-500 p-6 sm:p-8 rounded-2xl space-y-6 shadow-sm animate-in fade-in">
           <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-bunker-border-strong">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-bunker-amber-500/20 border border-bunker-amber-500/40 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center">
                 <CheckCircle2 className="w-6 h-6 text-bunker-amber-500" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-black text-bunker-text-primary">Reys Muvaffaqiyatli Band Qilindi!</h3>
-                  <Badge variant="success" className="font-mono text-[10px]">
+                  <h3 className="text-lg font-bold text-bunker-text-primary">Reys Muvaffaqiyatli Band Qilindi!</h3>
+                  <Badge variant="success" className="font-mono text-[10px] bg-emerald-50 text-emerald-800 border-emerald-200">
                     STATUS: BIRIKTIRILDI
                   </Badge>
                 </div>
@@ -387,7 +368,7 @@ export const LogisticsView: React.FC = () => {
               value={confirmedDispatch.driverName}
               subtitle={confirmedDispatch.driverPhone}
               variant="amber"
-              icon={<Phone className="w-4 h-4" />}
+              icon={<Phone className="w-4 h-4 text-bunker-amber-500" />}
             />
 
             <StatCard
@@ -395,7 +376,7 @@ export const LogisticsView: React.FC = () => {
               value={confirmedDispatch.vehicleName}
               subtitle={confirmedDispatch.plateNumber}
               variant="default"
-              icon={<Truck className="w-4 h-4" />}
+              icon={<Truck className="w-4 h-4 text-slate-600" />}
             />
 
             <StatCard
@@ -404,7 +385,7 @@ export const LogisticsView: React.FC = () => {
               unit="km"
               subtitle={`Taxminiy: ~${confirmedDispatch.estimatedHours} soat`}
               variant="cyan"
-              icon={<Navigation className="w-4 h-4" />}
+              icon={<Navigation className="w-4 h-4 text-bunker-status-cyan" />}
             />
 
             <StatCard
@@ -413,12 +394,12 @@ export const LogisticsView: React.FC = () => {
               unit="so'm"
               subtitle="Kafolatlangan marshrut"
               variant="amber"
-              icon={<CheckCircle2 className="w-4 h-4" />}
+              icon={<CheckCircle2 className="w-4 h-4 text-bunker-amber-500" />}
             />
           </div>
 
           {/* 4-Step Route Progress Tracker */}
-          <div className="bg-bunker-base border border-bunker-border-strong p-5 rounded-2xl space-y-4">
+          <div className="bg-slate-50 border border-bunker-border-strong p-5 rounded-xl space-y-4">
             <h4 className="text-xs font-bold text-bunker-text-primary uppercase font-mono flex items-center gap-2">
               <Compass className="w-4 h-4 text-bunker-amber-500" />
               4 Bosqichli Real Vaqt Marshrut Dispetcherligi (GPS Telemetriya)
@@ -427,19 +408,19 @@ export const LogisticsView: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
               {/* Step 1 */}
               <div className="flex items-start gap-3 relative">
-                <div className="w-9 h-9 rounded-full bg-bunker-status-green/20 border-2 border-bunker-status-green flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-5 h-5 text-bunker-status-green" />
+                <div className="w-9 h-9 rounded-full bg-emerald-100 border-2 border-emerald-500 flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-700" />
                 </div>
                 <div>
                   <h5 className="font-bold text-xs text-bunker-text-primary">1. Qabul Qilindi</h5>
                   <p className="text-[10px] text-bunker-text-secondary">Dispetcherlik tasdiqladi</p>
-                  <span className="text-[9px] font-mono text-bunker-status-green mt-0.5 block font-bold">BAJARILDI</span>
+                  <span className="text-[9px] font-mono text-emerald-700 mt-0.5 block font-bold">BAJARILDI</span>
                 </div>
               </div>
 
               {/* Step 2 */}
               <div className="flex items-start gap-3 relative">
-                <div className="w-9 h-9 rounded-full bg-bunker-amber-500/20 border-2 border-bunker-amber-500 flex items-center justify-center shrink-0 animate-pulse">
+                <div className="w-9 h-9 rounded-full bg-orange-100 border-2 border-orange-500 flex items-center justify-center shrink-0 animate-pulse">
                   <Truck className="w-5 h-5 text-bunker-amber-500" />
                 </div>
                 <div>
@@ -451,7 +432,7 @@ export const LogisticsView: React.FC = () => {
 
               {/* Step 3 */}
               <div className="flex items-start gap-3 relative opacity-60">
-                <div className="w-9 h-9 rounded-full bg-bunker-surface-2 border-2 border-bunker-border-strong flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-full bg-slate-200 border-2 border-slate-300 flex items-center justify-center shrink-0">
                   <Navigation className="w-4 h-4 text-bunker-text-muted" />
                 </div>
                 <div>
@@ -463,7 +444,7 @@ export const LogisticsView: React.FC = () => {
 
               {/* Step 4 */}
               <div className="flex items-start gap-3 relative opacity-60">
-                <div className="w-9 h-9 rounded-full bg-bunker-surface-2 border-2 border-bunker-border-strong flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-full bg-slate-200 border-2 border-slate-300 flex items-center justify-center shrink-0">
                   <PackageCheck className="w-4 h-4 text-bunker-text-muted" />
                 </div>
                 <div>
@@ -484,7 +465,7 @@ export const LogisticsView: React.FC = () => {
           <div className="flex items-center justify-between">
             <h2 className="text-base font-bold text-bunker-text-primary uppercase tracking-wider font-mono flex items-center gap-2">
               <Truck className="w-4 h-4 text-bunker-amber-500" />
-              1. Maxsus Texnika Parki & Muhandislik Chizmalari
+              1. Maxsus Texnika Parki &amp; Muhandislik Chizmalari
             </h2>
             <span className="text-xs text-bunker-text-muted font-mono">{vehicles.length} ta birlik mavjud</span>
           </div>
@@ -497,17 +478,17 @@ export const LogisticsView: React.FC = () => {
                 <div
                   key={v.id}
                   onClick={() => setSelectedVehicle(v)}
-                  className={`p-4 rounded-2xl cursor-pointer border transition-all flex flex-col justify-between ${
+                  className={`p-4 rounded-xl cursor-pointer border transition-all flex flex-col justify-between shadow-xs ${
                     isSelected
-                      ? 'bg-bunker-surface-2 border-bunker-amber-500 shadow-lg shadow-bunker-amber-500/10'
-                      : 'bg-bunker-surface-1 border-bunker-border-strong hover:border-bunker-border-active'
+                      ? 'bg-orange-50/40 border-bunker-amber-500 ring-2 ring-bunker-amber-500/20'
+                      : 'bg-white border-bunker-border-strong hover:border-bunker-amber-500/70'
                   }`}
                 >
                   <div className="flex items-start gap-3.5">
                     <img
                       src={v.imageUrl}
                       alt={v.name}
-                      className="w-16 h-16 rounded-xl object-cover shrink-0 border border-bunker-border-subtle bg-bunker-base"
+                      className="w-16 h-16 rounded-xl object-cover shrink-0 border border-bunker-border-subtle bg-slate-100"
                     />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-1">
@@ -553,7 +534,7 @@ export const LogisticsView: React.FC = () => {
         </div>
 
         {/* Dynamic Calculator & Booking Command Panel */}
-        <div className="lg:col-span-5 bg-bunker-surface-1 border border-bunker-border-strong p-6 rounded-3xl space-y-5 shadow-xl">
+        <div className="lg:col-span-5 bg-white border border-bunker-border-strong p-6 rounded-2xl space-y-5 shadow-xs">
           <div className="flex items-center justify-between pb-3 border-b border-bunker-border-subtle">
             <h3 className="font-bold text-bunker-text-primary flex items-center gap-2 text-sm font-mono">
               <Calculator className="w-4 h-4 text-bunker-amber-500" />
@@ -636,16 +617,16 @@ export const LogisticsView: React.FC = () => {
           </div>
 
           {/* Official Backend Price Summary */}
-          <div className="bg-bunker-base border border-bunker-border-strong p-4 rounded-2xl space-y-2 font-mono">
+          <div className="bg-slate-50 border border-bunker-border-strong p-4 rounded-xl space-y-2 font-mono">
             <div className="flex justify-between items-center text-xs text-bunker-text-secondary">
               <span>Boshlang'ich baza tarifi:</span>
-              <span className="text-bunker-text-primary">
+              <span className="text-bunker-text-primary font-semibold">
                 {Number(quote?.baseCost ?? selectedVehicle?.basePrice ?? 0).toLocaleString()} so'm
               </span>
             </div>
             <div className="flex justify-between items-center text-xs text-bunker-text-secondary">
               <span>Masofa qiymati ({distanceKm} km):</span>
-              <span className="text-bunker-text-primary">
+              <span className="text-bunker-text-primary font-semibold">
                 {Number(quote?.distanceCost ?? (selectedVehicle ? distanceKm * selectedVehicle.pricePerKm : 0)).toLocaleString()}{' '}
                 so'm
               </span>
@@ -662,7 +643,7 @@ export const LogisticsView: React.FC = () => {
               <span className="font-bold text-sm text-bunker-text-primary">Jami rasmiy narx:</span>
               <div className="flex items-center gap-2">
                 {loadingQuote && <RefreshCw className="w-3.5 h-3.5 animate-spin text-bunker-amber-500" />}
-                <span className="text-xl font-black text-bunker-amber-500">
+                <span className="text-xl font-extrabold text-bunker-amber-500">
                   {totalCostValue.toLocaleString()} so'm
                 </span>
               </div>
@@ -676,7 +657,7 @@ export const LogisticsView: React.FC = () => {
             isLoading={isBooking}
           >
             <Truck className="w-5 h-5 mr-1" />
-            <span>Reysni Rasmiylashtirish & Yuborish</span>
+            <span>Reysni Rasmiylashtirish &amp; Yuborish</span>
           </Button>
         </div>
       </div>
@@ -688,7 +669,7 @@ export const LogisticsView: React.FC = () => {
           onClose={() => setSelectedBlueprint(null)}
           size="lg"
           headerExtra={
-            <div className="w-10 h-10 rounded-xl bg-bunker-amber-500/20 border border-bunker-amber-500/50 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center shrink-0">
               <FileCode className="w-5 h-5 text-bunker-amber-500" />
             </div>
           }
@@ -701,57 +682,57 @@ export const LogisticsView: React.FC = () => {
           }
         >
           {/* CAD Wireframe Visualizer */}
-          <div className="relative bg-bunker-vault border border-bunker-border-strong rounded-2xl p-5 overflow-hidden font-mono text-xs">
-            <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#FFB800_1px,transparent_1px)] [background-size:16px_16px]" />
-            <div className="flex items-center justify-between text-bunker-text-muted text-[11px] mb-3">
+          <div className="relative bg-slate-900 border border-slate-800 rounded-xl p-5 overflow-hidden font-mono text-xs text-white">
+            <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#EA580C_1px,transparent_1px)] [background-size:16px_16px]" />
+            <div className="flex items-center justify-between text-slate-400 text-[11px] mb-3">
               <span>[BUNKER-CAD v4.8] ARCHITECTURAL WIREFRAME</span>
-              <span className="text-bunker-status-green">ONLINE KALIBROVKA</span>
+              <span className="text-emerald-400 font-semibold">ONLINE KALIBROVKA</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              <div className="bg-bunker-surface-1/80 border border-bunker-border-subtle p-3 rounded-xl space-y-1">
-                <span className="text-[10px] text-bunker-text-muted uppercase block">Dvigatel & Quvvat:</span>
-                <p className="font-bold text-bunker-text-primary">{selectedBlueprint.engine}</p>
-                <span className="text-[11px] text-bunker-amber-500 block">{selectedBlueprint.powerOutput}</span>
+              <div className="bg-slate-800/80 border border-slate-700 p-3 rounded-xl space-y-1">
+                <span className="text-[10px] text-slate-400 uppercase block">Dvigatel &amp; Quvvat:</span>
+                <p className="font-bold text-white">{selectedBlueprint.engine}</p>
+                <span className="text-[11px] text-orange-400 block">{selectedBlueprint.powerOutput}</span>
               </div>
 
-              <div className="bg-bunker-surface-1/80 border border-bunker-border-subtle p-3 rounded-xl space-y-1">
-                <span className="text-[10px] text-bunker-text-muted uppercase block">Aylanish momenti:</span>
-                <p className="font-bold text-bunker-text-primary">{selectedBlueprint.torque}</p>
-                <span className="text-[11px] text-bunker-text-secondary block">Ko'prik: {selectedBlueprint.axleFormula}</span>
+              <div className="bg-slate-800/80 border border-slate-700 p-3 rounded-xl space-y-1">
+                <span className="text-[10px] text-slate-400 uppercase block">Aylanish momenti:</span>
+                <p className="font-bold text-white">{selectedBlueprint.torque}</p>
+                <span className="text-[11px] text-slate-300 block">Ko'prik: {selectedBlueprint.axleFormula}</span>
               </div>
 
-              <div className="bg-bunker-surface-1/80 border border-bunker-border-subtle p-3 rounded-xl space-y-1">
-                <span className="text-[10px] text-bunker-text-muted uppercase block">Foydali Sig'im:</span>
-                <p className="font-bold text-bunker-amber-500">{selectedBlueprint.payloadCapacity}</p>
-                <span className="text-[11px] text-bunker-text-secondary block">{selectedBlueprint.bodyVolume}</span>
+              <div className="bg-slate-800/80 border border-slate-700 p-3 rounded-xl space-y-1">
+                <span className="text-[10px] text-slate-400 uppercase block">Foydali Sig'im:</span>
+                <p className="font-bold text-orange-400">{selectedBlueprint.payloadCapacity}</p>
+                <span className="text-[11px] text-slate-300 block">{selectedBlueprint.bodyVolume}</span>
               </div>
 
-              <div className="bg-bunker-surface-1/80 border border-bunker-border-subtle p-3 rounded-xl space-y-1">
-                <span className="text-[10px] text-bunker-text-muted uppercase block">Uzatmalar qutisi:</span>
-                <p className="font-bold text-bunker-text-primary">{selectedBlueprint.transmission}</p>
+              <div className="bg-slate-800/80 border border-slate-700 p-3 rounded-xl space-y-1">
+                <span className="text-[10px] text-slate-400 uppercase block">Uzatmalar qutisi:</span>
+                <p className="font-bold text-white">{selectedBlueprint.transmission}</p>
               </div>
 
-              <div className="bg-bunker-surface-1/80 border border-bunker-border-subtle p-3 rounded-xl space-y-1">
-                <span className="text-[10px] text-bunker-text-muted uppercase block">Gidravlika tizimi:</span>
-                <p className="font-bold text-bunker-text-primary truncate">{selectedBlueprint.hydraulicSystem}</p>
+              <div className="bg-slate-800/80 border border-slate-700 p-3 rounded-xl space-y-1">
+                <span className="text-[10px] text-slate-400 uppercase block">Gidravlika tizimi:</span>
+                <p className="font-bold text-white truncate">{selectedBlueprint.hydraulicSystem}</p>
               </div>
 
-              <div className="bg-bunker-surface-1/80 border border-bunker-border-subtle p-3 rounded-xl space-y-1">
-                <span className="text-[10px] text-bunker-text-muted uppercase block">Gabarit o'lchamlar:</span>
-                <p className="font-bold text-bunker-text-primary">{selectedBlueprint.dimensions}</p>
+              <div className="bg-slate-800/80 border border-slate-700 p-3 rounded-xl space-y-1">
+                <span className="text-[10px] text-slate-400 uppercase block">Gabarit o'lchamlar:</span>
+                <p className="font-bold text-white">{selectedBlueprint.dimensions}</p>
               </div>
             </div>
 
             {/* Detailed schematic bullets */}
-            <div className="mt-4 pt-3 border-t border-bunker-border-subtle space-y-2">
-              <span className="text-[11px] font-bold text-bunker-amber-500 uppercase block">
-                Texnik Standartlar & Xavfsizlik Sertifikati:
+            <div className="mt-4 pt-3 border-t border-slate-700 space-y-2">
+              <span className="text-[11px] font-bold text-orange-400 uppercase block">
+                Texnik Standartlar &amp; Xavfsizlik Sertifikati:
               </span>
-              <div className="space-y-1.5 text-[11px] text-bunker-text-secondary">
+              <div className="space-y-1.5 text-[11px] text-slate-300">
                 {selectedBlueprint.schematicDetails.map((item, idx) => (
                   <div key={idx} className="flex items-start gap-2">
-                    <span className="text-bunker-amber-500 font-bold shrink-0">►</span>
+                    <span className="text-orange-400 font-bold shrink-0">►</span>
                     <span>{item}</span>
                   </div>
                 ))}

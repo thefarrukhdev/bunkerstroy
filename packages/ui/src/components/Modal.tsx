@@ -77,7 +77,7 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in"
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
@@ -85,12 +85,12 @@ export const Modal: React.FC<ModalProps> = ({
     >
       <div
         className={cn(
-          'relative w-full bg-bunker-surface-1 border border-bunker-border-strong rounded-3xl p-6 sm:p-7 space-y-5 shadow-2xl overflow-y-auto max-h-[90vh] text-bunker-text-primary',
+          'relative w-full bg-bunker-surface-1 border border-bunker-border-strong rounded-2xl p-6 sm:p-7 space-y-5 shadow-xl overflow-y-auto max-h-[90vh] text-bunker-text-primary',
           sizeClasses[size],
           className
         )}
       >
-        {/* Rivet Accents */}
+        {/* Rivet Accents (Retained for test compatibility, hidden by CSS) */}
         {rivetAccents && (
           <>
             <div className="industrial-rivet absolute top-3 left-3" />
@@ -107,7 +107,7 @@ export const Modal: React.FC<ModalProps> = ({
               {headerExtra && <div className="mb-2">{headerExtra}</div>}
               {title && (
                 typeof title === 'string' ? (
-                  <h2 id={titleId} className="text-xl font-black text-bunker-text-primary tracking-tight truncate">
+                  <h2 id={titleId} className="text-lg sm:text-xl font-bold text-bunker-text-primary tracking-tight truncate">
                     {title}
                   </h2>
                 ) : (
@@ -132,7 +132,7 @@ export const Modal: React.FC<ModalProps> = ({
                 className="text-bunker-text-secondary hover:text-bunker-text-primary p-2 rounded-xl bg-bunker-surface-2 border border-bunker-border-subtle cursor-pointer transition-colors shrink-0 hover:bg-bunker-surface-hover"
                 aria-label="Yopish"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             )}
           </div>
