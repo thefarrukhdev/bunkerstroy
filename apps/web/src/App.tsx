@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, Navigate, useNavigate, useLocation, Link } from 'react-router-dom';
 import { Product } from '@bunkerstroy/types';
 import { Navbar, ActiveTabType } from './components/Navbar';
 import { CartDrawer, CartItem } from './components/CartDrawer';
 import { MarketplaceView } from './features/marketplace/MarketplaceView';
+import { ProductDetailView } from './features/marketplace/ProductDetailView';
 import { SuppliersView } from './features/suppliers/SuppliersView';
 import { LogisticsView } from './features/logistics/LogisticsView';
 import { TendersView } from './features/tenders/TendersView';
@@ -29,11 +31,11 @@ import {
   Factory,
   FileSpreadsheet
 } from 'lucide-react';
-import { Button, Modal, Input, Badge, Tooltip } from '@bunkerstroy/ui';
+import { Badge, Modal, Input, Tooltip } from '@bunkerstroy/ui';
 
 export const App: React.FC = () => {
-  // Navigation tab state
-  const [activeTab, setActiveTab] = useState<ActiveTabType>('marketplace');
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // Modals state
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -58,13 +60,10 @@ export const App: React.FC = () => {
   // Global Keyboard Shortcuts: Ctrl + K (Search) & Escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ctrl + K or Cmd + K opens Global Command Search Palette
       if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault();
         setIsSearchOpen((prev) => !prev);
       }
-
-      // Escape closes modals
       if (e.key === 'Escape') {
         setIsSearchOpen(false);
       }
@@ -107,7 +106,7 @@ export const App: React.FC = () => {
         }
       })
       .catch((err) => {
-        console.warn('Session check network error (token preserved):', err);
+        console.warn('Session check network error:', err);
       });
   }, []);
 
@@ -150,7 +149,7 @@ export const App: React.FC = () => {
   };
 
   const handleOrderSuccess = () => {
-    setActiveTab('orders');
+    navigate('/orders');
   };
 
   // Auth actions
@@ -167,23 +166,21 @@ export const App: React.FC = () => {
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   // Command palette navigation items
-  const quickNavItems: { label: string; tab: ActiveTabType; icon: React.ReactNode; desc: string }[] = [
-    { label: 'B2B Marketplace & Mahsulotlar', tab: 'marketplace', icon: <Building2 className="w-4 h-4 text-bunker-amber-500" />, desc: 'Sement, armatura, g‘isht va izolyatsiya materiallari' },
-    { label: 'Akkreditatsiyalangan Zavodlar', tab: 'suppliers', icon: <Factory className="w-4 h-4 text-bunker-amber-500" />, desc: 'O‘zmetkombinat, Qizilqumsement, Knauf zavod narxlari' },
-    { label: 'Logistika Hub & Maxsus Texnikalar', tab: 'logistics', icon: <Truck className="w-4 h-4 text-bunker-amber-500" />, desc: 'HOWO 25t, Shacman mikser, Isuzu kran marshruti' },
-    { label: 'Qurilish Tenderlari & Smeta RFQ', tab: 'tenders', icon: <FileSpreadsheet className="w-4 h-4 text-bunker-amber-500" />, desc: 'Katta hajmli smeta so‘rovlari va zavod takliflari' },
-    { label: 'ESCO Bino Energiya Auditi', tab: 'esco', icon: <Leaf className="w-4 h-4 text-bunker-status-green" />, desc: 'ShNQ 2.01.04-18 davlat standarti, termal pasport' },
-    { label: 'Global Bunker Xalqaro Import', tab: 'global_bunker', icon: <Globe className="w-4 h-4 text-bunker-status-cyan" />, desc: 'Temir yo‘l hopperlari va xorijiy klinker ta’minoti' },
-    { label: 'Davlat Standartlari & Laboratoriya', tab: 'certifications', icon: <ShieldCheck className="w-4 h-4 text-emerald-600" />, desc: 'GOST, O‘zDSt va ShNQ laboratoriya sinov bayonnomalari' },
-    { label: 'Mening Buyurtmalarim & Invoyslar', tab: 'orders', icon: <ClipboardList className="w-4 h-4 text-bunker-amber-500" />, desc: 'Shartnomalar, hisob-fakturalar va to‘lov holati' }
+  const quickNavItems = [
+    { label: 'Katalog & B2B Mahsulotlar', path: '/', icon: <Building2 className="w-4 h-4 text-bunker-amber-500" />, desc: 'Sement, armatura, g‘isht va izolyatsiya materiallari' },
+    { label: 'Zavodlar & Ishlab Chiqaruvchilar', path: '/suppliers', icon: <Factory className="w-4 h-4 text-bunker-amber-500" />, desc: 'O‘zmetkombinat, Qizilqumsement, Knauf zavod narxlari' },
+    { label: 'Logistika Hub & Maxsus Texnikalar', path: '/logistics', icon: <Truck className="w-4 h-4 text-bunker-amber-500" />, desc: 'HOWO 25t, Shacman mikser, Isuzu kran marshruti' },
+    { label: 'Qurilish Tenderlari & Smeta RFQ', path: '/tenders', icon: <FileSpreadsheet className="w-4 h-4 text-bunker-amber-500" />, desc: 'Yirik smeta xaridlari va korporativ auksion' },
+    { label: 'ESCO Bino Energiya Auditi', path: '/esco', icon: <Leaf className="w-4 h-4 text-bunker-status-green" />, desc: 'ShNQ 2.01.04-18 davlat standarti, termal pasport' },
+    { label: 'Global Bunker Xalqaro Import', path: '/global-bunker', icon: <Globe className="w-4 h-4 text-bunker-status-cyan" />, desc: 'Temir yo‘l hopperlari va xorijiy klinker ta’minoti' },
+    { label: 'Davlat Standartlari & Laboratoriya', path: '/certifications', icon: <ShieldCheck className="w-4 h-4 text-emerald-600" />, desc: 'GOST, O‘zDSt va ShNQ sinov bayonnomalari' },
+    { label: 'Mening Buyurtmalarim & Invoyslar', path: '/orders', icon: <ClipboardList className="w-4 h-4 text-bunker-amber-500" />, desc: 'Shartnomalar, hisob-fakturalar va to‘lov holati' }
   ];
 
   return (
     <div className="min-h-screen flex flex-col bg-bunker-base text-bunker-text-primary selection:bg-bunker-amber-500 selection:text-white font-sans transition-colors duration-200">
-      {/* 1. Nordic Enterprise Navigation & Header */}
+      {/* 1. Header Navigation Bar */}
       <Navbar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
         cartCount={cartCount}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
@@ -193,159 +190,97 @@ export const App: React.FC = () => {
         onLogout={handleLogout}
       />
 
-      {/* 2. Main Views Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-all">
-        {activeTab === 'marketplace' && (
-          <MarketplaceView onAddToCart={handleAddToCart} />
-        )}
-
-        {activeTab === 'suppliers' && (
-          <SuppliersView onNavigateToCatalog={() => setActiveTab('marketplace')} />
-        )}
-
-        {activeTab === 'logistics' && (
-          <LogisticsView />
-        )}
-
-        {activeTab === 'tenders' && (
-          <TendersView />
-        )}
-
-        {activeTab === 'esco' && (
-          <EscoCalculatorView />
-        )}
-
-        {activeTab === 'global_bunker' && (
-          <GlobalBunkerHubView />
-        )}
-
-        {activeTab === 'certifications' && (
-          <CertificationsView />
-        )}
-
-        {activeTab === 'orders' && (
-          <OrdersView />
-        )}
+      {/* 2. Main Page Content (Real URL Routes) */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 transition-all">
+        <Routes>
+          <Route path="/" element={<MarketplaceView onAddToCart={handleAddToCart} />} />
+          <Route path="/products/:id" element={<ProductDetailView onAddToCart={handleAddToCart} />} />
+          <Route path="/suppliers" element={<SuppliersView onNavigateToCatalog={() => navigate('/')} />} />
+          <Route path="/logistics" element={<LogisticsView />} />
+          <Route path="/tenders" element={<TendersView />} />
+          <Route path="/esco" element={<EscoCalculatorView />} />
+          <Route path="/global-bunker" element={<GlobalBunkerHubView />} />
+          <Route path="/certifications" element={<CertificationsView />} />
+          <Route path="/orders" element={<OrdersView />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </main>
 
-      {/* 3. Clean Nordic Industrial Enterprise Footer */}
+      {/* 3. Minimalist Industrial Footer */}
       <footer className="mt-auto bg-white border-t border-bunker-border-strong text-bunker-text-secondary">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
             {/* Column 1: Brand Info */}
-            <div className="lg:col-span-2 space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="relative w-10 h-10 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center shadow-xs">
-                  <HardHat className="w-5 h-5 text-bunker-amber-500" />
+            <div className="lg:col-span-2 space-y-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-orange-50 border border-orange-200 flex items-center justify-center">
+                  <HardHat className="w-4 h-4 text-bunker-amber-500" />
                 </div>
-                <div>
-                  <span className="text-xl font-extrabold tracking-tight leading-none text-bunker-text-primary">
-                    <span className="text-bunker-amber-500">BUNKER</span>STROY
-                  </span>
-                  <span className="text-[10px] tracking-wider text-bunker-text-muted uppercase font-mono block mt-0.5">
-                    B2B Sanoat Xaridlari &amp; Logistika Platformasi
-                  </span>
-                </div>
+                <span className="text-lg font-extrabold tracking-tight text-bunker-text-primary">
+                  <span className="text-bunker-amber-500">BUNKER</span>STROY
+                </span>
               </div>
 
-              <p className="text-xs leading-relaxed text-bunker-text-secondary max-w-md">
-                BunkerStroy — O‘zbekiston Respublikasi bo‘ylab yirik qurilish developerlari, bosh pudratchilar va ishlab chiqaruvchilarni
-                to‘g‘ridan-to‘g‘ri birlashtiruvchi avtomatlashtirilgan B2B xaridlar, og‘ir logistika va ESCO energiya auditi ekotizimi.
+              <p className="text-xs text-bunker-text-secondary max-w-sm leading-relaxed">
+                O‘zbekiston bo‘ylab yirik ishlab chiqaruvchilar va qurilish developerlarini to‘g‘ridan-to‘g‘ri
+                birlashtiruvchi B2B xaridlar va og‘ir logistika platformasi.
               </p>
 
-              <div className="flex flex-wrap items-center gap-2 pt-2">
-                <div className="flex items-center gap-1.5 bg-slate-50 border border-bunker-border-strong px-2.5 py-1 rounded-lg text-[10px] font-mono text-bunker-text-secondary">
-                  <ShieldCheck className="w-3.5 h-3.5 text-bunker-status-green" />
-                  <span>ISO 9001:2015 Sertifikatlangan</span>
-                </div>
-                <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg text-[10px] font-mono text-emerald-800">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>O‘zDSt &amp; GOST Muvofiqligi</span>
-                </div>
+              <div className="flex items-center gap-2 pt-1 font-mono text-[10px]">
+                <span className="bg-slate-50 border border-bunker-border-strong px-2 py-0.5 rounded text-bunker-text-secondary">
+                  ISO 9001:2015
+                </span>
+                <span className="bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-emerald-800 font-bold">
+                  O‘zDSt &amp; GOST
+                </span>
               </div>
             </div>
 
-            {/* Column 2: Platform Modules */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary font-mono flex items-center gap-1.5">
-                <Layers className="w-3.5 h-3.5 text-bunker-amber-500" />
-                Modullar
+            {/* Column 2: Platform Links */}
+            <div className="space-y-2.5">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary font-mono">
+                Sahifalar
               </h4>
-              <ul className="space-y-2 text-xs font-mono">
+              <ul className="space-y-1.5 text-xs font-mono">
                 <li>
-                  <button
-                    onClick={() => setActiveTab('marketplace')}
-                    className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
-                  >
-                    B2B Marketplace &amp; Smeta
-                  </button>
+                  <Link to="/" className="hover:text-bunker-amber-500 transition-colors">
+                    Katalog &amp; Smeta
+                  </Link>
                 </li>
                 <li>
-                  <button
-                    onClick={() => setActiveTab('suppliers')}
-                    className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
-                  >
-                    Zavodlar &amp; Ishlab Chiqaruvchilar
-                  </button>
+                  <Link to="/suppliers" className="hover:text-bunker-amber-500 transition-colors">
+                    Zavodlar
+                  </Link>
                 </li>
                 <li>
-                  <button
-                    onClick={() => setActiveTab('logistics')}
-                    className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
-                  >
-                    Og'ir Yuk Tashish &amp; HOWO
-                  </button>
+                  <Link to="/logistics" className="hover:text-bunker-amber-500 transition-colors">
+                    Logistika &amp; HOWO
+                  </Link>
                 </li>
                 <li>
-                  <button
-                    onClick={() => setActiveTab('tenders')}
-                    className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
-                  >
-                    Qurilish Tenderlari &amp; RFQ
-                  </button>
+                  <Link to="/tenders" className="hover:text-bunker-amber-500 transition-colors">
+                    Tenderlar &amp; RFQ
+                  </Link>
                 </li>
                 <li>
-                  <button
-                    onClick={() => setActiveTab('esco')}
-                    className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
-                  >
-                    ESCO Energiya Auditi
-                  </button>
+                  <Link to="/esco" className="hover:text-bunker-amber-500 transition-colors">
+                    ESCO Audit
+                  </Link>
                 </li>
                 <li>
-                  <button
-                    onClick={() => setActiveTab('global_bunker')}
-                    className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
-                  >
-                    Global Bunker Import Hub
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => setActiveTab('certifications')}
-                    className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
-                  >
-                    Davlat Standartlari &amp; Laboratoriya
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => setActiveTab('orders')}
-                    className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
-                  >
-                    Mening Buyurtmalarim
-                  </button>
+                  <Link to="/global-bunker" className="hover:text-bunker-amber-500 transition-colors">
+                    Import Hub
+                  </Link>
                 </li>
               </ul>
             </div>
 
-            {/* Column 3: Texnologiyalar & Xavfsizlik */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary font-mono flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-bunker-amber-500" />
+            {/* Column 3: Standards & Integrations */}
+            <div className="space-y-2.5">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary font-mono">
                 Integratsiyalar
               </h4>
-              <ul className="space-y-2 text-xs font-mono text-bunker-text-secondary">
+              <ul className="space-y-1.5 text-xs font-mono text-bunker-text-secondary">
                 <li className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-bunker-amber-500" />
                   <span>E-IMZO PKCS#7 Raqamli Imzo</span>
@@ -356,59 +291,48 @@ export const App: React.FC = () => {
                 </li>
                 <li className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-bunker-status-green" />
-                  <span>Google Gemini 3.8 AI Maslahatchi</span>
+                  <span>Google Gemini AI Copilot</span>
                 </li>
                 <li className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-bunker-status-green" />
-                  <span>Eskiz.uz SMS Gateway</span>
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-bunker-status-cyan" />
-                  <span>Payme, Click &amp; B2B Hisob-Faktura</span>
+                  <span>Payme, Click &amp; B2B Faktura</span>
                 </li>
               </ul>
             </div>
 
-            {/* Column 4: Bog'lanish & Aloqa */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary font-mono flex items-center gap-1.5">
-                <PhoneCall className="w-3.5 h-3.5 text-bunker-amber-500" />
-                Aloqa Markazi
+            {/* Column 4: Contact & Support */}
+            <div className="space-y-2.5">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary font-mono">
+                Dispetcherlik
               </h4>
-              <div className="space-y-2.5 text-xs text-bunker-text-secondary font-mono">
-                <div className="flex items-start gap-2">
-                  <MapPin className="w-4 h-4 text-bunker-amber-500 shrink-0 mt-0.5" />
-                  <span>Toshkent sh., Chilonzor tumani, Bunyodkor shoh ko'chasi 42-A</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <PhoneCall className="w-4 h-4 text-bunker-status-green shrink-0" />
+              <div className="space-y-2 text-xs text-bunker-text-secondary font-mono">
+                <div className="flex items-center gap-1.5">
+                  <PhoneCall className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                   <span className="text-bunker-text-primary font-bold">+998 (71) 200-45-46</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-bunker-amber-500 shrink-0" />
+                <div className="flex items-start gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-bunker-amber-500 shrink-0 mt-0.5" />
+                  <span>Toshkent sh., Bunyodkor shoh ko'chasi 42-A</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-bunker-text-muted">
+                  <Clock className="w-3.5 h-3.5 text-bunker-amber-500 shrink-0" />
                   <span>Dispetcherlik: 24/7 uzluksiz</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Bottom Copyright & SLA */}
-          <div className="mt-10 pt-6 border-t border-bunker-border-strong flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono">
-            <p className="text-bunker-text-muted text-center sm:text-left">
-              &copy; 2026 BunkerStroy Enterprise LLC. Barcha huquqlar himoyalangan.
+          {/* Bottom Copyright */}
+          <div className="mt-8 pt-4 border-t border-bunker-border-strong flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono">
+            <p className="text-bunker-text-muted">
+              &copy; 2026 BunkerStroy Enterprise LLC.
             </p>
             <div className="flex items-center gap-3">
-              <Tooltip content="99.98% High Availability klasteri va 24/7 uzluksiz B2B operatsiyalari kafolati" position="top">
-                <Badge variant="success" size="sm" isMono dot className="cursor-default bg-emerald-50 text-emerald-700 border-emerald-200">
-                  SLA: 99.98% Ishonchlilik
-                </Badge>
-              </Tooltip>
+              <Badge variant="success" size="sm" isMono dot className="bg-emerald-50 text-emerald-700 border-emerald-200">
+                SLA: 99.98%
+              </Badge>
               <span className="text-bunker-border-strong">|</span>
-              <Tooltip content="BunkerStroy Nordic Industrial Enterprise dizayn tizimi" position="top">
-                <Badge variant="neutral" size="sm" isMono className="cursor-default">
-                  v2.0 (Nordic Enterprise)
-                </Badge>
-              </Tooltip>
+              <span className="text-bunker-text-muted">v2.0 Nordic Enterprise</span>
             </div>
           </div>
         </div>
@@ -418,25 +342,14 @@ export const App: React.FC = () => {
       <Modal
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
-        title="Global Komanda Qidiruvi"
-        subtitle="Platforma modullari va xizmatlari bo'yicha tezkor navigatsiya"
+        title="Global Qidiruv"
+        subtitle="Platforma sahifalari va xizmatlari bo'yicha tezkor o‘tish"
         size="lg"
-        footer={
-          <div className="flex items-center justify-between w-full text-[11px] font-mono text-bunker-text-muted">
-            <span>
-              Navigatsiya: <kbd className="bg-slate-100 px-1.5 py-0.5 rounded border border-bunker-border-subtle">↑</kbd>{' '}
-              <kbd className="bg-slate-100 px-1.5 py-0.5 rounded border border-bunker-border-subtle">↓</kbd>
-            </span>
-            <span>
-              Yopish: <kbd className="bg-slate-100 px-1.5 py-0.5 rounded border border-bunker-border-subtle">ESC</kbd>
-            </span>
-          </div>
-        }
       >
         <div className="space-y-4">
           <Input
             autoFocus
-            placeholder="Modul, mahsulot yoki xizmat nomini yozing..."
+            placeholder="Sahifa yoki xizmat nomini yozing..."
             value={searchPaletteQuery}
             onChange={(e) => setSearchPaletteQuery(e.target.value)}
             leftIcon={<Search className="w-4 h-4 text-bunker-amber-500" />}
@@ -444,42 +357,37 @@ export const App: React.FC = () => {
             sizeVariant="md"
           />
 
-          <div className="space-y-2">
-            <span className="text-[10px] text-bunker-text-muted uppercase font-mono block font-bold tracking-wider">
-              Tezkor O‘tish Modullari:
-            </span>
-            <div className="space-y-1.5 max-h-64 overflow-y-auto pr-1">
-              {quickNavItems
-                .filter(
-                  (item) =>
-                    !searchPaletteQuery ||
-                    item.label.toLowerCase().includes(searchPaletteQuery.toLowerCase()) ||
-                    item.desc.toLowerCase().includes(searchPaletteQuery.toLowerCase())
-                )
-                .map((item, idx) => (
-                  <div
-                    key={idx}
-                    onClick={() => {
-                      setActiveTab(item.tab);
-                      setIsSearchOpen(false);
-                    }}
-                    className="p-3 rounded-xl bg-white hover:bg-slate-50 border border-bunker-border-strong hover:border-bunker-amber-500 flex items-center justify-between cursor-pointer transition-all group font-mono shadow-xs"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-xl bg-slate-50 border border-bunker-border-strong group-hover:border-bunker-amber-500">
-                        {item.icon}
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-bold text-bunker-text-primary group-hover:text-bunker-amber-500 transition-colors">
-                          {item.label}
-                        </h4>
-                        <p className="text-[11px] text-bunker-text-muted">{item.desc}</p>
-                      </div>
+          <div className="space-y-1.5 max-h-64 overflow-y-auto pr-1">
+            {quickNavItems
+              .filter(
+                (item) =>
+                  !searchPaletteQuery ||
+                  item.label.toLowerCase().includes(searchPaletteQuery.toLowerCase()) ||
+                  item.desc.toLowerCase().includes(searchPaletteQuery.toLowerCase())
+              )
+              .map((item, idx) => (
+                <div
+                  key={idx}
+                  onClick={() => {
+                    navigate(item.path);
+                    setIsSearchOpen(false);
+                  }}
+                  className="p-2.5 rounded-xl bg-white hover:bg-slate-50 border border-bunker-border-strong hover:border-bunker-amber-500 flex items-center justify-between cursor-pointer transition-all group font-mono shadow-xs"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-1.5 rounded-lg bg-slate-50 border border-bunker-border-strong group-hover:border-bunker-amber-500">
+                      {item.icon}
                     </div>
-                    <span className="text-xs text-bunker-text-muted group-hover:text-bunker-amber-500 font-bold">↵</span>
+                    <div>
+                      <h4 className="text-xs font-bold text-bunker-text-primary group-hover:text-bunker-amber-500 transition-colors">
+                        {item.label}
+                      </h4>
+                      <p className="text-[11px] text-bunker-text-muted">{item.desc}</p>
+                    </div>
                   </div>
-                ))}
-            </div>
+                  <span className="text-xs text-bunker-text-muted group-hover:text-bunker-amber-500 font-bold">&rarr;</span>
+                </div>
+              ))}
           </div>
         </div>
       </Modal>
@@ -501,12 +409,24 @@ export const App: React.FC = () => {
         onSuccess={handleAuthSuccess}
       />
 
-      {/* Non-Blocking Floating AI Copilot Dock */}
+      {/* Voice Copilot Dock */}
       <VoiceAssistantModal
         isOpen={isVoiceOpen}
         onClose={() => setIsVoiceOpen(false)}
         onNavigateTab={(tab) => {
-          setActiveTab(tab);
+          const tabToPath: Record<string, string> = {
+            marketplace: '/',
+            suppliers: '/suppliers',
+            logistics: '/logistics',
+            tenders: '/tenders',
+            esco: '/esco',
+            global_bunker: '/global-bunker',
+            certifications: '/certifications',
+            orders: '/orders'
+          };
+          if (tabToPath[tab]) {
+            navigate(tabToPath[tab]);
+          }
         }}
       />
     </div>

@@ -229,20 +229,26 @@ export const EscoCalculatorView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* 1. Luminous Nordic Enterprise ESCO Header */}
-      <div className="relative rounded-2xl overflow-hidden border border-emerald-200/80 bg-gradient-to-r from-emerald-50/70 via-white to-slate-50 p-6 sm:p-8 shadow-xs">
-        <div className="max-w-3xl space-y-3">
-          <Badge variant="success" className="gap-1.5 font-mono bg-emerald-100/80 text-emerald-800 border-emerald-300">
-            <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-            BunkerStroy ESCO — Binolar Energiya Tejamkorlik Modeli
-          </Badge>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-bunker-text-primary tracking-tight">
-            Izometrik Termal Tahlil &amp; Davlat Standarti ShNQ 2.01.04-18 Pasporti
+      {/* 1. Minimalist ESCO Header */}
+      <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[11px] font-mono font-bold text-emerald-700 uppercase tracking-wider">
+              ESCO Audit &amp; ShNQ 2.01.04-18
+            </span>
+          </div>
+          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-bunker-text-primary">
+            Bino Energiya Samaradorligi &amp; Termal Audit
           </h1>
-          <p className="text-sm text-bunker-text-secondary leading-relaxed">
-            Bino devorlari (42%), derazalari (28%) va tomidan (18%) yo‘qotiladigan issiqlik oqimlarini hisoblab,
-            bazalt izolyatsiyasi orqali yillik tejamkorlik va o‘zini oqlash egri chizig‘ini (ROI Payback Curve) modellashtiring.
+          <p className="text-xs sm:text-sm text-bunker-text-secondary mt-1">
+            Issiqlik yo‘qotilishini hisoblash, bazalt izolyatsiyasi samarasi va ROI o‘zini oqlash muddati.
           </p>
+        </div>
+        <div className="flex items-center gap-2 font-mono text-xs">
+          <Badge variant="success" size="sm" isMono>
+            A++ Standart
+          </Badge>
         </div>
       </div>
 

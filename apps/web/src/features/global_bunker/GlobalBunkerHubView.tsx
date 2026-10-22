@@ -138,19 +138,26 @@ export const GlobalBunkerHubView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* 1. Luminous Nordic Enterprise Global Bunker Header */}
-      <div className="relative rounded-2xl overflow-hidden border border-blue-200/80 bg-gradient-to-r from-blue-50/70 via-white to-slate-50 p-6 sm:p-8 shadow-xs">
-        <div className="max-w-3xl space-y-3">
-          <Badge variant="info" isMono className="gap-1.5 bg-blue-100/80 text-blue-800 border-blue-300">
-            <Globe className="w-3.5 h-3.5 text-blue-600" />
-            Global Bunker — Xalqaro Ta'minot Zanjirlari
-          </Badge>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-bunker-text-primary tracking-tight">
-            To'g'ridan-to'g'ri xorijiy ishlab chiqaruvchilardan import
+      {/* 1. Minimalist Global Bunker Header */}
+      <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+            <span className="text-[11px] font-mono font-bold text-blue-700 uppercase tracking-wider">
+              Xalqaro Import &amp; TY Vagonlar
+            </span>
+          </div>
+          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-bunker-text-primary">
+            Xalqaro Ta'minot &amp; Temir Yo‘l Koridorlari
           </h1>
-          <p className="text-sm text-bunker-text-secondary leading-relaxed">
-            Yirik infratuzilma loyihalari uchun Germaniya, Janubiy Koreya, Fransiya va MDH davlatlaridan temir yo‘l va multimodal konteyner orqali kafolatlangan yetkazib berish.
+          <p className="text-xs sm:text-sm text-bunker-text-secondary mt-1">
+            Xorijiy ishlab chiqaruvchilardan to‘g‘ridan-to‘g‘ri import klinker, armatura va fasad materiallari.
           </p>
+        </div>
+        <div className="flex items-center gap-2 font-mono text-xs">
+          <Badge variant="neutral" size="sm" isMono>
+            {partners.length} ta xalqaro koridor
+          </Badge>
         </div>
       </div>
 

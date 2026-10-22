@@ -191,19 +191,26 @@ export const OrdersView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* 1. Luminous Nordic Enterprise Orders Header */}
-      <div className="relative rounded-2xl overflow-hidden border border-orange-200/80 bg-gradient-to-r from-orange-50/70 via-white to-slate-50 p-6 sm:p-8 shadow-xs">
-        <div className="max-w-3xl space-y-3">
-          <Badge variant="warning" className="gap-1.5 font-mono bg-orange-100/80 text-orange-800 border-orange-300">
-            <Package className="w-3.5 h-3.5 text-bunker-amber-500" />
-            BunkerStroy B2B Shartnomalar &amp; Buyurtmalar Tizimi
-          </Badge>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-bunker-text-primary tracking-tight">
-            Xaridlar Reestri &amp; Real Vaqt Logistika Holati
+      {/* 1. Minimalist Orders Header */}
+      <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="w-2 h-2 rounded-full bg-bunker-amber-500 animate-pulse" />
+            <span className="text-[11px] font-mono font-bold text-bunker-amber-500 uppercase tracking-wider">
+              Shartnomalar &amp; Invoyslar
+            </span>
+          </div>
+          <h1 className="text-xl sm:text-2xl font-extrabold text-bunker-text-primary tracking-tight">
+            Mening Buyurtmalarim &amp; Yetkazib Berish Holati
           </h1>
-          <p className="text-sm text-bunker-text-secondary leading-relaxed">
-            Rasmiylashtirilgan B2B buyurtmalari, HOWO va mikserlar harakati, to‘lov holati hamda elektron hisob-fakturalar (Didox/Soliq).
+          <p className="text-xs sm:text-sm text-bunker-text-secondary mt-1">
+            Rasmiylashtirilgan B2B buyurtmalari, HOWO va mikserlar harakati, Didox/Soliq hisob-fakturalari.
           </p>
+        </div>
+        <div className="flex items-center gap-2 font-mono text-xs">
+          <Badge variant="neutral" size="sm" isMono>
+            {orders.length} ta buyurtma
+          </Badge>
         </div>
       </div>
 

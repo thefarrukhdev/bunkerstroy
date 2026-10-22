@@ -199,32 +199,32 @@ export const TendersView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* 1. Header Banner */}
-      <div className="relative rounded-3xl overflow-hidden border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
-          <div className="max-w-3xl space-y-3">
-            <Badge variant="warning" isMono className="gap-1.5">
-              <FileSpreadsheet className="w-3.5 h-3.5" />
-              B2B Smeta & Ulgurji Xaridlar Tizimi
-            </Badge>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Katta Hajmli Qurilish Tenderlari & Smeta RFQ
-            </h1>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Yirik developerlar va qurilish kompaniyalari uchun to‘g‘ridan-to‘g‘ri ishlab chiqaruvchi zavodlardan eng maqbul narxlarni yig‘ish (Request for Quotation) va shaffof B2B savdolar.
-            </p>
+      {/* 1. Minimalist Tenders Header */}
+      <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="w-2 h-2 rounded-full bg-bunker-amber-500 animate-pulse" />
+            <span className="text-[11px] font-mono font-bold text-bunker-amber-500 uppercase tracking-wider">
+              B2B Smeta &amp; Tenderlar
+            </span>
           </div>
-
-          <Button
-            size="lg"
-            variant="primary"
-            onClick={() => setIsRfqModalOpen(true)}
-            className="shrink-0"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            <span>Smeta So‘rovi (RFQ) Yaratish</span>
-          </Button>
+          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+            Qurilish Tenderlari &amp; Smeta RFQ
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-600 mt-1">
+            Yirik partiyalar uchun zavodlardan eng yaxshi takliflarni olish va shaffof auksion.
+          </p>
         </div>
+
+        <Button
+          size="md"
+          variant="primary"
+          onClick={() => setIsRfqModalOpen(true)}
+          className="shrink-0"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          <span>Smeta So‘rovi (RFQ) Yaratish</span>
+        </Button>
       </div>
 
       {/* 2. Notifications */}

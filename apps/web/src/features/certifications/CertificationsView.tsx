@@ -133,19 +133,26 @@ export const CertificationsView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* 1. Header Banner */}
-      <div className="relative rounded-3xl overflow-hidden border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
-        <div className="max-w-3xl space-y-3">
-          <Badge variant="warning" isMono className="gap-1.5">
-            <ShieldCheck className="w-3.5 h-3.5" />
-            Sifat Boshqaruvi & Davlat Standartlari
-          </Badge>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Laboratoriya Sinov Xulosalari & GOST Muvofiqlik Kafolati
+      {/* 1. Minimalist Certifications Header */}
+      <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[11px] font-mono font-bold text-emerald-700 uppercase tracking-wider">
+              Davlat Standartlari &amp; GOST
+            </span>
+          </div>
+          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+            Laboratoriya Sinov Bayonnomalari &amp; Sifat Kafolati
           </h1>
-          <p className="text-sm text-slate-600 leading-relaxed">
-            Har bir partiya sement, armatura va qorishmalar O‘zbekiston Respublikasi Qurilish Vazirligi hamda akkreditatsiyalangan davlat laboratoriyalarining sinov dalolatnomalari bilan ta’minlanadi.
+          <p className="text-xs sm:text-sm text-slate-600 mt-1">
+            Har bir partiya material O‘zDSt, GOST va ShNQ akkreditatsiyalangan davlat laboratoriyasi tomonidan tekshiriladi.
           </p>
+        </div>
+        <div className="flex items-center gap-2 font-mono text-xs">
+          <Badge variant="success" size="sm" isMono>
+            ISO 9001:2015
+          </Badge>
         </div>
       </div>
 

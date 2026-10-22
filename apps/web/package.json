@@ -15,7 +15,8 @@
     "lucide-react": "^0.475.0",
     "motion": "^12.4.7",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
     "@bunkerstroy/config": "workspace:*",

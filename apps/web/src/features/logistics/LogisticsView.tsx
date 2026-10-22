@@ -312,20 +312,26 @@ export const LogisticsView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* 1. Luminous Nordic Enterprise Logistics Header */}
-      <div className="relative rounded-2xl overflow-hidden border border-sky-200/80 bg-gradient-to-r from-sky-50/70 via-white to-slate-50 p-6 sm:p-8 shadow-xs">
-        <div className="max-w-3xl space-y-3">
-          <Badge variant="info" className="gap-1.5 font-mono bg-sky-100/80 text-sky-800 border-sky-300">
-            <Truck className="w-3.5 h-3.5 text-bunker-status-cyan" />
-            BunkerStroy Og'ir Logistika &amp; Texnik Chizmalar Markazi
-          </Badge>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-bunker-text-primary tracking-tight">
-            Sanoat Texnikalari: HOWO, Shacman Mikser, Isuzu Kran &amp; TIR
+      {/* 1. Minimalist Logistics Header */}
+      <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse" />
+            <span className="text-[11px] font-mono font-bold text-sky-600 uppercase tracking-wider">
+              Dispetcherlik &amp; Marshrut
+            </span>
+          </div>
+          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-bunker-text-primary">
+            Og‘ir Qurilish Texnikalari &amp; Logistika Parki
           </h1>
-          <p className="text-sm text-bunker-text-secondary leading-relaxed">
-            Qurilish ob'ektlariga to‘g‘ridan-to‘g‘ri yetkazib beruvchi maxsus park. Masofa bo‘yicha avtomatik narx
-            kalkulyatsiyasi, GPS jonli monitoring va muhandislik spetsifikatsiyalari (Blueprints).
+          <p className="text-xs sm:text-sm text-bunker-text-secondary mt-1">
+            HOWO 25t, Shacman mikser va Isuzu kran. Masofa bo‘yicha avtomatik tarif va GPS telemetriya.
           </p>
+        </div>
+        <div className="flex items-center gap-2 font-mono text-xs">
+          <Badge variant="neutral" size="sm" isMono>
+            {vehicles.length} ta texnika tayyor
+          </Badge>
         </div>
       </div>
 

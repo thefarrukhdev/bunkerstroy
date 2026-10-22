@@ -220,18 +220,25 @@ export const SuppliersView: React.FC<{ onNavigateToCatalog?: () => void }> = ({
   return (
     <div className="space-y-6">
       {/* 1. Header Banner */}
-      <div className="relative rounded-3xl overflow-hidden border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
-        <div className="max-w-3xl space-y-3">
-          <Badge variant="warning" isMono className="gap-1.5">
-            <Factory className="w-3.5 h-3.5" />
-            O‘zbekiston Rasmiy Zavodlar Reyestri
-          </Badge>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Akkreditatsiyalangan Ishlab Chiqaruvchilar Bazasidan To‘g‘ridan-to‘g‘ri Xarid
+      <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="w-2 h-2 rounded-full bg-bunker-amber-500 animate-pulse" />
+            <span className="text-[11px] font-mono font-bold text-bunker-amber-500 uppercase tracking-wider">
+              Zavodlar Reyestri
+            </span>
+          </div>
+          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+            Akkreditatsiyalangan Ishlab Chiqaruvchilar
           </h1>
-          <p className="text-sm text-slate-600 leading-relaxed">
-            Vositachilarsiz zavod narxlari, rasmiy laboratoriya GOST sertifikatlari, 100% QQS soliq hisob-fakturalari va kafolatlangan ombor taqsimoti.
+          <p className="text-xs sm:text-sm text-slate-600 mt-1">
+            Vositachilarsiz zavod narxlari, 12% QQS va GOST laboratoriya kafolati.
           </p>
+        </div>
+        <div className="flex items-center gap-2 font-mono text-xs">
+          <Badge variant="neutral" size="sm" isMono>
+            {factories.length} ta strategik zavod
+          </Badge>
         </div>
       </div>
 
