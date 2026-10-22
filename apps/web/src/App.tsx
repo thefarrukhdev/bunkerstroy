@@ -3,9 +3,12 @@ import { Product } from '@bunkerstroy/types';
 import { Navbar, ActiveTabType } from './components/Navbar';
 import { CartDrawer, CartItem } from './components/CartDrawer';
 import { MarketplaceView } from './features/marketplace/MarketplaceView';
+import { SuppliersView } from './features/suppliers/SuppliersView';
 import { LogisticsView } from './features/logistics/LogisticsView';
+import { TendersView } from './features/tenders/TendersView';
 import { EscoCalculatorView } from './features/esco/EscoCalculatorView';
 import { GlobalBunkerHubView } from './features/global_bunker/GlobalBunkerHubView';
+import { CertificationsView } from './features/certifications/CertificationsView';
 import { OrdersView } from './features/orders/OrdersView';
 import { AuthModal } from './features/auth/AuthModal';
 import { VoiceAssistantModal } from './features/ai/VoiceAssistantModal';
@@ -22,7 +25,9 @@ import {
   Truck,
   Leaf,
   Globe,
-  ClipboardList
+  ClipboardList,
+  Factory,
+  FileSpreadsheet
 } from 'lucide-react';
 import { Button, Modal, Input, Badge, Tooltip } from '@bunkerstroy/ui';
 
@@ -193,9 +198,12 @@ export const App: React.FC = () => {
   // Command palette navigation items
   const quickNavItems: { label: string; tab: ActiveTabType; icon: React.ReactNode; desc: string }[] = [
     { label: 'B2B Marketplace & Mahsulotlar', tab: 'marketplace', icon: <Building2 className="w-4 h-4 text-bunker-amber-500" />, desc: 'Sement, armatura, g‘isht va izolyatsiya materiallari' },
+    { label: 'Akkreditatsiyalangan Zavodlar', tab: 'suppliers', icon: <Factory className="w-4 h-4 text-bunker-amber-500" />, desc: 'O‘zmetkombinat, Qizilqumsement, Knauf zavod narxlari' },
     { label: 'Logistika Hub & Maxsus Texnikalar', tab: 'logistics', icon: <Truck className="w-4 h-4 text-bunker-amber-500" />, desc: 'HOWO 25t, Shacman mikser, Isuzu kran marshruti' },
+    { label: 'Qurilish Tenderlari & Smeta RFQ', tab: 'tenders', icon: <FileSpreadsheet className="w-4 h-4 text-bunker-amber-500" />, desc: 'Katta hajmli smeta so‘rovlari va zavod takliflari' },
     { label: 'ESCO Bino Energiya Auditi', tab: 'esco', icon: <Leaf className="w-4 h-4 text-bunker-status-green" />, desc: 'ShNQ 2.01.04-18 davlat standarti, termal pasport' },
     { label: 'Global Bunker Xalqaro Import', tab: 'global_bunker', icon: <Globe className="w-4 h-4 text-bunker-status-cyan" />, desc: 'Temir yo‘l hopperlari va xorijiy klinker ta’minoti' },
+    { label: 'Davlat Standartlari & Laboratoriya', tab: 'certifications', icon: <ShieldCheck className="w-4 h-4 text-emerald-600" />, desc: 'GOST, O‘zDSt va ShNQ laboratoriya sinov bayonnomalari' },
     { label: 'Mening Buyurtmalarim & Invoyslar', tab: 'orders', icon: <ClipboardList className="w-4 h-4 text-bunker-amber-500" />, desc: 'Shartnomalar, hisob-fakturalar va to‘lov holati' }
   ];
 
@@ -222,8 +230,16 @@ export const App: React.FC = () => {
           <MarketplaceView onAddToCart={handleAddToCart} />
         )}
 
+        {activeTab === 'suppliers' && (
+          <SuppliersView onNavigateToCatalog={() => setActiveTab('marketplace')} />
+        )}
+
         {activeTab === 'logistics' && (
           <LogisticsView />
+        )}
+
+        {activeTab === 'tenders' && (
+          <TendersView />
         )}
 
         {activeTab === 'esco' && (
@@ -232,6 +248,10 @@ export const App: React.FC = () => {
 
         {activeTab === 'global_bunker' && (
           <GlobalBunkerHubView />
+        )}
+
+        {activeTab === 'certifications' && (
+          <CertificationsView />
         )}
 
         {activeTab === 'orders' && (
@@ -293,10 +313,26 @@ export const App: React.FC = () => {
                 </li>
                 <li>
                   <button
+                    onClick={() => setActiveTab('suppliers')}
+                    className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
+                  >
+                    Zavodlar &amp; Ishlab Chiqaruvchilar
+                  </button>
+                </li>
+                <li>
+                  <button
                     onClick={() => setActiveTab('logistics')}
                     className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
                   >
                     Og'ir Yuk Tashish &amp; HOWO
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => setActiveTab('tenders')}
+                    className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
+                  >
+                    Qurilish Tenderlari &amp; RFQ
                   </button>
                 </li>
                 <li>
@@ -313,6 +349,14 @@ export const App: React.FC = () => {
                     className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
                   >
                     Global Bunker Import Hub
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => setActiveTab('certifications')}
+                    className="hover:text-bunker-amber-500 transition-colors cursor-pointer"
+                  >
+                    Davlat Standartlari &amp; Laboratoriya
                   </button>
                 </li>
                 <li>

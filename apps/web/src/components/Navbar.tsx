@@ -13,11 +13,21 @@ import {
   Leaf,
   Globe,
   ClipboardList,
-  Building2
+  Building2,
+  Factory,
+  FileSpreadsheet
 } from 'lucide-react';
 import { Badge, Button, Tooltip } from '@bunkerstroy/ui';
 
-export type ActiveTabType = 'marketplace' | 'logistics' | 'esco' | 'global_bunker' | 'orders';
+export type ActiveTabType =
+  | 'marketplace'
+  | 'suppliers'
+  | 'logistics'
+  | 'tenders'
+  | 'esco'
+  | 'global_bunker'
+  | 'certifications'
+  | 'orders';
 
 interface NavbarProps {
   activeTab: ActiveTabType;
@@ -48,9 +58,12 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const navTabs: { id: ActiveTabType; label: string; icon: React.ReactNode }[] = [
     { id: 'marketplace', label: 'B2B Marketplace', icon: <Building2 className="w-3.5 h-3.5" /> },
+    { id: 'suppliers', label: 'Zavodlar', icon: <Factory className="w-3.5 h-3.5" /> },
     { id: 'logistics', label: 'Logistika Hub', icon: <Truck className="w-3.5 h-3.5" /> },
+    { id: 'tenders', label: 'Tender & Smeta', icon: <FileSpreadsheet className="w-3.5 h-3.5" /> },
     { id: 'esco', label: 'ESCO Audit', icon: <Leaf className="w-3.5 h-3.5" /> },
     { id: 'global_bunker', label: 'Global Bunker', icon: <Globe className="w-3.5 h-3.5" /> },
+    { id: 'certifications', label: 'Standartlar', icon: <ShieldCheck className="w-3.5 h-3.5" /> },
     { id: 'orders', label: 'Buyurtmalar', icon: <ClipboardList className="w-3.5 h-3.5" /> }
   ];
 

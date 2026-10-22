@@ -15,11 +15,12 @@ import {
   Volume2
 } from 'lucide-react';
 import { Badge, Button, Input, Tooltip } from '@bunkerstroy/ui';
+import { ActiveTabType } from '../../components/Navbar';
 
 interface VoiceAssistantModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onNavigateTab?: (tab: 'marketplace' | 'logistics' | 'esco' | 'global_bunker' | 'orders') => void;
+  onNavigateTab?: (tab: ActiveTabType) => void;
 }
 
 interface ChatMessage {
@@ -29,7 +30,7 @@ interface ChatMessage {
   timestamp: string;
   contextAction?: {
     label: string;
-    tab: 'marketplace' | 'logistics' | 'esco' | 'global_bunker' | 'orders';
+    tab: ActiveTabType;
   };
 }
 
