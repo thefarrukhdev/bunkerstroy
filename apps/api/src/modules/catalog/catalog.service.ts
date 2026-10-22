@@ -83,7 +83,7 @@ export class CatalogService {
       repairType: 'EXTERNAL',
       region: 'Toshkent shahri',
       district: 'Sergeli tumani',
-      images: ['https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?w=800'],
+      images: ['https://images.unsplash.com/photo-1535813547-99c456a41d4a?w=800'],
       hasDelivery: true,
       hasBonus: false,
       variants: [],

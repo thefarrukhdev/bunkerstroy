@@ -18,7 +18,6 @@ import { Product } from '@bunkerstroy/types';
 import {
   Button,
   Badge,
-  Card,
   Input,
   Select,
   Alert,
@@ -29,8 +28,7 @@ import {
   TableRow,
   TableHead,
   TableCell,
-  TableEmpty,
-  Tooltip
+  TableEmpty
 } from '@bunkerstroy/ui';
 
 interface MarketplaceViewProps {
@@ -47,9 +45,8 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
   const [escoOnly, setEscoOnly] = useState(false);
   const [addedId, setAddedId] = useState<string | null>(null);
 
-  // Dual-mode view: Visual Spec Cards vs Procurement Smeta Matrix
+  // Dual-mode view: Visual Cards vs Smeta Matrix Table
   const [viewMode, setViewMode] = useState<'cards' | 'matrix'>('cards');
-  // Fast volume entry state for Procurement Smeta Matrix
   const [matrixQuantities, setMatrixQuantities] = useState<Record<string, number>>({});
   const [batchSuccessNotice, setBatchSuccessNotice] = useState(false);
 
@@ -87,26 +84,27 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
   const getGostStandard = (p: Product): string => {
     const text = (p.title + ' ' + p.description).toLowerCase();
     if (text.includes('sement')) return 'GOST 31108-2020';
-    if (text.includes('armatura')) return 'GOST 5781-82 / A500C';
+    if (text.includes('armatura')) return 'GOST 5781-82';
     if (text.includes('bazalt') || text.includes('izolyatsiya')) return 'GOST 9573-2012';
     if (text.includes('beton')) return 'GOST 7473-2010';
     if (text.includes('g\'isht') || text.includes('gisht')) return 'GOST 530-2012';
     return 'GOST 30244-94';
   };
 
-  // Helper for recommended logistics transport
-  const getRecommendedVehicle = (p: Product): { name: string; capacity: string } => {
-    const text = (p.title + ' ' + p.description).toLowerCase();
-    if (text.includes('sement') || p.unit === 'TON') {
-      return { name: 'HOWO 25t Samosval', capacity: '25 tonnagacha' };
+  // Unit formatter
+  const formatUnit = (unit: string): string => {
+    switch (unit) {
+      case 'TON':
+        return 'tonna';
+      case 'SQ_METER':
+        return 'm²';
+      case 'BAG_50KG':
+        return 'qop (50kg)';
+      case 'PIECE':
+        return 'dona';
+      default:
+        return unit.toLowerCase();
     }
-    if (text.includes('armatura') || text.includes('metall')) {
-      return { name: 'Isuzu 10t Manipulyator', capacity: '10t bort' };
-    }
-    if (text.includes('beton')) {
-      return { name: 'Shacman 10m³ Mikser', capacity: '10 m³ mikser' };
-    }
-    return { name: 'TIR 35t Fura', capacity: '35 tonna' };
   };
 
   // Tiered wholesale pricing calculation
@@ -154,20 +152,20 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
 
   return (
     <div className="space-y-6">
-      {/* 1. Minimalist Industrial Header */}
-      <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 sm:p-7 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* 1. Clean Minimalist Header */}
+      <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
             <span className="w-2 h-2 rounded-full bg-bunker-amber-500 animate-pulse" />
             <span className="text-[11px] font-mono font-bold text-bunker-amber-500 uppercase tracking-wider">
-              Zavod Ulgurji Katalogi
+              B2B Sanoat Xaridlari
             </span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-bunker-text-primary">
+          <h1 className="text-xl sm:text-2xl font-heading font-extrabold tracking-tight text-bunker-text-primary">
             Sanoat Qurilish Materiallari &amp; Smeta
           </h1>
           <p className="text-xs sm:text-sm text-bunker-text-secondary mt-1 max-w-2xl">
-            12% QQS hisoblangan, GOST akkreditatsiyalangan laboratoriya kafolati va to‘g‘ridan-to‘g‘ri ob'ektga yetkazish.
+            Zavod ulgurji narxlari, 12% QQS hisoblangan, GOST laboratoriya kafolati va to‘g‘ridan-to‘g‘ri ob'ektga yetkazish.
           </p>
         </div>
 
@@ -176,19 +174,19 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
             {products.length} ta mahsulot
           </Badge>
           <span className="text-bunker-border-strong">|</span>
-          <span className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-bold text-[11px]">
+          <span className="text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 font-bold text-[11px]">
             QQS 12% Kiritilgan
           </span>
         </div>
       </div>
 
-      {/* 2. Command Filter Bar & Dual-Mode Toggle */}
-      <div className="bg-white border border-bunker-border-strong p-3.5 sm:p-4 rounded-xl flex flex-wrap gap-3 items-center justify-between shadow-xs">
+      {/* 2. Clean Command Filter Bar */}
+      <div className="bg-white border border-bunker-border-strong p-3 rounded-xl flex flex-wrap gap-2.5 items-center justify-between shadow-xs">
         {/* Search input */}
-        <div className="flex-1 min-w-[220px]">
+        <div className="flex-1 min-w-[200px]">
           <Input
             leftIcon={<Search className="w-4 h-4 text-bunker-amber-500" />}
-            placeholder="Mahsulot nomi, GOST yoki markasi..."
+            placeholder="Mahsulot nomi yoki markasi bo'yicha qidiruv..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && fetchProducts()}
@@ -198,7 +196,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
 
         {/* Region selector & ESCO filter */}
         <div className="flex flex-wrap items-center gap-2">
-          <div className="w-40 sm:w-44">
+          <div className="w-36 sm:w-40">
             <Select
               sizeVariant="sm"
               value={selectedRegion}
@@ -214,7 +212,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
           <button
             type="button"
             onClick={() => setEscoOnly(!escoOnly)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 shadow-xs ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold border transition-all cursor-pointer flex items-center gap-1.5 shadow-xs ${
               escoOnly
                 ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
                 : 'bg-white border-bunker-border-strong text-bunker-text-secondary hover:text-bunker-text-primary'
@@ -225,7 +223,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
           </button>
 
           {/* DUAL-MODE VIEW TOGGLE */}
-          <div className="bg-slate-100/80 p-0.5 rounded-xl border border-bunker-border-strong flex items-center">
+          <div className="bg-slate-100 p-0.5 rounded-xl border border-bunker-border-strong flex items-center">
             <button
               type="button"
               onClick={() => setViewMode('cards')}
@@ -234,7 +232,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                   ? 'bg-white text-bunker-amber-500 shadow-xs border border-bunker-border-strong'
                   : 'text-bunker-text-secondary hover:text-bunker-text-primary'
               }`}
-              title="Vizual Kartochkalar"
+              title="Kartochkalar"
             >
               <LayoutGrid className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Kartochkalar</span>
@@ -270,137 +268,105 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
       {/* 3. Products Rendering */}
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {[1, 2, 3, 4, 5, 6].map((n) => (
-            <Card key={n} className="space-y-4 p-5">
-              <Skeleton variant="rect" height={160} />
+          {[1, 2, 3].map((n) => (
+            <div key={n} className="bg-white border border-bunker-border-strong rounded-2xl p-4 space-y-4 shadow-xs">
+              <Skeleton variant="rect" height={190} className="rounded-xl" />
               <div className="space-y-2">
                 <Skeleton variant="text" width="40%" />
-                <Skeleton variant="text" width="90%" />
+                <Skeleton variant="text" width="85%" height={24} />
               </div>
               <div className="pt-3 border-t border-bunker-border-subtle flex justify-between items-center">
-                <Skeleton variant="text" width="30%" />
-                <Skeleton variant="rect" width={80} height={32} />
+                <Skeleton variant="text" width="35%" />
+                <Skeleton variant="rect" width={90} height={34} className="rounded-lg" />
               </div>
-            </Card>
+            </div>
           ))}
         </div>
       ) : products.length === 0 ? (
-        <div className="text-center py-16 text-bunker-text-muted font-mono bg-white border border-bunker-border-strong rounded-xl">
+        <div className="text-center py-16 text-bunker-text-muted font-mono bg-white border border-bunker-border-strong rounded-2xl">
           So‘rovingiz bo‘yicha tovarlar topilmadi.
         </div>
       ) : viewMode === 'cards' ? (
-        /* MODE A: VISUAL SPEC CARDS */
+        /* MODE A: MINIMALIST B2B CARDS */
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {products.map((p) => {
             const gost = getGostStandard(p);
-            const vehicle = getRecommendedVehicle(p);
             const priceNum = Number(p.price);
 
             return (
-              <Card
+              <div
                 key={p.id}
                 onClick={() => navigate(`/products/${p.id}`)}
-                className="flex flex-col justify-between hover:border-bunker-amber-500/80 transition-all group shadow-xs hover:shadow-md cursor-pointer"
+                className="bg-white border border-bunker-border-strong rounded-2xl p-4 flex flex-col justify-between hover:border-bunker-amber-500 hover:shadow-md transition-all group cursor-pointer"
               >
-                <div className="space-y-3">
-                  {/* Image & Badges */}
-                  <div className="relative h-40 rounded-xl overflow-hidden bg-slate-100 border border-bunker-border-subtle">
+                <div>
+                  {/* Clean Visual Image with Fallback */}
+                  <div className="relative h-44 sm:h-48 rounded-xl overflow-hidden bg-slate-100 border border-bunker-border-subtle mb-3">
                     <img
                       src={p.images[0] || 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800'}
                       alt={p.title}
-                      className="w-full h-full object-cover group-hover:scale-104 transition-transform duration-300"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800';
+                      }}
+                      className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-300"
                     />
-                    <div className="absolute top-2 left-2 flex flex-col gap-1">
+
+                    {/* Single Minimal Standard Badge */}
+                    <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
                       <span className="bg-white/95 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-mono font-bold text-slate-800 border border-slate-200 shadow-xs">
                         {gost}
                       </span>
                       {p.isEscoCertified && (
-                        <Badge variant="success" size="sm" isMono>
-                          ESCO {p.energyEfficiencyRating}
-                        </Badge>
+                        <span className="bg-emerald-500/90 text-white backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-mono font-bold shadow-xs">
+                          ESCO
+                        </span>
                       )}
                     </div>
-
-                    <div className="absolute bottom-2 right-2 bg-white/95 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-mono text-slate-900 border border-slate-200 shadow-xs font-semibold">
-                      Omborda: {p.stock.toLocaleString()} {p.unit}
-                    </div>
                   </div>
 
-                  {/* Info Header */}
-                  <div>
-                    <div className="flex items-center justify-between text-[11px] font-mono">
-                      <span className="text-bunker-amber-500 uppercase font-semibold truncate max-w-[170px]">
-                        {p.supplierName}
-                      </span>
-                      <span className="text-emerald-700 font-bold">12% QQS</span>
-                    </div>
-
-                    <h3 className="font-bold text-bunker-text-primary text-sm sm:text-base line-clamp-1 group-hover:text-bunker-amber-500 transition-colors mt-0.5">
-                      {p.title}
-                    </h3>
-
-                    <p className="text-xs text-bunker-text-secondary mt-1 line-clamp-1">
-                      {p.description}
-                    </p>
+                  {/* Supplier & QQS label */}
+                  <div className="flex items-center justify-between text-[11px] font-mono text-bunker-text-muted mb-1">
+                    <span className="truncate max-w-[180px]">{p.supplierName}</span>
+                    <span className="text-emerald-700 font-bold shrink-0">12% QQS</span>
                   </div>
 
-                  {/* Minimal Tiered Wholesale Pricing Chips */}
-                  <div className="bg-slate-50 p-2 rounded-xl border border-bunker-border-subtle grid grid-cols-3 gap-1 text-center text-[10px] font-mono">
-                    <div className="bg-white p-1 rounded border border-bunker-border-subtle">
-                      <span className="text-bunker-text-muted block text-[9px]">1-9</span>
-                      <span className="font-bold text-bunker-text-primary">{priceNum.toLocaleString()}</span>
-                    </div>
-                    <div className="bg-white p-1 rounded border border-orange-200">
-                      <span className="text-bunker-amber-500 block text-[9px]">10-49 (-5%)</span>
-                      <span className="font-bold text-bunker-amber-500">{getTieredPrice(priceNum, 15).toLocaleString()}</span>
-                    </div>
-                    <div className="bg-white p-1 rounded border border-emerald-200">
-                      <span className="text-emerald-700 block text-[9px]">50+ (-10%)</span>
-                      <span className="font-bold text-emerald-700">{getTieredPrice(priceNum, 55).toLocaleString()}</span>
-                    </div>
-                  </div>
-
-                  {/* Vehicle Recommendation */}
-                  <div className="flex items-center gap-1.5 text-[11px] font-mono text-bunker-text-secondary bg-slate-50 px-2.5 py-1 rounded-lg border border-bunker-border-subtle truncate">
-                    <Truck className="w-3.5 h-3.5 text-bunker-amber-500 shrink-0" />
-                    <span className="truncate">{vehicle.name}</span>
-                  </div>
+                  {/* Title */}
+                  <h3 className="font-heading font-bold text-bunker-text-primary text-base line-clamp-1 group-hover:text-bunker-amber-500 transition-colors">
+                    {p.title}
+                  </h3>
                 </div>
 
-                {/* Card Action & Price */}
-                <div className="pt-3 mt-3 border-t border-bunker-border-subtle flex items-center justify-between">
+                {/* Clean Bottom Price & Action Row */}
+                <div className="pt-3.5 mt-3 border-t border-bunker-border-subtle flex items-center justify-between">
                   <div>
-                    <span className="text-[9px] uppercase font-mono text-bunker-text-muted block">Baza narxi:</span>
-                    <p className="text-base font-extrabold text-bunker-amber-500 font-mono leading-none">
+                    <span className="text-[10px] uppercase font-mono text-bunker-text-muted block">
+                      Ulgurji narxi:
+                    </span>
+                    <p className="text-lg font-heading font-extrabold text-bunker-text-primary leading-tight">
                       {priceNum.toLocaleString()}{' '}
-                      <span className="text-[10px] text-bunker-text-primary font-normal">so'm</span>
+                      <span className="text-xs font-sans font-normal text-bunker-text-muted">
+                        so'm / {formatUnit(p.unit)}
+                      </span>
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-1.5">
-                    <Link
-                      to={`/products/${p.id}`}
-                      onClick={(e) => e.stopPropagation()}
-                      className="px-2.5 py-1.5 rounded-lg border border-bunker-border-strong hover:border-bunker-amber-500 text-bunker-text-secondary hover:text-bunker-text-primary text-xs font-mono font-bold flex items-center gap-1 transition-colors"
-                    >
-                      <span>Batafsil</span>
-                      <ChevronRight className="w-3 h-3" />
-                    </Link>
-
-                    <Button
-                      size="sm"
-                      variant={addedId === p.id ? 'secondary' : 'primary'}
-                      onClick={(e) => handleAdd(e, p)}
-                    >
-                      {addedId === p.id ? (
-                        <Check className="w-3.5 h-3.5 text-bunker-status-green" />
-                      ) : (
-                        <ShoppingCart className="w-3.5 h-3.5" />
-                      )}
-                    </Button>
-                  </div>
+                  <Button
+                    size="sm"
+                    variant={addedId === p.id ? 'secondary' : 'primary'}
+                    onClick={(e) => handleAdd(e, p)}
+                    className="font-mono text-xs px-3"
+                  >
+                    {addedId === p.id ? (
+                      <Check className="w-4 h-4 text-bunker-status-green" />
+                    ) : (
+                      <>
+                        <ShoppingCart className="w-4 h-4 sm:mr-1.5" />
+                        <span className="hidden sm:inline">Savatga</span>
+                      </>
+                    )}
+                  </Button>
                 </div>
-              </Card>
+              </div>
             );
           })}
         </div>
@@ -411,9 +377,8 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
             <TableHeader>
               <TableRow>
                 <TableHead>Mahsulot &amp; GOST</TableHead>
-                <TableHead>Ombor</TableHead>
-                <TableHead>Transport</TableHead>
-                <TableHead className="text-center">1-9 dona (Baza)</TableHead>
+                <TableHead>Birligi</TableHead>
+                <TableHead className="text-center">1-9 dona</TableHead>
                 <TableHead className="text-center text-bunker-amber-500">10-49 (-5%)</TableHead>
                 <TableHead className="text-center text-emerald-700">50+ (-10%)</TableHead>
                 <TableHead className="text-center">Hajm</TableHead>
@@ -423,11 +388,10 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
             </TableHeader>
             <TableBody>
               {products.length === 0 ? (
-                <TableEmpty colSpan={9} title="Mahsulot topilmadi" />
+                <TableEmpty colSpan={8} title="Mahsulot topilmadi" />
               ) : (
                 products.map((p) => {
                   const gost = getGostStandard(p);
-                  const vehicle = getRecommendedVehicle(p);
                   const priceNum = Number(p.price);
                   const qty = matrixQuantities[p.id] || p.minOrder || 1;
                   const calculatedUnitPrice = getTieredPrice(priceNum, qty);
@@ -450,18 +414,9 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                         </div>
                       </TableCell>
 
-                      {/* Stock */}
+                      {/* Unit */}
                       <TableCell>
-                        <span className="font-bold text-bunker-text-primary font-mono">{p.stock.toLocaleString()}</span>{' '}
-                        <span className="text-bunker-text-muted text-xs">{p.unit}</span>
-                      </TableCell>
-
-                      {/* Transport */}
-                      <TableCell>
-                        <div className="flex items-center gap-1.5 text-bunker-text-secondary text-xs font-mono">
-                          <Truck className="w-3.5 h-3.5 text-bunker-amber-500 shrink-0" />
-                          <span>{vehicle.name}</span>
-                        </div>
+                        <span className="font-mono text-xs text-bunker-text-secondary">{formatUnit(p.unit)}</span>
                       </TableCell>
 
                       {/* Tier 1 */}
