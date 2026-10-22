@@ -4,36 +4,22 @@ import {
   HardHat,
   ShoppingCart,
   User as UserIcon,
-  Mic,
   LogOut,
-  Search,
-  ShieldCheck,
-  Truck,
-  Leaf,
-  Globe,
-  ClipboardList,
   Building2,
   Factory,
-  FileSpreadsheet
+  Truck,
+  FileSpreadsheet,
+  Leaf,
+  Globe,
+  ShieldCheck,
+  ClipboardList
 } from 'lucide-react';
-import { Badge, Button, Tooltip } from '@bunkerstroy/ui';
-
-export type ActiveTabType =
-  | 'marketplace'
-  | 'suppliers'
-  | 'logistics'
-  | 'tenders'
-  | 'esco'
-  | 'global_bunker'
-  | 'certifications'
-  | 'orders';
+import { Badge, Button } from '@bunkerstroy/ui';
 
 interface NavbarProps {
   cartCount: number;
   onOpenCart: () => void;
   onOpenAuth: () => void;
-  onOpenVoice: () => void;
-  onOpenSearch: () => void;
   currentUser: any;
   onLogout: () => void;
 }
@@ -42,8 +28,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   cartCount,
   onOpenCart,
   onOpenAuth,
-  onOpenVoice,
-  onOpenSearch,
   currentUser,
   onLogout
 }) => {
@@ -60,42 +44,14 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-bunker-border-strong shadow-xs">
-      {/* 1. UPPER DECK: Minimal Telemetry Bar */}
-      <div className="bg-slate-50/90 border-b border-bunker-border-subtle py-1.5 px-4 text-[11px] font-mono text-bunker-text-secondary select-none">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 overflow-x-auto no-scrollbar py-0.5">
-            <Badge variant="success" size="sm" isMono dot className="shrink-0 bg-emerald-50 text-emerald-700 border-emerald-200">
-              BUNKER-NET ONLINE
-            </Badge>
-            <span className="text-bunker-border-strong hidden sm:inline">|</span>
-            <span className="shrink-0 hidden sm:inline text-bunker-text-secondary">
-              Kafolatlangan ombor: <strong className="text-bunker-amber-500 font-bold">38,400 t</strong>
-            </span>
-            <span className="text-bunker-border-strong hidden md:inline">|</span>
-            <span className="shrink-0 hidden md:inline text-bunker-text-secondary">
-              Faol og'ir park: <strong className="text-bunker-text-primary font-bold">64 texnika</strong>
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2.5 text-[10px] shrink-0">
-            <Tooltip content="O‘zbekiston Respublikasi Davlat Soliq Qo‘mitasi va E-IMZO integratsiyasi" position="bottom">
-              <Badge variant="warning" size="sm" isMono leftIcon={<ShieldCheck className="w-3.5 h-3.5" />} className="cursor-default bg-orange-50 text-orange-800 border-orange-200">
-                E-IMZO &amp; STIR
-              </Badge>
-            </Tooltip>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. LOWER DECK: Command Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-3">
+        <div className="flex items-center justify-between h-16 gap-4">
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center gap-3 cursor-pointer group select-none shrink-0"
+            className="flex items-center gap-2.5 cursor-pointer group select-none shrink-0"
           >
-            <div className="relative w-9 h-9 rounded-xl bg-orange-50 border border-orange-200 group-hover:border-bunker-amber-500 flex items-center justify-center transition-all shadow-xs">
+            <div className="w-9 h-9 rounded-xl bg-orange-50 border border-orange-200 group-hover:border-bunker-amber-500 flex items-center justify-center transition-all shadow-xs">
               <HardHat className="w-5 h-5 text-bunker-amber-500 transition-transform group-hover:scale-105" />
             </div>
             <div>
@@ -108,7 +64,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </Link>
 
-          {/* Clean Segmented Navigation Links (React Router) */}
+          {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center gap-1 text-xs uppercase tracking-wider font-semibold font-mono bg-slate-100/70 p-1 rounded-xl border border-bunker-border-strong">
             {navLinks.map((link) => (
               <NavLink
@@ -130,60 +86,34 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Right Action Controls */}
-          <div className="flex items-center gap-2 shrink-0">
-            {/* Global Search Button (Ctrl + K) */}
-            <Tooltip content="Qidiruv (Ctrl + K)" position="bottom">
-              <button
-                onClick={onOpenSearch}
-                className="px-2.5 py-1.5 rounded-xl bg-white border border-bunker-border-strong hover:border-bunker-amber-500 text-bunker-text-secondary hover:text-bunker-text-primary transition-all cursor-pointer flex items-center gap-2 text-xs font-mono shadow-xs"
-              >
-                <Search className="w-3.5 h-3.5 text-bunker-amber-500" />
-                <span className="hidden xl:inline text-bunker-text-muted">Qidiruv</span>
-                <kbd className="hidden sm:inline bg-slate-100 border border-bunker-border-subtle px-1.5 py-0.5 rounded text-[10px] text-bunker-amber-500 font-bold">
-                  Ctrl K
-                </kbd>
-              </button>
-            </Tooltip>
-
-            {/* Voice Assistant Button */}
-            <Tooltip content="Ovozli AI Maslahatchi" position="bottom">
-              <button
-                onClick={onOpenVoice}
-                className="p-2 rounded-xl bg-white border border-bunker-border-strong hover:border-bunker-amber-500 text-bunker-amber-500 transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
-              >
-                <Mic className="w-4 h-4" />
-                <span className="text-xs font-mono hidden xl:inline font-semibold">AI Copilot</span>
-              </button>
-            </Tooltip>
-
+          <div className="flex items-center gap-2.5 shrink-0">
             {/* Cart Button */}
-            <Tooltip content={cartCount > 0 ? `${cartCount} ta mahsulot xarid savatida` : "Xarid savati bo'sh"} position="bottom">
-              <button
-                onClick={onOpenCart}
-                className={`p-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 shadow-xs ${
-                  cartCount > 0
-                    ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
-                    : 'bg-white border-bunker-border-strong text-bunker-text-primary hover:border-bunker-amber-500'
-                }`}
-              >
-                <ShoppingCart className="w-4 h-4 text-bunker-amber-500" />
-                {cartCount > 0 && (
-                  <Badge variant="success" size="sm" isMono className="px-1.5 py-0 font-bold bg-emerald-600 text-white border-transparent">
-                    {cartCount}
-                  </Badge>
-                )}
-              </button>
-            </Tooltip>
+            <button
+              onClick={onOpenCart}
+              title={cartCount > 0 ? `${cartCount} ta mahsulot xarid savatida` : "Xarid savati bo'sh"}
+              className={`px-3 py-2 rounded-xl border transition-all cursor-pointer flex items-center gap-2 shadow-xs text-xs font-mono font-bold ${
+                cartCount > 0
+                  ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
+                  : 'bg-white border-bunker-border-strong text-bunker-text-primary hover:border-bunker-amber-500'
+              }`}
+            >
+              <ShoppingCart className="w-4 h-4 text-bunker-amber-500" />
+              <span className="hidden sm:inline">Savat</span>
+              {cartCount > 0 && (
+                <Badge variant="success" size="sm" isMono className="px-1.5 py-0 font-bold bg-emerald-600 text-white border-transparent">
+                  {cartCount}
+                </Badge>
+              )}
+            </button>
 
-            {/* Authenticated STIR Corporate Identity Badge or Login */}
+            {/* User STIR or Login Button */}
             {currentUser ? (
-              <div className="flex items-center gap-2 bg-slate-50 border border-bunker-border-strong rounded-xl px-2.5 py-1">
+              <div className="flex items-center gap-2 bg-slate-50 border border-bunker-border-strong rounded-xl px-3 py-1.5 font-mono text-xs">
                 <div className="text-left hidden sm:block">
-                  <div className="flex items-center gap-1 text-[10px] font-mono text-bunker-amber-500 font-bold">
-                    <ShieldCheck className="w-3 h-3 text-bunker-status-green" />
-                    <span>STIR: {currentUser.stir || '304928172'}</span>
-                  </div>
-                  <span className="text-xs font-bold text-bunker-text-primary truncate max-w-[120px] block">
+                  <span className="text-[10px] text-bunker-amber-500 font-bold block leading-none">
+                    STIR: {currentUser.stir || '304928172'}
+                  </span>
+                  <span className="font-bold text-bunker-text-primary truncate max-w-[120px] block mt-0.5">
                     {currentUser.companyName || currentUser.displayName || 'B2B Buyurtmachi'}
                   </span>
                 </div>
@@ -204,7 +134,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
 
-        {/* Mobile / Tablet Navigation Row */}
+        {/* Mobile Navigation Row (under lg screens) */}
         <div className="lg:hidden flex items-center gap-1 overflow-x-auto no-scrollbar pb-2.5 pt-1 border-t border-bunker-border-subtle text-[11px] font-mono">
           {navLinks.map((link) => (
             <NavLink

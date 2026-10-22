@@ -1,18 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Truck,
-  Calculator,
   CheckCircle2,
   Navigation,
   Phone,
-  Clock,
-  RefreshCw,
   PackageCheck,
-  Compass,
-  FileCode
+  Compass
 } from 'lucide-react';
 import { LogisticsVehicle, Order } from '@bunkerstroy/types';
-import { Button, Badge, Card, Input, Select, Alert, StatCard, Modal } from '@bunkerstroy/ui';
+import { Button, Badge, Card, Input, Select, Alert, StatCard } from '@bunkerstroy/ui';
 
 interface QuoteCalculation {
   vehicle: LogisticsVehicle;
@@ -42,105 +38,6 @@ interface ConfirmedDispatch {
   dispatchedAt: string;
 }
 
-interface TechnicalBlueprint {
-  vehicleType: string;
-  modelName: string;
-  payloadCapacity: string;
-  engine: string;
-  powerOutput: string;
-  torque: string;
-  transmission: string;
-  axleFormula: string;
-  bodyVolume: string;
-  hydraulicSystem: string;
-  dimensions: string;
-  fuelTank: string;
-  schematicDetails: string[];
-}
-
-const TECHNICAL_BLUEPRINTS: Record<string, TechnicalBlueprint> = {
-  HOWO_25T: {
-    vehicleType: 'HOWO_25T',
-    modelName: 'HOWO Sinotruk 25t Og‘ir Samosval',
-    payloadCapacity: '25,000 kg (Nominal)',
-    engine: 'Weichai WP10.380E32 (Evro-4 / Dizel)',
-    powerOutput: '380 ot kuchi (280 kVt) @ 2200 ayl/daq',
-    torque: '1,500 Nm @ 1100-1600 ayl/daq',
-    transmission: 'HW19710 (10 oldinga, 2 orqaga)',
-    axleFormula: '6x4 (Ikki yetakchi og‘ir reduktorli ko‘prik)',
-    bodyVolume: '19.3 m³ (U-simon mustahkamlangan HARDOX po‘lat)',
-    hydraulicSystem: 'HYVA old silindrli gidravlik ko‘tarish',
-    dimensions: '8,545 × 2,496 × 3,450 mm',
-    fuelTank: '380 litr alyuminiy bak',
-    schematicDetails: [
-      'Shassi ramasi: Ikki qavatli mustahkamlangan 8+8 mm legirlangan po‘lat',
-      'Tormoz tizimi: WABCO ABS ikki konturli pnevmatik barabanli tormoz',
-      'Kuzov isitish: Qishki rejimda chiqindi gazlar bilan tub isitish tizimi',
-      'Telemetriya: Bunker-GPS Onlayn og‘irlik datchigi (±1.5% xatolik)'
-    ]
-  },
-  SHACMAN_MIXER: {
-    vehicleType: 'SHACMAN_MIXER',
-    modelName: 'Shacman F3000 10m³ Avtobeton Mikser',
-    payloadCapacity: '10 m³ suyuq beton qorishmasi',
-    engine: 'Cummins ISM11E4 385 (Evro-4)',
-    powerOutput: '385 ot kuchi (283 kVt) @ 1900 ayl/daq',
-    torque: '1,825 Nm @ 1200 ayl/daq',
-    transmission: 'Fast Fuller 12JSD200T (Sinxronizatorli)',
-    axleFormula: '6x4 (MAN 16t reduktorli ko‘priklar)',
-    bodyVolume: '10 m³ geometrik aylanma baraban (Q345 yuqori chidamli)',
-    hydraulicSystem: 'Eaton (AQSh) gidronasos va motor, PMP reduktor (Italiya)',
-    dimensions: '9,450 × 2,500 × 3,950 mm',
-    fuelTank: '400 litr + 450 litr pnevmatik suv baki',
-    schematicDetails: [
-      'Baraban aylanish tezligi: 0 - 16 ayl/daq (beton qotib qolishini oldini oluvchi rejim)',
-      'Beton tushirish tezligi: ≥ 2 m³/daqiqada tezlik bilan uzatish',
-      'Gidravlik sovutish: AKG (Germaniya) avtomatik ventilyatorli radiator',
-      'Yuvish tizimi: 0.4 MPa pnevmatik yuqori bosimli suv purkash liniyasi'
-    ]
-  },
-  ISUZU_CRANE: {
-    vehicleType: 'ISUZU_CRANE',
-    modelName: 'Isuzu FVR 10t Bort Kran-Manipulyator',
-    payloadCapacity: '10,000 kg bort yuk / 4,500 kg kran quvvati',
-    engine: 'Isuzu 6HK1-TCS (Yaponiya / Dizel Turbo)',
-    powerOutput: '280 ot kuchi (206 kVt) @ 2400 ayl/daq',
-    torque: '882 Nm @ 1450 ayl/daq',
-    transmission: 'Isuzu MZW6P (6 bosqichli mexanik)',
-    axleFormula: '4x2 (Shahar ichi tor qurilish ob‘ektlari uchun manyovrli)',
-    bodyVolume: 'Bort o‘lchamlari: 6,200 × 2,450 × 600 mm',
-    hydraulicSystem: 'UNIC / Soosan 4-seksiyali teleskopik strela (12.8 m radius)',
-    dimensions: '8,990 × 2,490 × 3,350 mm',
-    fuelTank: '200 litr korroziyaga chidamli po‘lat bak',
-    schematicDetails: [
-      'Kran strelasi burchagi: 1° dan 78° gacha uzluksiz gidravlik burilish',
-      'Autrigerlar (tayanch oyoqlar): 4 nuqtali kengaytirilgan gidravlik tirgaklar',
-      'Xavfsizlik tizimi: Haddan ortiq yuk ko‘tarishni avtomatik bloklash datchigi',
-      'Bort materiali: Yengil va mustahkam gofrirlangan po‘lat'
-    ]
-  },
-  TIR_35T: {
-    vehicleType: 'TIR_35T',
-    modelName: 'TIR 35t Uzoq Masofali Tentli Avtopoyezd',
-    payloadCapacity: '35,000 kg (33 evropallet / 86 m³)',
-    engine: 'KamAZ / Mercedes-Benz OM457LA (Evro-5)',
-    powerOutput: '401 ot kuchi (295 kVt) @ 1900 ayl/daq',
-    torque: '2,000 Nm @ 1100 ayl/daq',
-    transmission: 'ZF 16S2220TD (16 bosqichli intarderli)',
-    axleFormula: '6x4 Tyagach + 3 o‘qli SAF tirkama pnevmatik podveska',
-    bodyVolume: '86 m³ (KOD-XL xalqaro sertifikatiga ega tentli yarim tirkama)',
-    hydraulicSystem: 'Pnevmatik podveska balandlik regulyatori bilan',
-    dimensions: '16,500 × 2,550 × 4,000 mm (Avtopoyezd uzunligi)',
-    fuelTank: '600 + 400 litr (1000 litr umumiy uzoq reys zaxirasi)',
-    schematicDetails: [
-      'Xalqaro sertifikat: TIR Carnet, CMR va xalqaro bojxona plombalash mosligi',
-      'Podveska: SAF Holland integral diskli pnevmatik o‘qlar',
-      'Tormoz: EBS, ESP, ASR elektron tormoz va kurs barqarorligi tizimi',
-      'Telemetriya: 24/7 sun‘iy yo‘ldosh GPS va eshik ochilish datchiklari'
-    ]
-  }
-};
-
 export const LogisticsView: React.FC = () => {
   const [vehicles, setVehicles] = useState<LogisticsVehicle[]>([]);
   const [selectedVehicle, setSelectedVehicle] = useState<LogisticsVehicle | null>(null);
@@ -159,9 +56,6 @@ export const LogisticsView: React.FC = () => {
   const [isBooking, setIsBooking] = useState(false);
   const [confirmedDispatch, setConfirmedDispatch] = useState<ConfirmedDispatch | null>(null);
   const [bookingError, setBookingError] = useState<string | null>(null);
-
-  // Technical blueprint modal state
-  const [selectedBlueprint, setSelectedBlueprint] = useState<TechnicalBlueprint | null>(null);
 
   const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -305,11 +199,6 @@ export const LogisticsView: React.FC = () => {
     }
   };
 
-  const handleOpenBlueprint = (vehicleType: string) => {
-    const bp = TECHNICAL_BLUEPRINTS[vehicleType] || TECHNICAL_BLUEPRINTS['HOWO_25T'];
-    setSelectedBlueprint(bp);
-  };
-
   return (
     <div className="space-y-6">
       {/* 1. Minimalist Logistics Header */}
@@ -335,24 +224,23 @@ export const LogisticsView: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. CONFIRMED DISPATCH ACTIVE CARD (4-Step Route Progress Tracker) */}
+      {/* 2. CONFIRMED DISPATCH ACTIVE CARD */}
       {confirmedDispatch && (
-        <div className="bg-white border-2 border-bunker-amber-500 p-6 sm:p-8 rounded-2xl space-y-6 shadow-sm animate-in fade-in">
+        <div className="bg-white border-2 border-bunker-amber-500 p-6 rounded-2xl space-y-5 shadow-xs">
           <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-bunker-border-strong">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center">
-                <CheckCircle2 className="w-6 h-6 text-bunker-amber-500" />
+              <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center">
+                <CheckCircle2 className="w-5 h-5 text-bunker-amber-500" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-bold text-bunker-text-primary">Reys Muvaffaqiyatli Band Qilindi!</h3>
-                  <Badge variant="success" className="font-mono text-[10px] bg-emerald-50 text-emerald-800 border-emerald-200">
+                  <h3 className="text-base font-bold text-bunker-text-primary">Reys Tasdiqlandi</h3>
+                  <Badge variant="success" size="sm" isMono>
                     STATUS: BIRIKTIRILDI
                   </Badge>
                 </div>
                 <p className="text-xs text-bunker-text-secondary mt-0.5 font-mono">
-                  Dispetcherlik ID: <span className="text-bunker-amber-500 font-bold">{confirmedDispatch.id}</span> | Buyurtma:{' '}
-                  <span className="text-bunker-text-primary">{confirmedDispatch.orderId}</span>
+                  Dispetcherlik ID: <span className="text-bunker-amber-500 font-bold">{confirmedDispatch.id}</span>
                 </p>
               </div>
             </div>
@@ -361,14 +249,13 @@ export const LogisticsView: React.FC = () => {
               variant="secondary"
               size="sm"
               onClick={() => setConfirmedDispatch(null)}
-              className="text-xs"
+              className="text-xs font-mono"
             >
               Yangi Reys Hisoblash
             </Button>
           </div>
 
-          {/* Details Grid Using StatCard Component */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 font-mono">
             <StatCard
               title="Haydovchi"
               value={confirmedDispatch.driverName}
@@ -376,7 +263,6 @@ export const LogisticsView: React.FC = () => {
               variant="amber"
               icon={<Phone className="w-4 h-4 text-bunker-amber-500" />}
             />
-
             <StatCard
               title="Maxsus Texnika"
               value={confirmedDispatch.vehicleName}
@@ -384,99 +270,61 @@ export const LogisticsView: React.FC = () => {
               variant="default"
               icon={<Truck className="w-4 h-4 text-slate-600" />}
             />
-
             <StatCard
-              title="Marshrut va Masofa"
+              title="Masofa & Vaqt"
               value={confirmedDispatch.distanceKm}
               unit="km"
               subtitle={`Taxminiy: ~${confirmedDispatch.estimatedHours} soat`}
               variant="cyan"
               icon={<Navigation className="w-4 h-4 text-bunker-status-cyan" />}
             />
-
             <StatCard
-              title="Jami Reys To‘lovi"
+              title="Jami Reys Narxi"
               value={confirmedDispatch.totalCost.toLocaleString()}
               unit="so'm"
-              subtitle="Kafolatlangan marshrut"
+              subtitle="Kafolatlangan reys"
               variant="amber"
               icon={<CheckCircle2 className="w-4 h-4 text-bunker-amber-500" />}
             />
           </div>
 
-          {/* 4-Step Route Progress Tracker */}
-          <div className="bg-slate-50 border border-bunker-border-strong p-5 rounded-xl space-y-4">
-            <h4 className="text-xs font-bold text-bunker-text-primary uppercase font-mono flex items-center gap-2">
-              <Compass className="w-4 h-4 text-bunker-amber-500" />
-              4 Bosqichli Real Vaqt Marshrut Dispetcherligi (GPS Telemetriya)
-            </h4>
-
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
-              {/* Step 1 */}
-              <div className="flex items-start gap-3 relative">
-                <div className="w-9 h-9 rounded-full bg-emerald-100 border-2 border-emerald-500 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-700" />
-                </div>
-                <div>
-                  <h5 className="font-bold text-xs text-bunker-text-primary">1. Qabul Qilindi</h5>
-                  <p className="text-[10px] text-bunker-text-secondary">Dispetcherlik tasdiqladi</p>
-                  <span className="text-[9px] font-mono text-emerald-700 mt-0.5 block font-bold">BAJARILDI</span>
-                </div>
+          {/* Simple 4-Step Route Tracker */}
+          <div className="bg-slate-50 border border-bunker-border-strong p-4 rounded-xl font-mono text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="flex items-center gap-2 text-emerald-700 font-bold">
+                <CheckCircle2 className="w-4 h-4" />
+                <span>1. Qabul qilindi</span>
               </div>
-
-              {/* Step 2 */}
-              <div className="flex items-start gap-3 relative">
-                <div className="w-9 h-9 rounded-full bg-orange-100 border-2 border-orange-500 flex items-center justify-center shrink-0 animate-pulse">
-                  <Truck className="w-5 h-5 text-bunker-amber-500" />
-                </div>
-                <div>
-                  <h5 className="font-bold text-xs text-bunker-amber-500">2. Yuklanmoqda</h5>
-                  <p className="text-[10px] text-bunker-text-secondary">{confirmedDispatch.driverName}</p>
-                  <span className="text-[9px] font-mono text-bunker-amber-500 mt-0.5 block font-bold">Karyerda ortilmoqda</span>
-                </div>
+              <div className="flex items-center gap-2 text-bunker-amber-500 font-bold">
+                <Truck className="w-4 h-4 animate-pulse" />
+                <span>2. Yuklanmoqda</span>
               </div>
-
-              {/* Step 3 */}
-              <div className="flex items-start gap-3 relative opacity-60">
-                <div className="w-9 h-9 rounded-full bg-slate-200 border-2 border-slate-300 flex items-center justify-center shrink-0">
-                  <Navigation className="w-4 h-4 text-bunker-text-muted" />
-                </div>
-                <div>
-                  <h5 className="font-bold text-xs text-bunker-text-primary">3. Marshrutda (Yo'lda)</h5>
-                  <p className="text-[10px] text-bunker-text-secondary">GPS monitoring faol</p>
-                  <span className="text-[9px] font-mono text-bunker-text-muted mt-0.5 block">Kutilmoqda</span>
-                </div>
+              <div className="flex items-center gap-2 text-bunker-text-muted">
+                <Navigation className="w-4 h-4" />
+                <span>3. Yo'lda</span>
               </div>
-
-              {/* Step 4 */}
-              <div className="flex items-start gap-3 relative opacity-60">
-                <div className="w-9 h-9 rounded-full bg-slate-200 border-2 border-slate-300 flex items-center justify-center shrink-0">
-                  <PackageCheck className="w-4 h-4 text-bunker-text-muted" />
-                </div>
-                <div>
-                  <h5 className="font-bold text-xs text-bunker-text-primary">4. Ob'ektda Qabul Qilish</h5>
-                  <p className="text-[10px] text-bunker-text-secondary truncate max-w-[150px]">{confirmedDispatch.destination}</p>
-                  <span className="text-[9px] font-mono text-bunker-text-muted mt-0.5 block">E-IMZO dalolatnoma</span>
-                </div>
+              <div className="flex items-center gap-2 text-bunker-text-muted">
+                <PackageCheck className="w-4 h-4" />
+                <span>4. Ob'ektda</span>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* 3. Main Fleet Command Deck Grid: Vehicles + Blueprint Actions + Dynamic Quote */}
+      {/* 3. Main Fleet & Route Calculator Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Vehicles list & CAD blueprints */}
-        <div className="lg:col-span-7 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-bunker-text-primary uppercase tracking-wider font-mono flex items-center gap-2">
+        {/* Vehicles selection list (7 cols) */}
+        <div className="lg:col-span-7 space-y-3">
+          <div className="flex items-center justify-between pb-1 border-b border-bunker-border-subtle font-mono text-xs">
+            <span className="font-bold text-bunker-text-primary uppercase flex items-center gap-2">
               <Truck className="w-4 h-4 text-bunker-amber-500" />
-              1. Maxsus Texnika Parki &amp; Muhandislik Chizmalari
-            </h2>
-            <span className="text-xs text-bunker-text-muted font-mono">{vehicles.length} ta birlik mavjud</span>
+              1. Maxsus Texnikani Tanlang
+            </span>
+            <span className="text-bunker-text-muted">{vehicles.length} ta birlik</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {vehicles.map((v) => {
               const isSelected = selectedVehicle?.id === v.id;
 
@@ -484,17 +332,17 @@ export const LogisticsView: React.FC = () => {
                 <div
                   key={v.id}
                   onClick={() => setSelectedVehicle(v)}
-                  className={`p-4 rounded-xl cursor-pointer border transition-all flex flex-col justify-between shadow-xs ${
+                  className={`p-3.5 rounded-xl cursor-pointer border transition-all flex flex-col justify-between shadow-xs ${
                     isSelected
-                      ? 'bg-orange-50/40 border-bunker-amber-500 ring-2 ring-bunker-amber-500/20'
-                      : 'bg-white border-bunker-border-strong hover:border-bunker-amber-500/70'
+                      ? 'bg-amber-50/50 border-bunker-amber-500 ring-2 ring-orange-200'
+                      : 'bg-white border-bunker-border-strong hover:border-slate-400'
                   }`}
                 >
-                  <div className="flex items-start gap-3.5">
+                  <div className="flex items-start gap-3">
                     <img
                       src={v.imageUrl}
                       alt={v.name}
-                      className="w-16 h-16 rounded-xl object-cover shrink-0 border border-bunker-border-subtle bg-slate-100"
+                      className="w-14 h-14 rounded-lg object-cover shrink-0 border border-bunker-border-subtle bg-slate-100"
                     />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-1">
@@ -506,30 +354,18 @@ export const LogisticsView: React.FC = () => {
                       <p className="text-[11px] font-mono text-bunker-amber-500 mt-0.5 font-bold">
                         {v.capacityTons} tonnagacha sig‘im
                       </p>
-                      <p className="text-[10px] text-bunker-text-secondary mt-0.5">
+                      <p className="text-[10px] text-bunker-text-secondary mt-0.5 font-mono">
                         Baza: {Number(v.basePrice).toLocaleString()} so'm
                       </p>
                       <p className="text-[10px] text-bunker-text-muted font-mono">
-                        {Number(v.pricePerKm).toLocaleString()} so'm / km
+                        + {Number(v.pricePerKm).toLocaleString()} so'm / km
                       </p>
                     </div>
                   </div>
 
-                  {/* Blueprint CTA */}
-                  <div className="mt-3 pt-2.5 border-t border-bunker-border-subtle flex items-center justify-between">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleOpenBlueprint(v.type);
-                      }}
-                      className="text-[10px] font-mono font-bold text-bunker-amber-500 hover:text-bunker-amber-400 flex items-center gap-1 cursor-pointer transition-colors"
-                    >
-                      <FileCode className="w-3.5 h-3.5" />
-                      <span>Muhandislik Chizmasi (Blueprint)</span>
-                    </button>
-
-                    <Badge variant="neutral" className="text-[9px] font-mono">
+                  <div className="mt-2.5 pt-2 border-t border-bunker-border-subtle flex items-center justify-between text-[10px] font-mono">
+                    <span className="text-bunker-text-muted">Davlat raqami:</span>
+                    <Badge variant="neutral" size="sm" isMono>
                       {v.plateNumber}
                     </Badge>
                   </div>
@@ -539,214 +375,129 @@ export const LogisticsView: React.FC = () => {
           </div>
         </div>
 
-        {/* Dynamic Calculator & Booking Command Panel */}
-        <div className="lg:col-span-5 bg-white border border-bunker-border-strong p-6 rounded-2xl space-y-5 shadow-xs">
-          <div className="flex items-center justify-between pb-3 border-b border-bunker-border-subtle">
-            <h3 className="font-bold text-bunker-text-primary flex items-center gap-2 text-sm font-mono">
-              <Calculator className="w-4 h-4 text-bunker-amber-500" />
-              Yuk Tashish Dinamik Kalkulyatori
-            </h3>
-            {selectedVehicle && (
-              <Badge variant="info" className="text-[10px] font-mono">
-                {selectedVehicle.type.replace(/_/g, ' ')}
-              </Badge>
-            )}
+        {/* Dynamic Route & Price Calculator Form (5 cols) */}
+        <div className="lg:col-span-5 bg-white border border-bunker-border-strong rounded-2xl p-5 space-y-4 shadow-xs">
+          <div className="flex items-center justify-between pb-2 border-b border-bunker-border-subtle font-mono text-xs">
+            <span className="font-bold text-bunker-text-primary uppercase flex items-center gap-1.5">
+              <Compass className="w-4 h-4 text-bunker-amber-500" />
+              2. Marshrut &amp; Yuk Parametrlari
+            </span>
+            {loadingQuote && <span className="text-[10px] text-bunker-amber-500 animate-pulse">Hisoblanmoqda...</span>}
           </div>
 
           {bookingError && (
-            <Alert
-              variant="error"
-              description={bookingError}
-              onDismiss={() => setBookingError(null)}
-            />
+            <Alert variant="error" description={bookingError} onDismiss={() => setBookingError(null)} />
           )}
 
-          <div className="space-y-4 text-xs font-semibold text-bunker-text-secondary">
-            {/* Optional order selector if active orders exist */}
-            {activeOrders.length > 0 && (
-              <Select
-                label="Biriktiriladigan buyurtma:"
-                value={selectedOrderId}
-                onChange={(e) => setSelectedOrderId(e.target.value)}
-              >
-                <option value="EXPRESS">Ekspress transport (Yangi to‘g‘ridan-to‘g‘ri reys)</option>
-                {activeOrders.map((ord) => (
-                  <option key={ord.id} value={ord.id}>
-                    {ord.orderNumber} — {ord.buyerName} ({Number(ord.finalAmount).toLocaleString()} so'm)
-                  </option>
-                ))}
-              </Select>
-            )}
+          <div className="space-y-3 text-xs font-mono">
+            <div>
+              <label className="text-bunker-text-muted block text-[10px] uppercase font-bold mb-1">
+                Yuklash Nuqtasi (Karyer / Zavod):
+              </label>
+              <Input
+                value={origin}
+                onChange={(e) => setOrigin(e.target.value)}
+                placeholder="Yuk ortish manzili..."
+                sizeVariant="sm"
+              />
+            </div>
 
-            <Input
-              label="Yuklash manzili (Karyer / Baza):"
-              value={origin}
-              onChange={(e) => setOrigin(e.target.value)}
-            />
-
-            <Input
-              label="Yetkazish manzili (Qurilish ob'ekti):"
-              value={destination}
-              onChange={(e) => setDestination(e.target.value)}
-            />
+            <div>
+              <label className="text-bunker-text-muted block text-[10px] uppercase font-bold mb-1">
+                Yetkazib Berish Ob'ekti:
+              </label>
+              <Input
+                value={destination}
+                onChange={(e) => setDestination(e.target.value)}
+                placeholder="Qurilish ob'ekti manzili..."
+                sizeVariant="sm"
+              />
+            </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <div className="flex justify-between mb-1.5 font-mono text-[11px]">
-                  <label>Masofa:</label>
-                  <span className="text-bunker-amber-500 font-bold">{distanceKm} km</span>
-                </div>
-                <input
-                  type="range"
-                  min="5"
-                  max="150"
+                <label className="text-bunker-text-muted block text-[10px] uppercase font-bold mb-1">
+                  Masofa (km):
+                </label>
+                <Input
+                  type="number"
+                  min="1"
+                  max="1500"
                   value={distanceKm}
-                  onChange={(e) => setDistanceKm(Number(e.target.value))}
-                  className="w-full accent-bunker-amber-500 cursor-pointer"
+                  onChange={(e) => setDistanceKm(Math.max(1, parseInt(e.target.value) || 1))}
+                  sizeVariant="sm"
                 />
               </div>
+
               <div>
-                <div className="flex justify-between mb-1.5 font-mono text-[11px]">
-                  <label>Yuk og'irligi:</label>
-                  <span className="text-bunker-amber-500 font-bold">{weightTons} t</span>
-                </div>
-                <input
-                  type="range"
+                <label className="text-bunker-text-muted block text-[10px] uppercase font-bold mb-1">
+                  Yuk Og'irligi (t):
+                </label>
+                <Input
+                  type="number"
                   min="1"
-                  max="35"
+                  max="45"
                   value={weightTons}
-                  onChange={(e) => setWeightTons(Number(e.target.value))}
-                  className="w-full accent-bunker-amber-500 cursor-pointer"
+                  onChange={(e) => setWeightTons(Math.max(1, parseInt(e.target.value) || 1))}
+                  sizeVariant="sm"
                 />
               </div>
             </div>
+
+            {/* Link to existing Order (optional) */}
+            {activeOrders.length > 0 && (
+              <div>
+                <label className="text-bunker-text-muted block text-[10px] uppercase font-bold mb-1">
+                  Mavjud Buyurtmaga Biriktirish (Ixtiyoriy):
+                </label>
+                <Select
+                  value={selectedOrderId}
+                  onChange={(e) => setSelectedOrderId(e.target.value)}
+                  sizeVariant="sm"
+                >
+                  <option value="EXPRESS">Alohida ekspress yuk tashish</option>
+                  {activeOrders.map((o) => (
+                    <option key={o.id} value={o.id}>
+                      {o.orderNumber} ({Number(o.finalAmount || o.totalAmount).toLocaleString()} so'm)
+                    </option>
+                  ))}
+                </Select>
+              </div>
+            )}
           </div>
 
-          {/* Official Backend Price Summary */}
-          <div className="bg-slate-50 border border-bunker-border-strong p-4 rounded-xl space-y-2 font-mono">
-            <div className="flex justify-between items-center text-xs text-bunker-text-secondary">
-              <span>Boshlang'ich baza tarifi:</span>
-              <span className="text-bunker-text-primary font-semibold">
-                {Number(quote?.baseCost ?? selectedVehicle?.basePrice ?? 0).toLocaleString()} so'm
+          {/* Pricing Summary Box */}
+          <div className="bg-slate-50 border border-bunker-border-strong rounded-xl p-3.5 space-y-2 font-mono text-xs">
+            <div className="flex justify-between text-bunker-text-secondary">
+              <span>Baza tarifi (chiqish):</span>
+              <span>{selectedVehicle ? Number(selectedVehicle.basePrice).toLocaleString() : 0} so'm</span>
+            </div>
+            <div className="flex justify-between text-bunker-text-secondary">
+              <span>Masofa to'lovi ({distanceKm} km):</span>
+              <span>
+                {selectedVehicle ? (distanceKm * Number(selectedVehicle.pricePerKm)).toLocaleString() : 0} so'm
               </span>
             </div>
-            <div className="flex justify-between items-center text-xs text-bunker-text-secondary">
-              <span>Masofa qiymati ({distanceKm} km):</span>
-              <span className="text-bunker-text-primary font-semibold">
-                {Number(quote?.distanceCost ?? (selectedVehicle ? distanceKm * selectedVehicle.pricePerKm : 0)).toLocaleString()}{' '}
-                so'm
+            <div className="pt-2 border-t border-bunker-border-subtle flex justify-between items-center">
+              <span className="font-bold text-bunker-text-primary uppercase text-xs">Jami Reys Narxi:</span>
+              <span className="text-base font-extrabold text-bunker-amber-500">
+                {totalCostValue.toLocaleString()} so'm
               </span>
-            </div>
-            <div className="flex justify-between items-center text-xs text-bunker-text-secondary">
-              <span>Taxminiy yetkazish vaqti:</span>
-              <span className="text-bunker-amber-500 flex items-center gap-1 font-bold">
-                <Clock className="w-3.5 h-3.5" />
-                ~{quote?.estimatedHours || Math.round((distanceKm / 35) * 10) / 10 + 1} soat
-              </span>
-            </div>
-
-            <div className="pt-2 border-t border-bunker-border-subtle flex justify-between items-baseline">
-              <span className="font-bold text-sm text-bunker-text-primary">Jami rasmiy narx:</span>
-              <div className="flex items-center gap-2">
-                {loadingQuote && <RefreshCw className="w-3.5 h-3.5 animate-spin text-bunker-amber-500" />}
-                <span className="text-xl font-extrabold text-bunker-amber-500">
-                  {totalCostValue.toLocaleString()} so'm
-                </span>
-              </div>
             </div>
           </div>
 
           <Button
-            className="w-full"
-            size="lg"
+            variant="primary"
+            size="md"
             onClick={handleBook}
             isLoading={isBooking}
+            className="w-full text-xs font-mono font-bold"
           >
-            <Truck className="w-5 h-5 mr-1" />
-            <span>Reysni Rasmiylashtirish &amp; Yuborish</span>
+            <Truck className="w-4 h-4 mr-2" />
+            <span>Reysni Tasdiqlash &amp; Dispetcherga Yuborish</span>
           </Button>
         </div>
       </div>
-
-      {/* 4. TECHNICAL BLUEPRINT CAD MODAL (Using Modal Component) */}
-      {selectedBlueprint && (
-        <Modal
-          isOpen={!!selectedBlueprint}
-          onClose={() => setSelectedBlueprint(null)}
-          size="lg"
-          headerExtra={
-            <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center shrink-0">
-              <FileCode className="w-5 h-5 text-bunker-amber-500" />
-            </div>
-          }
-          title={selectedBlueprint.modelName}
-          subtitle="TEXNIK CHIZMA & ZAVOD PARAMETRLARI (CAD SPECIFICATION)"
-          footer={
-            <Button variant="primary" onClick={() => setSelectedBlueprint(null)}>
-              Tushunarli / Yopish
-            </Button>
-          }
-        >
-          {/* CAD Wireframe Visualizer */}
-          <div className="relative bg-slate-900 border border-slate-800 rounded-xl p-5 overflow-hidden font-mono text-xs text-white">
-            <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#EA580C_1px,transparent_1px)] [background-size:16px_16px]" />
-            <div className="flex items-center justify-between text-slate-400 text-[11px] mb-3">
-              <span>[BUNKER-CAD v4.8] ARCHITECTURAL WIREFRAME</span>
-              <span className="text-emerald-400 font-semibold">ONLINE KALIBROVKA</span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              <div className="bg-slate-800/80 border border-slate-700 p-3 rounded-xl space-y-1">
-                <span className="text-[10px] text-slate-400 uppercase block">Dvigatel &amp; Quvvat:</span>
-                <p className="font-bold text-white">{selectedBlueprint.engine}</p>
-                <span className="text-[11px] text-orange-400 block">{selectedBlueprint.powerOutput}</span>
-              </div>
-
-              <div className="bg-slate-800/80 border border-slate-700 p-3 rounded-xl space-y-1">
-                <span className="text-[10px] text-slate-400 uppercase block">Aylanish momenti:</span>
-                <p className="font-bold text-white">{selectedBlueprint.torque}</p>
-                <span className="text-[11px] text-slate-300 block">Ko'prik: {selectedBlueprint.axleFormula}</span>
-              </div>
-
-              <div className="bg-slate-800/80 border border-slate-700 p-3 rounded-xl space-y-1">
-                <span className="text-[10px] text-slate-400 uppercase block">Foydali Sig'im:</span>
-                <p className="font-bold text-orange-400">{selectedBlueprint.payloadCapacity}</p>
-                <span className="text-[11px] text-slate-300 block">{selectedBlueprint.bodyVolume}</span>
-              </div>
-
-              <div className="bg-slate-800/80 border border-slate-700 p-3 rounded-xl space-y-1">
-                <span className="text-[10px] text-slate-400 uppercase block">Uzatmalar qutisi:</span>
-                <p className="font-bold text-white">{selectedBlueprint.transmission}</p>
-              </div>
-
-              <div className="bg-slate-800/80 border border-slate-700 p-3 rounded-xl space-y-1">
-                <span className="text-[10px] text-slate-400 uppercase block">Gidravlika tizimi:</span>
-                <p className="font-bold text-white truncate">{selectedBlueprint.hydraulicSystem}</p>
-              </div>
-
-              <div className="bg-slate-800/80 border border-slate-700 p-3 rounded-xl space-y-1">
-                <span className="text-[10px] text-slate-400 uppercase block">Gabarit o'lchamlar:</span>
-                <p className="font-bold text-white">{selectedBlueprint.dimensions}</p>
-              </div>
-            </div>
-
-            {/* Detailed schematic bullets */}
-            <div className="mt-4 pt-3 border-t border-slate-700 space-y-2">
-              <span className="text-[11px] font-bold text-orange-400 uppercase block">
-                Texnik Standartlar &amp; Xavfsizlik Sertifikati:
-              </span>
-              <div className="space-y-1.5 text-[11px] text-slate-300">
-                {selectedBlueprint.schematicDetails.map((item, idx) => (
-                  <div key={idx} className="flex items-start gap-2">
-                    <span className="text-orange-400 font-bold shrink-0">►</span>
-                    <span>{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </Modal>
-      )}
     </div>
   );
 };

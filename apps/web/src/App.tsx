@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate, useNavigate, useLocation, Link } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate, Link } from 'react-router-dom';
 import { Product } from '@bunkerstroy/types';
-import { Navbar, ActiveTabType } from './components/Navbar';
+import { Navbar } from './components/Navbar';
 import { CartDrawer, CartItem } from './components/CartDrawer';
 import { MarketplaceView } from './features/marketplace/MarketplaceView';
 import { ProductDetailView } from './features/marketplace/ProductDetailView';
@@ -13,36 +13,20 @@ import { GlobalBunkerHubView } from './features/global_bunker/GlobalBunkerHubVie
 import { CertificationsView } from './features/certifications/CertificationsView';
 import { OrdersView } from './features/orders/OrdersView';
 import { AuthModal } from './features/auth/AuthModal';
-import { VoiceAssistantModal } from './features/ai/VoiceAssistantModal';
 import {
   HardHat,
-  ShieldCheck,
-  Search,
-  CheckCircle2,
   PhoneCall,
   MapPin,
-  Clock,
-  Layers,
-  Building2,
-  Truck,
-  Leaf,
-  Globe,
-  ClipboardList,
-  Factory,
-  FileSpreadsheet
+  Clock
 } from 'lucide-react';
-import { Badge, Modal, Input, Tooltip } from '@bunkerstroy/ui';
+import { Badge } from '@bunkerstroy/ui';
 
 export const App: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   // Modals state
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [isVoiceOpen, setIsVoiceOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchPaletteQuery, setSearchPaletteQuery] = useState('');
 
   // User state
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -56,22 +40,6 @@ export const App: React.FC = () => {
       return [];
     }
   });
-
-  // Global Keyboard Shortcuts: Ctrl + K (Search) & Escape
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
-        e.preventDefault();
-        setIsSearchOpen((prev) => !prev);
-      }
-      if (e.key === 'Escape') {
-        setIsSearchOpen(false);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
 
   // Sync cart to localStorage
   useEffect(() => {
@@ -165,18 +133,6 @@ export const App: React.FC = () => {
 
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
-  // Command palette navigation items
-  const quickNavItems = [
-    { label: 'Katalog & B2B Mahsulotlar', path: '/', icon: <Building2 className="w-4 h-4 text-bunker-amber-500" />, desc: 'Sement, armatura, g‘isht va izolyatsiya materiallari' },
-    { label: 'Zavodlar & Ishlab Chiqaruvchilar', path: '/suppliers', icon: <Factory className="w-4 h-4 text-bunker-amber-500" />, desc: 'O‘zmetkombinat, Qizilqumsement, Knauf zavod narxlari' },
-    { label: 'Logistika Hub & Maxsus Texnikalar', path: '/logistics', icon: <Truck className="w-4 h-4 text-bunker-amber-500" />, desc: 'HOWO 25t, Shacman mikser, Isuzu kran marshruti' },
-    { label: 'Qurilish Tenderlari & Smeta RFQ', path: '/tenders', icon: <FileSpreadsheet className="w-4 h-4 text-bunker-amber-500" />, desc: 'Yirik smeta xaridlari va korporativ auksion' },
-    { label: 'ESCO Bino Energiya Auditi', path: '/esco', icon: <Leaf className="w-4 h-4 text-bunker-status-green" />, desc: 'ShNQ 2.01.04-18 davlat standarti, termal pasport' },
-    { label: 'Global Bunker Xalqaro Import', path: '/global-bunker', icon: <Globe className="w-4 h-4 text-bunker-status-cyan" />, desc: 'Temir yo‘l hopperlari va xorijiy klinker ta’minoti' },
-    { label: 'Davlat Standartlari & Laboratoriya', path: '/certifications', icon: <ShieldCheck className="w-4 h-4 text-emerald-600" />, desc: 'GOST, O‘zDSt va ShNQ sinov bayonnomalari' },
-    { label: 'Mening Buyurtmalarim & Invoyslar', path: '/orders', icon: <ClipboardList className="w-4 h-4 text-bunker-amber-500" />, desc: 'Shartnomalar, hisob-fakturalar va to‘lov holati' }
-  ];
-
   return (
     <div className="min-h-screen flex flex-col bg-bunker-base text-bunker-text-primary selection:bg-bunker-amber-500 selection:text-white font-sans transition-colors duration-200">
       {/* 1. Header Navigation Bar */}
@@ -184,8 +140,6 @@ export const App: React.FC = () => {
         cartCount={cartCount}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
-        onOpenVoice={() => setIsVoiceOpen(true)}
-        onOpenSearch={() => setIsSearchOpen(true)}
         currentUser={currentUser}
         onLogout={handleLogout}
       />
@@ -208,7 +162,7 @@ export const App: React.FC = () => {
 
       {/* 3. Minimalist Industrial Footer */}
       <footer className="mt-auto bg-white border-t border-bunker-border-strong text-bunker-text-secondary">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
             {/* Column 1: Brand Info */}
             <div className="lg:col-span-2 space-y-3">
@@ -237,11 +191,11 @@ export const App: React.FC = () => {
             </div>
 
             {/* Column 2: Platform Links */}
-            <div className="space-y-2.5">
+            <div className="space-y-2">
               <h4 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary font-mono">
                 Sahifalar
               </h4>
-              <ul className="space-y-1.5 text-xs font-mono">
+              <ul className="space-y-1 text-xs font-mono">
                 <li>
                   <Link to="/" className="hover:text-bunker-amber-500 transition-colors">
                     Katalog &amp; Smeta
@@ -276,7 +230,7 @@ export const App: React.FC = () => {
             </div>
 
             {/* Column 3: Standards & Integrations */}
-            <div className="space-y-2.5">
+            <div className="space-y-2">
               <h4 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary font-mono">
                 Integratsiyalar
               </h4>
@@ -291,21 +245,17 @@ export const App: React.FC = () => {
                 </li>
                 <li className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-bunker-status-green" />
-                  <span>Google Gemini AI Copilot</span>
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-bunker-status-green" />
                   <span>Payme, Click &amp; B2B Faktura</span>
                 </li>
               </ul>
             </div>
 
             {/* Column 4: Contact & Support */}
-            <div className="space-y-2.5">
+            <div className="space-y-2">
               <h4 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary font-mono">
                 Dispetcherlik
               </h4>
-              <div className="space-y-2 text-xs text-bunker-text-secondary font-mono">
+              <div className="space-y-1.5 text-xs text-bunker-text-secondary font-mono">
                 <div className="flex items-center gap-1.5">
                   <PhoneCall className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                   <span className="text-bunker-text-primary font-bold">+998 (71) 200-45-46</span>
@@ -316,7 +266,7 @@ export const App: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-1.5 text-bunker-text-muted">
                   <Clock className="w-3.5 h-3.5 text-bunker-amber-500 shrink-0" />
-                  <span>Dispetcherlik: 24/7 uzluksiz</span>
+                  <span>24/7 uzluksiz</span>
                 </div>
               </div>
             </div>
@@ -327,72 +277,16 @@ export const App: React.FC = () => {
             <p className="text-bunker-text-muted">
               &copy; 2026 BunkerStroy Enterprise LLC.
             </p>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <Badge variant="success" size="sm" isMono dot className="bg-emerald-50 text-emerald-700 border-emerald-200">
                 SLA: 99.98%
               </Badge>
-              <span className="text-bunker-border-strong">|</span>
-              <span className="text-bunker-text-muted">v2.0 Nordic Enterprise</span>
             </div>
           </div>
         </div>
       </footer>
 
-      {/* 4. Global Command Search Palette Modal (Ctrl + K) */}
-      <Modal
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-        title="Global Qidiruv"
-        subtitle="Platforma sahifalari va xizmatlari bo'yicha tezkor o‘tish"
-        size="lg"
-      >
-        <div className="space-y-4">
-          <Input
-            autoFocus
-            placeholder="Sahifa yoki xizmat nomini yozing..."
-            value={searchPaletteQuery}
-            onChange={(e) => setSearchPaletteQuery(e.target.value)}
-            leftIcon={<Search className="w-4 h-4 text-bunker-amber-500" />}
-            isMono
-            sizeVariant="md"
-          />
-
-          <div className="space-y-1.5 max-h-64 overflow-y-auto pr-1">
-            {quickNavItems
-              .filter(
-                (item) =>
-                  !searchPaletteQuery ||
-                  item.label.toLowerCase().includes(searchPaletteQuery.toLowerCase()) ||
-                  item.desc.toLowerCase().includes(searchPaletteQuery.toLowerCase())
-              )
-              .map((item, idx) => (
-                <div
-                  key={idx}
-                  onClick={() => {
-                    navigate(item.path);
-                    setIsSearchOpen(false);
-                  }}
-                  className="p-2.5 rounded-xl bg-white hover:bg-slate-50 border border-bunker-border-strong hover:border-bunker-amber-500 flex items-center justify-between cursor-pointer transition-all group font-mono shadow-xs"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="p-1.5 rounded-lg bg-slate-50 border border-bunker-border-strong group-hover:border-bunker-amber-500">
-                      {item.icon}
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-bold text-bunker-text-primary group-hover:text-bunker-amber-500 transition-colors">
-                        {item.label}
-                      </h4>
-                      <p className="text-[11px] text-bunker-text-muted">{item.desc}</p>
-                    </div>
-                  </div>
-                  <span className="text-xs text-bunker-text-muted group-hover:text-bunker-amber-500 font-bold">&rarr;</span>
-                </div>
-              ))}
-          </div>
-        </div>
-      </Modal>
-
-      {/* 5. Drawers & Modals */}
+      {/* 4. Drawers & Modals */}
       <CartDrawer
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
@@ -407,27 +301,6 @@ export const App: React.FC = () => {
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
         onSuccess={handleAuthSuccess}
-      />
-
-      {/* Voice Copilot Dock */}
-      <VoiceAssistantModal
-        isOpen={isVoiceOpen}
-        onClose={() => setIsVoiceOpen(false)}
-        onNavigateTab={(tab) => {
-          const tabToPath: Record<string, string> = {
-            marketplace: '/',
-            suppliers: '/suppliers',
-            logistics: '/logistics',
-            tenders: '/tenders',
-            esco: '/esco',
-            global_bunker: '/global-bunker',
-            certifications: '/certifications',
-            orders: '/orders'
-          };
-          if (tabToPath[tab]) {
-            navigate(tabToPath[tab]);
-          }
-        }}
       />
     </div>
   );
