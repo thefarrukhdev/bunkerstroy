@@ -155,9 +155,8 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
       {/* 1. Clean Minimalist Header */}
       <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="w-2 h-2 rounded-full bg-bunker-amber-500 animate-pulse" />
-            <span className="text-[11px] font-mono font-bold text-bunker-amber-500 uppercase tracking-wider">
+          <div className="mb-1.5">
+            <span className="text-xs font-mono font-bold text-bunker-amber-500 uppercase tracking-wider">
               B2B Sanoat Xaridlari
             </span>
           </div>

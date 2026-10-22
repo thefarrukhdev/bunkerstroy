@@ -62,7 +62,7 @@ export const Badge: React.FC<BadgeProps> = ({
       {dot && (
         <span
           className={cn(
-            'w-1.5 h-1.5 rounded-full animate-pulse shrink-0',
+            'w-1.5 h-1.5 rounded-full shrink-0',
             dotColorStyles[normalizedVariant]
           )}
         />

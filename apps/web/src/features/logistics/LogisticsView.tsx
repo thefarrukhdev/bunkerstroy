@@ -204,9 +204,8 @@ export const LogisticsView: React.FC = () => {
       {/* 1. Minimalist Logistics Header */}
       <div className="bg-white border border-bunker-border-strong rounded-2xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse" />
-            <span className="text-[11px] font-mono font-bold text-sky-600 uppercase tracking-wider">
+          <div className="mb-1.5">
+            <span className="text-xs font-mono font-bold text-sky-600 uppercase tracking-wider">
               Dispetcherlik &amp; Marshrut
             </span>
           </div>
@@ -296,7 +295,7 @@ export const LogisticsView: React.FC = () => {
                 <span>1. Qabul qilindi</span>
               </div>
               <div className="flex items-center gap-2 text-bunker-amber-500 font-bold">
-                <Truck className="w-4 h-4 animate-pulse" />
+                <Truck className="w-4 h-4" />
                 <span>2. Yuklanmoqda</span>
               </div>
               <div className="flex items-center gap-2 text-bunker-text-muted">
@@ -382,7 +381,7 @@ export const LogisticsView: React.FC = () => {
               <Compass className="w-4 h-4 text-bunker-amber-500" />
               2. Marshrut &amp; Yuk Parametrlari
             </span>
-            {loadingQuote && <span className="text-[10px] text-bunker-amber-500 animate-pulse">Hisoblanmoqda...</span>}
+            {loadingQuote && <span className="text-[10px] text-bunker-amber-500 font-mono">Hisoblanmoqda...</span>}
           </div>
 
           {bookingError && (

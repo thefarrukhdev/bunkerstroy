@@ -120,12 +120,8 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({ onClick }) => {
       aria-label="BunkerStroy B2B Asosiy sahifa"
     >
       {/* Architectural Emblem */}
-      <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 shadow-xs group-hover:border-bunker-amber-500/50 group-hover:shadow-amber-500/10 transition-all duration-200">
+      <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 shadow-xs group-hover:border-bunker-amber-500/50 transition-all duration-200">
         <HardHat className="w-5 h-5 text-bunker-amber-500 transition-transform duration-200 group-hover:scale-105" />
-        <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-bunker-amber-500" />
-        </span>
       </div>
 
       {/* Brand Typography */}
