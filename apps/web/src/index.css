@@ -2,6 +2,11 @@
 @source "../../packages/ui/src";
 
 @theme {
+  /* Typography Tokens */
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Space Grotesk', 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
   /* Nordic Industrial Enterprise Design Tokens (Procore + Stripe Benchmark) */
   --color-bunker-vault: #0F172A;
   --color-bunker-base: #F8FAFC;
@@ -35,10 +40,20 @@
   body {
     background-color: var(--color-bunker-base, #F8FAFC);
     color: var(--color-bunker-text-primary, #0F172A);
-    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: var(--font-sans);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     font-variant-numeric: tabular-nums;
     transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  h1, h2, h3, h4, .font-heading {
+    font-family: var(--font-heading);
+    letter-spacing: -0.025em;
+  }
+
+  code, kbd, samp, pre, .font-mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
   }
 
   button:active {

@@ -216,7 +216,7 @@ export const App: React.FC = () => {
                 <div className="w-8 h-8 rounded-lg bg-orange-50 border border-orange-200 flex items-center justify-center">
                   <HardHat className="w-4 h-4 text-bunker-amber-500" />
                 </div>
-                <span className="text-lg font-extrabold tracking-tight text-bunker-text-primary">
+                <span className="font-heading text-lg font-extrabold tracking-tight text-bunker-text-primary">
                   <span className="text-bunker-amber-500">BUNKER</span>STROY
                 </span>
               </div>

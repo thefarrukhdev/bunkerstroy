@@ -99,7 +99,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <HardHat className="w-5 h-5 text-bunker-amber-500 transition-transform group-hover:scale-105" />
             </div>
             <div>
-              <span className="text-lg font-extrabold tracking-tight leading-none text-bunker-text-primary">
+              <span className="font-heading text-lg font-extrabold tracking-tight leading-none text-bunker-text-primary">
                 <span className="text-bunker-amber-500">BUNKER</span>STROY
               </span>
               <span className="text-[9px] tracking-wider text-bunker-text-muted uppercase font-mono block mt-0.5">
