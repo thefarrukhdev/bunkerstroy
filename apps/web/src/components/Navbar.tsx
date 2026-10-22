@@ -6,8 +6,6 @@ import {
   Mic,
   LogOut,
   Search,
-  Sun,
-  Moon,
   ShieldCheck,
   Truck,
   Leaf,
@@ -39,8 +37,6 @@ interface NavbarProps {
   onOpenSearch: () => void;
   currentUser: any;
   onLogout: () => void;
-  highVisMode: boolean;
-  onToggleHighVis: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -52,9 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenVoice,
   onOpenSearch,
   currentUser,
-  onLogout,
-  highVisMode,
-  onToggleHighVis
+  onLogout
 }) => {
   const navTabs: { id: ActiveTabType; label: string; icon: React.ReactNode }[] = [
     { id: 'marketplace', label: 'B2B Marketplace', icon: <Building2 className="w-3.5 h-3.5" /> },
@@ -91,26 +85,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             </span>
           </div>
 
-          {/* Right Action / Field Mode Toggle */}
+          {/* Right Action / Compliance Indicators */}
           <div className="flex items-center gap-2.5 text-[10px] shrink-0">
-            <Tooltip content="Qurilish maydoni uchun yuqori kontrastli rejim (Shift + S)" position="bottom">
-              <button
-                onClick={onToggleHighVis}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border font-mono font-bold transition-all cursor-pointer ${
-                  highVisMode
-                    ? 'bg-bunker-amber-500 text-white border-bunker-amber-500 shadow-xs'
-                    : 'bg-white text-bunker-text-secondary border-bunker-border-strong hover:text-bunker-amber-500 hover:border-bunker-amber-500 shadow-xs'
-                }`}
-              >
-                {highVisMode ? <Sun className="w-3 h-3 text-white" /> : <Moon className="w-3 h-3 text-bunker-amber-500" />}
-                <span>FIELD MODE</span>
-                <span className="opacity-70 text-[9px] hidden sm:inline">(Shift+S)</span>
-              </button>
-            </Tooltip>
-
-            <Tooltip content="Elektron Raqamli Imzo va Davlat Soliq Qo'mitasi integratsiyasi" position="bottom">
-              <Badge variant="warning" size="sm" isMono leftIcon={<ShieldCheck className="w-3.5 h-3.5" />} className="hidden sm:inline-flex cursor-default bg-orange-50 text-orange-800 border-orange-200">
-                E-IMZO & Soliq STIR
+            <Tooltip content="O‘zbekiston Respublikasi Davlat Soliq Qo‘mitasi va E-IMZO integratsiyasi" position="bottom">
+              <Badge variant="warning" size="sm" isMono leftIcon={<ShieldCheck className="w-3.5 h-3.5" />} className="cursor-default bg-orange-50 text-orange-800 border-orange-200">
+                E-IMZO &amp; Soliq STIR
               </Badge>
             </Tooltip>
           </div>

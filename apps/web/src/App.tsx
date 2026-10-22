@@ -42,15 +42,6 @@ export const App: React.FC = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchPaletteQuery, setSearchPaletteQuery] = useState('');
 
-  // High-Vis Construction Field Mode state
-  const [highVisMode, setHighVisMode] = useState<boolean>(() => {
-    try {
-      return localStorage.getItem('bunkerstroy_high_vis') === 'true';
-    } catch {
-      return false;
-    }
-  });
-
   // User state
   const [currentUser, setCurrentUser] = useState<any>(null);
 
@@ -64,29 +55,9 @@ export const App: React.FC = () => {
     }
   });
 
-  // Sync high-vis mode to HTML element & localStorage
-  useEffect(() => {
-    if (highVisMode) {
-      document.documentElement.classList.add('high-vis-mode');
-      localStorage.setItem('bunkerstroy_high_vis', 'true');
-    } else {
-      document.documentElement.classList.remove('high-vis-mode');
-    }
-  }, [highVisMode]);
-
-  // Global Keyboard Shortcuts: Shift + S (High-Vis) & Ctrl + K (Search)
+  // Global Keyboard Shortcuts: Ctrl + K (Search) & Escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Shift + S toggle high-vis mode (prevent conflict if typing in input)
-      if (e.shiftKey && (e.key === 'S' || e.key === 's')) {
-        const target = e.target as HTMLElement;
-        if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
-          return;
-        }
-        e.preventDefault();
-        setHighVisMode((prev) => !prev);
-      }
-
       // Ctrl + K or Cmd + K opens Global Command Search Palette
       if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault();
@@ -209,7 +180,7 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-bunker-base text-bunker-text-primary selection:bg-bunker-amber-500 selection:text-white font-sans transition-colors duration-200">
-      {/* 1. Double-Decker Mission Control Navigation & Header */}
+      {/* 1. Nordic Enterprise Navigation & Header */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -220,8 +191,6 @@ export const App: React.FC = () => {
         onOpenSearch={() => setIsSearchOpen(true)}
         currentUser={currentUser}
         onLogout={handleLogout}
-        highVisMode={highVisMode}
-        onToggleHighVis={() => setHighVisMode((prev) => !prev)}
       />
 
       {/* 2. Main Views Content */}

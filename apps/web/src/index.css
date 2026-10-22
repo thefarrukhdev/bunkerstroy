@@ -41,37 +41,9 @@
     transition: background-color 0.2s ease, color 0.2s ease;
   }
 
-  button:active,
-  .btn-tactile:active {
+  button:active {
     transform: translateY(1px) scale(0.99);
   }
-}
-
-/* Neutralized Tactical Fallbacks (Clean Enterprise Rounding) */
-.chamfer-tab {
-  border-radius: 8px;
-  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.chamfer-tab-corner {
-  border-radius: 12px;
-}
-
-.hazard-stripe,
-.hazard-stripe-sm {
-  display: none !important;
-  opacity: 0 !important;
-  height: 0 !important;
-  pointer-events: none !important;
-}
-
-.brushed-steel {
-  background-color: #FFFFFF;
-  border-bottom: 1px solid var(--color-bunker-border-strong, #E2E8F0);
-}
-
-.industrial-rivet {
-  display: none !important;
 }
 
 @keyframes soundwave {
@@ -95,36 +67,4 @@
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-
-/* High-Vis Field Mode (Maximum WCAG AAA Contrast for Sunlight Visibility) */
-html.high-vis-mode {
-  --color-bunker-vault: #000000;
-  --color-bunker-base: #FFFFFF;
-  --color-bunker-surface-1: #FFFFFF;
-  --color-bunker-surface-2: #E2E8F0;
-  --color-bunker-surface-hover: #CBD5E1;
-  --color-bunker-input: #FFFFFF;
-  --color-bunker-amber-500: #9A3412;
-  --color-bunker-amber-400: #7C2D12;
-  --color-bunker-border-subtle: #94A3B8;
-  --color-bunker-border-strong: #0F172A;
-  --color-bunker-border-active: #0F172A;
-  --color-bunker-text-primary: #000000;
-  --color-bunker-text-secondary: #0F172A;
-  --color-bunker-text-muted: #334155;
-  --color-bunker-status-green: #065F46;
-  --color-bunker-status-amber: #92400E;
-  --color-bunker-status-red: #991B1B;
-  --color-bunker-status-cyan: #075985;
-}
-
-html.high-vis-mode body {
-  background-color: #FFFFFF !important;
-  color: #000000 !important;
-}
-
-html.high-vis-mode .brushed-steel {
-  background: #FFFFFF !important;
-  border-bottom: 2px solid #0F172A !important;
 }
