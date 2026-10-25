@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate, Link } from 'react-router-dom';
 import { Product } from '@bunkerstroy/types';
+import { LanguageProvider } from './context/LanguageContext';
 import { Navbar } from './components/Navbar';
 import { CartDrawer, CartItem } from './components/CartDrawer';
 import { MarketplaceView } from './features/marketplace/MarketplaceView';
 import { ProductDetailView } from './features/marketplace/ProductDetailView';
 import { SuppliersView } from './features/suppliers/SuppliersView';
 import { LogisticsView } from './features/logistics/LogisticsView';
+import { DriverMobileView } from './features/driver/DriverMobileView';
 import { OrdersView } from './features/orders/OrdersView';
 import { SellerPanelView } from './features/seller/SellerPanelView';
 import { AuthModal } from './features/auth/AuthModal';
@@ -18,7 +20,7 @@ import {
 } from 'lucide-react';
 import { Badge } from '@bunkerstroy/ui';
 
-export const App: React.FC = () => {
+export const AppContent: React.FC = () => {
   const navigate = useNavigate();
 
   // Modals state
@@ -150,6 +152,7 @@ export const App: React.FC = () => {
           <Route path="/orders" element={<OrdersView />} />
           <Route path="/seller-panel" element={<SellerPanelView />} />
           <Route path="/logistics" element={<LogisticsView />} />
+          <Route path="/driver" element={<DriverMobileView />} />
           {/* Legacy redirects */}
           <Route path="/tenders" element={<Navigate to="/" replace />} />
           <Route path="/esco" element={<Navigate to="/" replace />} />
@@ -218,6 +221,11 @@ export const App: React.FC = () => {
                 <li>
                   <Link to="/logistics" className="hover:text-bunker-amber-500 transition-colors">
                     Yetkazib berish (Logistika)
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/driver" className="text-amber-600 font-bold hover:underline transition-colors flex items-center gap-1">
+                    <span>🚛 Haydovchi Kabineti</span>
                   </Link>
                 </li>
               </ul>
@@ -297,5 +305,13 @@ export const App: React.FC = () => {
         onSuccess={handleAuthSuccess}
       />
     </div>
+  );
+};
+
+export const App: React.FC = () => {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
   );
 };

@@ -14,6 +14,7 @@ import { Select } from '../../components/Select';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { DispatchModal } from './DispatchModal';
 import { VehicleFormDrawer } from './VehicleFormDrawer';
+import { INITIAL_ORDERS, OrderRecord } from '../../mocks/ordersMock';
 import {
   Truck,
   Plus,
@@ -34,7 +35,7 @@ import {
 export const FleetManager: React.FC = () => {
   const [vehicles, setVehicles] = useState<VehicleItem[]>(INITIAL_VEHICLES);
   const [dispatches, setDispatches] = useState<DispatchRecord[]>(INITIAL_DISPATCHES);
-  const [activeTab, setActiveTab] = useState<'fleet' | 'dispatches'>('fleet');
+  const [activeTab, setActiveTab] = useState<'queue' | 'dispatches' | 'fleet'>('queue');
 
   // Filters
   const [typeFilter, setTypeFilter] = useState<string>('ALL');
@@ -387,6 +388,75 @@ export const FleetManager: React.FC = () => {
     }
   ];
 
+  // Unassigned Queue (Dispetcherlik Navbati - TZ-5)
+  const queueOrders = INITIAL_ORDERS.filter(
+    (o) => o.status === 'CONFIRMED' || o.status === 'PENDING'
+  );
+
+  const queueColumns: Column<OrderRecord>[] = [
+    {
+      key: 'orderNumber',
+      header: 'Buyurtma & Xaridor',
+      render: (row) => (
+        <div>
+          <div className="font-mono font-bold text-xs text-[var(--color-text-primary)]">
+            {row.orderNumber}
+          </div>
+          <div className="text-xs text-[var(--color-text-muted)] mt-0.5">
+            {row.companyName}
+          </div>
+        </div>
+      )
+    },
+    {
+      key: 'destination',
+      header: 'Yetkazish Manzili',
+      render: (row) => (
+        <div className="text-xs text-[var(--color-text-primary)] flex items-center gap-1">
+          <MapPin className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+          <span className="truncate max-w-xs">{row.deliveryAddress}</span>
+        </div>
+      )
+    },
+    {
+      key: 'vehicleType',
+      header: 'Talab etiladigan Texnika',
+      render: (row) => (
+        <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
+          {row.vehicleType}
+        </span>
+      )
+    },
+    {
+      key: 'amount',
+      header: 'Qiymati & To‘lov',
+      render: (row) => (
+        <div>
+          <div className="font-mono text-xs font-bold text-emerald-500">
+            {row.finalAmount.toLocaleString()} so‘m
+          </div>
+          <div className="text-[10px] text-[var(--color-text-muted)] font-mono">
+            {row.payment.provider} ({row.payment.status})
+          </div>
+        </div>
+      )
+    },
+    {
+      key: 'action',
+      header: 'Dispetcherlik Amali',
+      render: (row) => (
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={() => setIsDispatchModalOpen(true)}
+          leftIcon={<Navigation className="w-3.5 h-3.5" />}
+        >
+          Haydovchini Qo‘lda Tayinlash
+        </Button>
+      )
+    }
+  ];
+
   return (
     <div className="space-y-6">
       {/* Sarlavha & Boshqaruv tugmalari */}
@@ -458,31 +528,65 @@ export const FleetManager: React.FC = () => {
       {/* Tab Switcher */}
       <div className="flex border-b border-[var(--color-border-subtle)] space-x-1">
         <button
+          onClick={() => setActiveTab('queue')}
+          className={`flex items-center gap-2 py-3 px-4 text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+            activeTab === 'queue'
+              ? 'border-[var(--color-accent-blue)] text-[var(--color-accent-blue)] bg-[var(--color-surface-hover)]/40 rounded-t-lg font-bold'
+              : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+          }`}
+        >
+          <Clock className="w-4 h-4" />
+          <span>Dispetcherlik Navbati ({queueOrders.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('dispatches')}
+          className={`flex items-center gap-2 py-3 px-4 text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+            activeTab === 'dispatches'
+              ? 'border-[var(--color-accent-blue)] text-[var(--color-accent-blue)] bg-[var(--color-surface-hover)]/40 rounded-t-lg font-bold'
+              : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+          }`}
+        >
+          <Navigation className="w-4 h-4" />
+          <span>Yo‘ldagi Yuklar &amp; Reyslar ({dispatches.length})</span>
+        </button>
+
+        <button
           onClick={() => setActiveTab('fleet')}
-          className={`flex items-center gap-2 py-3 px-4 text-sm font-semibold border-b-2 transition-all ${
+          className={`flex items-center gap-2 py-3 px-4 text-sm font-semibold border-b-2 transition-all cursor-pointer ${
             activeTab === 'fleet'
-              ? 'border-[var(--color-accent-blue)] text-[var(--color-accent-blue)] bg-[var(--color-surface-hover)]/40 rounded-t-lg'
+              ? 'border-[var(--color-accent-blue)] text-[var(--color-accent-blue)] bg-[var(--color-surface-hover)]/40 rounded-t-lg font-bold'
               : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
           }`}
         >
           <Truck className="w-4 h-4" />
           <span>Avtopark Ro‘yxati ({totalVehicles})</span>
         </button>
-
-        <button
-          onClick={() => setActiveTab('dispatches')}
-          className={`flex items-center gap-2 py-3 px-4 text-sm font-semibold border-b-2 transition-all ${
-            activeTab === 'dispatches'
-              ? 'border-[var(--color-accent-blue)] text-[var(--color-accent-blue)] bg-[var(--color-surface-hover)]/40 rounded-t-lg'
-              : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
-          }`}
-        >
-          <Navigation className="w-4 h-4" />
-          <span>Jonli Dispecherlik & Reyslar ({dispatches.length})</span>
-        </button>
       </div>
 
-      {/* Tab 1: Avtopark Jadvali */}
+      {/* Tab 1: Dispetcherlik Navbati (Tayinlanmagan buyurtmalar) */}
+      {activeTab === 'queue' && (
+        <DataTable
+          columns={queueColumns}
+          data={queueOrders}
+          searchPlaceholder="Buyurtma raqami, xaridor yoki manzil bo‘yicha qidiruv..."
+          emptyTitle="Dispetcherlik navbatida buyurtma yo‘q"
+          emptyDescription="Barcha tasdiqlangan buyurtmalarga transport biriktirilgan."
+        />
+      )}
+
+      {/* Tab 2: Reyslar Jadvali (Yo'ldagi yuklar) */}
+      {activeTab === 'dispatches' && (
+        <DataTable
+          columns={dispatchColumns}
+          data={dispatches}
+          searchPlaceholder="Buyurtma raqami, xaridor yoki haydovchi bo‘yicha qidiruv..."
+          emptyTitle="Faol reyslar mavjud emas"
+          emptyDescription="«Reysga Biriktirish» tugmasi orqali yangi transport jo‘nating."
+        />
+      )}
+
+      {/* Tab 3: Avtopark Jadvali */}
       {activeTab === 'fleet' && (
         <DataTable
           columns={vehicleColumns}
@@ -508,17 +612,6 @@ export const FleetManager: React.FC = () => {
               </div>
             </div>
           }
-        />
-      )}
-
-      {/* Tab 2: Reyslar Jadvali */}
-      {activeTab === 'dispatches' && (
-        <DataTable
-          columns={dispatchColumns}
-          data={dispatches}
-          searchPlaceholder="Buyurtma raqami, xaridor yoki haydovchi bo‘yicha qidiruv..."
-          emptyTitle="Faol reyslar mavjud emas"
-          emptyDescription="«Reysga Biriktirish» tugmasi orqali yangi transport jo‘nating."
         />
       )}
 

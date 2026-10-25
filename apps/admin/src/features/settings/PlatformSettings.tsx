@@ -42,6 +42,19 @@ export const PlatformSettings: React.FC = () => {
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [savedNotification, setSavedNotification] = useState(false);
 
+  // 50/50 Escrow Rules (TZ-5 AD-12)
+  const [splitMinAmount, setSplitMinAmount] = useState(5000000);
+  const [splitWaitingMinutes, setSplitWaitingMinutes] = useState(30);
+  const [splitPenaltyRate, setSplitPenaltyRate] = useState(2.0);
+  const [autoConfirmHours, setAutoConfirmHours] = useState(24);
+  const [returnDaysAllowed, setReturnDaysAllowed] = useState(14);
+
+  // Logistics & Tariffs (TZ-4 LG-04, TZ-5 AD-12)
+  const [logisticsSharePct, setLogisticsSharePct] = useState(10);
+  const [baseDeliveryFee, setBaseDeliveryFee] = useState(150000);
+  const [kmFeeCity, setKmFeeCity] = useState(12000);
+  const [kmFeeIntercity, setKmFeeIntercity] = useState(9000);
+
   const handleSendTestSms = () => {
     setIsSendingSms(true);
     setTimeout(() => {
@@ -376,6 +389,159 @@ export const PlatformSettings: React.FC = () => {
                 Diqqat! Texnik xizmat rejimi yoqildi. Mijozlar vaqtinchalik kirishdan to'xtatiladi.
               </div>
             )}
+          </div>
+        </Card>
+
+        {/* 5. 50/50 Escrow Rules (TZ-5 AD-12) */}
+        <Card rivetAccents className="bg-[#252538] border-[#313244] space-y-4">
+          <div className="flex items-center justify-between border-b border-[#313244] pb-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                <ShieldCheck className="w-4 h-4" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-[#CDD6F4]">50/50 Escrow Qoidalari (AD-12)</h3>
+                <p className="text-[11px] text-[#6C7086] font-mono">Bo‘lib to‘lash, taymer va jarima nazorati</p>
+              </div>
+            </div>
+            <Badge variant="warning">B2B Qat'iy</Badge>
+          </div>
+
+          <div className="space-y-3 text-xs">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-mono text-[#A6ADC8] mb-1">
+                  Minimal buyurtma summasi (so‘m)
+                </label>
+                <input
+                  type="number"
+                  value={splitMinAmount}
+                  onChange={(e) => setSplitMinAmount(Number(e.target.value))}
+                  className="w-full bg-[#181825] border border-[#313244] rounded-xl px-3 py-2 text-[#CDD6F4] font-mono focus:outline-none focus:border-[#89B4FA]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-mono text-[#A6ADC8] mb-1">
+                  Kutish vaqti taymeri (daqiqa)
+                </label>
+                <input
+                  type="number"
+                  value={splitWaitingMinutes}
+                  onChange={(e) => setSplitWaitingMinutes(Number(e.target.value))}
+                  className="w-full bg-[#181825] border border-[#313244] rounded-xl px-3 py-2 text-[#CDD6F4] font-mono focus:outline-none focus:border-[#89B4FA]"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <label className="block text-xs font-mono text-[#A6ADC8] mb-1">
+                  Kechikish jarimasi (%)
+                </label>
+                <input
+                  type="number"
+                  step="0.5"
+                  value={splitPenaltyRate}
+                  onChange={(e) => setSplitPenaltyRate(Number(e.target.value))}
+                  className="w-full bg-[#181825] border border-[#313244] rounded-xl px-3 py-2 text-[#CDD6F4] font-mono focus:outline-none focus:border-[#89B4FA]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-mono text-[#A6ADC8] mb-1">
+                  Avto-tasdiqlash (soat)
+                </label>
+                <input
+                  type="number"
+                  value={autoConfirmHours}
+                  onChange={(e) => setAutoConfirmHours(Number(e.target.value))}
+                  className="w-full bg-[#181825] border border-[#313244] rounded-xl px-3 py-2 text-[#CDD6F4] font-mono focus:outline-none focus:border-[#89B4FA]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-mono text-[#A6ADC8] mb-1">
+                  Qaytarish muddati (kun)
+                </label>
+                <input
+                  type="number"
+                  value={returnDaysAllowed}
+                  onChange={(e) => setReturnDaysAllowed(Number(e.target.value))}
+                  className="w-full bg-[#181825] border border-[#313244] rounded-xl px-3 py-2 text-[#CDD6F4] font-mono focus:outline-none focus:border-[#89B4FA]"
+                />
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* 6. Logistics & Tariffs (TZ-4 LG-04, TZ-5 AD-12) */}
+        <Card rivetAccents className="bg-[#252538] border-[#313244] space-y-4">
+          <div className="flex items-center justify-between border-b border-[#313244] pb-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center">
+                <Globe className="w-4 h-4" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-[#CDD6F4]">Logistika &amp; Flot Tariflari</h3>
+                <p className="text-[11px] text-[#6C7086] font-mono">Platforma ulushi va masofa koeffitsientlari</p>
+              </div>
+            </div>
+            <Badge variant="success">Avtomatlashtirilgan</Badge>
+          </div>
+
+          <div className="space-y-3 text-xs">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-mono text-[#A6ADC8] mb-1">
+                  Platforma logistika ulushi (%)
+                </label>
+                <input
+                  type="number"
+                  value={logisticsSharePct}
+                  onChange={(e) => setLogisticsSharePct(Number(e.target.value))}
+                  className="w-full bg-[#181825] border border-[#313244] rounded-xl px-3 py-2 text-[#CDD6F4] font-mono focus:outline-none focus:border-[#89B4FA]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-mono text-[#A6ADC8] mb-1">
+                  Baza yuklash to‘lovi (so‘m)
+                </label>
+                <input
+                  type="number"
+                  value={baseDeliveryFee}
+                  onChange={(e) => setBaseDeliveryFee(Number(e.target.value))}
+                  className="w-full bg-[#181825] border border-[#313244] rounded-xl px-3 py-2 text-[#CDD6F4] font-mono focus:outline-none focus:border-[#89B4FA]"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-mono text-[#A6ADC8] mb-1">
+                  Shahar ichi 1 km stavkasi (so‘m)
+                </label>
+                <input
+                  type="number"
+                  value={kmFeeCity}
+                  onChange={(e) => setKmFeeCity(Number(e.target.value))}
+                  className="w-full bg-[#181825] border border-[#313244] rounded-xl px-3 py-2 text-[#CDD6F4] font-mono focus:outline-none focus:border-[#89B4FA]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-mono text-[#A6ADC8] mb-1">
+                  Viloyatlararo 1 km stavkasi (so‘m)
+                </label>
+                <input
+                  type="number"
+                  value={kmFeeIntercity}
+                  onChange={(e) => setKmFeeIntercity(Number(e.target.value))}
+                  className="w-full bg-[#181825] border border-[#313244] rounded-xl px-3 py-2 text-[#CDD6F4] font-mono focus:outline-none focus:border-[#89B4FA]"
+                />
+              </div>
+            </div>
           </div>
         </Card>
       </div>

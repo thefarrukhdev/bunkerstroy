@@ -8,9 +8,10 @@ import { EscoService } from '../src/modules/esco/esco.service';
 import { PaymentsService } from '../src/modules/payments/payments.service';
 import { AdminService } from '../src/modules/admin/admin.service';
 import { AuditLogService } from '../src/modules/admin/audit-log.service';
+import { HealthController } from '../src/modules/health/health.controller';
 import { RedisService } from '../src/redis/redis.service';
 import { PrismaService } from '../src/prisma/prisma.service';
-import { Role, OrderStatus } from '@bunkerstroy/db';
+import { Role, OrderStatus, PaymentMode, VerificationStatus, SupplierType, UserType } from '@bunkerstroy/db';
 import { ThrottlerStorage } from '@nestjs/throttler';
 import crypto from 'crypto';
 import { env } from '../src/config/env';
@@ -54,6 +55,18 @@ async function runAllBackendVerificationTests() {
 
     const throttlerStorage = app.get(ThrottlerStorage, { strict: false });
     assert(!!throttlerStorage, 'ThrottlerModule & ThrottlerStorage initialized with default and auth tiers');
+
+    const healthController = app.get(HealthController);
+    const mockRes: any = {
+      statusCode: 200,
+      status(code: number) { this.statusCode = code; return this; },
+      json(data: any) { this.data = data; return this; },
+    };
+    await healthController.checkHealth(mockRes);
+    assert(
+      mockRes.statusCode === 200 && mockRes.data.status === 'ok' && mockRes.data.services.database.status === 'healthy',
+      'HealthController /api/health returns 200 OK with connected database and redis'
+    );
 
     console.log('\n--- 2. Testing AuthService (Login, OTP, Refresh, STIR, Me) ---');
     // Admin login
@@ -412,13 +425,213 @@ async function runAllBackendVerificationTests() {
     const suppliers = await adminService.getSuppliers();
     assert(suppliers.length > 0, `Admin suppliers retrieved from DB (Count: ${suppliers.length})`);
 
+    console.log('\n--- 9. Testing Construction Marketplace TZ Mechanisms (50/50 Escrow, PIN, Disputes, Monitoring) ---');
+    // 1. Create a product with tiered prices for testing
+    const tieredProd = await catalogService.createProduct(
+      {
+        title: 'E2E Sement M500 Zinapoya',
+        categoryId: 'cat-sement',
+        price: 80000,
+        stock: 500,
+        unit: 'QOP',
+        description: 'E2E Zinapoyali narx sinovi uchun sement',
+        tieredPrices: [
+          { minQty: 10, maxQty: 49, price: 75000 },
+          { minQty: 50, price: 70000 },
+        ],
+      },
+      supplierLogin.user.id
+    );
+    assert((tieredProd.tieredPrices?.length ?? 0) === 2, 'Product created with Tiered Pricing ladders in DB');
+
+    // 2. Verify unauthorized individual client cannot use SPLIT_50_50
+    await prisma.user.update({
+      where: { id: verifyOtpRes.user.id },
+      data: { isAllowedSplitPayment: false, userType: UserType.INDIVIDUAL },
+    });
+    let unverifiedSplitRejected = false;
+    try {
+      await ordersService.createOrder(
+        {
+          items: [{ productId: tieredProd.id, quantity: 50 }],
+          deliveryAddress: {
+            region: 'Toshkent shahri',
+            district: 'Yunusobod tumani',
+            street: '12-mavze, 45-uchastka',
+          },
+          buyerPhone: testPhone,
+          buyerName: 'E2E Builder',
+          paymentMode: PaymentMode.SPLIT_50_50,
+        },
+        { id: verifyOtpRes.user.id, role: Role.CLIENT }
+      );
+    } catch (e: any) {
+      if (e.message?.includes('50/50 to‘lov rejimi')) {
+        unverifiedSplitRejected = true;
+      }
+    }
+    assert(unverifiedSplitRejected, 'SECURITY CHECK: 50/50 payment mode forbidden for unverified individual clients');
+
+    // Enable B2B 50/50 split permission via Admin
+    await adminService.setClientSplitPayment(verifyOtpRes.user.id, true, adminLogin.user.id);
+
+    // 3. Create Order with SPLIT_50_50 and quantity triggering 2nd tier (50 qop)
+    const splitOrder = await ordersService.createOrder(
+      {
+        items: [{ productId: tieredProd.id, quantity: 50 }],
+        deliveryAddress: {
+          region: 'Toshkent shahri',
+          district: 'Yunusobod tumani',
+          street: '12-mavze, 45-uchastka',
+          landmark: 'Megaplanet orqasida',
+        },
+        buyerPhone: testPhone,
+        buyerName: 'E2E Builder',
+        paymentMode: PaymentMode.SPLIT_50_50,
+      },
+      { id: verifyOtpRes.user.id, role: Role.CLIENT }
+    );
+
+    // Expected total: 50 * 70,000 = 3,500,000 UZS (tier price)
+    assert(Number(splitOrder.totalAmount) === 50 * 70000, `Tiered pricing applied automatically: ${splitOrder.totalAmount} UZS`);
+    assert(splitOrder.paymentMode === PaymentMode.SPLIT_50_50, 'Order created in SPLIT_50_50 payment mode');
+    assert(
+      Number(splitOrder.firstPaymentAmount) === Math.round(Number(splitOrder.finalAmount) / 2),
+      `First payment is exactly 50%: ${splitOrder.firstPaymentAmount}`
+    );
+    assert(
+      Number(splitOrder.secondPaymentAmount) === Number(splitOrder.finalAmount) - Number(splitOrder.firstPaymentAmount),
+      `Second payment is remaining 50%: ${splitOrder.secondPaymentAmount}`
+    );
+    assert(splitOrder.isSecondPaid === false, 'isSecondPaid is initially false');
+    const dbSplitOrder = await prisma.order.findUnique({ where: { id: splitOrder.id } });
+    assert(typeof dbSplitOrder?.acceptanceCode === 'string' && /^\d{4}$/.test(dbSplitOrder.acceptanceCode), `Acceptance PIN is a 4-digit code in DB (${dbSplitOrder?.acceptanceCode})`);
+    assert(splitOrder.acceptanceCode === null, 'PIN code hidden from client until full payment or arrival');
+    assert(splitOrder.subOrders && splitOrder.subOrders.length >= 1, `Sub-orders generated for multi-vendor fulfillment (Count: ${splitOrder.subOrders?.length})`);
+
+    // 3. Mark Arrived & Waiting timer (30 mins)
+    const arrivedOrder = await ordersService.markArrived(splitOrder.id, { id: 'DRIVER_1', role: Role.LOGISTICS_DRIVER });
+    assert(arrivedOrder.status === 'ARRIVED', 'markArrived updates status to ARRIVED');
+    assert(!!arrivedOrder.arrivedAt && !!arrivedOrder.waitingDeadline, 'Arrival timestamp and 30-min waitingDeadline recorded');
+    assert(arrivedOrder.isAcceptanceCodeRevealed === false, 'PIN code remains hidden for SPLIT_50_50 order until second payment');
+
+    // 4. Verification fails before paying 2nd half
+    let prematureVerificationBlocked = false;
+    try {
+      await ordersService.verifyAcceptanceCode(splitOrder.id, { code: dbSplitOrder!.acceptanceCode });
+    } catch (e: any) {
+      if (e.message?.includes('Ikkinchi 50% to‘lov hali to‘lanmagan')) {
+        prematureVerificationBlocked = true;
+      }
+    }
+    assert(prematureVerificationBlocked, 'verifyAcceptanceCode blocks release before second 50% payment');
+
+    // 5. Pay second 50%
+    const secondPaidOrder = await ordersService.paySecondHalf(splitOrder.id, { id: verifyOtpRes.user.id, role: Role.CLIENT });
+    assert(secondPaidOrder.isSecondPaid === true, 'paySecondHalf marks isSecondPaid to true');
+    assert(secondPaidOrder.status === 'FULLY_PAID', 'Order status transitions to FULLY_PAID');
+    assert(secondPaidOrder.isAcceptanceCodeRevealed === true, 'Acceptance PIN code revealed to buyer upon full payment');
+    assert(typeof secondPaidOrder.acceptanceCode === 'string' && secondPaidOrder.acceptanceCode === dbSplitOrder!.acceptanceCode, 'Revealed PIN matches generated DB PIN');
+
+    // 6. Test invalid PIN code rejection
+    let invalidPinRejected = false;
+    try {
+      await ordersService.verifyAcceptanceCode(splitOrder.id, { code: secondPaidOrder.acceptanceCode === '0000' ? '1111' : '0000' });
+    } catch (e: any) {
+      if (e.message?.includes('noto‘g‘ri')) {
+        invalidPinRejected = true;
+      }
+    }
+    assert(invalidPinRejected, 'verifyAcceptanceCode rejects incorrect PIN');
+
+    // 7. Verify with correct PIN code -> completes order & releases Escrow
+    const completedOrder = await ordersService.verifyAcceptanceCode(splitOrder.id, { code: secondPaidOrder.acceptanceCode! });
+    assert(completedOrder.status === 'COMPLETED' || completedOrder.status === 'RECEIVED', 'verifyAcceptanceCode successfully accepts goods');
+    const dbOrderCompleted = await prisma.order.findUnique({ where: { id: splitOrder.id } });
+    assert(dbOrderCompleted?.status === 'COMPLETED', 'Order finalized to COMPLETED in database');
+
+    // 8. Open Dispute Workflow
+    const disputeOrder = await ordersService.createOrder(
+      {
+        items: [{ productId: tieredProd.id, quantity: 10 }],
+        deliveryAddress: {
+          region: 'Toshkent shahri',
+          district: 'Olmazor tumani',
+          street: 'Kichik halqa yo‘li, 15-bino',
+        },
+        buyerPhone: testPhone,
+        buyerName: 'E2E Builder Dispute',
+        paymentMode: PaymentMode.FULL_100,
+      },
+      { id: verifyOtpRes.user.id, role: Role.CLIENT }
+    );
+    const dispute = await ordersService.openDispute(
+      disputeOrder.id,
+      {
+        reason: 'Sement qoplaridan 2 tasi yirtilgan va nam tekkan',
+        evidenceUrls: ['https://bunkerstroy.uz/evidence/sack1.jpg'],
+      },
+      { id: verifyOtpRes.user.id, role: Role.CLIENT }
+    );
+    assert(dispute.orderId === disputeOrder.id && dispute.status === 'OPEN', 'openDispute creates OPEN dispute record');
+    const orderInDispute = await prisma.order.findUnique({ where: { id: disputeOrder.id } });
+    assert(orderInDispute?.status === 'DISPUTE', 'Order status switches to DISPUTE');
+
+    // Admin resolves dispute
+    const resolvedDispute = await adminService.resolveDispute(
+      dispute.id,
+      'RESOLVED_REFUND',
+      'Ta‘minotchi 2 qop sementni bepul almashtirib berdi',
+      0,
+      adminLogin.user.id
+    );
+    assert(resolvedDispute.status === 'RESOLVED_REFUND', 'Admin resolveDispute successfully resolves dispute');
+
+    // 9. Admin Monitoring Dashboard
+    const monitoringData = await adminService.getMonitoringData();
+    assert(
+      monitoringData.kpis && typeof monitoringData.kpis.todayOrdersCount === 'number',
+      `Admin monitoring dashboard computes real-time KPIs (Today Orders: ${monitoringData.kpis.todayOrdersCount})`
+    );
+    assert(Array.isArray(monitoringData.attentionList), 'Admin monitoring returns live attentionList');
+
+    // 10. Admin Partners Integration
+    const partners = await adminService.getPartners();
+    assert(partners.length === 6, `Admin partners integrations returned (Count: ${partners.length})`);
+    assert(partners.some(p => p.code === 'PAYME'), 'Payme payment partner present');
+    assert(partners.some(p => p.code === 'CLICK'), 'Click payment partner present');
+    assert(partners.some(p => p.code === 'ESCROW_BANK'), 'Escrow Bank partner present');
+    assert(partners.some(p => p.code === 'E_IMZO'), 'E-IMZO state PKCS#7 partner present');
+
+    // 11. Admin Supplier Verification
+    const verifyRes = await adminService.verifySupplier(
+      supplierLogin.user.id,
+      VerificationStatus.VERIFIED,
+      SupplierType.LOCAL,
+      adminLogin.user.id
+    );
+    assert(verifyRes.verificationStatus === VerificationStatus.VERIFIED, 'Admin verifySupplier validates supplier account');
+
     // Clean up created test data
+    const userOrders = await prisma.order.findMany({ where: { buyerId: verifyOtpRes.user.id } });
+    const allTestOrderIds = Array.from(new Set([...userOrders.map(o => o.id), createdOrder.id, splitOrder.id, disputeOrder.id]));
+
+    await prisma.dispute.deleteMany({ where: { orderId: { in: allTestOrderIds } } });
+    await prisma.subOrder.deleteMany({ where: { orderId: { in: allTestOrderIds } } });
+    await prisma.paymentTransaction.deleteMany({ where: { orderId: { in: allTestOrderIds } } });
+    await prisma.logisticsDispatch.deleteMany({ where: { orderId: { in: allTestOrderIds } } });
+    await prisma.orderItem.deleteMany({
+      where: {
+        OR: [
+          { orderId: { in: allTestOrderIds } },
+          { productId: { in: [newProd.id, tieredProd.id] } },
+        ],
+      },
+    });
+    await prisma.order.deleteMany({ where: { id: { in: allTestOrderIds } } });
+    await prisma.productTieredPrice.deleteMany({ where: { productId: tieredProd.id } });
+    await prisma.product.deleteMany({ where: { id: { in: [newProd.id, tieredProd.id] } } });
     await prisma.escoAudit.deleteMany({ where: { clientId: verifyOtpRes.user.id } });
-    await prisma.logisticsDispatch.deleteMany({ where: { orderId: createdOrder.id } });
-    await prisma.paymentTransaction.deleteMany({ where: { orderId: createdOrder.id } });
-    await prisma.orderItem.deleteMany({ where: { orderId: createdOrder.id } });
-    await prisma.order.delete({ where: { id: createdOrder.id } });
-    await prisma.product.delete({ where: { id: newProd.id } });
     await prisma.auditLog.deleteMany({
       where: {
         action: {
@@ -427,6 +640,13 @@ async function runAllBackendVerificationTests() {
             'ESCO_AUDIT_SAVED',
             'LOGISTICS_DISPATCH',
             'LOGISTICS_DISPATCH_STATUS_UPDATED',
+            'ORDER_ARRIVED',
+            'SECOND_PAYMENT_COMPLETED',
+            'ORDER_RECEIVED_VERIFIED',
+            'ORDER_DISPUTE_OPENED',
+            'DISPUTE_RESOLVED',
+            'SUPPLIER_VERIFICATION_UPDATED',
+            'CLIENT_SPLIT_PAYMENT_RULE_UPDATED',
           ],
         },
       },

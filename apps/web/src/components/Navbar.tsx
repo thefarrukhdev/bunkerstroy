@@ -21,6 +21,7 @@ import {
   Package
 } from 'lucide-react';
 import { cn } from '@bunkerstroy/ui';
+import { useLanguage } from '../context/LanguageContext';
 
 /* ==========================================================================
    Types & Configuration
@@ -32,6 +33,7 @@ export interface CurrentUser {
   displayName?: string;
   email?: string;
   role?: string;
+  phone?: string;
   [key: string]: any;
 }
 
@@ -50,6 +52,41 @@ export interface NavItemConfig {
   icon: React.ComponentType<{ className?: string }>;
   badge?: string;
 }
+
+export const getNavItems = (t: (key: string, fallback?: string) => string): readonly NavItemConfig[] => [
+  {
+    to: '/',
+    label: t('nav.catalog', 'Katalog'),
+    description: t('nav.catalog.desc', 'Barcha qurilish mollari va materiallar'),
+    icon: Building2
+  },
+  {
+    to: '/suppliers',
+    label: t('nav.suppliers', 'Do‘konlar & Zavodlar'),
+    description: t('nav.suppliers.desc', 'Tasdiqlangan ishlab chiqaruvchilar'),
+    icon: Factory
+  },
+  {
+    to: '/orders',
+    label: t('nav.orders', 'Buyurtmalarim'),
+    description: t('nav.orders.desc', 'Xaridlar va yetkazib berish holati'),
+    icon: ClipboardList
+  },
+  {
+    to: '/driver',
+    label: t('nav.driver', 'Haydovchi'),
+    description: t('nav.driver.desc', 'Haydovchi mobil kabineti va reyslar'),
+    icon: Truck,
+    badge: 'MOBIL'
+  },
+  {
+    to: '/seller-panel',
+    label: t('nav.sell_product', '+ Mahsulot sotish'),
+    description: t('nav.seller_cabinet.desc', 'Sotuvchi va ishlab chiqaruvchi kabineti'),
+    icon: Package,
+    badge: 'KABINET'
+  }
+];
 
 export const NAV_ITEMS: readonly NavItemConfig[] = [
   {
@@ -71,6 +108,13 @@ export const NAV_ITEMS: readonly NavItemConfig[] = [
     icon: ClipboardList
   },
   {
+    to: '/driver',
+    label: 'Haydovchi',
+    description: 'Haydovchi mobil kabineti va reyslar',
+    icon: Truck,
+    badge: 'MOBIL'
+  },
+  {
     to: '/seller-panel',
     label: '+ Mahsulot sotish',
     description: 'Sotuvchi va ishlab chiqaruvchi kabineti',
@@ -78,6 +122,89 @@ export const NAV_ITEMS: readonly NavItemConfig[] = [
     badge: 'KABINET'
   }
 ] as const;
+
+/* ==========================================================================
+   Subcomponent: LanguageToggle
+   Industrial segmented language switch (UZ | RU)
+   ========================================================================== */
+
+export const LanguageToggle: React.FC<{ variant?: 'desktop' | 'mobile' }> = ({ variant = 'desktop' }) => {
+  const { language, setLanguage } = useLanguage();
+
+  if (variant === 'mobile') {
+    return (
+      <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
+        <div className="flex items-center gap-2">
+          <Globe className="w-4 h-4 text-bunker-amber-500" />
+          <span className="text-xs font-mono font-bold text-slate-700">Til / Язык</span>
+        </div>
+        <div className="inline-flex p-0.5 rounded-lg bg-slate-200/80 border border-slate-300/60 font-mono text-[11px] font-bold">
+          <button
+            type="button"
+            onClick={() => setLanguage('uz')}
+            className={cn(
+              'px-2.5 py-1 rounded-md transition-all cursor-pointer',
+              language === 'uz'
+                ? 'bg-slate-900 text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+            )}
+          >
+            UZ
+          </button>
+          <button
+            type="button"
+            onClick={() => setLanguage('ru')}
+            className={cn(
+              'px-2.5 py-1 rounded-md transition-all cursor-pointer',
+              language === 'ru'
+                ? 'bg-slate-900 text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+            )}
+          >
+            RU
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="inline-flex items-center h-9 p-0.5 rounded-lg bg-slate-100 border border-slate-200/90 font-mono text-[11px] font-bold shadow-xs select-none"
+      role="group"
+      aria-label="Tilni tanlash / Выбор языка"
+    >
+      <button
+        type="button"
+        onClick={() => setLanguage('uz')}
+        title="O‘zbek tili"
+        aria-label="O‘zbek tili"
+        className={cn(
+          'h-7.5 px-2 rounded-md transition-all cursor-pointer flex items-center justify-center font-bold',
+          language === 'uz'
+            ? 'bg-white text-slate-900 shadow-xs border border-slate-200/80 text-bunker-amber-600'
+            : 'text-slate-500 hover:text-slate-800'
+        )}
+      >
+        UZ
+      </button>
+      <button
+        type="button"
+        onClick={() => setLanguage('ru')}
+        title="Русский язык"
+        aria-label="Русский язык"
+        className={cn(
+          'h-7.5 px-2 rounded-md transition-all cursor-pointer flex items-center justify-center font-bold',
+          language === 'ru'
+            ? 'bg-white text-slate-900 shadow-xs border border-slate-200/80 text-bunker-amber-600'
+            : 'text-slate-500 hover:text-slate-800'
+        )}
+      >
+        RU
+      </button>
+    </div>
+  );
+};
 
 /* ==========================================================================
    Subcomponent: BrandLogo
@@ -89,6 +216,8 @@ interface BrandLogoProps {
 }
 
 export const BrandLogo: React.FC<BrandLogoProps> = ({ onClick }) => {
+  const { t } = useLanguage();
+
   return (
     <Link
       to="/"
@@ -112,7 +241,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({ onClick }) => {
           </span>
         </div>
         <span className="text-[9px] font-mono font-medium tracking-[0.14em] text-slate-400 uppercase mt-1 leading-none">
-          Sanoat Xaridlari
+          {t('brand.sub', 'Sanoat Xaridlari')}
         </span>
       </div>
     </Link>
@@ -240,6 +369,7 @@ interface CartButtonProps {
 }
 
 export const CartButton: React.FC<CartButtonProps> = ({ count, onClick, className }) => {
+  const { t } = useLanguage();
   const hasItems = count > 0;
 
   return (
@@ -263,7 +393,7 @@ export const CartButton: React.FC<CartButtonProps> = ({ count, onClick, classNam
           hasItems ? 'text-bunker-amber-500' : 'text-slate-500'
         )}
       />
-      <span className="hidden sm:inline font-semibold">Savat</span>
+      <span className="hidden sm:inline font-semibold">{t('nav.cart', 'Savat')}</span>
       {hasItems && (
         <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-mono font-bold rounded-full bg-bunker-amber-500 text-white shadow-xs">
           {count > 99 ? '99+' : count}
@@ -291,6 +421,8 @@ export const UserAccountBadge: React.FC<UserAccountBadgeProps> = ({
   onLogout,
   variant = 'desktop'
 }) => {
+  const { t } = useLanguage();
+
   if (!currentUser) {
     return (
       <button
@@ -302,7 +434,7 @@ export const UserAccountBadge: React.FC<UserAccountBadgeProps> = ({
         )}
       >
         <UserIcon className="w-3.5 h-3.5 text-slate-300 shrink-0" />
-        <span>B2B Kirish</span>
+        <span>{t('nav.login', 'B2B Kirish')}</span>
       </button>
     );
   }
@@ -335,8 +467,8 @@ export const UserAccountBadge: React.FC<UserAccountBadgeProps> = ({
         <button
           type="button"
           onClick={onLogout}
-          title="Tizimdan chiqish"
-          aria-label="Tizimdan chiqish"
+          title={t('nav.logout', 'Tizimdan chiqish')}
+          aria-label={t('nav.logout', 'Tizimdan chiqish')}
           className="p-1.5 rounded-md text-slate-400 hover:text-bunker-status-red hover:bg-red-50 transition-colors cursor-pointer shrink-0"
         >
           <LogOut className="w-3.5 h-3.5" />
@@ -370,8 +502,8 @@ export const UserAccountBadge: React.FC<UserAccountBadgeProps> = ({
         <button
           type="button"
           onClick={onLogout}
-          title="Tizimdan chiqish"
-          aria-label="Tizimdan chiqish"
+          title={t('nav.logout', 'Tizimdan chiqish')}
+          aria-label={t('nav.logout', 'Tizimdan chiqish')}
           className="p-2 rounded-lg text-slate-400 hover:text-bunker-status-red hover:bg-red-50 border border-transparent hover:border-red-100 transition-colors cursor-pointer shrink-0"
         >
           <LogOut className="w-4 h-4" />
@@ -405,6 +537,9 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
   onOpenAuth,
   onLogout
 }) => {
+  const { t } = useLanguage();
+  const navItems = getNavItems(t);
+
   // Close on Escape key
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -481,6 +616,9 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
             variant="mobile"
           />
 
+          {/* Language Switcher */}
+          <LanguageToggle variant="mobile" />
+
           {/* Quick Cart Trigger Banner */}
           <button
             type="button"
@@ -496,7 +634,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               <ShoppingCart
                 className={cn('w-4 h-4', cartCount > 0 ? 'text-bunker-amber-500' : 'text-slate-500')}
               />
-              <span className="font-semibold text-sm">Xarid Savati</span>
+              <span className="font-semibold text-sm">{t('nav.cart', 'Xarid Savati')}</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded-full bg-bunker-amber-500 text-white">
@@ -509,9 +647,9 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
           {/* Navigation Items (DRY NavLinkItem mapping) */}
           <div className="space-y-1.5 pt-1">
             <div className="text-[10px] font-mono font-bold tracking-wider text-slate-400 uppercase px-1 pb-1">
-              Platforma Bo'limlari
+              {t('nav.sections', 'Platforma Bo‘limlari')}
             </div>
-            {NAV_ITEMS.map((item) => (
+            {navItems.map((item) => (
               <NavLinkItem key={item.to} item={item} variant="mobile" onClick={onClose} />
             ))}
           </div>
@@ -527,11 +665,11 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               <PhoneCall className="w-3.5 h-3.5 text-bunker-amber-500" />
               <span className="font-mono font-bold">+998 (71) 200-00-00</span>
             </div>
-            <span className="text-[10px] text-slate-400">24/7 B2B Qo'llab-quvvatlash</span>
+            <span className="text-[10px] text-slate-400">{t('nav.support', '24/7 B2B Qo‘llab-quvvatlash')}</span>
           </a>
           <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 px-1 pt-1">
             <span>BunkerStroy Enterprise v2.4</span>
-            <span>O'zDSt / GOST Sertifikatlangan</span>
+            <span>O‘zDSt / GOST Sertifikatlangan</span>
           </div>
         </div>
       </div>
@@ -553,6 +691,8 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { t } = useLanguage();
+  const navItems = getNavItems(t);
 
   // Auto-close mobile menu on route change
   useEffect(() => {
@@ -572,13 +712,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="hidden lg:flex items-center gap-0.5 xl:gap-1"
               aria-label="Asosiy navigatsiya"
             >
-              {NAV_ITEMS.map((item) => (
+              {navItems.map((item) => (
                 <NavLinkItem key={item.to} item={item} variant="desktop" />
               ))}
             </nav>
 
-            {/* 3. Action Controls (Cart, STIR / Auth, Mobile Toggle) */}
+            {/* 3. Action Controls (Language, Cart, STIR / Auth, Mobile Toggle) */}
             <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+              {/* Industrial Language Toggle Button (UZ | RU) */}
+              <LanguageToggle variant="desktop" />
+
               {/* Cart Button */}
               <CartButton count={cartCount} onClick={onOpenCart} />
 

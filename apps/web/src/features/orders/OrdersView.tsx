@@ -12,8 +12,14 @@ import {
   ExternalLink,
   ShieldCheck,
   Sparkles,
-  Receipt
+  Receipt,
+  AlertTriangle,
+  QrCode,
+  KeyRound,
+  FileText,
+  FileCheck
 } from 'lucide-react';
+import { B2bDocumentsModal } from './B2bDocumentsModal';
 import { Order, OrderStatus } from '@bunkerstroy/types';
 import {
   Badge,
@@ -27,13 +33,22 @@ import {
   TableBody,
   TableRow,
   TableHead,
-  TableCell
+  TableCell,
+  Input
 } from '@bunkerstroy/ui';
 
 interface PaymentModalState {
   isOpen: boolean;
   order: Order | null;
   provider: 'PAYME' | 'CLICK';
+}
+
+interface DisputeModalState {
+  isOpen: boolean;
+  orderId: string | null;
+  orderNumber: string | null;
+  reason: string;
+  evidenceUrl: string;
 }
 
 export const OrdersView: React.FC = () => {
@@ -52,11 +67,24 @@ export const OrdersView: React.FC = () => {
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [paymentSuccessMsg, setPaymentSuccessMsg] = useState<string | null>(null);
 
+  // Dispute modal state
+  const [disputeModal, setDisputeModal] = useState<DisputeModalState>({
+    isOpen: false,
+    orderId: null,
+    orderNumber: null,
+    reason: '',
+    evidenceUrl: ''
+  });
+  const [disputeLoading, setDisputeLoading] = useState(false);
+  const [actionSuccessMsg, setActionSuccessMsg] = useState<string | null>(null);
+
+  // B2B Documents modal state (MJ-03, MJ-04)
+  const [selectedB2bOrder, setSelectedB2bOrder] = useState<Order | null>(null);
+
   const getToken = () => {
     return typeof window !== 'undefined' ? localStorage.getItem('bunkerstroy_token') : null;
   };
 
-  // Fetch orders from API
   const fetchOrders = async (isManualRefresh = false) => {
     if (isManualRefresh) setRefreshing(true);
     else setLoading(true);
@@ -102,7 +130,6 @@ export const OrdersView: React.FC = () => {
     setPaymentSuccessMsg(null);
   };
 
-  // Simulate payment
   const handleSimulatePayment = async () => {
     if (!paymentModal.order) return;
 
@@ -158,30 +185,106 @@ export const OrdersView: React.FC = () => {
         setTimeout(() => {
           setPaymentModal({ isOpen: false, order: null, provider: 'PAYME' });
           fetchOrders(true);
-        }, 1500);
+        }, 1200);
       } else {
         setPaymentError(json.message || json.error_note || 'To‘lov jarayonida xatolik yuz berdi');
       }
-    } catch (e: any) {
-      console.error(e);
+    } catch {
       setPaymentError('Server bilan aloqa uzildi');
     } finally {
       setSimulatingPayment(false);
     }
   };
 
+  // Pay second 50% for arrived orders
+  const handlePaySecondHalf = async (orderId: string) => {
+    const token = getToken();
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    try {
+      const res = await fetch(`/api/orders/${orderId}/pay-second-half`, {
+        method: 'POST',
+        headers
+      });
+      const json = await res.json();
+      if (res.ok && json.success) {
+        setActionSuccessMsg('Ikkinchi 50% to‘lov qabul qilindi! Qabul kodi ochildi.');
+        fetchOrders(true);
+      } else {
+        alert(json.message || 'Xatolik yuz berdi');
+      }
+    } catch {
+      alert('Server bilan aloqa uzildi');
+    }
+  };
+
+  // Submit dispute
+  const handleSubmitDispute = async () => {
+    if (!disputeModal.orderId || !disputeModal.reason.trim()) {
+      alert('Iltimos, e‘tiroz sababini kiriting');
+      return;
+    }
+
+    setDisputeLoading(true);
+    const token = getToken();
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    try {
+      const res = await fetch(`/api/orders/${disputeModal.orderId}/dispute`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          reason: disputeModal.reason.trim(),
+          evidenceUrls: disputeModal.evidenceUrl ? [disputeModal.evidenceUrl.trim()] : []
+        })
+      });
+      const json = await res.json();
+      if (res.ok && json.success) {
+        setDisputeModal({ isOpen: false, orderId: null, orderNumber: null, reason: '', evidenceUrl: '' });
+        setActionSuccessMsg('Nizo arizangiz muvaffaqiyatli qabul qilindi. Operatorlar ko‘rib chiqadi.');
+        fetchOrders(true);
+      } else {
+        alert(json.message || 'Nizo ochishda xatolik yuz berdi');
+      }
+    } catch {
+      alert('Server bilan aloqa uzildi');
+    } finally {
+      setDisputeLoading(false);
+    }
+  };
+
   const getStatusBadge = (status: OrderStatus) => {
     switch (status) {
+      case 'DRAFT':
+        return <Badge variant="neutral">SAVATDA</Badge>;
+      case 'PENDING_PAYMENT':
       case 'PENDING':
-        return <Badge variant="warning" className="bg-orange-50 text-orange-800 border-orange-200">KUTILMOQDA</Badge>;
+        return <Badge variant="warning" className="bg-orange-50 text-orange-800 border-orange-200">TO‘LOV KUTILMOQDA</Badge>;
+      case 'PAID':
       case 'CONFIRMED':
-        return <Badge variant="info" className="bg-sky-50 text-sky-800 border-sky-200">TASDIQLANDI</Badge>;
+        return <Badge variant="info" className="bg-sky-50 text-sky-800 border-sky-200">TO‘LANDI (TASDIQLANDI)</Badge>;
+      case 'ACCEPTED':
+        return <Badge variant="info" className="bg-blue-50 text-blue-800 border-blue-200">TA‘MINOTCHI TASDIQLADI</Badge>;
+      case 'PACKING':
+        return <Badge variant="warning" className="bg-amber-50 text-amber-800 border-amber-200">YIG‘ILMOQDA (OMBORDA)</Badge>;
+      case 'ASSIGNED':
       case 'ASSIGNED_TO_FLEET':
-        return <Badge variant="warning" className="bg-amber-50 text-amber-800 border-amber-200">TRANSPORT BIRIKTIRILDI</Badge>;
+        return <Badge variant="warning" className="bg-amber-50 text-amber-800 border-amber-200">HAYDOVCHI TAYINLANDI</Badge>;
       case 'IN_TRANSIT':
-        return <Badge variant="info" className="bg-sky-50 text-sky-800 border-sky-200">YUK TASHINMOQDA (YO‘LDA)</Badge>;
+        return <Badge variant="info" className="bg-indigo-50 text-indigo-800 border-indigo-200">YO‘LDA (YUK TASHINMOQDA)</Badge>;
+      case 'ARRIVED':
+        return <Badge variant="warning" className="bg-amber-100 text-amber-900 border-amber-300 font-bold">MANZILGA YETIB KELDI</Badge>;
+      case 'FULLY_PAID':
+        return <Badge variant="success" className="bg-emerald-50 text-emerald-800 border-emerald-200">TO‘LIQ TO‘LANGAN</Badge>;
+      case 'RECEIVED':
       case 'DELIVERED':
-        return <Badge variant="success" className="bg-emerald-50 text-emerald-800 border-emerald-200">YETKAZILDI</Badge>;
+        return <Badge variant="success" className="bg-emerald-100 text-emerald-900 border-emerald-300">QABUL QILINDI</Badge>;
+      case 'COMPLETED':
+        return <Badge variant="success" className="bg-emerald-200 text-emerald-950 border-emerald-400 font-bold">YAKUNLANDI (ESCROW AJRATILDI)</Badge>;
+      case 'DISPUTE':
+        return <Badge variant="danger" className="bg-red-50 text-red-800 border-red-300 font-bold">OCHIQ NIZO (DISPUTE)</Badge>;
       case 'CANCELLED':
         return <Badge variant="danger" className="bg-red-50 text-red-800 border-red-200">BEKOR QILINGAN</Badge>;
       default:
@@ -191,31 +294,38 @@ export const OrdersView: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* 1. Minimalist Orders Header */}
-      <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* 1. Header */}
+      <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 font-mono">
         <div>
           <div className="mb-1.5">
-            <span className="text-xs font-mono font-bold text-bunker-amber-500 uppercase tracking-wider">
-              Xaridlar Tarixi
+            <span className="text-xs font-bold text-bunker-amber-500 uppercase tracking-wider">
+              BunkerStroy Mijoz Kabineti
             </span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-extrabold text-bunker-text-primary tracking-tight">
-            Mening Buyurtmalarim &amp; Yetkazib Berish Holati
+          <h1 className="text-xl sm:text-2xl font-extrabold text-bunker-text-primary tracking-tight font-sans">
+            Mening Buyurtmalarim &amp; Yetkazib Berish Nazorati
           </h1>
-          <p className="text-xs sm:text-sm text-bunker-text-secondary mt-1">
-            Sotib olingan qurilish mollari, buyurtma holati va yetkazib berish jarayoni.
+          <p className="text-xs sm:text-sm text-bunker-text-secondary mt-1 font-sans">
+            Escrow kafolati, 50/50 to‘lov boshqaruvi va qabul kodi orqali yuklarni xavfsiz qabul qilish.
           </p>
         </div>
-        <div className="flex items-center gap-2 font-mono text-xs">
-          <Badge variant="neutral" size="sm" isMono>
+        <div className="flex items-center gap-2">
+          <Badge variant="warning" size="md" isMono>
+            ESCROW HIMOYA
+          </Badge>
+          <Badge variant="neutral" size="md" isMono>
             {orders.length} ta buyurtma
           </Badge>
         </div>
       </div>
 
+      {actionSuccessMsg && (
+        <Alert variant="success" description={actionSuccessMsg} onDismiss={() => setActionSuccessMsg(null)} />
+      )}
+
       {/* 2. Control bar */}
-      <div className="flex items-center justify-between bg-white border border-bunker-border-strong p-4 rounded-xl shadow-xs">
-        <div className="flex items-center gap-2 font-mono">
+      <div className="flex items-center justify-between bg-white border border-bunker-border-strong p-4 rounded-xl shadow-xs font-mono">
+        <div className="flex items-center gap-2">
           <span className="text-xs font-bold uppercase text-bunker-text-primary">
             Jami Buyurtmalar:
           </span>
@@ -258,31 +368,32 @@ export const OrdersView: React.FC = () => {
       ) : orders.length === 0 ? (
         <div className="text-center py-20 bg-white border border-dashed border-bunker-border-strong rounded-2xl p-8 space-y-3 text-bunker-text-secondary font-mono shadow-xs">
           <Package className="w-12 h-12 mx-auto text-bunker-amber-500/50" />
-          <h3 className="font-bold text-base text-bunker-text-primary">Hozircha buyurtmalar yo‘q</h3>
-          <p className="text-xs max-w-sm mx-auto text-bunker-text-muted">
-            Marketplacedan materiallarni tanlang va B2B shartnomani rasmiylashtiring.
+          <h3 className="font-bold text-base text-bunker-text-primary font-sans">Hozircha buyurtmalar mavjud emas</h3>
+          <p className="text-xs max-w-sm mx-auto text-bunker-text-muted font-sans">
+            Katalogdan kerakli materiallarni savatchaga qo‘shing va Escrow himoyasi ostida buyurtma bering.
           </p>
         </div>
       ) : (
         <div className="space-y-4">
           {orders.map((o) => {
             const isExpanded = !!expandedOrderIds[o.id];
-            const isPendingPayment = o.paymentStatus !== 'PAID';
+            const isPendingPayment = o.paymentStatus !== 'PAID' && o.status === 'PENDING_PAYMENT';
+            const isArrivedWaitingSecondPayment = o.status === 'ARRIVED' && o.paymentMode === 'SPLIT_50_50' && !o.isSecondPaid;
 
             return (
               <Card
                 key={o.id}
-                className="space-y-4 border-bunker-border-strong hover:border-bunker-amber-500/60 transition-all shadow-xs hover:shadow-md"
+                className="space-y-4 border-bunker-border-strong hover:border-bunker-amber-500/60 transition-all shadow-xs"
               >
                 {/* Header Row */}
-                <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-bunker-border-subtle">
+                <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-bunker-border-subtle font-mono">
                   <div className="flex items-center gap-2.5">
                     <div className="w-8 h-8 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center">
                       <Package className="w-4 h-4 text-bunker-amber-500" />
                     </div>
                     <div>
-                      <span className="font-bold text-sm text-bunker-text-primary font-mono">{o.orderNumber}</span>
-                      <span className="text-[11px] text-bunker-text-muted font-mono ml-2">
+                      <span className="font-bold text-sm text-bunker-text-primary">{o.orderNumber}</span>
+                      <span className="text-[11px] text-bunker-text-muted ml-2">
                         {new Date(o.createdAt).toLocaleString()}
                       </span>
                     </div>
@@ -290,180 +401,290 @@ export const OrdersView: React.FC = () => {
 
                   <div className="flex items-center gap-2">
                     {getStatusBadge(o.status)}
-                    {o.paymentStatus === 'PAID' ? (
-                      <Badge variant="success" className="font-mono text-[10px] bg-emerald-50 text-emerald-800 border-emerald-200">
-                        TO‘LANGAN
-                      </Badge>
-                    ) : (
-                      <Badge variant="warning" className="font-mono text-[10px] bg-orange-50 text-orange-800 border-orange-200">
-                        TO‘LOV KUTILMOQDA
-                      </Badge>
-                    )}
+                    <Badge variant="neutral" isMono size="sm">
+                      {o.paymentMode === 'SPLIT_50_50' ? '50/50 BO‘LIB TO‘LASH' : '100% ESCROW'}
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* Status Progress Line */}
+                <div className="bg-slate-50 border border-bunker-border-subtle rounded-xl p-3 font-mono text-[11px]">
+                  <div className="flex items-center justify-between text-slate-700 font-bold mb-2">
+                    <span>Buyurtma bosqichi:</span>
+                    <span className="text-bunker-amber-600 uppercase">{o.status}</span>
+                  </div>
+                  <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                    <div
+                      className="bg-bunker-amber-500 h-full transition-all duration-500"
+                      style={{
+                        width:
+                          o.status === 'PENDING_PAYMENT' ? '10%'
+                          : o.status === 'PAID' || o.status === 'CONFIRMED' ? '25%'
+                          : o.status === 'ACCEPTED' || o.status === 'PACKING' ? '40%'
+                          : o.status === 'ASSIGNED' || o.status === 'ASSIGNED_TO_FLEET' ? '55%'
+                          : o.status === 'IN_TRANSIT' ? '70%'
+                          : o.status === 'ARRIVED' ? '85%'
+                          : o.status === 'FULLY_PAID' || o.status === 'RECEIVED' ? '95%'
+                          : o.status === 'COMPLETED' ? '100%'
+                          : '5%'
+                      }}
+                    />
                   </div>
                 </div>
 
                 {/* Primary Information Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-bunker-text-secondary">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-bunker-text-secondary font-mono">
                   <div>
-                    <span className="text-bunker-text-muted block uppercase font-mono text-[10px]">Qabul qiluvchi:</span>
+                    <span className="text-bunker-text-muted block uppercase text-[10px]">Qabul qiluvchi:</span>
                     <p className="font-semibold text-bunker-text-primary mt-0.5">{o.buyerName}</p>
-                    <p className="font-mono text-[11px]">{o.buyerPhone}</p>
+                    <p className="text-[11px]">{o.buyerPhone}</p>
                   </div>
 
                   <div>
-                    <span className="text-bunker-text-muted block uppercase font-mono text-[10px]">Yetkazish manzili:</span>
+                    <span className="text-bunker-text-muted block uppercase text-[10px]">Yetkazish manzili:</span>
                     <p className="font-semibold text-bunker-text-primary mt-0.5">
                       {o.deliveryAddress?.region || 'Toshkent shahri'}, {o.deliveryAddress?.district || 'Chilonzor'}
                     </p>
-                    <p className="truncate text-[11px] text-bunker-text-muted">{o.deliveryAddress?.street || 'Ob’ekt manzili'}</p>
+                    <p className="truncate text-[11px] text-bunker-text-muted">{o.deliveryAddress?.street || 'Ko‘rsatilmagan'}</p>
                   </div>
 
                   <div>
-                    <span className="text-bunker-text-muted block uppercase font-mono text-[10px]">Jami summa:</span>
-                    <p className="text-base font-extrabold text-bunker-amber-500 font-mono mt-0.5">
+                    <span className="text-bunker-text-muted block uppercase text-[10px]">Jami summa:</span>
+                    <p className="text-base font-extrabold text-bunker-amber-500 mt-0.5">
                       {Number(o.finalAmount).toLocaleString()} so'm
                     </p>
-                    <p className="text-[11px] text-bunker-text-muted font-mono">Usul: {o.paymentMethod}</p>
+                    <p className="text-[11px] text-bunker-text-muted">Rejim: {o.paymentMode}</p>
                   </div>
                 </div>
 
-                {/* PENDING PAYMENT ACTION BUTTONS */}
+                {/* 1. INITIAL PAYMENT BUTTON (If pending payment) */}
                 {isPendingPayment && (
-                  <div className="bg-orange-50/60 border border-orange-200/80 p-3.5 rounded-xl flex flex-wrap items-center justify-between gap-3 font-mono">
-                    <div className="flex items-center gap-2 text-xs text-orange-800">
+                  <div className="bg-orange-50/70 border border-orange-200 p-3.5 rounded-xl flex flex-wrap items-center justify-between gap-3 font-mono">
+                    <div className="flex items-center gap-2 text-xs text-orange-900">
                       <CreditCard className="w-4 h-4 shrink-0 text-bunker-amber-500" />
-                      <span>Ushbu buyurtma to‘lovi kutilmoqda. Onlayn to‘lovni amalga oshiring:</span>
+                      <span>
+                        {o.paymentMode === 'SPLIT_50_50'
+                          ? `Birinchi 50% avans to‘lovi (${(Number(o.firstPaymentAmount || o.finalAmount / 2)).toLocaleString()} so‘m) kutilmoqda:`
+                          : `To‘liq to‘lov (${Number(o.finalAmount).toLocaleString()} so‘m) kutilmoqda:`}
+                      </span>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+                    <div className="flex items-center gap-2">
                       <button
                         type="button"
                         onClick={() => handleOpenPayment(o, 'PAYME')}
-                        className="px-3 py-2 rounded-xl bg-white border border-sky-300 text-sky-800 hover:bg-sky-50 font-bold text-xs font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-xs w-full sm:w-auto"
+                        className="px-3 py-1.5 rounded-lg bg-white border border-sky-300 text-sky-800 hover:bg-sky-50 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
                       >
                         <CreditCard className="w-3.5 h-3.5 text-sky-600" />
-                        <span>Payme orqali to'lash</span>
+                        <span>Payme</span>
                       </button>
 
                       <button
                         type="button"
                         onClick={() => handleOpenPayment(o, 'CLICK')}
-                        className="px-3 py-2 rounded-xl bg-white border border-orange-300 text-orange-800 hover:bg-orange-50 font-bold text-xs font-mono transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-xs w-full sm:w-auto"
+                        className="px-3 py-1.5 rounded-lg bg-white border border-orange-300 text-orange-800 hover:bg-orange-50 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
                       >
                         <CreditCard className="w-3.5 h-3.5 text-orange-600" />
-                        <span>Click orqali to'lash</span>
+                        <span>Click</span>
                       </button>
                     </div>
                   </div>
                 )}
 
-                {/* EXPANDABLE DETAILS ACCORDION */}
-                <div className="pt-2 border-t border-bunker-border-subtle">
+                {/* 2. 50/50 SECOND PAYMENT PROMPT (When arrived) */}
+                {isArrivedWaitingSecondPayment && (
+                  <div className="bg-amber-50 border-2 border-amber-400 p-4 rounded-xl space-y-3 font-mono">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Truck className="w-5 h-5 text-bunker-amber-600" />
+                        <span className="font-extrabold text-xs text-slate-900">
+                          YUK MANZILINGIZGA YETIB KELDI!
+                        </span>
+                      </div>
+                      <Badge variant="warning" size="sm">30 DAQIQA KUTISH TAYMERI</Badge>
+                    </div>
+
+                    <p className="text-xs text-slate-700 font-sans">
+                      Qurilish mollari manzilga yetkazildi. Tushirishdan oldin ikkinchi 50% to‘lovni (
+                      <strong>{(Number(o.secondPaymentAmount || o.finalAmount / 2)).toLocaleString()} so‘m</strong>
+                      ) amalga oshiring. To‘lov o‘tgach, haydovchiga aytish uchun <strong>Qabul Kodi</strong> ekranda paydo bo‘ladi.
+                    </p>
+
+                    <Button
+                      size="sm"
+                      variant="primary"
+                      onClick={() => handlePaySecondHalf(o.id)}
+                    >
+                      <CreditCard className="w-4 h-4 mr-1.5" />
+                      <span>Ikkinchi 50% to‘lovni tasdiqlash</span>
+                    </Button>
+                  </div>
+                )}
+
+                {/* 3. REVEALED ACCEPTANCE PIN CODE BOX (The core of TZ-1 MJ-11 / MJ-12) */}
+                {o.isAcceptanceCodeRevealed && o.acceptanceCode && (
+                  <div className="bg-linear-to-r from-amber-500/10 via-amber-400/20 to-amber-500/10 border-2 border-dashed border-bunker-amber-500 rounded-xl p-4 text-center space-y-2 font-mono shadow-xs">
+                    <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-amber-900 uppercase">
+                      <KeyRound className="w-4 h-4 text-bunker-amber-600" />
+                      <span>Maxfiy Qabul Kodi (Delivery PIN)</span>
+                    </div>
+
+                    <div className="text-4xl font-extrabold tracking-widest text-slate-900 py-1 select-all">
+                      {o.acceptanceCode}
+                    </div>
+
+                    <p className="text-xs text-slate-700 font-sans max-w-md mx-auto">
+                      Ushbu 4-xonali PIN kodni haydovchiga ayting. Haydovchi uni kiritgach yuk topshirilgan hisoblanadi va Escrowdan mablag‘ ajratiladi.
+                    </p>
+                  </div>
+                )}
+
+                {/* Bottom action row: Chek, B2B Hujjatlar, Nizo ochish, Expand */}
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-bunker-border-subtle font-mono text-xs">
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={`https://bunkerstroy.uz/receipt/${o.id}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-bunker-border-strong text-slate-700 hover:bg-slate-50 transition-colors"
+                    >
+                      <QrCode className="w-3.5 h-3.5 text-bunker-amber-500" />
+                      <span>QR Chek</span>
+                    </a>
+
+                    <button
+                      type="button"
+                      onClick={() => setSelectedB2bOrder(o)}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-bunker-border-strong text-slate-800 bg-slate-50 hover:bg-amber-50 hover:border-bunker-amber-500 hover:text-bunker-amber-700 transition-colors cursor-pointer font-bold shadow-2xs"
+                    >
+                      <FileCheck className="w-3.5 h-3.5 text-bunker-amber-600" />
+                      <span>B2B Hujjatlar</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setDisputeModal({
+                          isOpen: true,
+                          orderId: o.id,
+                          orderNumber: o.orderNumber,
+                          reason: '',
+                          evidenceUrl: ''
+                        })
+                      }
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-red-200 text-red-700 hover:bg-red-50 transition-colors cursor-pointer"
+                    >
+                      <AlertTriangle className="w-3.5 h-3.5" />
+                      <span>Nizo ochish</span>
+                    </button>
+                  </div>
+
                   <button
                     type="button"
                     onClick={() => toggleExpand(o.id)}
-                    className="flex items-center justify-between w-full text-xs text-bunker-text-secondary hover:text-bunker-text-primary font-semibold py-1 cursor-pointer transition-colors font-mono"
+                    className="flex items-center gap-1 text-slate-600 hover:text-slate-900 cursor-pointer font-semibold py-1"
                   >
-                    <span className="flex items-center gap-1.5">
-                      <Receipt className="w-3.5 h-3.5 text-bunker-amber-500" />
-                      {isExpanded ? "Batafsil ma'lumotni yashirish" : "Buyurtma tafsilotlari va tovarlar ro'yxati"}
-                    </span>
+                    <span>{isExpanded ? "Tafsilotni yashirish" : "Tovarlar ro‘yxati"}</span>
                     {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </button>
-
-                  {isExpanded && (
-                    <div className="mt-3 space-y-3 pt-3 border-t border-bunker-border-subtle text-xs animate-in fade-in font-mono">
-                      {/* Items breakdown using Table Component */}
-                      <div className="space-y-2">
-                        <span className="text-[10px] text-bunker-text-muted uppercase block font-bold">
-                          Buyurtma qilingan tovarlar:
-                        </span>
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Mahsulot Nomi</TableHead>
-                              <TableHead className="text-center">Miqdori &amp; Birligi</TableHead>
-                              <TableHead className="text-right">Birlik Narxi</TableHead>
-                              <TableHead className="text-right">Jami Summa</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {o.items.map((item, idx) => (
-                              <TableRow key={idx}>
-                                <TableCell className="font-semibold text-bunker-text-primary">
-                                  {item.productTitle}
-                                </TableCell>
-                                <TableCell className="text-center">
-                                  {item.quantity} {item.unit}
-                                </TableCell>
-                                <TableCell className="text-right">
-                                  {Number(item.unitPrice).toLocaleString()} so'm
-                                </TableCell>
-                                <TableCell className="text-right font-bold text-bunker-amber-500">
-                                  {Number(item.totalPrice).toLocaleString()} so'm
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </div>
-
-                      {/* Delivery and Financial Breakdown */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div className="bg-slate-50 p-3.5 rounded-xl border border-bunker-border-subtle space-y-1.5">
-                          <span className="text-[10px] text-bunker-text-muted uppercase block font-bold">
-                            Yetkazib berish parametrlari:
-                          </span>
-                          <p className="text-xs text-bunker-text-secondary">
-                            <span className="text-bunker-text-muted">Manzil:</span> {o.deliveryAddress?.region},{' '}
-                            {o.deliveryAddress?.district}, {o.deliveryAddress?.street || 'Ko‘rsatilmagan'}
-                          </p>
-                          <p className="text-xs text-bunker-text-secondary">
-                            <span className="text-bunker-text-muted">Maxsus texnika:</span>{' '}
-                            {o.vehicleType || 'Samosval HOWO Sinotruk'}
-                          </p>
-                          <p className="text-xs text-bunker-text-secondary">
-                            <span className="text-bunker-text-muted">Kuzatuv kodi:</span>{' '}
-                            <span className="text-bunker-amber-500 font-semibold">{o.trackingCode || o.orderNumber}</span>
-                          </p>
-                        </div>
-
-                        <div className="bg-slate-50 p-3.5 rounded-xl border border-bunker-border-subtle space-y-1.5">
-                          <span className="text-[10px] text-bunker-text-muted uppercase block font-bold">
-                            To‘lov va hisob-kitob tafsilotlari:
-                          </span>
-                          <div className="flex justify-between text-bunker-text-secondary">
-                            <span>Tovarlar narxi:</span>
-                            <span>{Number(o.totalAmount).toLocaleString()} so'm</span>
-                          </div>
-                          <div className="flex justify-between text-bunker-text-secondary">
-                            <span>Yetkazish narxi:</span>
-                            <span>{Number(o.deliveryFee).toLocaleString()} so'm</span>
-                          </div>
-                          {Number(o.discountAmount) > 0 && (
-                            <div className="flex justify-between text-bunker-status-green">
-                              <span>Chegirma:</span>
-                              <span>-{Number(o.discountAmount).toLocaleString()} so'm</span>
-                            </div>
-                          )}
-                          <div className="flex justify-between pt-1 border-t border-bunker-border-subtle text-xs">
-                            <span className="text-bunker-text-muted">Tranzaksiya ID:</span>
-                            <span className="text-bunker-text-primary">
-                              {o.paymentTransactionId || 'Tranzaksiya kutilmoqda'}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </div>
+
+                {/* EXPANDABLE ACCORDION CONTENT */}
+                {isExpanded && (
+                  <div className="mt-3 space-y-3 pt-3 border-t border-bunker-border-subtle text-xs animate-in fade-in font-mono">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Mahsulot Nomi</TableHead>
+                          <TableHead className="text-center">Miqdori &amp; Birligi</TableHead>
+                          <TableHead className="text-right">Birlik Narxi</TableHead>
+                          <TableHead className="text-right">Jami Summa</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {o.items.map((item, idx) => (
+                          <TableRow key={idx}>
+                            <TableCell className="font-semibold text-bunker-text-primary">
+                              {item.productTitle}
+                            </TableCell>
+                            <TableCell className="text-center">
+                              {item.quantity} {item.unit}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              {Number(item.unitPrice).toLocaleString()} so'm
+                            </TableCell>
+                            <TableCell className="text-right font-bold text-bunker-amber-500">
+                              {Number(item.totalPrice).toLocaleString()} so'm
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
               </Card>
             );
           })}
         </div>
       )}
 
-      {/* INTERACTIVE PAYMENT GATEWAY MODAL USING MODAL COMPONENT */}
+      {/* DISPUTE MODAL */}
+      {disputeModal.isOpen && (
+        <Modal
+          isOpen={disputeModal.isOpen}
+          onClose={() => setDisputeModal({ isOpen: false, orderId: null, orderNumber: null, reason: '', evidenceUrl: '' })}
+          size="sm"
+          title="Buyurtma Bo‘yicha Nizo Ochish"
+          subtitle={`Buyurtma #${disputeModal.orderNumber} bo‘yicha e‘tiroz bildirish`}
+        >
+          <div className="space-y-3 font-mono text-xs">
+            <div>
+              <label className="block text-slate-700 font-bold mb-1">
+                E‘tiroz sababi * (sifat, yetishmovchilik, shikastlanish)
+              </label>
+              <textarea
+                rows={3}
+                className="w-full border border-bunker-border-strong rounded-xl p-2.5 text-xs font-sans focus:outline-none focus:border-bunker-amber-500"
+                placeholder="Yuk shikastlangan holda yetib keldi yoki miqdori kam..."
+                value={disputeModal.reason}
+                onChange={(e) => setDisputeModal((prev) => ({ ...prev, reason: e.target.value }))}
+              />
+            </div>
+
+            <div>
+              <label className="block text-slate-700 font-bold mb-1">
+                Foto yoki video dalil havolasi (ixtiyoriy)
+              </label>
+              <Input
+                sizeVariant="sm"
+                placeholder="https://t.me/... yoki rasm havolasi"
+                value={disputeModal.evidenceUrl}
+                onChange={(e) => setDisputeModal((prev) => ({ ...prev, evidenceUrl: e.target.value }))}
+              />
+            </div>
+
+            <div className="flex gap-2 pt-2">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setDisputeModal({ isOpen: false, orderId: null, orderNumber: null, reason: '', evidenceUrl: '' })}
+              >
+                Bekor qilish
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
+                isLoading={disputeLoading}
+                onClick={handleSubmitDispute}
+              >
+                Nizo Arizasini Yuborish
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* PAYMENT MODAL */}
       {paymentModal.isOpen && paymentModal.order && (
         <Modal
           isOpen={paymentModal.isOpen && !!paymentModal.order}
@@ -481,48 +702,34 @@ export const OrdersView: React.FC = () => {
             </div>
           }
           title={`${paymentModal.provider} To‘lov Shlyuzi`}
-          subtitle="Xavfsiz onlayn to‘lov tizimi (O‘zbekiston)"
+          subtitle="Xavfsiz onlayn to‘lov tizimi (Escrow)"
         >
-          {/* Error / Success Alerts */}
-          {paymentError && (
-            <Alert
-              variant="error"
-              description={paymentError}
-              onDismiss={() => setPaymentError(null)}
-            />
-          )}
+          {paymentError && <Alert variant="error" description={paymentError} onDismiss={() => setPaymentError(null)} />}
+          {paymentSuccessMsg && <Alert variant="success" description={paymentSuccessMsg} />}
 
-          {paymentSuccessMsg && (
-            <Alert
-              variant="success"
-              description={paymentSuccessMsg}
-            />
-          )}
-
-          {/* Invoice Summary */}
           <div className="bg-slate-50 border border-bunker-border-strong p-4 rounded-xl space-y-2 text-xs font-mono">
             <div className="flex justify-between text-bunker-text-secondary">
               <span>Buyurtma raqami:</span>
               <span className="text-bunker-text-primary font-bold">{paymentModal.order.orderNumber}</span>
             </div>
             <div className="flex justify-between text-bunker-text-secondary">
-              <span>Qabul qiluvchi:</span>
-              <span className="text-bunker-text-primary">{paymentModal.order.buyerName}</span>
-            </div>
-            <div className="flex justify-between text-bunker-text-secondary">
-              <span>To‘lov oluvchi:</span>
-              <span className="text-bunker-text-primary">«BUNKER STROY INVEST» MChJ</span>
+              <span>To‘lov turi:</span>
+              <span className="text-bunker-text-primary font-bold">
+                {paymentModal.order.paymentMode === 'SPLIT_50_50' ? '50% Avans To‘lovi' : '100% To‘lov'}
+              </span>
             </div>
             <div className="pt-2 border-t border-bunker-border-subtle flex justify-between items-baseline">
-              <span className="font-bold text-bunker-text-primary">Jami to‘lov summasi:</span>
+              <span className="font-bold text-bunker-text-primary">To‘lanadigan summa:</span>
               <span className="text-xl font-extrabold text-bunker-amber-500">
-                {Number(paymentModal.order.finalAmount).toLocaleString()} so'm
+                {(paymentModal.order.paymentMode === 'SPLIT_50_50'
+                  ? Number(paymentModal.order.firstPaymentAmount || paymentModal.order.finalAmount / 2)
+                  : Number(paymentModal.order.finalAmount)
+                ).toLocaleString()} so'm
               </span>
             </div>
           </div>
 
-          {/* Actions */}
-          <div className="space-y-2.5 pt-1 font-mono">
+          <div className="space-y-2.5 pt-2 font-mono">
             <Button
               className="w-full"
               size="md"
@@ -531,29 +738,19 @@ export const OrdersView: React.FC = () => {
               disabled={!!paymentSuccessMsg}
             >
               <Sparkles className="w-4 h-4 mr-1.5" />
-              <span className="hidden sm:inline">To‘lovni Amalga Oshirish (Instant Checkout)</span>
-              <span className="sm:hidden">To‘lovni Amalga Oshirish</span>
+              <span>To‘lovni Tasdiqlash</span>
             </Button>
-
-            <a
-              href={
-                paymentModal.provider === 'PAYME'
-                  ? `https://checkout.paycom.uz/${btoa(
-                      `m=65c8f921a8d;ac.order_id=${paymentModal.order.id};a=${
-                        Number(paymentModal.order.finalAmount) * 100
-                      }`
-                    )}`
-                  : `https://my.click.uz/services/pay?service_id=12345&merchant_id=67890&amount=${paymentModal.order.finalAmount}&transaction_param=${paymentModal.order.id}`
-              }
-              target="_blank"
-              rel="noreferrer"
-              className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-bunker-border-strong hover:border-bunker-amber-500 text-xs text-bunker-text-secondary hover:text-bunker-text-primary transition-colors cursor-pointer bg-white shadow-xs"
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-              <span>Rasmiy {paymentModal.provider} ilovasida ochish</span>
-            </a>
           </div>
         </Modal>
+      )}
+
+      {/* B2B ELECTRONIC DOCUMENTS MODAL (MJ-03, MJ-04) */}
+      {selectedB2bOrder && (
+        <B2bDocumentsModal
+          isOpen={!!selectedB2bOrder}
+          order={selectedB2bOrder}
+          onClose={() => setSelectedB2bOrder(null)}
+        />
       )}
     </div>
   );

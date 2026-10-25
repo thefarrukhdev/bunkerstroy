@@ -101,4 +101,61 @@ export class LogisticsController {
       message: 'Dispetcherlik holati muvaffaqiyatli yangilandi',
     };
   }
+
+  @Post('dispatches/:id/driver-loaded')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.LOGISTICS_DRIVER)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Haydovchi yukni yuklaganini belgilash (foto biriktirish)' })
+  async driverMarkLoaded(
+    @Param('id') id: string,
+    @Body('photoUrl') photoUrl: string | undefined,
+    @CurrentUser() user: CurrentUserPayload
+  ) {
+    const data = await this.logisticsService.driverMarkLoaded(id, photoUrl, user);
+    return { success: true, data, message: 'Yuk yuklandi va yo‘lga chiqildi' };
+  }
+
+  @Post('dispatches/:id/driver-arrived')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.LOGISTICS_DRIVER)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Haydovchi yetib kelganini belgilash (30 min taymer ishga tushadi)' })
+  async driverMarkArrived(
+    @Param('id') id: string,
+    @CurrentUser() user: CurrentUserPayload
+  ) {
+    const data = await this.logisticsService.driverMarkArrived(id, user);
+    return { success: true, data, message: 'Yetib kelish belgilandi. Taymer faollashtirildi.' };
+  }
+
+  @Post('dispatches/:id/driver-verify-code')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.LOGISTICS_DRIVER)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Haydovchi mijoz qabul kodini kiritishi va topshirishi' })
+  async driverVerifyAcceptanceCode(
+    @Param('id') id: string,
+    @Body('code') code: string,
+    @Body('photoUrl') photoUrl: string | undefined,
+    @CurrentUser() user: CurrentUserPayload
+  ) {
+    const data = await this.logisticsService.driverVerifyAcceptanceCode(id, code, photoUrl, user);
+    return { success: true, data, message: 'Qabul kodi tasdiqlandi. Yuk muvaffaqiyatli topshirildi!' };
+  }
+
+  @Post('dispatches/:id/driver-report-issue')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.LOGISTICS_DRIVER)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Haydovchi muammo qayd etishi (kechikish, shikastlanish, mijoz topilmadi)' })
+  async driverReportIssue(
+    @Param('id') id: string,
+    @Body('reason') reason: string,
+    @Body('photoUrl') photoUrl: string | undefined,
+    @CurrentUser() user: CurrentUserPayload
+  ) {
+    const data = await this.logisticsService.driverReportIssue(id, reason, photoUrl, user);
+    return { success: true, data, message: 'Muammo muvaffaqiyatli qayd etildi va adminga yuborildi.' };
+  }
 }

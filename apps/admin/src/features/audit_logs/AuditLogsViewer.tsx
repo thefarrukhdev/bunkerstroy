@@ -25,7 +25,8 @@ import {
   Terminal,
   Activity,
   CheckCircle2,
-  Cpu
+  Cpu,
+  Download
 } from 'lucide-react';
 
 export const AuditLogsViewer: React.FC = () => {
@@ -160,33 +161,68 @@ export const AuditLogsViewer: React.FC = () => {
     }
   ];
 
+  const handleExportCsv = () => {
+    const headers = ['Vaqt', 'Daraja', 'Hodisa', 'Kategoriya', 'Ijrochi', 'Rol', 'IP Manzil', 'Tafsilot'];
+    const rows = filteredLogs.map((l) => [
+      l.timestamp,
+      l.level,
+      `"${l.actionName}"`,
+      l.category,
+      `"${l.actorName}"`,
+      l.actorRole,
+      l.ipAddress,
+      `"${l.details.replace(/"/g, '""')}"`
+    ]);
+    const csvContent =
+      'data:text/csv;charset=utf-8,' +
+      [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute(
+      'download',
+      `bunkerstroy_audit_logs_${new Date().toISOString().split('T')[0]}.csv`
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-6">
       {/* Sarlavha va PII Himoyasi Switcheri */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">
-            Tizim Xavfsizlik Jurnali & Audit Trail
+            Tizim Xavfsizlik Jurnali &amp; Audit Trail
           </h1>
           <p className="text-sm text-[var(--color-text-secondary)] mt-1">
-            Kiberxavfsizlik hodisalari, nozik amallar xronologiyasi va PII ma’lumotlar himoyasi
+            Kiberxavfsizlik hodisalari, nozik amallar xronologiyasi va PII ma’lumotlar himoyasi (O‘zgarmas loglar)
           </p>
         </div>
 
-        {/* PII Masking Toggle */}
-        <div className="p-3 rounded-xl bg-[var(--color-surface-card)] border border-[var(--color-border-subtle)] flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <Lock className="w-4 h-4 text-[var(--color-accent-blue)]" />
-            <div>
-              <div className="text-xs font-bold text-[var(--color-text-primary)]">
-                PII Ma’lumotlar Niqobi
-              </div>
-              <div className="text-[10px] text-[var(--color-text-muted)]">
-                STIR va telefonlarni yashirish
+        <div className="flex items-center gap-3">
+          <Button
+            variant="secondary"
+            size="md"
+            onClick={handleExportCsv}
+            leftIcon={<Download className="w-4 h-4" />}
+          >
+            CSV Eksport
+          </Button>
+
+          {/* PII Masking Toggle */}
+          <div className="p-2.5 rounded-xl bg-[var(--color-surface-card)] border border-[var(--color-border-subtle)] flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Lock className="w-4 h-4 text-[var(--color-accent-blue)]" />
+              <div>
+                <div className="text-xs font-bold text-[var(--color-text-primary)]">
+                  PII Niqobi
+                </div>
               </div>
             </div>
+            <Switch checked={maskPii} onChange={setMaskPii} />
           </div>
-          <Switch checked={maskPii} onChange={setMaskPii} />
         </div>
       </div>
 

@@ -28,6 +28,15 @@ export const RepairTypeSchema = z.enum([
 ]);
 export type RepairType = z.infer<typeof RepairTypeSchema>;
 
+export const ProductTieredPriceSchema = z.object({
+  id: z.string().uuid(),
+  productId: z.string().uuid(),
+  minQty: z.number().int().positive(),
+  maxQty: z.number().int().positive().optional().nullable(),
+  price: z.number().positive()
+});
+export type ProductTieredPrice = z.infer<typeof ProductTieredPriceSchema>;
+
 export const ProductVariantSchema = z.object({
   id: z.string().uuid(),
   productId: z.string().uuid(),
@@ -44,21 +53,25 @@ export type ProductVariant = z.infer<typeof ProductVariantSchema>;
 export const ProductSchema = z.object({
   id: z.string().uuid(),
   title: z.string().min(2),
+  titleRu: z.string().optional().nullable(),
   slug: z.string(),
   categoryId: z.string().uuid(),
   supplierId: z.string().uuid(),
   supplierName: z.string(),
   price: z.number().positive(),
+  b2bPrice: z.number().positive().optional().nullable(),
   unit: MeasurementUnitSchema,
   stock: z.number().int().nonnegative(),
   minOrder: z.number().int().positive().default(1),
   energyEfficiencyRating: EnergyRatingSchema.default('STANDARD'),
   isEscoCertified: z.boolean().default(false),
   description: z.string(),
+  descriptionRu: z.string().optional().nullable(),
   itemType: ItemTypeSchema.default('MATERIAL'),
   repairType: RepairTypeSchema.default('UNIVERSAL'),
   region: z.string().optional().nullable(),
   district: z.string().optional().nullable(),
+  certificateUrl: z.string().optional().nullable(),
   images: z.array(z.string().url()).default([]),
   warranty: z.string().optional().nullable(),
   hasDelivery: z.boolean().default(true),
@@ -66,7 +79,8 @@ export const ProductSchema = z.object({
   bonusDescription: z.string().optional().nullable(),
   bonusThreshold: z.number().optional().nullable(),
   bonusAmount: z.number().optional().nullable(),
-  variants: z.array(ProductVariantSchema).default([]),
+  variants: z.array(ProductVariantSchema).optional().default([]),
+  tieredPrices: z.array(ProductTieredPriceSchema).optional().default([]),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime()
 });
@@ -75,6 +89,7 @@ export type Product = z.infer<typeof ProductSchema>;
 export const CategorySchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(2),
+  nameRu: z.string().optional().nullable(),
   slug: z.string(),
   parentId: z.string().uuid().optional().nullable(),
   icon: z.string().optional().nullable(),

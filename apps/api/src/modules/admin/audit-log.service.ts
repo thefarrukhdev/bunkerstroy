@@ -7,6 +7,8 @@ export interface LogActionParams {
   action: string;
   category: string;
   details: string;
+  previousState?: any;
+  newState?: any;
   ipAddress?: string | null;
   level?: string;
 }
@@ -46,6 +48,8 @@ export class AuditLogService {
           action: params.action,
           category: params.category,
           details: params.details,
+          previousState: params.previousState ? params.previousState : undefined,
+          newState: params.newState ? params.newState : undefined,
           ipAddress: params.ipAddress || null,
           level: params.level || 'INFO',
         },

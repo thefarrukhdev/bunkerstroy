@@ -11,7 +11,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { OrderStatus } from '@bunkerstroy/db';
+import { OrderStatus, PaymentMode } from '@bunkerstroy/db';
 
 export class OrderItemDto {
   @ApiProperty({ example: 'prod-1', description: 'Mahsulot ID si' })
@@ -63,6 +63,11 @@ export class CreateOrderDto {
   @IsNotEmpty({ message: 'Yetkazib berish manzili kiritilishi shart' })
   deliveryAddress: DeliveryAddressDto;
 
+  @ApiPropertyOptional({ example: 'FULL_100', enum: PaymentMode, description: 'To‘lov rejimi: 100% yoki 50/50' })
+  @IsOptional()
+  @IsEnum(PaymentMode)
+  paymentMode?: PaymentMode;
+
   @ApiPropertyOptional({ example: 'Samosval (HOWO)', description: 'Tanlangan maxsus texnika' })
   @IsOptional()
   @IsString()
@@ -92,7 +97,36 @@ export class UpdateOrderStatusDto {
   })
   @IsNotEmpty({ message: 'status kiritilishi shart' })
   @IsEnum(OrderStatus, {
-    message: 'Yaroqsiz status. Ruxsat etilgan: PENDING, CONFIRMED, ASSIGNED_TO_FLEET, IN_TRANSIT, DELIVERED, CANCELLED',
+    message: 'Yaroqsiz status.',
   })
   status: OrderStatus;
+
+  @ApiPropertyOptional({ description: 'O‘zgarish sababi' })
+  @IsOptional()
+  @IsString()
+  reason?: string;
+}
+
+export class VerifyAcceptanceCodeDto {
+  @ApiProperty({ example: '4928', description: 'Mijoz bergan 4-xonali qabul kodi' })
+  @IsNotEmpty({ message: 'Qabul kodi kiritilishi shart' })
+  @IsString()
+  code: string;
+
+  @ApiPropertyOptional({ description: 'Topshirish foto-dalolatnomasi URL' })
+  @IsOptional()
+  @IsString()
+  photoUrl?: string;
+}
+
+export class OpenDisputeDto {
+  @ApiProperty({ example: 'Yuk shikastlangan yetib keldi', description: 'Nizo sababi' })
+  @IsNotEmpty({ message: 'Nizo sababi kiritilishi shart' })
+  @IsString()
+  reason: string;
+
+  @ApiPropertyOptional({ type: [String], description: 'Isbotlovchi foto yoki video URL manzillari' })
+  @IsOptional()
+  @IsArray()
+  evidenceUrls?: string[];
 }

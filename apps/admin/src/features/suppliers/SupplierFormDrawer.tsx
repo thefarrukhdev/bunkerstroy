@@ -48,6 +48,7 @@ export const SupplierFormDrawer: React.FC<SupplierFormDrawerProps> = ({
   const [address, setAddress] = useState('');
   const [vatPayer, setVatPayer] = useState(true);
   const [vatRegCode, setVatRegCode] = useState('');
+  const [supplierType, setSupplierType] = useState<'LOCAL' | 'GLOBAL'>('LOCAL');
   const [error, setError] = useState<string | null>(null);
   const [isDsqAutoFilling, setIsDsqAutoFilling] = useState(false);
 
@@ -64,6 +65,7 @@ export const SupplierFormDrawer: React.FC<SupplierFormDrawerProps> = ({
       setAddress(initialData.address);
       setVatPayer(initialData.vatPayer);
       setVatRegCode(initialData.vatRegCode || '');
+      setSupplierType(initialData.supplierType || 'LOCAL');
       setError(null);
     } else {
       setInn('');
@@ -77,6 +79,7 @@ export const SupplierFormDrawer: React.FC<SupplierFormDrawerProps> = ({
       setAddress('');
       setVatPayer(true);
       setVatRegCode('');
+      setSupplierType('LOCAL');
       setError(null);
     }
   }, [initialData, isOpen]);
@@ -139,6 +142,7 @@ export const SupplierFormDrawer: React.FC<SupplierFormDrawerProps> = ({
         address: address.trim() || 'Kiritilmagan',
         vatPayer,
         vatRegCode: vatPayer ? (vatRegCode.trim() || undefined) : undefined,
+        supplierType,
         status: initialData ? initialData.status : 'PENDING',
         statusDescription: initialData ? initialData.statusDescription : 'Yangi ro‘yxatga olingan ta’minotchi (tekshiruvda)'
       },
@@ -272,6 +276,39 @@ export const SupplierFormDrawer: React.FC<SupplierFormDrawerProps> = ({
           onChange={(e) => setAddress(e.target.value)}
           leftIcon={<MapPin className="w-4 h-4" />}
         />
+
+        {/* Ta'minotchi Turi: Mahalliy vs Global (GT-09 / TZ-5) */}
+        <div className="space-y-1.5">
+          <label className="block text-xs font-semibold text-[var(--color-text-secondary)]">
+            Ta‘minotchi Turi (BunkerStroy Standarti) *
+          </label>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => setSupplierType('LOCAL')}
+              className={`p-2.5 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer ${
+                supplierType === 'LOCAL'
+                  ? 'bg-blue-500/15 border-blue-500 text-blue-400'
+                  : 'bg-[var(--color-surface-hover)] border-[var(--color-border-subtle)] text-[var(--color-text-muted)]'
+              }`}
+            >
+              <Building2 className="w-4 h-4" />
+              <span>Mahalliy Zavod</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setSupplierType('GLOBAL')}
+              className={`p-2.5 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer ${
+                supplierType === 'GLOBAL'
+                  ? 'bg-amber-500/15 border-amber-500 text-amber-400'
+                  : 'bg-[var(--color-surface-hover)] border-[var(--color-border-subtle)] text-[var(--color-text-muted)]'
+              }`}
+            >
+              <Building2 className="w-4 h-4" />
+              <span>Global Importyor</span>
+            </button>
+          </div>
+        </div>
 
         {/* QQS to'lovchisi */}
         <div className="p-3.5 rounded-xl bg-[var(--color-surface-hover)] border border-[var(--color-border-subtle)] space-y-3">

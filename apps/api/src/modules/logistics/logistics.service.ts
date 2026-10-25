@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  BadRequestException,
   Logger,
 } from '@nestjs/common';
 import { LogisticsVehicle } from '@bunkerstroy/types';
@@ -290,5 +291,159 @@ export class LogisticsService {
     });
 
     return updatedDispatch;
+  }
+
+  async driverMarkLoaded(dispatchId: string, photoUrl: string | undefined, currentUser: CurrentUserPayload) {
+    const dispatch = await this.prisma.logisticsDispatch.findUnique({
+      where: { id: dispatchId },
+      include: { order: true },
+    });
+    if (!dispatch) throw new NotFoundException('Dispetcherlik topilmadi');
+
+    const updated = await this.prisma.logisticsDispatch.update({
+      where: { id: dispatchId },
+      data: {
+        status: 'IN_TRANSIT',
+        loadedAt: new Date(),
+        loadingPhotoUrl: photoUrl || null,
+      },
+    });
+
+    await this.prisma.order.update({
+      where: { id: dispatch.orderId },
+      data: { status: OrderStatus.IN_TRANSIT },
+    });
+
+    await this.auditLogService.logAction({
+      actorId: currentUser.id,
+      action: 'DRIVER_CARGO_LOADED',
+      category: 'LOGISTICS',
+      details: `Haydovchi yukni ortdi va yo‘lga chiqdi. Dispetcherlik: ${dispatchId}`,
+      level: 'INFO',
+    });
+
+    return updated;
+  }
+
+  async driverMarkArrived(dispatchId: string, currentUser: CurrentUserPayload) {
+    const dispatch = await this.prisma.logisticsDispatch.findUnique({
+      where: { id: dispatchId },
+      include: { order: true },
+    });
+    if (!dispatch) throw new NotFoundException('Dispetcherlik topilmadi');
+
+    const waitingDeadline = new Date(Date.now() + 30 * 60 * 1000); // 30 min timer
+
+    const updated = await this.prisma.logisticsDispatch.update({
+      where: { id: dispatchId },
+      data: {
+        status: 'ARRIVED',
+        arrivedAt: new Date(),
+        waitingTimerExpiresAt: waitingDeadline,
+      },
+    });
+
+    await this.prisma.order.update({
+      where: { id: dispatch.orderId },
+      data: {
+        status: OrderStatus.ARRIVED,
+        arrivedAt: new Date(),
+        waitingDeadline,
+        isAcceptanceCodeRevealed: dispatch.order.paymentMode === 'FULL_100' || dispatch.order.isSecondPaid,
+      },
+    });
+
+    await this.auditLogService.logAction({
+      actorId: currentUser.id,
+      action: 'DRIVER_ARRIVED_AT_DESTINATION',
+      category: 'LOGISTICS',
+      details: `Haydovchi manzilga yetib keldi. Buyurtma: ${dispatch.order.orderNumber}. 30 daqiqalik taymer boshlandi`,
+      level: 'INFO',
+    });
+
+    return updated;
+  }
+
+  async driverVerifyAcceptanceCode(
+    dispatchId: string,
+    code: string,
+    photoUrl: string | undefined,
+    currentUser: CurrentUserPayload
+  ) {
+    const dispatch = await this.prisma.logisticsDispatch.findUnique({
+      where: { id: dispatchId },
+      include: { order: true },
+    });
+    if (!dispatch) throw new NotFoundException('Dispetcherlik topilmadi');
+
+    if (dispatch.order.acceptanceCode !== code.trim()) {
+      throw new BadRequestException('Mijoz taqdim etgan qabul kodi xato! Iltimos, mijozdan tasdiqlangan PIN kodni oling.');
+    }
+
+    if (dispatch.order.paymentMode === 'SPLIT_50_50' && !dispatch.order.isSecondPaid) {
+      throw new BadRequestException('Ikkinchi 50% to‘lov hali to‘lanmagan. Yukni topshirish mumkin emas!');
+    }
+
+    const updated = await this.prisma.logisticsDispatch.update({
+      where: { id: dispatchId },
+      data: {
+        status: 'DELIVERED',
+        acceptanceCode: code,
+        acceptancePhotoUrl: photoUrl || null,
+        deliveredAt: new Date(),
+      },
+    });
+
+    await this.prisma.order.update({
+      where: { id: dispatch.orderId },
+      data: { status: OrderStatus.RECEIVED },
+    });
+
+    // Mark order COMPLETED and release Escrow
+    await this.prisma.order.update({
+      where: { id: dispatch.orderId },
+      data: { status: OrderStatus.COMPLETED },
+    });
+
+    await this.auditLogService.logAction({
+      actorId: currentUser.id,
+      action: 'DRIVER_CODE_VERIFIED_AND_DELIVERED',
+      category: 'ESCROW',
+      details: `Haydovchi qabul kodini muvaffaqiyatli tasdiqladi. Yuk topshirildi va Escrow ajratildi: ${dispatch.order.orderNumber}`,
+      level: 'INFO',
+    });
+
+    return updated;
+  }
+
+  async driverReportIssue(
+    dispatchId: string,
+    reason: string,
+    photoUrl: string | undefined,
+    currentUser: CurrentUserPayload
+  ) {
+    const dispatch = await this.prisma.logisticsDispatch.findUnique({
+      where: { id: dispatchId },
+      include: { order: true },
+    });
+    if (!dispatch) throw new NotFoundException('Dispetcherlik topilmadi');
+
+    const updated = await this.prisma.logisticsDispatch.update({
+      where: { id: dispatchId },
+      data: {
+        issueReason: reason,
+        issuePhotoUrl: photoUrl || null,
+      },
+    });
+
+    await this.auditLogService.logAction({
+      actorId: currentUser.id,
+      action: 'DRIVER_ISSUE_REPORTED',
+      category: 'LOGISTICS',
+      details: `Haydovchi muammo qayd etdi: "${reason}". Buyurtma: ${dispatch.order.orderNumber}`,
+      level: 'WARN',
+    });
+
+    return updated;
   }
 }

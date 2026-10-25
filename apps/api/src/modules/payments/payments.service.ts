@@ -205,16 +205,29 @@ export class PaymentsService {
       };
     }
 
-    // Mark transaction as PAID and update Order status to CONFIRMED
+    // Mark transaction as PAID and update Order status to CONFIRMED / FULLY_PAID
     const updated = await this.prisma.$transaction(async (tx) => {
       const p = await tx.paymentTransaction.update({
         where: { id: transaction.id },
         data: { status: PaymentStatus.PAID },
       });
 
+      const orderDataToUpdate: any = {};
+      if (transaction.paymentType === 'SECOND_50') {
+        orderDataToUpdate.isSecondPaid = true;
+        orderDataToUpdate.status = OrderStatus.FULLY_PAID;
+        orderDataToUpdate.isAcceptanceCodeRevealed = true;
+      } else if (transaction.paymentType === 'FIRST_50') {
+        orderDataToUpdate.isFirstPaid = true;
+        orderDataToUpdate.status = OrderStatus.CONFIRMED;
+      } else {
+        orderDataToUpdate.isFirstPaid = true;
+        orderDataToUpdate.status = OrderStatus.CONFIRMED;
+      }
+
       await tx.order.update({
         where: { id: transaction.orderId },
-        data: { status: OrderStatus.CONFIRMED },
+        data: orderDataToUpdate,
       });
 
       return p;
@@ -432,7 +445,10 @@ export class PaymentsService {
 
         await tx.order.update({
           where: { id: order.id },
-          data: { status: OrderStatus.CONFIRMED },
+          data: {
+            status: OrderStatus.CONFIRMED,
+            isFirstPaid: true,
+          },
         });
       });
 

@@ -29,6 +29,7 @@ export interface SupplierCompany {
   productsCount: number;
   totalTurnover: number;
   rating: number;
+  supplierType: 'LOCAL' | 'GLOBAL';
   registrationDate: string;
   verifiedAt?: string;
   contractNumber?: string;
@@ -55,6 +56,7 @@ export const INITIAL_SUPPLIERS: SupplierCompany[] = [
     productsCount: 14,
     totalTurnover: 480000000,
     rating: 4.9,
+    supplierType: 'LOCAL',
     registrationDate: '2019-04-12',
     verifiedAt: '2026-01-15',
     contractNumber: 'BS-B2B-2026/014',
@@ -79,6 +81,7 @@ export const INITIAL_SUPPLIERS: SupplierCompany[] = [
     productsCount: 9,
     totalTurnover: 310000000,
     rating: 4.8,
+    supplierType: 'GLOBAL',
     registrationDate: '2020-08-25',
     verifiedAt: '2026-02-01',
     contractNumber: 'BS-B2B-2026/028',
@@ -103,6 +106,7 @@ export const INITIAL_SUPPLIERS: SupplierCompany[] = [
     productsCount: 22,
     totalTurnover: 520000000,
     rating: 5.0,
+    supplierType: 'LOCAL',
     registrationDate: '2018-02-14',
     verifiedAt: '2026-01-10',
     contractNumber: 'BS-B2B-2026/003',
@@ -126,6 +130,7 @@ export const INITIAL_SUPPLIERS: SupplierCompany[] = [
     productsCount: 6,
     totalTurnover: 0,
     rating: 4.5,
+    supplierType: 'GLOBAL',
     registrationDate: '2022-11-05',
     contractNumber: 'BS-B2B-2026/102-REQ'
   },
@@ -147,6 +152,7 @@ export const INITIAL_SUPPLIERS: SupplierCompany[] = [
     productsCount: 8,
     totalTurnover: 50000000,
     rating: 4.2,
+    supplierType: 'LOCAL',
     registrationDate: '2021-03-30',
     contractNumber: 'BS-B2B-2026/054'
   }

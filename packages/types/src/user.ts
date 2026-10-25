@@ -10,6 +10,9 @@ export const UserRoleSchema = z.enum([
 ]);
 export type UserRole = z.infer<typeof UserRoleSchema>;
 
+export const SupplierTypeSchema = z.enum(['LOCAL', 'GLOBAL']);
+export type SupplierType = z.infer<typeof SupplierTypeSchema>;
+
 export const UserTypeSchema = z.enum(['INDIVIDUAL', 'LEGAL_ENTITY']);
 export type UserType = z.infer<typeof UserTypeSchema>;
 
@@ -28,6 +31,10 @@ export const UserProfileSchema = z.object({
   lastName: z.string().optional().nullable(),
   role: UserRoleSchema,
   userType: UserTypeSchema.default('INDIVIDUAL'),
+  supplierType: SupplierTypeSchema.default('LOCAL'),
+  isAllowedSplitPayment: z.boolean().default(false),
+  rating: z.number().default(5.0),
+  isBlocked: z.boolean().default(false),
   status: UserStatusSchema.default('ACTIVE'),
   verificationStatus: VerificationStatusSchema.default('PENDING'),
   inn: z.string().length(9).optional().nullable(),

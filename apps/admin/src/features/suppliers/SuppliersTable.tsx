@@ -26,6 +26,7 @@ export const SuppliersTable: React.FC = () => {
   const [suppliers, setSuppliers] = useState<SupplierCompany[]>(INITIAL_SUPPLIERS);
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [regionFilter, setRegionFilter] = useState<string>('ALL');
+  const [typeFilter, setTypeFilter] = useState<string>('ALL');
 
   // Drawer states
   const [isFormDrawerOpen, setIsFormDrawerOpen] = useState(false);
@@ -45,7 +46,8 @@ export const SuppliersTable: React.FC = () => {
   const filteredData = suppliers.filter((s) => {
     const matchesStatus = statusFilter === 'ALL' || s.status === statusFilter;
     const matchesRegion = regionFilter === 'ALL' || s.region === regionFilter;
-    return matchesStatus && matchesRegion;
+    const matchesType = typeFilter === 'ALL' || s.supplierType === typeFilter;
+    return matchesStatus && matchesRegion && matchesType;
   });
 
   // Save (Create or Edit)
@@ -125,6 +127,12 @@ export const SuppliersTable: React.FC = () => {
     { value: 'Farg‘ona viloyati', label: 'Farg‘ona viloyati' }
   ];
 
+  const typeOptions = [
+    { value: 'ALL', label: 'Barcha turlar (Mahalliy & Global)' },
+    { value: 'LOCAL', label: 'Mahalliy Zavodlar' },
+    { value: 'GLOBAL', label: 'Global Importyorlar' }
+  ];
+
   // Table Columns
   const columns: Column<SupplierCompany>[] = [
     {
@@ -177,6 +185,21 @@ export const SuppliersTable: React.FC = () => {
             {row.address}
           </div>
         </div>
+      )
+    },
+    {
+      key: 'supplierType',
+      header: 'Turi (TZ-5)',
+      render: (row) => (
+        <span
+          className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold uppercase border ${
+            row.supplierType === 'GLOBAL'
+              ? 'bg-amber-500/15 text-amber-500 border-amber-500/30'
+              : 'bg-blue-500/15 text-blue-500 border-blue-500/30'
+          }`}
+        >
+          {row.supplierType === 'GLOBAL' ? 'Global' : 'Mahalliy'}
+        </span>
       )
     },
     {
@@ -312,6 +335,13 @@ export const SuppliersTable: React.FC = () => {
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                   options={statusOptions}
+                />
+              </div>
+              <div className="w-52">
+                <Select
+                  value={typeFilter}
+                  onChange={(e) => setTypeFilter(e.target.value)}
+                  options={typeOptions}
                 />
               </div>
               <div className="w-44">

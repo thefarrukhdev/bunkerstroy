@@ -17,10 +17,48 @@ import {
   User,
   ShoppingBag,
   Clock,
-  Sparkles
+  Sparkles,
+  Bookmark,
+  Check
 } from 'lucide-react';
 import { Product } from '@bunkerstroy/types';
 import { Button, Badge, Drawer, Input, Select, Alert } from '@bunkerstroy/ui';
+
+export interface ConstructionSite {
+  id: string;
+  name: string;
+  region: string;
+  district: string;
+  street: string;
+  landmark: string;
+}
+
+const DEFAULT_CONSTRUCTION_SITES: ConstructionSite[] = [
+  {
+    id: 'tc-lot4',
+    name: 'Toshkent City Lot 4',
+    region: 'Toshkent shahri',
+    district: 'Shayxontohur tumani',
+    street: 'Navoiy ko‘chasi, 1A-bino',
+    landmark: 'Humo Arena ro‘parasida',
+  },
+  {
+    id: 'obc-blok-b',
+    name: 'Olmazor Business City (Blok B)',
+    region: 'Toshkent shahri',
+    district: 'Olmazor tumani',
+    street: 'Kichik halqa yo‘li, 15-bino',
+    landmark: 'Daryo bo‘yi mavzesi, 2-kirish',
+  },
+  {
+    id: 'yunus-12',
+    name: 'Yunusobod 12-mavze (Kottej)',
+    region: 'Toshkent shahri',
+    district: 'Yunusobod tumani',
+    street: '12-mavze, 45-uchastka',
+    landmark: 'Megaplanet orqasida',
+  },
+];
 
 export interface CartItem {
   product: Product;
@@ -61,7 +99,54 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [district, setDistrict] = useState('Chilonzor tumani');
   const [streetAddress, setStreetAddress] = useState('Bunyodkor shox ko‘chasi, 42-uy');
   const [landmark, setLandmark] = useState('Novza metro bekati yaqinida');
-  const [paymentMethod, setPaymentMethod] = useState<'CASH_ON_DELIVERY' | 'PAYME' | 'CLICK' | 'BANK_TRANSFER'>('CASH_ON_DELIVERY');
+  const [paymentMethod, setPaymentMethod] = useState<'CASH_ON_DELIVERY' | 'PAYME' | 'CLICK' | 'BANK_TRANSFER'>('PAYME');
+  const [paymentMode, setPaymentMode] = useState<'FULL_100' | 'SPLIT_50_50'>('FULL_100');
+
+  // Saved construction sites (MJ-02)
+  const [savedSites, setSavedSites] = useState<ConstructionSite[]>(() => {
+    try {
+      const stored = typeof window !== 'undefined' ? localStorage.getItem('bunkerstroy_saved_sites') : null;
+      return stored ? JSON.parse(stored) : DEFAULT_CONSTRUCTION_SITES;
+    } catch {
+      return DEFAULT_CONSTRUCTION_SITES;
+    }
+  });
+  const [selectedSiteId, setSelectedSiteId] = useState<string>('tc-lot4');
+  const [newSiteName, setNewSiteName] = useState('');
+  const [isAddingSite, setIsAddingSite] = useState(false);
+  const [siteSavedSuccess, setSiteSavedSuccess] = useState(false);
+
+  const handleSelectSite = (site: ConstructionSite) => {
+    setSelectedSiteId(site.id);
+    setRegion(site.region);
+    setDistrict(site.district);
+    setStreetAddress(site.street);
+    setLandmark(site.landmark);
+  };
+
+  const handleSaveCurrentSite = () => {
+    if (!newSiteName.trim() || !streetAddress.trim()) return;
+    const newSite: ConstructionSite = {
+      id: `site-${Date.now()}`,
+      name: newSiteName.trim(),
+      region,
+      district,
+      street: streetAddress.trim(),
+      landmark: landmark.trim(),
+    };
+    const updated = [...savedSites, newSite];
+    setSavedSites(updated);
+    setSelectedSiteId(newSite.id);
+    setNewSiteName('');
+    setIsAddingSite(false);
+    setSiteSavedSuccess(true);
+    setTimeout(() => setSiteSavedSuccess(false), 3000);
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('bunkerstroy_saved_sites', JSON.stringify(updated));
+      }
+    } catch {}
+  };
 
   // Success state
   const [createdOrderNumber, setCreatedOrderNumber] = useState('');
@@ -115,6 +200,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           },
           vehicleType: deliveryMethod === 'PICKUP' ? 'O‘zi olib ketish (Samovivoz)' : vehicleType,
           paymentMethod: paymentMethod === 'CASH_ON_DELIVERY' ? 'PAYME' : paymentMethod,
+          paymentMode,
         }),
       });
 
@@ -183,6 +269,22 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 <span>Jami to‘lov:</span>
                 <span className="text-bunker-amber-500">{grandTotal.toLocaleString()} so‘m</span>
               </div>
+
+              {paymentMode === 'SPLIT_50_50' && (
+                <div className="bg-amber-50 border border-amber-300 rounded-lg p-2.5 text-[11px] space-y-1 text-amber-950">
+                  <div className="flex justify-between font-bold">
+                    <span>Avans to‘lovi (50%):</span>
+                    <span className="text-bunker-amber-600">{Math.round(grandTotal / 2).toLocaleString()} so‘m</span>
+                  </div>
+                  <div className="flex justify-between text-slate-700">
+                    <span>Qoldiq to‘lov (50%):</span>
+                    <span>{(grandTotal - Math.round(grandTotal / 2)).toLocaleString()} so‘m (yetib kelgach)</span>
+                  </div>
+                  <p className="text-[10px] text-amber-800 pt-0.5 font-sans">
+                    * Qabul kodi yuk yetib kelib, 2-to‘lov tasdiqlangach ochiladi.
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Step navigation buttons */}
@@ -429,7 +531,91 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             </div>
 
             {deliveryMethod === 'COURIER' && (
-              <div className="pt-2 space-y-2.5">
+              <div className="pt-2 space-y-3">
+                {/* Saved Construction Sites Quick-Picker (MJ-02) */}
+                <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-slate-800 flex items-center gap-1.5">
+                      <Bookmark className="w-3.5 h-3.5 text-bunker-amber-500" />
+                      Qurilish Obyektlari (Saqlangan Manzillar)
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setIsAddingSite(!isAddingSite)}
+                      className="text-[10px] text-bunker-amber-600 font-medium hover:underline"
+                    >
+                      {isAddingSite ? 'Yopish' : '+ Obyekt qo‘shish'}
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                    {savedSites.map((site) => {
+                      const isSelected = selectedSiteId === site.id;
+                      return (
+                        <button
+                          key={site.id}
+                          type="button"
+                          onClick={() => handleSelectSite(site)}
+                          className={`p-2 rounded-md border text-left transition-all text-xs flex items-center justify-between ${
+                            isSelected
+                              ? 'border-bunker-amber-500 bg-amber-50/70 font-bold text-slate-900 shadow-xs'
+                              : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                          }`}
+                        >
+                          <div className="truncate mr-1">
+                            <div className="text-[11px] font-semibold truncate">{site.name}</div>
+                            <div className="text-[9px] text-slate-500 truncate">{site.district}, {site.street}</div>
+                          </div>
+                          {isSelected && <Check className="w-3.5 h-3.5 text-bunker-amber-600 shrink-0" />}
+                        </button>
+                      );
+                    })}
+
+                    <button
+                      type="button"
+                      onClick={() => setSelectedSiteId('custom')}
+                      className={`p-2 rounded-md border text-left transition-all text-xs flex items-center justify-between ${
+                        selectedSiteId === 'custom'
+                          ? 'border-bunker-amber-500 bg-amber-50/70 font-bold text-slate-900 shadow-xs'
+                          : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                      }`}
+                    >
+                      <div>
+                        <div className="text-[11px] font-semibold">Boshqa yangi manzil</div>
+                        <div className="text-[9px] text-slate-500">Qo‘lda kiritish</div>
+                      </div>
+                      {selectedSiteId === 'custom' && <Check className="w-3.5 h-3.5 text-bunker-amber-600 shrink-0" />}
+                    </button>
+                  </div>
+
+                  {/* Add New Site Form */}
+                  {isAddingSite && (
+                    <div className="pt-2 border-t border-slate-200 flex gap-2">
+                      <Input
+                        sizeVariant="sm"
+                        placeholder="Obyekt nomi (masalan: Mirzo Ulug‘bek Lot 2)"
+                        value={newSiteName}
+                        onChange={(e) => setNewSiteName(e.target.value)}
+                        className="text-xs"
+                      />
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={handleSaveCurrentSite}
+                        className="shrink-0 text-xs px-2.5"
+                      >
+                        Saqlash
+                      </Button>
+                    </div>
+                  )}
+
+                  {siteSavedSuccess && (
+                    <div className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 p-1.5 rounded">
+                      Yangi qurilish obyekti muvaffaqiyatli saqlandi!
+                    </div>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div>
                     <label className="text-[11px] text-bunker-text-secondary block mb-1">
@@ -538,6 +724,59 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   Korxona hisob-fakturasi (B2B Bank o‘tkazmasi)
                 </span>
               </label>
+            </div>
+          </div>
+
+          {/* 4. Escrow & Payment Mode (100% vs 50/50) */}
+          <div className="bg-white border border-bunker-border-strong rounded-xl p-4 space-y-3 shadow-xs">
+            <div className="flex items-center justify-between pb-2 border-b border-bunker-border-subtle">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-bunker-amber-500" />
+                <h3 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary">
+                  4. To‘lov Rejimi (Escrow Himoyasi)
+                </h3>
+              </div>
+              <Badge variant="warning" size="sm" isMono>
+                XAVFSIZ ESCROW
+              </Badge>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <button
+                type="button"
+                onClick={() => setPaymentMode('FULL_100')}
+                className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                  paymentMode === 'FULL_100'
+                    ? 'border-bunker-amber-500 bg-orange-50/50 shadow-xs'
+                    : 'border-bunker-border-strong bg-white hover:border-slate-300'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-bold text-xs text-bunker-text-primary">100% Oldindan To‘lov</span>
+                  <Badge variant="success" size="sm">Standart</Badge>
+                </div>
+                <p className="text-[10px] text-bunker-text-secondary leading-relaxed">
+                  Pul xavfsiz Escrow hisobida turadi. Yuk yetib kelgach darhol qabul kodi bilan qabul qilasiz.
+                </p>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setPaymentMode('SPLIT_50_50')}
+                className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                  paymentMode === 'SPLIT_50_50'
+                    ? 'border-bunker-amber-500 bg-orange-50/50 shadow-xs'
+                    : 'border-bunker-border-strong bg-white hover:border-slate-300'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-bold text-xs text-bunker-text-primary">50% / 50% Bo‘lib To‘lash</span>
+                  <Badge variant="warning" size="sm">B2B Pilot</Badge>
+                </div>
+                <p className="text-[10px] text-bunker-text-secondary leading-relaxed">
+                  50% avans buyurtmada, qolgan 50% yuk yetib kelganda, tushirishdan oldin to‘lanadi.
+                </p>
+              </button>
             </div>
           </div>
         </div>

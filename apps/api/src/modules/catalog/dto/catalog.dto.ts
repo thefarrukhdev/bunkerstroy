@@ -151,6 +151,16 @@ export class CreateProductDto {
   @IsOptional()
   @IsBoolean()
   hasBonus?: boolean = false;
+
+  @ApiPropertyOptional({ example: 'https://standart.uz/cert/123.pdf', description: 'O‘zDSt / GOST sertifikat raqami yoki havolasi' })
+  @IsOptional()
+  @IsString()
+  certificateUrl?: string;
+
+  @ApiPropertyOptional({ description: 'Miqdor zinapoyasi (Ulgurji narxlar)' })
+  @IsOptional()
+  @IsArray()
+  tieredPrices?: Array<{ minQty: number; maxQty?: number | null; price: number }>;
 }
 
 export class UpdateProductDto {

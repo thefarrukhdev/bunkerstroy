@@ -288,6 +288,11 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                         so‘m / {formatUnit(p.unit)}
                       </span>
                     </p>
+                    {p.tieredPrices && p.tieredPrices.length > 0 && (
+                      <span className="text-[10px] font-mono font-bold text-amber-800 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded mt-0.5 inline-block">
+                        Ulgurji: {Number(p.tieredPrices[p.tieredPrices.length - 1].price).toLocaleString()} so‘mdan
+                      </span>
+                    )}
                   </div>
 
                   <Button

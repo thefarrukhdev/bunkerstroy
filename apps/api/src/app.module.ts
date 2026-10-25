@@ -11,6 +11,7 @@ import { EscoModule } from './modules/esco/esco.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { AiModule } from './modules/ai/ai.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { HealthModule } from './modules/health/health.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AdminModule } from './modules/admin/admin.module';
     ]),
     PrismaModule,
     RedisModule,
+    HealthModule,
     AuthModule,
     CatalogModule,
     OrdersModule,

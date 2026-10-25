@@ -62,6 +62,10 @@ export class CatalogService {
       hasDelivery: true,
       hasBonus: true,
       variants: [],
+      tieredPrices: [
+        { id: 'tp-1-1', productId: 'prod-1', minQty: 50, maxQty: 199, price: 61000 },
+        { id: 'tp-1-2', productId: 'prod-1', minQty: 200, maxQty: null, price: 58000 }
+      ],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     },
@@ -87,6 +91,10 @@ export class CatalogService {
       hasDelivery: true,
       hasBonus: false,
       variants: [],
+      tieredPrices: [
+        { id: 'tp-1-1', productId: 'prod-1', minQty: 50, maxQty: 199, price: 61000 },
+        { id: 'tp-1-2', productId: 'prod-1', minQty: 200, maxQty: null, price: 58000 }
+      ],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     },
@@ -112,6 +120,10 @@ export class CatalogService {
       hasDelivery: true,
       hasBonus: true,
       variants: [],
+      tieredPrices: [
+        { id: 'tp-1-1', productId: 'prod-1', minQty: 50, maxQty: 199, price: 61000 },
+        { id: 'tp-1-2', productId: 'prod-1', minQty: 200, maxQty: null, price: 58000 }
+      ],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
@@ -167,6 +179,15 @@ export class CatalogService {
             length: v.length || null,
             priceDelta: Number(v.priceDelta || 0),
             stock: v.stock || 0
+          }))
+        : [],
+      tieredPrices: Array.isArray(p.tieredPrices)
+        ? p.tieredPrices.map((tp: any) => ({
+            id: tp.id,
+            productId: tp.productId,
+            minQty: tp.minQty,
+            maxQty: tp.maxQty || null,
+            price: Number(tp.price)
           }))
         : [],
       createdAt: p.createdAt instanceof Date ? p.createdAt.toISOString() : (p.createdAt || new Date().toISOString()),
@@ -370,10 +391,18 @@ export class CatalogService {
         district: dto.district || supplier.district || 'Chilonzor tumani',
         images: dto.images && dto.images.length > 0 ? dto.images : ['https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800'],
         warranty: dto.warranty || null,
+        certificateUrl: dto.certificateUrl || null,
         hasDelivery: dto.hasDelivery ?? true,
         hasBonus: dto.hasBonus ?? false,
+        tieredPrices: dto.tieredPrices && dto.tieredPrices.length > 0 ? {
+          create: dto.tieredPrices.map((tp) => ({
+            minQty: Number(tp.minQty),
+            maxQty: tp.maxQty ? Number(tp.maxQty) : null,
+            price: Number(tp.price),
+          }))
+        } : undefined,
       },
-      include: { supplier: true, variants: true, category: true },
+      include: { supplier: true, variants: true, category: true, tieredPrices: true },
     });
 
     await this.auditLogService.logAction({

@@ -2,22 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { AdminSidebar, AdminTab } from './components/AdminSidebar';
 import { AdminHeader } from './components/AdminHeader';
-import { OverviewStats } from './features/analytics/OverviewStats';
-import { SuperAdminHub } from './features/super_admin/SuperAdminHub';
+import { MonitoringDashboard } from './features/monitoring/MonitoringDashboard';
 import { SuppliersTable } from './features/suppliers/SuppliersTable';
+import { PartnersManager } from './features/partners/PartnersManager';
+import { FleetManager } from './features/logistics/FleetManager';
+import { AuditLogsViewer } from './features/audit_logs/AuditLogsViewer';
+import { FinancialLedger } from './features/financial/FinancialLedger';
+import { DisputesManager } from './features/disputes/DisputesManager';
 import { ProductCatalogManager } from './features/products/ProductCatalogManager';
 import { OrdersManager } from './features/orders/OrdersManager';
-import { FleetManager } from './features/logistics/FleetManager';
-import { FinancialLedger } from './features/financial/FinancialLedger';
-import { AuditLogsViewer } from './features/audit_logs/AuditLogsViewer';
-import {
-  Users2,
-  ShoppingCart,
-  Truck
-} from 'lucide-react';
+import { SuperAdminHub } from './features/super_admin/SuperAdminHub';
+import { OverviewStats } from './features/analytics/OverviewStats';
 
 const AdminLayout: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<AdminTab>('super_admin');
+  // Canonical default tab: 'monitoring' (TZ-5)
+  const [activeTab, setActiveTab] = useState<AdminTab>('monitoring');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState<string>('');
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -47,22 +46,28 @@ const AdminLayout: React.FC = () => {
 
   const getModuleTitle = (tab: AdminTab) => {
     switch (tab) {
+      case 'monitoring':
+        return 'BunkerStroy Real-Vaqt Monitoringi (KPI & E‘tibor Ro‘yxati)';
+      case 'suppliers':
+        return "Ta'minotchilar & STIR Verifikatsiyasi (Mahalliy vs Global)";
+      case 'partners':
+        return 'Hamkorlar & Tashqi Integratsiyalar (Payme, Click, Escrow, E-IMZO, SMS, GPS)';
+      case 'logistics':
+        return "Og'ir Maxsus Texnika & Avtopark Dispecherligi";
+      case 'audit_logs':
+        return 'Tizim Xavfsizlik Jurnali & Audit Trail';
+      case 'financial':
+        return 'Kassa, Escrow & Tranzaksiyalar (2-Kishi Tasdig‘i)';
+      case 'disputes':
+        return 'Nizolar Markazi & Arbitraj Qarorlari (Dalil & Qaytarim)';
+      case 'orders':
+        return 'Buyurtmalar & B2B Savdo Nazorati';
+      case 'products':
+        return 'Mahsulotlar Katalogi & Ombor Zaxiralari';
       case 'super_admin':
         return 'Super Admin Boshqaruv Markazi';
       case 'analytics':
         return 'Umumiy Tahlil & Savdo Ko‘rsatkichlari';
-      case 'suppliers':
-        return "Ta'minotchilar & STIR Verifikatsiyasi";
-      case 'products':
-        return 'Mahsulotlar Katalogi & Ombor Zaxiralari';
-      case 'orders':
-        return 'Buyurtmalar & B2B Savdo Nazorati';
-      case 'logistics':
-        return "Og'ir Maxsus Texnika & Avtopark Dispecherligi";
-      case 'financial':
-        return 'Kassa, Moliya & Tranzaksiyalar';
-      case 'audit_logs':
-        return 'Tizim Xavfsizlik Jurnali & Audit Trail';
     }
   };
 
@@ -89,29 +94,46 @@ const AdminLayout: React.FC = () => {
 
         {/* Content Body */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
-          {/* 1. Super Admin Katalogi & Xodimlar */}
-          {activeTab === 'super_admin' && <SuperAdminHub />}
+          {/* ==============================================================
+              5 CANONICAL SCREENS ACCORDING TO TZ-5
+              ============================================================== */}
 
-          {/* 2. Analytics */}
-          {activeTab === 'analytics' && <OverviewStats />}
+          {/* 1. Monitoring (KPIs, Orders Table, Attention List) */}
+          {activeTab === 'monitoring' && (
+            <MonitoringDashboard
+              onNavigateTab={(tab) => setActiveTab(tab as AdminTab)}
+            />
+          )}
 
-          {/* 3. Suppliers */}
+          {/* 2. Suppliers (Filter, Table, Local vs Global, STIR Verification, Moderation) */}
           {activeTab === 'suppliers' && <SuppliersTable />}
 
-          {/* 4. Products */}
-          {activeTab === 'products' && <ProductCatalogManager />}
+          {/* 3. Partners (Payme, Click, Escrow, E-IMZO, SMS, GPS) */}
+          {activeTab === 'partners' && <PartnersManager />}
 
-          {/* 5. Orders */}
-          {activeTab === 'orders' && <OrdersManager />}
-
-          {/* 6. Logistics */}
+          {/* 4. Logistics (Dispatch Queue, Unassigned Orders, Fleet, Shipments en route) */}
           {activeTab === 'logistics' && <FleetManager />}
 
-          {/* 7. Financial */}
+          {/* 5. Audit Logs (Immutable security logs, filters, export) */}
+          {activeTab === 'audit_logs' && <AuditLogsViewer />}
+
+          {/* ==============================================================
+              SECONDARY MODULES (Moliya & Nizolar)
+              ============================================================== */}
+
+          {/* Secondary 1: Financial & Escrow */}
           {activeTab === 'financial' && <FinancialLedger />}
 
-          {/* 8. Audit Logs */}
-          {activeTab === 'audit_logs' && <AuditLogsViewer />}
+          {/* Secondary 2: Disputes & Arbitration */}
+          {activeTab === 'disputes' && <DisputesManager />}
+
+          {/* ==============================================================
+              OPERATIONS & CATALOG
+              ============================================================== */}
+          {activeTab === 'orders' && <OrdersManager />}
+          {activeTab === 'products' && <ProductCatalogManager />}
+          {activeTab === 'super_admin' && <SuperAdminHub />}
+          {activeTab === 'analytics' && <OverviewStats />}
         </main>
 
         {/* Footer */}
@@ -121,7 +143,7 @@ const AdminLayout: React.FC = () => {
               &copy; {new Date().getFullYear()} <span className="text-theme-main font-bold">BUNKERSTROY</span> Heavy B2B Ecosystem.
             </div>
             <div className="flex items-center gap-3 text-[11px]">
-              <span className="text-[#89B4FA] font-bold">[ARCH LINUX PALETTE]</span>
+              <span className="text-[#F59E0B] font-bold">[TZ-5 INDUSTRIAL STANDARD]</span>
               <span className="text-theme-subtle">|</span>
               <span className="text-theme-muted">React 19 + TypeScript</span>
               <span className="text-theme-subtle">|</span>

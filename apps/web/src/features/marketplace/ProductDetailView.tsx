@@ -108,7 +108,17 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
     );
   }
 
-  const basePrice = Number(product.price);
+  const basePrice = React.useMemo(() => {
+    if (!product) return 0;
+    if (product.tieredPrices && product.tieredPrices.length > 0) {
+      const match = product.tieredPrices.find(
+        (tp) => quantity >= tp.minQty && (!tp.maxQty || quantity <= tp.maxQty)
+      );
+      if (match) return Number(match.price);
+    }
+    return Number(product.price);
+  }, [product, quantity]);
+
   const totalPrice = basePrice * quantity;
   const unitLabel = product.unit || 'dona';
 
@@ -264,6 +274,37 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
                 </span>
               </div>
             </div>
+
+            {/* Tiered Price Ladder (TZ-1 MJ-03, MJ-04) */}
+            {product.tieredPrices && product.tieredPrices.length > 0 && (
+              <div className="bg-amber-50/70 border border-amber-200 rounded-xl p-3.5 space-y-2">
+                <span className="text-[11px] font-bold text-amber-900 uppercase block">
+                  Miqdor Zinapoyasi (Ulgurji Chegirma):
+                </span>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                  {product.tieredPrices.map((tp, idx) => {
+                    const isActive = quantity >= tp.minQty && (!tp.maxQty || quantity <= tp.maxQty);
+                    return (
+                      <div
+                        key={idx}
+                        className={`p-2 rounded-lg border text-center transition-all ${
+                          isActive
+                            ? 'bg-amber-500 text-slate-950 border-amber-600 font-bold shadow-xs'
+                            : 'bg-white border-amber-200 text-slate-800'
+                        }`}
+                      >
+                        <div className="text-[10px] opacity-80">
+                          {tp.minQty}{tp.maxQty ? ` - ${tp.maxQty}` : '+'} {unitLabel}
+                        </div>
+                        <div className="text-xs font-extrabold">
+                          {Number(tp.price).toLocaleString()} so‘m
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* Quantity Selector */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-bunker-border-subtle">
