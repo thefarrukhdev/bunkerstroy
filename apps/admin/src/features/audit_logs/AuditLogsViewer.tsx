@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AuditLogRecord,
   AuditLevel,
@@ -13,6 +13,7 @@ import { Select } from '../../components/Select';
 import { Switch } from '../../components/Switch';
 import { AuditDetailDrawer } from './AuditDetailDrawer';
 import { maskInn, maskPhone } from '../../utils/security';
+import { apiClient } from '../../services/apiClient';
 import {
   ShieldAlert,
   ShieldCheck,
@@ -37,6 +38,33 @@ export const AuditLogsViewer: React.FC = () => {
 
   // Detail Drawer state
   const [selectedLog, setSelectedLog] = useState<AuditLogRecord | null>(null);
+
+  useEffect(() => {
+    const fetchLogs = async () => {
+      try {
+        const res = await apiClient.get<any>('/admin/logs');
+        if (res && res.data && res.data.length > 0) {
+          const mapped: AuditLogRecord[] = res.data.map((l: any) => ({
+            id: l.id,
+            action: (l.action?.includes('kirish') ? 'LOGIN_SUCCESS' : 'CONFIG_UPDATE') as any,
+            actionName: l.action,
+            actorName: l.actor || 'Administrator',
+            actorRole: 'SUPER_ADMIN',
+            category: (l.category === 'AUTH' ? 'SECURITY' : 'SYSTEM') as AuditCategory,
+            level: (l.level || 'INFO') as AuditLevel,
+            details: l.details || '',
+            ipAddress: '127.0.0.1',
+            userAgent: 'Mozilla/5.0 (BunkerStroy Admin)',
+            timestamp: l.timestamp ? new Date(l.timestamp).toLocaleString('uz-UZ') : 'Hozirgina'
+          }));
+          setLogs(mapped);
+        }
+      } catch (err) {
+        console.warn('Audit jurnallarini yuklashda xatolik:', err);
+      }
+    };
+    fetchLogs();
+  }, []);
 
   // Statistics
   const totalLogs = logs.length;

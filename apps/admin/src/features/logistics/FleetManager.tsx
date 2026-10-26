@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   VehicleItem,
   VehicleStatus,
@@ -15,6 +15,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { DispatchModal } from './DispatchModal';
 import { VehicleFormDrawer } from './VehicleFormDrawer';
 import { INITIAL_ORDERS, OrderRecord } from '../../mocks/ordersMock';
+import { apiClient } from '../../services/apiClient';
 import {
   Truck,
   Plus,
@@ -40,6 +41,61 @@ export const FleetManager: React.FC = () => {
   // Filters
   const [typeFilter, setTypeFilter] = useState<string>('ALL');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
+
+  useEffect(() => {
+    const fetchFleetData = async () => {
+      try {
+        const [vehRes, dispRes] = await Promise.all([
+          apiClient.get<any>('/logistics/vehicles'),
+          apiClient.get<any>('/logistics/dispatches')
+        ]);
+
+        if (vehRes && vehRes.data && vehRes.data.length > 0) {
+          const mappedVehicles: VehicleItem[] = vehRes.data.map((v: any) => ({
+            id: v.id,
+            name: v.name,
+            plateNumber: v.plateNumber,
+            type: v.type,
+            capacityTons: v.capacityTons,
+            driverName: v.driverName || 'Biriktirilmagan',
+            driverPhone: v.driverPhone || '+998901234567',
+            status: v.isAvailable ? 'AVAILABLE' : 'ON_ROUTE',
+            statusDescription: v.isAvailable ? 'Bo‘sh (GARAJDA)' : 'Reysda',
+            fuelLevelPercent: 88,
+            currentLocation: 'Toshkent sh.',
+            destination: 'Ob‘ekt',
+            assignedOrderNumber: undefined
+          }));
+          setVehicles(mappedVehicles);
+        }
+
+        if (dispRes && dispRes.data && dispRes.data.length > 0) {
+          const mappedDispatches: DispatchRecord[] = dispRes.data.map((d: any) => ({
+            id: d.id,
+            orderId: d.orderId,
+            orderNumber: d.order?.orderNumber || 'ORD-9021',
+            clientName: d.order?.buyer?.displayName || 'Xaridor',
+            clientPhone: d.order?.buyer?.phone || '+998901234567',
+            deliveryAddress: d.destination,
+            vehicleId: d.vehicleId || 'veh-1',
+            vehicleName: d.vehicle?.name || 'HOWO Samosval',
+            plateNumber: d.vehicle?.plateNumber || '01 742 VAA',
+            driverName: d.driver?.displayName || 'Haydovchi',
+            driverPhone: d.driver?.phone || '+998901114455',
+            status: d.status as any,
+            distanceKm: d.distanceKm,
+            totalFreightCost: Number(d.totalCost),
+            dispatchedAt: new Date(d.dispatchedAt).toLocaleTimeString('uz-UZ'),
+            estimatedDeliveryAt: '45 daqiqa'
+          }));
+          setDispatches(mappedDispatches);
+        }
+      } catch (err) {
+        console.warn('Logistika maʼlumotlarini yuklashda xatolik:', err);
+      }
+    };
+    fetchFleetData();
+  }, []);
 
   // Modals & Drawers
   const [isDispatchModalOpen, setIsDispatchModalOpen] = useState(false);

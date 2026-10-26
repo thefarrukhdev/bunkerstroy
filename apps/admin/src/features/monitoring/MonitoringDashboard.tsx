@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ShoppingBag,
   ShieldCheck,
@@ -29,6 +29,7 @@ import { StatusBadge } from '../../components/StatusBadge';
 import { Button } from '../../components/Button';
 import { KpiStatCard } from '../../components/KpiStatCard';
 import { OrderDetailDrawer } from '../orders/OrderDetailDrawer';
+import { apiClient } from '../../services/apiClient';
 
 interface AttentionItem {
   id: string;
@@ -96,16 +97,83 @@ export const MonitoringDashboard: React.FC<{
     }
   ]);
 
-  const handleRefresh = () => {
+  const [liveKpi, setLiveKpi] = useState<{
+    todayOrdersCount: number;
+    escrowTotalSum: number;
+    inTransitLoadsCount: number;
+    openDisputesCount: number;
+  } | null>(null);
+
+  const fetchMonitoringData = async () => {
+    try {
+      const res = await apiClient.get<any>('/admin/monitoring');
+      if (res && res.data) {
+        if (res.data.kpis) {
+          setLiveKpi(res.data.kpis);
+        }
+        if (res.data.recentOrders && res.data.recentOrders.length > 0) {
+          const mapped: OrderRecord[] = res.data.recentOrders.map((o: any) => ({
+            id: o.id,
+            orderNumber: o.orderNumber,
+            buyerName: o.buyerName || 'Mijoz',
+            buyerPhone: '+998 (90) 123-45-67',
+            companyName: o.buyerName || 'Korxona',
+            deliveryRegion: o.deliveryRegion || 'Toshkent shahri',
+            deliveryDistrict: 'Toshkent',
+            deliveryAddress: o.deliveryRegion || 'Toshkent sh.',
+            vehicleType: 'HOWO Samosval 25t',
+            items: [],
+            totalAmount: o.finalAmount || 0,
+            deliveryFee: 150000,
+            discountAmount: 0,
+            finalAmount: o.finalAmount || 0,
+            status: (o.status === 'ARRIVED' ? 'DELIVERED' : o.status === 'IN_TRANSIT' ? 'IN_TRANSIT' : 'CONFIRMED') as OrderStatus,
+            payment: {
+              provider: 'PAYME',
+              status: 'PAID'
+            },
+            createdAt: new Date(o.createdAt).toLocaleDateString('uz-UZ'),
+            updatedAt: new Date(o.createdAt).toLocaleDateString('uz-UZ')
+          }));
+          setOrders(mapped);
+        }
+        if (res.data.attentionList && res.data.attentionList.length > 0) {
+          const mappedAtt: AttentionItem[] = res.data.attentionList.map((a: any) => ({
+            id: a.id,
+            type: a.type === 'LOGISTICS' ? 'DRIVER_DELAY' : a.type === 'SUPPLIER_VERIFICATION' ? 'SUPPLIER_MODERATION' : 'OPEN_DISPUTE',
+            title: a.title,
+            subtitle: a.description,
+            urgentLevel: a.severity === 'CRITICAL' ? 'CRITICAL' : a.severity === 'HIGH' ? 'WARNING' : 'INFO',
+            timestamp: 'Hozirgina',
+            actionLabel: 'Ko‘rib chiqish',
+            targetId: a.targetId,
+            linkTab: a.type === 'LOGISTICS' ? 'logistics' : a.type === 'SUPPLIER_VERIFICATION' ? 'suppliers' : 'disputes'
+          }));
+          setAttentionList(mappedAtt);
+        }
+      }
+    } catch (err) {
+      console.warn('Live monitoring maʼlumotlarini yuklashda xatolik:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchMonitoringData();
+  }, []);
+
+  const handleRefresh = async () => {
     setIsRefreshing(true);
-    setTimeout(() => setIsRefreshing(false), 600);
+    await fetchMonitoringData();
+    setIsRefreshing(false);
   };
 
   // KPIs
-  const todayOrdersCount = orders.length;
-  const escrowSumFormatted = '1 450 000 000';
-  const enRouteCount = INITIAL_VEHICLES.filter((v) => v.status === 'ON_ROUTE').length;
-  const openDisputesCount = disputes.filter((d) => d.status === 'OPEN' || d.status === 'INVESTIGATING').length;
+  const todayOrdersCount = liveKpi ? liveKpi.todayOrdersCount : orders.length;
+  const escrowSumFormatted = liveKpi
+    ? liveKpi.escrowTotalSum.toLocaleString('uz-UZ')
+    : '1 450 000 000';
+  const enRouteCount = liveKpi ? liveKpi.inTransitLoadsCount : INITIAL_VEHICLES.filter((v) => v.status === 'ON_ROUTE').length;
+  const openDisputesCount = liveKpi ? liveKpi.openDisputesCount : disputes.filter((d) => d.status === 'OPEN' || d.status === 'INVESTIGATING').length;
 
   // Filtered Orders for the table
   const filteredOrders = orders.filter((o) => {

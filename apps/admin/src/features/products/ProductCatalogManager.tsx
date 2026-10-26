@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ProductItem,
   INITIAL_PRODUCTS,
@@ -14,6 +14,7 @@ import { KpiStatCard } from '../../components/KpiStatCard';
 import { Select } from '../../components/Select';
 import { BatchPriceModal } from './BatchPriceModal';
 import { ProductFormDrawer } from './ProductFormDrawer';
+import { apiClient } from '../../services/apiClient';
 import {
   Package,
   Plus,
@@ -44,6 +45,37 @@ export const ProductCatalogManager: React.FC = () => {
   const [isFormDrawerOpen, setIsFormDrawerOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<ProductItem | null>(null);
   const [deleteModalTarget, setDeleteModalTarget] = useState<ProductItem | null>(null);
+
+  useEffect(() => {
+    const fetchCatalog = async () => {
+      try {
+        const res = await apiClient.get<any>('/catalog/products');
+        if (res && res.data && res.data.length > 0) {
+          const mapped: ProductItem[] = res.data.map((p: any) => ({
+            id: p.id,
+            title: p.title,
+            sku: p.sku || `SKU-${p.id.substring(0, 6).toUpperCase()}`,
+            categoryId: p.categoryId || 'cat-1',
+            supplierId: p.supplierId || 'sup-1',
+            supplierName: p.supplier?.companyName || 'BunkerStroy Zavod',
+            price: Number(p.basePrice) || Number(p.price) || 0,
+            unit: (p.unit || 'TON') as ProductUnit,
+            stock: Number(p.stockQuantity) || Number(p.stock) || 0,
+            minOrder: Number(p.minOrderQuantity) || 1,
+            status: Number(p.stockQuantity || p.stock) > 20 ? 'IN_STOCK' : Number(p.stockQuantity || p.stock) > 0 ? 'LOW_STOCK' : 'OUT_OF_STOCK',
+            rating: 5.0,
+            reviewsCount: 14,
+            isVatIncluded: true,
+            createdAt: new Date(p.createdAt || Date.now()).toLocaleDateString('uz-UZ')
+          }));
+          setProducts(mapped);
+        }
+      } catch (err) {
+        console.warn('Mahsulotlar katalogini yuklashda xatolik:', err);
+      }
+    };
+    fetchCatalog();
+  }, []);
 
   // Statistics
   const totalProducts = products.length;

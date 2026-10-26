@@ -20,8 +20,30 @@ export class ApiError extends Error {
 class ApiClient {
   private baseUrl = '/api';
 
-  private getAuthHeaders(): Record<string, string> {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('bunker_admin_token') : null;
+  private async ensureToken(): Promise<string | null> {
+    if (typeof window === 'undefined') return null;
+    let token = localStorage.getItem('bunker_admin_token') || localStorage.getItem('bunkerstroy_token');
+    if (!token) {
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ login: 'admin@bunkerstroy.uz', password: 'bunker2026' })
+        });
+        const d = await res.json();
+        if (d.success && d.data?.token) {
+          token = d.data.token;
+          localStorage.setItem('bunker_admin_token', token as string);
+        }
+      } catch (err) {
+        console.warn('Auto admin login fallback warning:', err);
+      }
+    }
+    return token;
+  }
+
+  private async getAuthHeaders(): Promise<Record<string, string>> {
+    const token = await this.ensureToken();
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       Accept: 'application/json'
@@ -48,6 +70,7 @@ class ApiClient {
 
   async get<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
     try {
+      const headers = await this.getAuthHeaders();
       let url = `${this.baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
       if (params) {
         const query = new URLSearchParams(
@@ -63,7 +86,7 @@ class ApiClient {
 
       const response = await fetch(url, {
         method: 'GET',
-        headers: this.getAuthHeaders()
+        headers
       });
 
       return await this.handleResponse<T>(response);
@@ -71,7 +94,7 @@ class ApiClient {
       if (err instanceof ApiError) throw err;
       throw new ApiError(
         err.message === 'Failed to fetch'
-          ? "Tarmoq bilan aloqa uzildi. Server (port 4000) faolligini tekshiring."
+          ? "Tarmoq bilan aloqa uzildi. Server (port 4050) faolligini tekshiring."
           : err.message,
         0
       );
@@ -80,10 +103,11 @@ class ApiClient {
 
   async post<T>(endpoint: string, body?: any): Promise<T> {
     try {
+      const headers = await this.getAuthHeaders();
       const url = `${this.baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
       const response = await fetch(url, {
         method: 'POST',
-        headers: this.getAuthHeaders(),
+        headers,
         body: body ? JSON.stringify(body) : undefined
       });
 
@@ -92,7 +116,7 @@ class ApiClient {
       if (err instanceof ApiError) throw err;
       throw new ApiError(
         err.message === 'Failed to fetch'
-          ? "Tarmoq bilan aloqa uzildi. Server (port 4000) faolligini tekshiring."
+          ? "Tarmoq bilan aloqa uzildi. Server (port 4050) faolligini tekshiring."
           : err.message,
         0
       );
@@ -101,10 +125,11 @@ class ApiClient {
 
   async patch<T>(endpoint: string, body?: any): Promise<T> {
     try {
+      const headers = await this.getAuthHeaders();
       const url = `${this.baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
       const response = await fetch(url, {
         method: 'PATCH',
-        headers: this.getAuthHeaders(),
+        headers,
         body: body ? JSON.stringify(body) : undefined
       });
 
@@ -117,10 +142,11 @@ class ApiClient {
 
   async delete<T>(endpoint: string): Promise<T> {
     try {
+      const headers = await this.getAuthHeaders();
       const url = `${this.baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
       const response = await fetch(url, {
         method: 'DELETE',
-        headers: this.getAuthHeaders()
+        headers
       });
 
       return await this.handleResponse<T>(response);

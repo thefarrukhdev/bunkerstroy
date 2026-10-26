@@ -162,6 +162,66 @@ export const DriverMobileView: React.FC = () => {
     }
   };
 
+  // Fetch active driver dispatch from backend
+  useEffect(() => {
+    const fetchActiveTask = async () => {
+      try {
+        let token = localStorage.getItem('bunkerstroy_token');
+        if (!token) {
+          // Attempt automatic demo login as driver if not yet authenticated
+          const loginRes = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ login: 'driver.sherzod@bunkerstroy.uz', password: 'bunker2026' })
+          });
+          const loginData = await loginRes.json();
+          if (loginData.success && loginData.data?.token) {
+            token = loginData.data.token;
+            localStorage.setItem('bunkerstroy_token', token as string);
+          }
+        }
+
+        if (token) {
+          const res = await fetch('/api/logistics/dispatches', {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (res.ok) {
+            const result = await res.json();
+            const list = result.data || [];
+            if (list.length > 0) {
+              const active = list[0];
+              setTask((prev) => ({
+                ...prev,
+                id: active.id,
+                orderNumber: active.order?.orderNumber || prev.orderNumber,
+                originAddress: active.origin || prev.originAddress,
+                destinationAddress: active.destination || prev.destinationAddress,
+                distanceKm: active.distanceKm || prev.distanceKm,
+                totalFreightFee: Number(active.totalCost) || prev.totalFreightFee,
+                driverShareFee: Math.round((Number(active.totalCost) || prev.totalFreightFee) * 0.9),
+                correctPin: active.acceptanceCode || '7492',
+                plateNumber: active.vehicle?.plateNumber || prev.plateNumber,
+                vehicleModel: active.vehicle?.name || prev.vehicleModel,
+              }));
+
+              if (active.status === 'ASSIGNED') setStage('PENDING_ACCEPTANCE');
+              else if (active.status === 'LOADED' || active.status === 'IN_TRANSIT') setStage('IN_TRANSIT');
+              else if (active.status === 'ARRIVED') {
+                setStage('ARRIVED');
+                setIsTimerRunning(true);
+              } else if (active.status === 'DELIVERED') {
+                setStage('COMPLETED');
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Haydovchi dispetcherligini yuklashda xatolik:', err);
+      }
+    };
+    fetchActiveTask();
+  }, []);
+
   // Timer effect when arrived
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | null = null;
@@ -216,25 +276,57 @@ export const DriverMobileView: React.FC = () => {
     }
   };
 
-  const handleLoadingComplete = () => {
+  const handleLoadingComplete = async () => {
+    const photoToUse =
+      loadingPhoto ||
+      'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80';
     if (!loadingPhoto) {
-      // Allow taking a dummy photo if driver doesn't upload
-      const dummyPhoto =
-        'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80';
-      setLoadingPhoto(dummyPhoto);
+      setLoadingPhoto(photoToUse);
     }
     triggerHaptic();
     setStage('IN_TRANSIT');
+
+    // Sync to backend
+    const token = localStorage.getItem('bunkerstroy_token');
+    if (token && task.id && !task.id.startsWith('TASK-')) {
+      try {
+        await fetch(`/api/logistics/dispatches/${task.id}/driver-loaded`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ photoUrl: photoToUse })
+        });
+      } catch (e) {
+        console.warn('API driver-loaded sync error:', e);
+      }
+    }
   };
 
-  const handleMarkArrived = () => {
+  const handleMarkArrived = async () => {
     triggerHaptic();
     setStage('ARRIVED');
     setIsTimerRunning(true);
     setTimerSecondsRemaining(30 * 60);
     setArrivedNotified(true);
-    // Send simulated SMS dispatch alert
     console.log('[LOGISTICS SMS] Mijozga xabar yuborildi: Haydovchi manzilga yetib keldi.');
+
+    // Sync to backend
+    const token = localStorage.getItem('bunkerstroy_token');
+    if (token && task.id && !task.id.startsWith('TASK-')) {
+      try {
+        await fetch(`/api/logistics/dispatches/${task.id}/driver-arrived`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        });
+      } catch (e) {
+        console.warn('API driver-arrived sync error:', e);
+      }
+    }
   };
 
   const handlePinSubmit = () => {
@@ -248,15 +340,33 @@ export const DriverMobileView: React.FC = () => {
     }
   };
 
-  const handleDeliverComplete = () => {
+  const handleDeliverComplete = async () => {
+    const photoToUse =
+      deliveryPhoto ||
+      'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80';
     if (!deliveryPhoto) {
-      const dummyDocPhoto =
-        'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80';
-      setDeliveryPhoto(dummyDocPhoto);
+      setDeliveryPhoto(photoToUse);
     }
     triggerHaptic();
     setStage('COMPLETED');
     setIsTimerRunning(false);
+
+    // Sync to backend
+    const token = localStorage.getItem('bunkerstroy_token');
+    if (token && task.id && !task.id.startsWith('TASK-')) {
+      try {
+        await fetch(`/api/logistics/dispatches/${task.id}/driver-verify-code`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ code: pinInput || task.correctPin, photoUrl: photoToUse })
+        });
+      } catch (e) {
+        console.warn('API driver-verify-code sync error:', e);
+      }
+    }
   };
 
   const handleResetDemo = () => {
@@ -271,7 +381,7 @@ export const DriverMobileView: React.FC = () => {
     setIsTimerRunning(false);
   };
 
-  const handleSubmitIssue = (e: React.FormEvent) => {
+  const handleSubmitIssue = async (e: React.FormEvent) => {
     e.preventDefault();
     triggerHaptic();
     const typeLabels: Record<ProblemType, string> = {
@@ -296,6 +406,27 @@ export const DriverMobileView: React.FC = () => {
     setReportedIssues((prev) => [newIssue, ...prev]);
     setIsProblemModalOpen(false);
     setShowIssueAlert(true);
+
+    // Sync to backend
+    const token = localStorage.getItem('bunkerstroy_token');
+    if (token && task.id && !task.id.startsWith('TASK-')) {
+      try {
+        await fetch(`/api/logistics/dispatches/${task.id}/driver-report-issue`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            reason: `${typeLabels[problemType]}: ${problemNotes || 'Tafsilotlar yo‘q'}`,
+            photoUrl: problemPhoto || undefined
+          })
+        });
+      } catch (err) {
+        console.warn('API driver-report-issue sync error:', err);
+      }
+    }
+
     setProblemNotes('');
     setProblemPhoto(null);
   };

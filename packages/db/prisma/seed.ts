@@ -563,7 +563,8 @@ async function main() {
         destination: 'Toshkent sh., Yunusobod 12-mavze',
         distanceKm: 28,
         totalCost: 150000,
-        departedAt: new Date(Date.now() - 45 * 60 * 1000),
+        dispatchedAt: new Date(Date.now() - 45 * 60 * 1000),
+        arrivedAt: new Date(Date.now() - 10 * 60 * 1000),
       },
     });
 
