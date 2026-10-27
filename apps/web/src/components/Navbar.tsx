@@ -370,10 +370,14 @@ export const NavbarSearch: React.FC<{ className?: string; onSearchComplete?: () 
     <form onSubmit={handleSubmit} className={cn('relative flex items-center', className)}>
       <Search className="absolute left-2.5 w-3.5 h-3.5 text-[#FFB800] pointer-events-none" />
       <input
+        id="marketplace-nav-search"
+        name="query"
         type="text"
+        autoComplete="off"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Material, sement, armatura, g‘isht..."
+        aria-label="Qurilish mollari qidiruvi"
         className="w-full h-8 sm:h-9 pl-8 pr-7 rounded-lg bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] focus:ring-1 focus:ring-[#FFB800]/40 text-xs font-sans text-white placeholder-sky-300/50 outline-none transition-colors"
       />
       {searchTerm && (

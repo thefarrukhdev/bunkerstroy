@@ -524,8 +524,11 @@ export const MonitoringDashboard: React.FC<{
                 <div className="relative">
                   <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-sky-300" />
                   <input
+                    id="monitoring-orders-search"
+                    name="monitoringSearch"
                     type="text"
                     placeholder="Raqam yoki xaridor..."
+                    aria-label="Raqam yoki xaridor bo‘yicha qidirish"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-8 pr-3 py-1.5 text-xs rounded-xl bg-[#071326] border border-[#1E3A6D] text-white placeholder:text-sky-300/50 focus:outline-none focus:border-[#FFB800]"
@@ -533,6 +536,9 @@ export const MonitoringDashboard: React.FC<{
                 </div>
 
                 <select
+                  id="monitoring-status-filter"
+                  name="statusFilter"
+                  aria-label="Buyurtma holati bo‘yicha filter"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                   className="text-xs bg-[#071326] border border-[#1E3A6D] rounded-xl px-2.5 py-1.5 text-white focus:outline-none focus:border-[#FFB800]"

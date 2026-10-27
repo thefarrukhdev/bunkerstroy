@@ -209,11 +209,15 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
         <div className="relative flex-1">
           <Search className="absolute left-3 w-4 h-4 text-[#FFB800] pointer-events-none" />
           <input
+            id="marketplace-filter-search"
+            name="search"
             type="text"
+            autoComplete="off"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && fetchProducts()}
             placeholder="Mahsulot nomi, markasi, sement, g‘isht yoki zavod bo‘yicha qidiruv..."
+            aria-label="Mahsulot qidirish"
             className="w-full h-10 pl-9 pr-4 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-xs sm:text-sm text-white placeholder-sky-300/50 outline-none transition-colors"
           />
         </div>
@@ -221,6 +225,10 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
         {/* Region selector */}
         <div className="w-full sm:w-56 shrink-0">
           <select
+            id="marketplace-region-select"
+            name="region"
+            autoComplete="address-level1"
+            aria-label="Viloyat bo‘yicha saralash"
             value={selectedRegion}
             onChange={(e) => setSelectedRegion(e.target.value)}
             className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-xs font-mono text-sky-100 outline-none cursor-pointer"

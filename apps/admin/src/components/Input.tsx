@@ -9,8 +9,10 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ label, helperText, error, leftIcon, rightAction, className = '', disabled, id, ...props }, ref) => {
-    const inputId = id || (label ? label.toLowerCase().replace(/\s+/g, '-') : undefined);
+  ({ label, helperText, error, leftIcon, rightAction, className = '', disabled, id, name, ...props }, ref) => {
+    const autoId = React.useId();
+    const inputId = id || (label ? `admin-in-${label.toLowerCase().replace(/[^a-z0-9_-]/g, '-')}` : `admin-in-${autoId.replace(/:/g, '')}`);
+    const inputName = name || inputId;
 
     return (
       <div className="w-full space-y-1.5 font-mono">
@@ -29,6 +31,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
           <input
             id={inputId}
+            name={inputName}
             ref={ref}
             disabled={disabled}
             className={`w-full py-2 text-xs bg-[#071326] text-white border rounded-xl transition-all duration-150 placeholder:text-sky-300/40 focus:outline-none focus:ring-1 ${

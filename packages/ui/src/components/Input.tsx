@@ -30,6 +30,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   ) => {
     const generatedId = useId();
     const inputId = id || (label ? `input-${label.toLowerCase().replace(/[^a-z0-9_-]/g, '-')}` : `input-${generatedId.replace(/:/g, '')}`);
+    const inputName = props.name || inputId;
 
     const sizeStyles = {
       sm: 'text-xs px-2.5 py-1.5',
@@ -87,6 +88,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             id={inputId}
+            name={inputName}
             disabled={disabled}
             className={cn(
               'w-full bg-bunker-input border rounded-xl text-bunker-text-primary placeholder-bunker-text-muted outline-none transition-all duration-150 shadow-2xs',

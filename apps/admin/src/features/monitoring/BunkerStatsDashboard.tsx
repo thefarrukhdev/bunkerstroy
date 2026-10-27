@@ -688,8 +688,10 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
 
               <div className="space-y-3 text-xs font-mono">
                 <div className="space-y-1">
-                  <label className="text-sky-200 font-bold block">Boshlang‘ich sana:</label>
+                  <label htmlFor="bunker-stats-start-date" className="text-sky-200 font-bold block">Boshlang‘ich sana:</label>
                   <input
+                    id="bunker-stats-start-date"
+                    name="startDate"
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
@@ -697,8 +699,10 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-sky-200 font-bold block">Tugash sanasi:</label>
+                  <label htmlFor="bunker-stats-end-date" className="text-sky-200 font-bold block">Tugash sanasi:</label>
                   <input
+                    id="bunker-stats-end-date"
+                    name="endDate"
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}

@@ -683,8 +683,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             </div>
 
             <div className="space-y-2">
-              <label className="flex items-center gap-2.5 p-2.5 rounded-lg border border-[#1E3A6D] bg-[#071326] hover:bg-[#132C54] cursor-pointer">
+              <label htmlFor="payment-cod" className="flex items-center gap-2.5 p-2.5 rounded-lg border border-[#1E3A6D] bg-[#071326] hover:bg-[#132C54] cursor-pointer">
                 <input
+                  id="payment-cod"
                   type="radio"
                   name="payment"
                   checked={paymentMethod === 'CASH_ON_DELIVERY'}
@@ -697,8 +698,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </span>
               </label>
 
-              <label className="flex items-center gap-2.5 p-2.5 rounded-lg border border-[#1E3A6D] bg-[#071326] hover:bg-[#132C54] cursor-pointer">
+              <label htmlFor="payment-payme" className="flex items-center gap-2.5 p-2.5 rounded-lg border border-[#1E3A6D] bg-[#071326] hover:bg-[#132C54] cursor-pointer">
                 <input
+                  id="payment-payme"
                   type="radio"
                   name="payment"
                   checked={paymentMethod === 'PAYME'}
@@ -711,8 +713,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </span>
               </label>
 
-              <label className="flex items-center gap-2.5 p-2.5 rounded-lg border border-[#1E3A6D] bg-[#071326] hover:bg-[#132C54] cursor-pointer">
+              <label htmlFor="payment-bank" className="flex items-center gap-2.5 p-2.5 rounded-lg border border-[#1E3A6D] bg-[#071326] hover:bg-[#132C54] cursor-pointer">
                 <input
+                  id="payment-bank"
                   type="radio"
                   name="payment"
                   checked={paymentMethod === 'BANK_TRANSFER'}

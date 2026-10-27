@@ -451,7 +451,10 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
                 </button>
 
                 <input
+                  id="product-detail-qty"
+                  name="quantity"
                   type="number"
+                  aria-label="Mahsulot miqdori"
                   min={product.minOrder || 1}
                   max={product.stock || 9999}
                   value={quantity}

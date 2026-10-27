@@ -114,13 +114,17 @@ export function DataTable<T extends Record<string, any>>({
         <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-theme-subtle" />
           <input
+            id="admin-datatable-search"
+            name="search"
             type="text"
+            autoComplete="off"
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
               setCurrentPage(1);
             }}
             placeholder={searchPlaceholder}
+            aria-label={searchPlaceholder}
             className="w-full pl-9 pr-8 py-2 text-xs font-mono bg-theme-main text-theme-main border border-theme rounded-md focus:outline-none focus:ring-1 focus:ring-neutral-400 transition-all placeholder:text-theme-subtle"
           />
           {searchTerm && (

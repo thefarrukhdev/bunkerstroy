@@ -762,6 +762,8 @@ export const DriverMobileView: React.FC = () => {
                 </label>
 
                 <input
+                  id="driver-loading-photo-input"
+                  name="loadingPhoto"
                   type="file"
                   accept="image/*"
                   ref={loadingInputRef}
@@ -948,10 +950,16 @@ export const DriverMobileView: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-3">
+                  <label htmlFor="driver-acceptance-pin" className="sr-only">
+                    Qabul qilish PIN kodi
+                  </label>
                   <input
+                    id="driver-acceptance-pin"
+                    name="pin"
                     type="text"
                     maxLength={4}
                     inputMode="numeric"
+                    aria-label="Qabul qilish PIN kodi"
                     value={pinInput}
                     onChange={(e) => {
                       const val = e.target.value.replace(/\D/g, '');
@@ -1021,6 +1029,8 @@ export const DriverMobileView: React.FC = () => {
                 </label>
 
                 <input
+                  id="driver-delivery-photo-input"
+                  name="deliveryPhoto"
                   type="file"
                   accept="image/*"
                   ref={deliveryInputRef}
@@ -1221,6 +1231,8 @@ export const DriverMobileView: React.FC = () => {
                   Holat fotosurati (Zararlanish, yo‘l yoki avariya):
                 </label>
                 <input
+                  id="driver-problem-photo-input"
+                  name="problemPhoto"
                   type="file"
                   accept="image/*"
                   ref={problemInputRef}
@@ -1284,12 +1296,14 @@ export const DriverMobileView: React.FC = () => {
                 'Hajm / tonnaj mos emas',
                 'Yoqilg‘i yetarli emas',
                 'Shaxsiy sabab / Navbat tugashi'
-              ].map((reason) => (
+              ].map((reason, idx) => (
                 <label
                   key={reason}
+                  htmlFor={`driver-reject-reason-${idx}`}
                   className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer"
                 >
                   <input
+                    id={`driver-reject-reason-${idx}`}
                     type="radio"
                     name="rejectReason"
                     checked={rejectReason === reason}

@@ -1401,10 +1401,12 @@ export const SellerPanelView: React.FC = () => {
             {/* Asosiy ma'lumotlar */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-xs font-mono font-bold text-sky-200">
+                <label htmlFor="seller-product-title" className="text-xs font-mono font-bold text-sky-200">
                   Mahsulot Nomi *
                 </label>
                 <input
+                  id="seller-product-title"
+                  name="title"
                   type="text"
                   required
                   placeholder="Masalan: Portlendsement M500 D0 (50kg)"
@@ -1415,10 +1417,13 @@ export const SellerPanelView: React.FC = () => {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-mono font-bold text-sky-200">
+                <label htmlFor="seller-product-category" className="text-xs font-mono font-bold text-sky-200">
                   Kategoriya / Bo‘lim
                 </label>
                 <select
+                  id="seller-product-category"
+                  name="categoryId"
+                  aria-label="Kategoriya tanlash"
                   value={categoryId}
                   onChange={(e) => setCategoryId(e.target.value)}
                   className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-white outline-none"
@@ -1432,24 +1437,30 @@ export const SellerPanelView: React.FC = () => {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-mono font-bold text-sky-200">
+                <label htmlFor="seller-product-price" className="text-xs font-mono font-bold text-sky-200">
                   Chakana / Birlik Narxi (so‘m) *
                 </label>
                 <input
+                  id="seller-product-price"
+                  name="price"
                   type="number"
+                  min="0"
                   required
                   placeholder="Masalan: 65000"
                   value={price}
-                  onChange={(e) => setPrice(e.target.value ? Number(e.target.value) : '')}
+                  onChange={(e) => setPrice(e.target.value ? Math.max(0, Number(e.target.value)) : '')}
                   className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-[#FFB800] font-black outline-none font-mono-numbers"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-mono font-bold text-sky-200">
+                <label htmlFor="seller-product-unit" className="text-xs font-mono font-bold text-sky-200">
                   O‘lchov birligi
                 </label>
                 <select
+                  id="seller-product-unit"
+                  name="unit"
+                  aria-label="O‘lchov birligini tanlash"
                   value={unit}
                   onChange={(e) => setUnit(e.target.value)}
                   className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-white outline-none font-mono"
@@ -1464,28 +1475,34 @@ export const SellerPanelView: React.FC = () => {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-mono font-bold text-sky-200">
+                <label htmlFor="seller-product-stock" className="text-xs font-mono font-bold text-sky-200">
                   Ombordagi Jami Zaxira *
                 </label>
                 <input
+                  id="seller-product-stock"
+                  name="stock"
                   type="number"
+                  min="0"
                   required
                   placeholder="Masalan: 500"
                   value={stock}
-                  onChange={(e) => setStock(e.target.value ? Number(e.target.value) : '')}
+                  onChange={(e) => setStock(e.target.value ? Math.max(0, Number(e.target.value)) : '')}
                   className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-white outline-none font-mono"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-mono font-bold text-sky-200">
+                <label htmlFor="seller-product-min-order" className="text-xs font-mono font-bold text-sky-200">
                   Minimal buyurtma miqdori
                 </label>
                 <input
+                  id="seller-product-min-order"
+                  name="minOrder"
                   type="number"
+                  min="1"
                   placeholder="1"
                   value={minOrder}
-                  onChange={(e) => setMinOrder(e.target.value ? Number(e.target.value) : '')}
+                  onChange={(e) => setMinOrder(e.target.value ? Math.max(1, Number(e.target.value)) : '')}
                   className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-white outline-none font-mono"
                 />
               </div>
@@ -1497,8 +1514,10 @@ export const SellerPanelView: React.FC = () => {
                 Savdo Kanallari Sozlamasi:
               </span>
               <div className="flex flex-col sm:flex-row gap-4">
-                <label className="flex items-center gap-2 cursor-pointer select-none">
+                <label htmlFor="seller-channel-online" className="flex items-center gap-2 cursor-pointer select-none">
                   <input
+                    id="seller-channel-online"
+                    name="isOnlinePublish"
                     type="checkbox"
                     checked={isOnlinePublish}
                     onChange={(e) => setIsOnlinePublish(e.target.checked)}
@@ -1509,8 +1528,10 @@ export const SellerPanelView: React.FC = () => {
                   </span>
                 </label>
 
-                <label className="flex items-center gap-2 cursor-pointer select-none">
+                <label htmlFor="seller-channel-offline" className="flex items-center gap-2 cursor-pointer select-none">
                   <input
+                    id="seller-channel-offline"
+                    name="isOfflineStore"
                     type="checkbox"
                     checked={isOfflineStore}
                     onChange={(e) => setIsOfflineStore(e.target.checked)}
@@ -1603,8 +1624,11 @@ export const SellerPanelView: React.FC = () => {
               {/* Custom size input */}
               <div className="flex items-center gap-2 pt-1 max-w-sm">
                 <input
+                  id="seller-custom-size-input"
+                  name="customSize"
                   type="text"
                   placeholder="Boshqa o‘lcham (masalan: 100mm)"
+                  aria-label="Maxsus o‘lcham kiritish"
                   value={customSizeInput}
                   onChange={(e) => setCustomSizeInput(e.target.value)}
                   onKeyDown={(e) => {
@@ -1712,8 +1736,11 @@ export const SellerPanelView: React.FC = () => {
             <div className="relative">
               <Search className="absolute left-3.5 w-4 h-4 text-[#FFB800] pointer-events-none" />
               <input
+                id="seller-pos-search-input"
+                name="posSearch"
                 type="text"
                 placeholder="Mahsulot nomi yoki shtrixkodi bo‘yicha tezkor qidiruv..."
+                aria-label="Mahsulot nomi yoki shtrixkodi bo‘yicha tezkor qidiruv"
                 value={posSearchTerm}
                 onChange={(e) => setPosSearchTerm(e.target.value)}
                 className="w-full h-11 pl-10 pr-4 rounded-xl bg-[#0A1931] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-white placeholder-sky-300/50 outline-none font-mono"
@@ -1919,12 +1946,16 @@ export const SellerPanelView: React.FC = () => {
               {posPaymentMethod === 'CASH' && (
                 <div className="p-3 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-2 text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="text-sky-300">Qabul qilingan naqd:</span>
+                    <label htmlFor="seller-cash-input" className="text-sky-300">Qabul qilingan naqd:</label>
                     <input
+                      id="seller-cash-input"
+                      name="cashGiven"
                       type="number"
+                      min="0"
                       placeholder={posGrandTotal.toString()}
+                      aria-label="Qabul qilingan naqd summa"
                       value={cashGiven}
-                      onChange={(e) => setCashGiven(e.target.value ? Number(e.target.value) : '')}
+                      onChange={(e) => setCashGiven(e.target.value ? Math.max(0, Number(e.target.value)) : '')}
                       className="w-32 h-8 px-2 rounded-lg bg-[#0A1931] border border-[#1E3A6D] text-right font-black text-white"
                     />
                   </div>
@@ -1963,7 +1994,10 @@ export const SellerPanelView: React.FC = () => {
               <button
                 type="button"
                 onClick={handleCompletePosSale}
-                className="w-full btn-industrial-yellow py-3 rounded-xl font-black text-sm flex items-center justify-center gap-2 cursor-pointer shadow-lg select-none"
+                disabled={activeBasket.items.length === 0}
+                className={`w-full btn-industrial-yellow py-3 rounded-xl font-black text-sm flex items-center justify-center gap-2 shadow-lg select-none ${
+                  activeBasket.items.length === 0 ? 'opacity-40 cursor-not-allowed grayscale' : 'cursor-pointer'
+                }`}
               >
                 <Printer className="w-4 h-4" />
                 <span>Savdoni Yakunlash &amp; Chek Chiqarish</span>
@@ -2498,10 +2532,12 @@ export const SellerPanelView: React.FC = () => {
 
               {/* Quantity selector */}
               <div className="space-y-1">
-                <label className="text-sky-300 font-bold block">
+                <label htmlFor="seller-b2b-quantity" className="text-sky-300 font-bold block">
                   Buyurtma hajmi ({selectedManufacturer.unit}):
                 </label>
                 <input
+                  id="seller-b2b-quantity"
+                  name="b2bQuantity"
                   type="number"
                   min={selectedManufacturer.minOrderTons}
                   value={b2bQuantity}
@@ -2619,8 +2655,11 @@ export const SellerPanelView: React.FC = () => {
 
             <div className="space-y-3">
               <div className="space-y-1">
-                <label className="text-sky-300 font-bold block">Xarajat Kategoriyasi *</label>
+                <label htmlFor="seller-expense-category" className="text-sky-300 font-bold block">Xarajat Kategoriyasi *</label>
                 <select
+                  id="seller-expense-category"
+                  name="expenseCategory"
+                  aria-label="Xarajat kategoriyasi"
                   value={expenseCategory}
                   onChange={(e) => setExpenseCategory(e.target.value)}
                   className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white"
@@ -2636,20 +2675,26 @@ export const SellerPanelView: React.FC = () => {
               </div>
 
               <div className="space-y-1">
-                <label className="text-sky-300 font-bold block">Summa (so‘m) *</label>
+                <label htmlFor="seller-expense-amount" className="text-sky-300 font-bold block">Summa (so‘m) *</label>
                 <input
+                  id="seller-expense-amount"
+                  name="expenseAmount"
                   type="number"
+                  min="0"
                   required
                   placeholder="Masalan: 3500000"
                   value={expenseAmount}
-                  onChange={(e) => setExpenseAmount(e.target.value ? Number(e.target.value) : '')}
+                  onChange={(e) => setExpenseAmount(e.target.value ? Math.max(0, Number(e.target.value)) : '')}
                   className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-red-400 font-black text-sm"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-sky-300 font-bold block">To‘lov vositasi</label>
+                <label htmlFor="seller-expense-method" className="text-sky-300 font-bold block">To‘lov vositasi</label>
                 <select
+                  id="seller-expense-method"
+                  name="expensePaymentMethod"
+                  aria-label="To‘lov vositasi"
                   value={expensePaymentMethod}
                   onChange={(e) => setExpensePaymentMethod(e.target.value)}
                   className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white"
@@ -2661,8 +2706,10 @@ export const SellerPanelView: React.FC = () => {
               </div>
 
               <div className="space-y-1">
-                <label className="text-sky-300 font-bold block">Izoh / Maqsad</label>
+                <label htmlFor="seller-expense-notes" className="text-sky-300 font-bold block">Izoh / Maqsad</label>
                 <input
+                  id="seller-expense-notes"
+                  name="expenseNotes"
                   type="text"
                   placeholder="Xarajat bo‘yicha qo‘shimcha izoh..."
                   value={expenseNotes}
