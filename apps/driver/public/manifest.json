@@ -1,0 +1,17 @@
+{
+  "short_name": "Haydovchi",
+  "name": "BunkerStroy Haydovchi — Flot Dispetcherligi",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#071326",
+  "theme_color": "#071326",
+  "display": "standalone",
+  "orientation": "portrait"
+}

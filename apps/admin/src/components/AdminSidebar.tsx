@@ -293,18 +293,35 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
         </div>
 
-        {/* Footer info: Staff Role and Online Status */}
-        <div className="p-3 border-t-2 border-[#1E3A6D] bg-[#071326] text-xs font-mono space-y-2">
-          <a
-            href={typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3000' : '/'}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-[#0F2547] hover:bg-[#132C54] border border-[#1E3A6D] hover:border-[#FFB800] text-sky-200 hover:text-white transition-all text-[11px] font-mono font-bold select-none group"
-          >
-            <div className="flex items-center gap-2">
-              <span className="text-[#FFB800] group-hover:scale-110 transition-transform">🏪</span>
-              <span>Bozor Vitrinasi (Port 3000)</span>
-            </div>
-            <span className="text-[10px] text-sky-400 group-hover:text-[#FFB800] transition-colors">↗</span>
-          </a>
+        {/* Footer info: Staff Role and Cross-App Portal Links */}
+        <div className="p-3 border-t-2 border-[#1E3A6D] bg-[#071326] text-xs font-mono space-y-1.5">
+          <div className="text-[10px] font-bold text-[#FFB800] uppercase tracking-wider px-1">
+            BunkerStroy Portallari:
+          </div>
+
+          <div className="grid grid-cols-3 gap-1">
+            <a
+              href={typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://bunkerstroy-web.vercel.app'}
+              title="Bozor Vitrinasi & Marketplace"
+              className="flex items-center justify-center gap-1 py-1.5 px-1 rounded-lg bg-[#0F2547] hover:bg-[#132C54] border border-[#1E3A6D] hover:border-[#FFB800] text-sky-200 hover:text-white transition-all text-[10px] font-mono font-bold select-none text-center"
+            >
+              <span>🏪 Vitrina</span>
+            </a>
+            <a
+              href={typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://bunkerstroy-seller.vercel.app'}
+              title="Sotuvchi & POS CRM"
+              className="flex items-center justify-center gap-1 py-1.5 px-1 rounded-lg bg-[#0F2547] hover:bg-[#132C54] border border-[#1E3A6D] hover:border-[#FFB800] text-sky-200 hover:text-white transition-all text-[10px] font-mono font-bold select-none text-center"
+            >
+              <span>🏬 Sotuvchi</span>
+            </a>
+            <a
+              href={typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3003' : 'https://bunkerstroy-driver.vercel.app'}
+              title="Haydovchi PWA"
+              className="flex items-center justify-center gap-1 py-1.5 px-1 rounded-lg bg-[#0F2547] hover:bg-[#132C54] border border-[#1E3A6D] hover:border-[#FFB800] text-sky-200 hover:text-white transition-all text-[10px] font-mono font-bold select-none text-center"
+            >
+              <span>🚛 Haydovchi</span>
+            </a>
+          </div>
 
           <div className="p-2.5 rounded-xl bg-[#0A1931] border border-[#1E3A6D] flex items-center justify-between">
             <div className="flex items-center gap-2">

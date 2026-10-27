@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="14" fill="#071326"/>
+  <rect x="2" y="2" width="60" height="60" rx="12" stroke="#FFB800" stroke-width="2" stroke-opacity="0.3"/>
+  <!-- Truck Body / Cab -->
+  <path d="M14 20H38V42H14V20Z" fill="#FFB800"/>
+  <path d="M38 28H46L52 35V42H38V28Z" fill="#FFC928"/>
+  <!-- Window -->
+  <path d="M40 30H45L49 35H40V30Z" fill="#071326"/>
+  <!-- Wheels -->
+  <circle cx="22" cy="44" r="6" fill="#0F2547" stroke="#FFB800" stroke-width="2.5"/>
+  <circle cx="22" cy="44" r="2.5" fill="#FFB800"/>
+  <circle cx="44" cy="44" r="6" fill="#0F2547" stroke="#FFB800" stroke-width="2.5"/>
+  <circle cx="44" cy="44" r="2.5" fill="#FFB800"/>
+  <!-- Headlight beam -->
+  <path d="M52 38L56 39L52 40V38Z" fill="#FFB800"/>
+</svg>

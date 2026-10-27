@@ -37,6 +37,14 @@ jobs:
         run: |
           pnpm dlx vercel --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.VERCEL_ORG_ID }} --project bunkerstroy-web --prod --yes
 
+      - name: Deploy Merchant & Factory POS/CRM (bunkerstroy-seller)
+        run: |
+          pnpm dlx vercel --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.VERCEL_ORG_ID }} --project bunkerstroy-seller --prod --yes
+
       - name: Deploy Industrial Admin Dashboard (bunkerstroy-admin)
         run: |
           pnpm dlx vercel --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.VERCEL_ORG_ID }} --project bunkerstroy-admin --prod --yes
+
+      - name: Deploy Heavy Fleet Driver PWA (bunkerstroy-driver)
+        run: |
+          pnpm dlx vercel --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.VERCEL_ORG_ID }} --project bunkerstroy-driver --prod --yes

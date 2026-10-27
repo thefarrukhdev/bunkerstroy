@@ -1,0 +1,231 @@
+@import "tailwindcss";
+@import "../../../packages/ui/src/industrial.css";
+@source "../../../packages/ui/src";
+
+@theme {
+  /* Typography Tokens */
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: 'Space Grotesk', 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* BunkerStroy Industrial Theme Tokens (Deep Industrial Navy & Hazard Yellow) */
+  --color-bunker-vault: #071326;
+  --color-bunker-base: #071326;
+  --color-bunker-surface-1: #0A1931;
+  --color-bunker-surface-2: #0F2547;
+  --color-bunker-surface-hover: #132C54;
+  --color-bunker-input: #071326;
+  --color-bunker-amber-500: #FFB800;
+  --color-bunker-amber-400: #FFC928;
+  --color-bunker-border-subtle: #1E3A6D;
+  --color-bunker-border-strong: #254B85;
+  --color-bunker-border-active: #FFB800;
+  --color-bunker-text-primary: #F5F5F2;
+  --color-bunker-text-secondary: #BAE6FD;
+  --color-bunker-text-muted: #94A3B8;
+  --color-bunker-status-green: #10B981;
+  --color-bunker-status-amber: #FFB800;
+  --color-bunker-status-red: #DC2626;
+  --color-bunker-status-cyan: #38BDF8;
+
+  /* Industrial Design Aliases */
+  --color-canvas: #071326;
+  --color-surface: #0A1931;
+  --color-surface-hover: #0F2547;
+  --color-surface-muted: #1E3A6D;
+  --color-brand-primary: #FFB800;
+  --color-brand-hover: #FFC928;
+  --color-hazard-yellow: #FFB800;
+  --color-hazard-yellow-bright: #FFC928;
+  --color-industrial-navy: #071326;
+  --color-industrial-surface: #0A1931;
+  --color-industrial-card: #0F2547;
+  --color-industrial-border: #1E3A6D;
+  --color-industrial-border-highlight: #2E5A9C;
+}
+
+:root {
+  --bg-primary: #071326;
+  --bg-secondary: #0A1931;
+  --bg-card: #0F2547;
+  --color-yellow: #FFB800;
+  --color-yellow-bright: #FFC928;
+  --text-primary: #F5F5F2;
+  --text-secondary: #BAE6FD;
+  --border-industrial: #1E3A6D;
+  --metallic-highlight: #2E5A9C;
+}
+
+@layer base {
+  html, body, #root {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-color: #071326;
+    color: #F5F5F2;
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    font-variant-numeric: tabular-nums;
+  }
+
+  h1, h2, h3, h4, .font-heading {
+    font-family: var(--font-heading);
+    letter-spacing: -0.025em;
+  }
+
+  code, kbd, samp, pre, .font-mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  button:active {
+    transform: translateY(1px) scale(0.99);
+  }
+
+  /* Industrial scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #071326;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1E3A6D;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #FFB800;
+  }
+}
+
+/* =========================================================================
+   AUTHENTIC INDUSTRIAL UTILITIES (#071326 / #0A1931 / #0F2547 & #FFB800)
+   ========================================================================= */
+
+.bg-industrial-primary {
+  background-color: #071326;
+}
+
+.bg-industrial-secondary {
+  background-color: #0A1931;
+}
+
+.bg-industrial-card {
+  background-color: #0F2547;
+}
+
+.border-industrial {
+  border-color: #1E3A6D;
+}
+
+.border-industrial-highlight {
+  border-color: #2E5A9C;
+}
+
+.brushed-steel {
+  background: linear-gradient(180deg, #0F2547 0%, #0A1931 100%);
+  border: 1px solid #1E3A6D;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 16px rgba(10, 25, 49, 0.25);
+}
+
+.brushed-steel-header {
+  background: linear-gradient(180deg, #0A1931 0%, #071326 100%);
+  border-bottom: 2px solid #1E3A6D;
+  box-shadow: 0 4px 20px rgba(10, 25, 49, 0.35), inset 0 -1px 0 rgba(255, 184, 0, 0.15);
+}
+
+.industrial-card {
+  background-color: #0A1931;
+  border: 1px solid #1E3A6D;
+  transition: all 0.2s ease-in-out;
+}
+
+.industrial-card:hover {
+  border-color: #2E5A9C;
+  box-shadow: 0 8px 24px -4px rgba(10, 25, 49, 0.45), 0 0 0 1px rgba(255, 184, 0, 0.25);
+}
+
+.hazard-stripe-sm {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    #FFB800 0,
+    #FFB800 6px,
+    #0A1931 6px,
+    #0A1931 12px
+  );
+}
+
+.industrial-rivet {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 35% 35%, #93C5FD, #1E3A6D 70%, #0A1931);
+  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  display: inline-block;
+}
+
+.tech-grid-pattern {
+  background-image: linear-gradient(to right, rgba(30, 58, 109, 0.15) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(30, 58, 109, 0.15) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.btn-industrial-yellow {
+  background-color: #FFB800;
+  color: #000000;
+  font-weight: 800;
+  border: 1px solid #E5A600;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-industrial-yellow:hover {
+  background-color: #FFC928;
+  box-shadow: 0 0 14px rgba(255, 184, 0, 0.4);
+}
+
+.btn-industrial-yellow:active {
+  transform: translateY(1px);
+}
+
+.btn-industrial-dark {
+  background-color: #132C54;
+  color: #FFFFFF;
+  border: 1px solid #2E5A9C;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-industrial-dark:hover {
+  background-color: #1B3B6F;
+  border-color: #FFB800;
+  color: #FFB800;
+}
+
+.font-mono-numbers {
+  font-family: 'JetBrains Mono', 'Space Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes soundwave {
+  0% {
+    height: 4px;
+    opacity: 0.4;
+  }
+  50% {
+    height: 18px;
+    opacity: 1;
+  }
+  100% {
+    height: 6px;
+    opacity: 0.6;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

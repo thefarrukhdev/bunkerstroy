@@ -1,0 +1,121 @@
+@import "tailwindcss";
+@import "../../../packages/ui/src/industrial.css";
+@source "../../../packages/ui/src";
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+@variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Authentic Bunker-1 Deep Industrial Navy & Hazard Yellow Design */
+  --bg-main: #071326;
+  --bg-sidebar: #0A1931;
+  --bg-header: #0A1931;
+  --bg-card: #0A1931;
+  --bg-card-subtle: #0F2547;
+  --border-main: #1E3A6D;
+  --border-subtle: #1E3A6D;
+  --text-main: #F5F5F2;
+  --text-muted: #94A3B8;
+  --text-subtle: #64748B;
+  --scrollbar-track: #071326;
+  --scrollbar-thumb: #1E3A6D;
+  --scrollbar-thumb-hover: #FFB800;
+  --table-header-bg: #0F2547;
+  --table-row-hover: #132C54;
+  --accent-color: #FFB800;
+  --accent-bg: #FFB800;
+  --accent-text: #071326;
+  --badge-pill-bg: #0F2547;
+
+  /* Aliases */
+  --color-text-primary: #F5F5F2;
+  --color-text-secondary: #BAE6FD;
+  --color-text-muted: #94A3B8;
+  --color-surface-bg: #071326;
+  --color-surface-card: #0A1931;
+  --color-surface-hover: #0F2547;
+  --color-border-subtle: #1E3A6D;
+  --color-border-strong: #2E5A9C;
+  --color-accent-blue: #38BDF8;
+  --color-accent-green: #10B981;
+  --color-accent-yellow: #FFB800;
+  --color-accent-red: #F43F5E;
+}
+
+.dark {
+  --bg-main: #071326;
+  --bg-sidebar: #0A1931;
+  --bg-header: #0A1931;
+  --bg-card: #0A1931;
+  --bg-card-subtle: #0F2547;
+  --border-main: #1E3A6D;
+  --border-subtle: #1E3A6D;
+  --text-main: #F5F5F2;
+  --text-muted: #94A3B8;
+  --text-subtle: #64748B;
+  --scrollbar-track: #071326;
+  --scrollbar-thumb: #1E3A6D;
+  --scrollbar-thumb-hover: #FFB800;
+  --table-header-bg: #0F2547;
+  --table-row-hover: #132C54;
+  --accent-color: #FFB800;
+  --accent-bg: #FFB800;
+  --accent-text: #071326;
+  --badge-pill-bg: #0F2547;
+
+  --color-text-primary: #F5F5F2;
+  --color-text-secondary: #BAE6FD;
+  --color-text-muted: #94A3B8;
+  --color-surface-bg: #071326;
+  --color-surface-card: #0A1931;
+  --color-surface-hover: #0F2547;
+  --color-border-subtle: #1E3A6D;
+  --color-border-strong: #2E5A9C;
+  --color-accent-blue: #38BDF8;
+  --color-accent-green: #10B981;
+  --color-accent-yellow: #FFB800;
+  --color-accent-red: #F43F5E;
+}
+
+@layer base {
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Dynamic Classes using Variables */
+.bg-theme-main { background-color: var(--bg-main); }
+.bg-theme-sidebar { background-color: var(--bg-sidebar); }
+.bg-theme-header { background-color: var(--bg-header); }
+.bg-theme-card { background-color: var(--bg-card); }
+.bg-theme-card-subtle { background-color: var(--bg-card-subtle); }
+.border-theme { border-color: var(--border-main); }
+.border-theme-subtle { border-color: var(--border-subtle); }
+.text-theme-main { color: var(--text-main); }
+.text-theme-muted { color: var(--text-muted); }
+.text-theme-subtle { color: var(--text-subtle); }

@@ -57,7 +57,25 @@ export interface CabinetOption {
   badge: string;
   badgeColor: string;
   isAdmin?: boolean;
+  isDedicatedApp?: boolean;
 }
+
+export const getDedicatedAppUrl = (id: string): string | null => {
+  const isLocal =
+    typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+  if (id === 'seller') {
+    return isLocal ? 'http://localhost:3001' : 'https://bunkerstroy-seller.vercel.app';
+  }
+  if (id === 'driver') {
+    return isLocal ? 'http://localhost:3003' : 'https://bunkerstroy-driver.vercel.app';
+  }
+  if (id === 'admin') {
+    return isLocal ? 'http://localhost:3002' : 'https://bunkerstroy-admin.vercel.app';
+  }
+  return null;
+};
 
 export const UZBEKISTAN_REGIONS = [
   'Barcha viloyatlar',
@@ -94,7 +112,8 @@ export const CABINET_OPTIONS: readonly CabinetOption[] = [
     path: '/seller-panel',
     icon: Store,
     badge: 'POS & CRM',
-    badgeColor: 'bg-[#FFB800]/20 text-[#FFB800] border-[#FFB800]/40'
+    badgeColor: 'bg-[#FFB800]/20 text-[#FFB800] border-[#FFB800]/40',
+    isDedicatedApp: true
   },
   {
     id: 'driver',
@@ -103,7 +122,8 @@ export const CABINET_OPTIONS: readonly CabinetOption[] = [
     path: '/driver',
     icon: Truck,
     badge: 'LOGISTIKA',
-    badgeColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+    badgeColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+    isDedicatedApp: true
   },
   {
     id: 'partner',
@@ -122,7 +142,8 @@ export const CABINET_OPTIONS: readonly CabinetOption[] = [
     icon: ShieldCheck,
     badge: 'ROOT ADMIN',
     badgeColor: 'bg-red-500/20 text-red-400 border-red-500/30',
-    isAdmin: true
+    isAdmin: true,
+    isDedicatedApp: true
   }
 ];
 
@@ -498,8 +519,9 @@ export const CabinetSwitcherDropdown: React.FC<CabinetSwitcherProps> = ({
                   type="button"
                   onClick={() => {
                     setIsOpen(false);
-                    if (cab.isAdmin) {
-                      window.location.href = window.location.hostname === 'localhost' ? 'http://localhost:3002' : '/admin';
+                    const dedicatedUrl = getDedicatedAppUrl(cab.id);
+                    if (dedicatedUrl) {
+                      window.location.href = dedicatedUrl;
                     } else {
                       navigate(cab.path);
                     }
@@ -527,7 +549,7 @@ export const CabinetSwitcherDropdown: React.FC<CabinetSwitcherProps> = ({
                         <span className="font-bold text-white text-xs truncate">
                           {cab.title}
                         </span>
-                        {cab.isAdmin && <ExternalLink className="w-3 h-3 text-red-400" />}
+                        {cab.isDedicatedApp && <ExternalLink className="w-3 h-3 text-[#FFB800]" />}
                       </div>
                       <p className="text-[10px] text-sky-300/70 truncate mt-0.5">
                         {cab.subtitle}
@@ -764,8 +786,9 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                   type="button"
                   onClick={() => {
                     onClose();
-                    if (item.isAdmin) {
-                      window.location.href = window.location.hostname === 'localhost' ? 'http://localhost:3002' : '/admin';
+                    const dedicatedUrl = getDedicatedAppUrl(item.id);
+                    if (dedicatedUrl) {
+                      window.location.href = dedicatedUrl;
                     } else {
                       navigate(item.path);
                     }
@@ -781,7 +804,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                         <span className="font-bold text-white text-sm truncate">
                           {item.title}
                         </span>
-                        {item.isAdmin && <ExternalLink className="w-3.5 h-3.5 text-red-400" />}
+                        {item.isDedicatedApp && <ExternalLink className="w-3.5 h-3.5 text-[#FFB800]" />}
                       </div>
                       <p className="text-[11px] text-sky-200/70 truncate mt-0.5">
                         {item.subtitle}
