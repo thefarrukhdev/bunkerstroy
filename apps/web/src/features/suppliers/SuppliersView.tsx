@@ -218,26 +218,39 @@ export const SuppliersView: React.FC<{ onNavigateToCatalog?: () => void }> = ({
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-white pb-12 font-sans">
       {/* 1. Header Banner */}
-      <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="mb-1.5">
-            <span className="text-xs font-mono font-bold text-bunker-amber-500 uppercase tracking-wider">
-              Zavodlar Reyestri
-            </span>
+      <div className="relative brushed-steel rounded-2xl p-5 sm:p-7 shadow-[0_8px_24px_rgba(7,19,38,0.5)] border border-[#1E3A6D] overflow-hidden">
+        <div className="absolute top-2 left-2 industrial-rivet" />
+        <div className="absolute top-2 right-2 industrial-rivet" />
+        <div className="absolute bottom-2 left-2 industrial-rivet" />
+        <div className="absolute bottom-2 right-2 industrial-rivet" />
+        <div className="absolute inset-0 tech-grid-pattern opacity-40 pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="text-xs font-mono font-bold text-[#FFB800] uppercase tracking-wider flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#FFB800] animate-ping" />
+                Zavodlar Reyestri
+              </span>
+              <span className="bg-[#132C54] text-[#FFB800] border border-[#254B85] px-2 py-0.5 rounded text-[10px] font-mono font-black">
+                100% RASMIY INVOYS
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-heading font-black tracking-tight text-white">
+              Akkreditatsiyalangan Ishlab Chiqaruvchilar
+            </h1>
+            <p className="text-xs sm:text-sm text-sky-200/90 mt-1 max-w-2xl leading-relaxed">
+              Vositachilarsiz zavod narxlari, 12% QQS va GOST laboratoriya kafolati.
+            </p>
           </div>
-          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-            Akkreditatsiyalangan Ishlab Chiqaruvchilar
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-600 mt-1">
-            Vositachilarsiz zavod narxlari, 12% QQS va GOST laboratoriya kafolati.
-          </p>
-        </div>
-        <div className="flex items-center gap-2 font-mono text-xs">
-          <Badge variant="neutral" size="sm" isMono>
-            {factories.length} ta strategik zavod
-          </Badge>
+          <div className="flex items-center gap-2 font-mono text-xs shrink-0">
+            <div className="bg-[#071326] border border-[#1E3A6D] px-3.5 py-2 rounded-xl text-sky-200 flex items-center gap-2">
+              <span className="text-[#FFB800] font-black">{factories.length}</span>
+              <span>ta strategik zavod</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -252,139 +265,157 @@ export const SuppliersView: React.FC<{ onNavigateToCatalog?: () => void }> = ({
       )}
 
       {/* 3. Key Industry KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <StatCard
-          title="Rasmiy Hamkor Zavodlar"
-          value="18 ta"
-          subtitle="O‘zbekiston va xalqaro brendlar"
-          trend={{ value: '100% akkreditatsiya', isPositive: true }}
-          icon={<Factory className="w-5 h-5" />}
-          variant="amber"
-        />
-        <StatCard
-          title="Oylik Ishlab Chiqarish Quvvati"
-          value="820,000+"
-          unit="t"
-          subtitle="Sement, armatura, g‘isht va gips"
-          trend={{ value: 'Uzluksiz ta’minot', isPositive: true }}
-          icon={<Building2 className="w-5 h-5" />}
-          variant="cyan"
-        />
-        <StatCard
-          title="Vositachilik Ustamasi"
-          value="0%"
-          subtitle="To‘g‘ridan-to‘g‘ri zavod narxlari"
-          trend={{ value: 'Toza ulgurji narx', isPositive: true }}
-          icon={<TrendingUp className="w-5 h-5" />}
-          variant="green"
-        />
-        <StatCard
-          title="Davlat Sertifikatlari"
-          value="100%"
-          subtitle="GOST, O‘zDSt va ISO 9001 kafolati"
-          trend={{ value: 'ShNQ muvofiqligi', isPositive: true }}
-          icon={<ShieldCheck className="w-5 h-5" />}
-          variant="default"
-        />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 font-mono">
+        <div className="bg-[#0A1931] border border-[#1E3A6D] rounded-2xl p-4 space-y-1">
+          <div className="flex items-center justify-between text-sky-300 text-xs">
+            <span>Hamkor Zavodlar</span>
+            <Factory className="w-4 h-4 text-[#FFB800]" />
+          </div>
+          <div className="text-2xl font-black text-white">18 ta</div>
+          <p className="text-[10px] text-emerald-400 font-bold">100% akkreditatsiya</p>
+        </div>
+
+        <div className="bg-[#0A1931] border border-[#1E3A6D] rounded-2xl p-4 space-y-1">
+          <div className="flex items-center justify-between text-sky-300 text-xs">
+            <span>Oylik Quvvat</span>
+            <Building2 className="w-4 h-4 text-sky-400" />
+          </div>
+          <div className="text-2xl font-black text-[#FFB800]">820,000+ t</div>
+          <p className="text-[10px] text-sky-300">Uzluksiz ta’minot</p>
+        </div>
+
+        <div className="bg-[#0A1931] border border-[#1E3A6D] rounded-2xl p-4 space-y-1">
+          <div className="flex items-center justify-between text-sky-300 text-xs">
+            <span>Vositachilik</span>
+            <TrendingUp className="w-4 h-4 text-emerald-400" />
+          </div>
+          <div className="text-2xl font-black text-emerald-400">0%</div>
+          <p className="text-[10px] text-emerald-300 font-bold">Toza ulgurji narx</p>
+        </div>
+
+        <div className="bg-[#0A1931] border border-[#1E3A6D] rounded-2xl p-4 space-y-1">
+          <div className="flex items-center justify-between text-sky-300 text-xs">
+            <span>Sertifikatlar</span>
+            <ShieldCheck className="w-4 h-4 text-[#FFB800]" />
+          </div>
+          <div className="text-2xl font-black text-white">100%</div>
+          <p className="text-[10px] text-[#FFB800] font-bold">ShNQ muvofiqligi</p>
+        </div>
       </div>
 
       {/* 4. Search & Filters Bar */}
-      <Card className="p-4 sm:p-5">
+      <div className="bg-[#0A1931] border border-[#1E3A6D] p-4 sm:p-5 rounded-2xl shadow-md">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <Input
-            placeholder="Zavod nomi, STIR yoki tovar turi bo‘yicha qidiruv..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            leftIcon={<Search className="w-4 h-4 text-slate-400" />}
-            sizeVariant="sm"
-          />
+          <div className="relative">
+            <Search className="w-4 h-4 text-[#FFB800] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              id="suppliers-search-input"
+              name="suppliersSearch"
+              type="text"
+              placeholder="Zavod nomi, STIR yoki tovar turi bo‘yicha qidiruv..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full h-10 pl-9 pr-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-xs font-mono text-white placeholder-sky-300/50 outline-none"
+            />
+          </div>
 
-          <Select
+          <select
+            id="suppliers-category-select"
+            name="category"
+            aria-label="Ishlab chiqarish yo‘nalishi"
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            sizeVariant="sm"
-            options={[
-              { value: 'all', label: 'Barcha Ishlab Chiqarish Yo‘nalishlari' },
-              { value: 'sement', label: 'Sement & Bog‘lovchi Materiallar' },
-              { value: 'metall', label: 'Metallurgiya & Konstruksion Po‘lat' },
-              { value: 'gisht', label: 'G‘isht & Gazobeton Bloklar' },
-              { value: 'izolyatsiya', label: 'Gips & Issiqlik Izolyatsiyasi' }
-            ]}
-          />
+            className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-xs font-mono text-white outline-none cursor-pointer"
+          >
+            <option value="all">Barcha Ishlab Chiqarish Yo‘nalishlari</option>
+            <option value="sement">Sement &amp; Bog‘lovchi Materiallar</option>
+            <option value="metall">Metallurgiya &amp; Konstruksion Po‘lat</option>
+            <option value="gisht">G‘isht &amp; Gazobeton Bloklar</option>
+            <option value="izolyatsiya">Gips &amp; Issiqlik Izolyatsiyasi</option>
+          </select>
 
-          <Select
+          <select
+            id="suppliers-region-select"
+            name="region"
+            aria-label="Hududlar va shaharlar"
             value={selectedRegion}
             onChange={(e) => setSelectedRegion(e.target.value)}
-            sizeVariant="sm"
-            options={[
-              { value: 'all', label: 'Barcha Hududlar & Shaharlar' },
-              { value: 'tashkent', label: 'Toshkent shahri' },
-              { value: 'tashkent_region', label: 'Toshkent viloyati (Bekobod, Ohangaron)' },
-              { value: 'navoi', label: 'Navoiy viloyati' },
-              { value: 'bukhara', label: 'Buxoro viloyati' }
-            ]}
-          />
+            className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-xs font-mono text-white outline-none cursor-pointer"
+          >
+            <option value="all">Barcha Hududlar &amp; Shaharlar</option>
+            <option value="tashkent">Toshkent shahri</option>
+            <option value="tashkent_region">Toshkent viloyati (Bekobod, Ohangaron)</option>
+            <option value="navoi">Navoiy viloyati</option>
+            <option value="bukhara">Buxoro viloyati</option>
+          </select>
         </div>
-      </Card>
+      </div>
 
       {/* 5. Verified Factories Directory */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {filteredFactories.map((f) => (
-          <Card key={f.id} className="p-4 sm:p-6 flex flex-col justify-between space-y-4 sm:space-y-5 hover:border-slate-300 transition-all">
+          <div
+            key={f.id}
+            className="industrial-card group relative rounded-2xl p-5 sm:p-6 flex flex-col justify-between space-y-4 sm:space-y-5 bg-[#0A1931] border border-[#1E3A6D] hover:border-[#2E5A9C] shadow-lg text-white transition-all duration-200"
+          >
+            <div className="absolute top-2.5 left-2.5 industrial-rivet opacity-70" />
+            <div className="absolute top-2.5 right-2.5 industrial-rivet opacity-70" />
+
             <div className="space-y-4">
               {/* Header */}
               <div className="flex items-start justify-between gap-3">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <Badge variant="warning" size="sm" isMono>
+                    <span className="bg-[#132C54] text-[#FFB800] border border-[#254B85] px-2 py-0.5 rounded text-[10px] font-mono font-bold">
                       {f.categoryLabel}
-                    </Badge>
+                    </span>
                     {f.contractStatus === 'STRATEGIC_PARTNER' && (
-                      <Badge variant="success" size="sm" isMono dot>
+                      <span className="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 px-2 py-0.5 rounded text-[10px] font-mono font-bold flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                         STRATEGIK HAMKOR
-                      </Badge>
+                      </span>
                     )}
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 mt-1">{f.name}</h3>
-                  <p className="text-xs font-semibold text-orange-600 font-mono">{f.brandName}</p>
+                  <h3 className="text-lg font-heading font-black text-white mt-1">{f.name}</h3>
+                  <p className="text-xs font-semibold text-[#FFB800] font-mono">{f.brandName}</p>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
-                  <Factory className="w-5 h-5 text-slate-600" />
+                <div className="w-10 h-10 rounded-xl bg-[#0F2547] border border-[#254B85] flex items-center justify-center shrink-0">
+                  <Factory className="w-5 h-5 text-[#FFB800]" />
                 </div>
               </div>
 
-              <p className="text-xs text-slate-600 leading-relaxed">{f.description}</p>
+              <p className="text-xs text-sky-200/90 leading-relaxed">{f.description}</p>
 
               {/* Data Specifications Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono pt-3 border-t border-slate-100">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono pt-3 border-t border-[#1E3A6D]">
                 <div>
-                  <span className="text-slate-400 block text-[10px] uppercase">STIR (INN):</span>
-                  <span className="font-bold text-slate-800">{f.inn}</span>
+                  <span className="text-sky-400 block text-[10px] uppercase">STIR (INN):</span>
+                  <span className="font-bold text-white">{f.inn}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[10px] uppercase">Ishlab Chiqarish Quvvati:</span>
-                  <span className="font-bold text-slate-800">{f.annualCapacity}</span>
+                  <span className="text-sky-400 block text-[10px] uppercase">Ishlab Chiqarish Quvvati:</span>
+                  <span className="font-bold text-white">{f.annualCapacity}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[10px] uppercase">Manzil:</span>
-                  <span className="text-slate-700 truncate block">{f.address}</span>
+                  <span className="text-sky-400 block text-[10px] uppercase">Manzil:</span>
+                  <span className="text-sky-300 truncate block">{f.address}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[10px] uppercase">QQS To‘lovchi:</span>
-                  <span className="text-emerald-700 font-bold">12% QQS To‘liq Tasdiqlangan</span>
+                  <span className="text-sky-400 block text-[10px] uppercase">QQS To‘lovchi:</span>
+                  <span className="text-emerald-400 font-bold">12% QQS To‘liq Tasdiqlangan</span>
                 </div>
               </div>
 
               {/* Certified Standards Badges */}
-              <div className="space-y-1.5 pt-2 border-t border-slate-100">
-                <span className="text-[10px] font-mono text-slate-400 uppercase block font-semibold">
-                  Sertifikatlar & Davlat Standartlari:
+              <div className="space-y-1.5 pt-2 border-t border-[#1E3A6D]">
+                <span className="text-[10px] font-mono text-sky-400 uppercase block font-semibold">
+                  Sertifikatlar &amp; Davlat Standartlari:
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {f.standards.map((std, idx) => (
                     <span
                       key={idx}
-                      className="px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-slate-700 text-[10px] font-mono font-medium"
+                      className="px-2 py-0.5 rounded-md bg-[#071326] border border-[#1E3A6D] text-sky-200 text-[10px] font-mono font-medium"
                     >
                       {std}
                     </span>
@@ -394,14 +425,14 @@ export const SuppliersView: React.FC<{ onNavigateToCatalog?: () => void }> = ({
 
               {/* Main Products */}
               <div className="space-y-1.5">
-                <span className="text-[10px] font-mono text-slate-400 uppercase block font-semibold">
+                <span className="text-[10px] font-mono text-sky-400 uppercase block font-semibold">
                   Asosiy Tovarlar:
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {f.mainProducts.map((p, idx) => (
                     <span
                       key={idx}
-                      className="px-2 py-0.5 rounded-md bg-orange-50 border border-orange-200 text-orange-800 text-[11px] font-mono font-semibold"
+                      className="px-2 py-0.5 rounded-md bg-[#132C54] border border-[#254B85] text-[#FFB800] text-[11px] font-mono font-bold"
                     >
                       {p}
                     </span>
@@ -411,25 +442,33 @@ export const SuppliersView: React.FC<{ onNavigateToCatalog?: () => void }> = ({
             </div>
 
             {/* Bottom Actions */}
-            <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <div className="flex items-center gap-1.5 text-xs font-mono text-slate-500">
-                <Phone className="w-3.5 h-3.5 text-slate-400" />
+            <div className="pt-4 border-t border-[#1E3A6D] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-1.5 text-xs font-mono text-sky-300">
+                <Phone className="w-3.5 h-3.5 text-[#FFB800]" />
                 <span>{f.phone}</span>
               </div>
 
               <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                 {onNavigateToCatalog && (
-                  <Button variant="secondary" size="sm" onClick={onNavigateToCatalog} className="flex-1 sm:flex-initial">
+                  <button
+                    type="button"
+                    onClick={onNavigateToCatalog}
+                    className="btn-industrial-dark px-3 py-1.5 rounded-xl text-xs font-bold flex-1 sm:flex-initial cursor-pointer"
+                  >
                     <span>Katalogda Ko‘rish</span>
-                  </Button>
+                  </button>
                 )}
-                <Button variant="primary" size="sm" onClick={() => handleOpenInquiry(f)} className="flex-1 sm:flex-initial">
-                  <FileText className="w-3.5 h-3.5 mr-1.5" />
+                <button
+                  type="button"
+                  onClick={() => handleOpenInquiry(f)}
+                  className="btn-industrial-yellow px-3 py-1.5 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 flex-1 sm:flex-initial cursor-pointer shadow-md"
+                >
+                  <FileText className="w-3.5 h-3.5" />
                   <span>Zavod Shartnomasi</span>
-                </Button>
+                </button>
               </div>
             </div>
-          </Card>
+          </div>
         ))}
       </div>
 

@@ -91,18 +91,18 @@ export const B2bDocumentsModal: React.FC<B2bDocumentsModalProps> = ({
       }
       subtitle={`Buyurtma #${order.orderNumber} bo‘yicha yuridik kuchga ega Didox va Soliq.uz elektron hujjatlari to‘plami`}
       headerExtra={
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-bunker-border-subtle pb-3">
-          <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-xs font-mono">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#1E3A6D] pb-3">
+          <div className="flex items-center gap-1.5 bg-[#071326] border border-[#1E3A6D] p-1 rounded-xl text-xs font-mono">
             <button
               type="button"
               onClick={() => setActiveTab('escrow')}
               className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                 activeTab === 'escrow'
-                  ? 'bg-white text-slate-900 shadow-xs border border-slate-200'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-[#FFB800] text-[#071326] shadow-sm font-black'
+                  : 'text-sky-200 hover:text-white hover:bg-[#0A1931]'
               }`}
             >
-              <ShieldCheck className="w-3.5 h-3.5 text-bunker-amber-600" />
+              <ShieldCheck className={`w-3.5 h-3.5 ${activeTab === 'escrow' ? 'text-[#071326]' : 'text-[#FFB800]'}`} />
               <span>1. Escrow Shartnomasi</span>
             </button>
 
@@ -111,11 +111,11 @@ export const B2bDocumentsModal: React.FC<B2bDocumentsModalProps> = ({
               onClick={() => setActiveTab('invoice')}
               className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                 activeTab === 'invoice'
-                  ? 'bg-white text-slate-900 shadow-xs border border-slate-200'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-[#FFB800] text-[#071326] shadow-sm font-black'
+                  : 'text-sky-200 hover:text-white hover:bg-[#0A1931]'
               }`}
             >
-              <FileText className="w-3.5 h-3.5 text-sky-600" />
+              <FileText className={`w-3.5 h-3.5 ${activeTab === 'invoice' ? 'text-[#071326]' : 'text-sky-400'}`} />
               <span>2. Elektron Hisob-Faktura (Didox)</span>
             </button>
 
@@ -124,11 +124,11 @@ export const B2bDocumentsModal: React.FC<B2bDocumentsModalProps> = ({
               onClick={() => setActiveTab('act')}
               className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                 activeTab === 'act'
-                  ? 'bg-white text-slate-900 shadow-xs border border-slate-200'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-[#FFB800] text-[#071326] shadow-sm font-black'
+                  : 'text-sky-200 hover:text-white hover:bg-[#0A1931]'
               }`}
             >
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+              <CheckCircle2 className={`w-3.5 h-3.5 ${activeTab === 'act' ? 'text-[#071326]' : 'text-emerald-400'}`} />
               <span>3. Topshirish Dalolatnomasi</span>
             </button>
           </div>

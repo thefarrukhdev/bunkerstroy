@@ -499,7 +499,7 @@ export const CabinetSwitcherDropdown: React.FC<CabinetSwitcherProps> = ({
                   onClick={() => {
                     setIsOpen(false);
                     if (cab.isAdmin) {
-                      window.location.href = 'http://localhost:5174';
+                      window.location.href = window.location.hostname === 'localhost' ? 'http://localhost:3002' : '/admin';
                     } else {
                       navigate(cab.path);
                     }
@@ -765,7 +765,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                   onClick={() => {
                     onClose();
                     if (item.isAdmin) {
-                      window.location.href = 'http://localhost:5174';
+                      window.location.href = window.location.hostname === 'localhost' ? 'http://localhost:3002' : '/admin';
                     } else {
                       navigate(item.path);
                     }

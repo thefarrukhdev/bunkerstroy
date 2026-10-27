@@ -258,64 +258,74 @@ export const OrdersView: React.FC = () => {
   const getStatusBadge = (status: OrderStatus) => {
     switch (status) {
       case 'DRAFT':
-        return <Badge variant="neutral">SAVATDA</Badge>;
+        return <span className="bg-[#0F2547] text-sky-300 border border-[#1E3A6D] px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">SAVATDA</span>;
       case 'PENDING_PAYMENT':
       case 'PENDING':
-        return <Badge variant="warning" className="bg-orange-50 text-orange-800 border-orange-200">TO‘LOV KUTILMOQDA</Badge>;
+        return <span className="bg-amber-950/80 text-[#FFB800] border border-[#FFB800]/50 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">TO‘LOV KUTILMOQDA</span>;
       case 'PAID':
       case 'CONFIRMED':
-        return <Badge variant="info" className="bg-sky-50 text-sky-800 border-sky-200">TO‘LANDI (TASDIQLANDI)</Badge>;
+        return <span className="bg-sky-950/80 text-sky-300 border border-sky-500/40 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">TO‘LANDI (TASDIQLANDI)</span>;
       case 'ACCEPTED':
-        return <Badge variant="info" className="bg-blue-50 text-blue-800 border-blue-200">TA‘MINOTCHI TASDIQLADI</Badge>;
+        return <span className="bg-blue-950/80 text-blue-300 border border-blue-500/40 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">TA‘MINOTCHI TASDIQLADI</span>;
       case 'PACKING':
-        return <Badge variant="warning" className="bg-amber-50 text-amber-800 border-amber-200">YIG‘ILMOQDA (OMBORDA)</Badge>;
+        return <span className="bg-amber-950/70 text-amber-300 border border-amber-500/40 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">YIG‘ILMOQDA (OMBORDA)</span>;
       case 'ASSIGNED':
       case 'ASSIGNED_TO_FLEET':
-        return <Badge variant="warning" className="bg-amber-50 text-amber-800 border-amber-200">HAYDOVCHI TAYINLANDI</Badge>;
+        return <span className="bg-indigo-950/80 text-indigo-300 border border-indigo-500/40 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">HAYDOVCHI TAYINLANDI</span>;
       case 'IN_TRANSIT':
-        return <Badge variant="info" className="bg-indigo-50 text-indigo-800 border-indigo-200">YO‘LDA (YUK TASHINMOQDA)</Badge>;
+        return <span className="bg-purple-950/80 text-purple-300 border border-purple-500/40 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold flex items-center gap-1">🚚 YO‘LDA</span>;
       case 'ARRIVED':
-        return <Badge variant="warning" className="bg-amber-100 text-amber-900 border-amber-300 font-bold">MANZILGA YETIB KELDI</Badge>;
+        return <span className="bg-[#132C54] text-[#FFB800] border-2 border-[#FFB800] px-2.5 py-0.5 rounded text-[10px] font-mono font-black animate-pulse">MANZILGA YETDI</span>;
       case 'FULLY_PAID':
-        return <Badge variant="success" className="bg-emerald-50 text-emerald-800 border-emerald-200">TO‘LIQ TO‘LANGAN</Badge>;
+        return <span className="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">TO‘LIQ TO‘LANDI</span>;
       case 'RECEIVED':
       case 'DELIVERED':
-        return <Badge variant="success" className="bg-emerald-100 text-emerald-900 border-emerald-300">QABUL QILINDI</Badge>;
+        return <span className="bg-emerald-900/60 text-emerald-300 border border-emerald-400 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">QABUL QILINDI</span>;
       case 'COMPLETED':
-        return <Badge variant="success" className="bg-emerald-200 text-emerald-950 border-emerald-400 font-bold">YAKUNLANDI (ESCROW AJRATILDI)</Badge>;
+        return <span className="bg-emerald-950/90 text-emerald-400 border border-emerald-500/60 px-2.5 py-0.5 rounded text-[10px] font-mono font-black">YAKUNLANDI (ESCROW AJRATILDI)</span>;
       case 'DISPUTE':
-        return <Badge variant="danger" className="bg-red-50 text-red-800 border-red-300 font-bold">OCHIQ NIZO (DISPUTE)</Badge>;
+        return <span className="bg-red-950/90 text-rose-300 border border-rose-500 px-2.5 py-0.5 rounded text-[10px] font-mono font-black">OCHIQ NIZO (DISPUTE)</span>;
       case 'CANCELLED':
-        return <Badge variant="danger" className="bg-red-50 text-red-800 border-red-200">BEKOR QILINGAN</Badge>;
+        return <span className="bg-slate-900 text-slate-400 border border-slate-700 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">BEKOR QILINGAN</span>;
       default:
-        return <Badge variant="neutral">{status}</Badge>;
+        return <span className="bg-[#0F2547] text-sky-200 border border-[#1E3A6D] px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">{status}</span>;
     }
   };
 
   return (
-    <div className="space-y-6">
-      {/* 1. Header */}
-      <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 font-mono">
-        <div>
-          <div className="mb-1.5">
-            <span className="text-xs font-bold text-bunker-amber-500 uppercase tracking-wider">
-              BunkerStroy Mijoz Kabineti
-            </span>
+    <div className="space-y-6 text-white pb-12 font-sans">
+      {/* 1. Authentic Industrial Header Banner */}
+      <div className="relative brushed-steel rounded-2xl p-5 sm:p-7 shadow-[0_8px_24px_rgba(7,19,38,0.5)] border border-[#1E3A6D] overflow-hidden">
+        <div className="absolute top-2 left-2 industrial-rivet" />
+        <div className="absolute top-2 right-2 industrial-rivet" />
+        <div className="absolute bottom-2 left-2 industrial-rivet" />
+        <div className="absolute bottom-2 right-2 industrial-rivet" />
+        <div className="absolute inset-0 tech-grid-pattern opacity-40 pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="text-xs font-mono font-bold text-[#FFB800] uppercase tracking-wider flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#FFB800] animate-ping" />
+                BunkerStroy Mijoz Kabineti
+              </span>
+              <span className="bg-[#132C54] text-[#FFB800] border border-[#254B85] px-2 py-0.5 rounded text-[10px] font-mono font-black">
+                ESCROW HIMOYA
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-heading font-black tracking-tight text-white">
+              Mening Buyurtmalarim &amp; Yetkazib Berish Nazorati
+            </h1>
+            <p className="text-xs sm:text-sm text-sky-200/90 mt-1 max-w-2xl leading-relaxed">
+              Escrow kafolati, 50/50 to‘lov boshqaruvi va qabul kodi orqali yuklarni xavfsiz qabul qilish.
+            </p>
           </div>
-          <h1 className="text-xl sm:text-2xl font-extrabold text-bunker-text-primary tracking-tight font-sans">
-            Mening Buyurtmalarim &amp; Yetkazib Berish Nazorati
-          </h1>
-          <p className="text-xs sm:text-sm text-bunker-text-secondary mt-1 font-sans">
-            Escrow kafolati, 50/50 to‘lov boshqaruvi va qabul kodi orqali yuklarni xavfsiz qabul qilish.
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="warning" size="md" isMono>
-            ESCROW HIMOYA
-          </Badge>
-          <Badge variant="neutral" size="md" isMono>
-            {orders.length} ta buyurtma
-          </Badge>
+          <div className="flex items-center gap-2 shrink-0 font-mono text-xs">
+            <div className="bg-[#071326] border border-[#1E3A6D] px-3.5 py-2 rounded-xl text-sky-200 flex items-center gap-2">
+              <span className="text-[#FFB800] font-black">{orders.length}</span>
+              <span>ta faol buyurtma</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -324,52 +334,53 @@ export const OrdersView: React.FC = () => {
       )}
 
       {/* 2. Control bar */}
-      <div className="flex items-center justify-between bg-white border border-bunker-border-strong p-4 rounded-xl shadow-xs font-mono">
+      <div className="flex items-center justify-between bg-[#0A1931] border border-[#1E3A6D] p-3.5 sm:p-4 rounded-2xl shadow-md font-mono">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-bold uppercase text-bunker-text-primary">
+          <span className="text-xs font-bold uppercase text-sky-200">
             Jami Buyurtmalar:
           </span>
-          <span className="bg-slate-100 text-bunker-amber-500 px-2.5 py-0.5 rounded-lg text-xs font-bold border border-bunker-border-subtle">
-            {orders.length}
+          <span className="bg-[#071326] text-[#FFB800] px-2.5 py-0.5 rounded-lg text-xs font-bold border border-[#1E3A6D]">
+            {orders.length} ta
           </span>
         </div>
 
-        <Button
-          variant="secondary"
-          size="sm"
+        <button
+          type="button"
           onClick={() => fetchOrders(true)}
-          isLoading={refreshing}
+          className="btn-industrial-dark px-3 py-1.5 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 cursor-pointer"
         >
-          <RotateCw className="w-3.5 h-3.5 mr-1" />
+          <RotateCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-[#FFB800]' : ''}`} />
           <span>Yangilash</span>
-        </Button>
+        </button>
       </div>
 
       {/* 3. Orders List */}
       {loading ? (
         <div className="space-y-4">
           {[1, 2, 3].map((n) => (
-            <Card key={n} className="p-5 space-y-4">
-              <div className="flex justify-between items-center pb-3 border-b border-bunker-border-subtle">
+            <div key={n} className="industrial-card rounded-2xl p-5 space-y-4 bg-[#0A1931]">
+              <div className="flex justify-between items-center pb-3 border-b border-[#1E3A6D]">
                 <div className="flex items-center gap-2.5">
-                  <Skeleton variant="circle" width={32} height={32} />
-                  <Skeleton variant="text" width={160} />
+                  <Skeleton variant="circle" width={32} height={32} className="bg-[#0F2547]" />
+                  <Skeleton variant="text" width={160} className="bg-[#0F2547]" />
                 </div>
-                <Skeleton variant="rect" width={90} height={24} />
+                <Skeleton variant="rect" width={90} height={24} className="bg-[#0F2547]" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <Skeleton variant="text" width="80%" />
-                <Skeleton variant="text" width="60%" />
-                <Skeleton variant="text" width="50%" />
+                <Skeleton variant="text" width="80%" className="bg-[#0F2547]" />
+                <Skeleton variant="text" width="60%" className="bg-[#0F2547]" />
+                <Skeleton variant="text" width="50%" className="bg-[#0F2547]" />
               </div>
-            </Card>
+            </div>
           ))}
         </div>
       ) : orders.length === 0 ? (
-        <div className="text-center py-20 bg-white border border-dashed border-bunker-border-strong rounded-2xl p-8 space-y-3 text-bunker-text-secondary font-mono shadow-xs">
-          <Package className="w-12 h-12 mx-auto text-bunker-amber-500/50" />
-          <h3 className="font-bold text-base text-bunker-text-primary font-sans">Hozircha buyurtmalar mavjud emas</h3>
-          <p className="text-xs max-w-sm mx-auto text-bunker-text-muted font-sans">
+        <div className="industrial-card text-center py-16 rounded-2xl p-8 space-y-4 bg-[#0A1931] border border-dashed border-[#1E3A6D]">
+          <div className="w-14 h-14 rounded-2xl bg-[#0F2547] border border-[#1E3A6D] flex items-center justify-center mx-auto text-[#FFB800]">
+            <Package className="w-7 h-7" />
+          </div>
+          <h3 className="font-heading font-black text-lg text-white">Hozircha buyurtmalar mavjud emas</h3>
+          <p className="text-xs max-w-sm mx-auto text-sky-200/80">
             Katalogdan kerakli materiallarni savatchaga qo‘shing va Escrow himoyasi ostida buyurtma bering.
           </p>
         </div>
@@ -381,41 +392,44 @@ export const OrdersView: React.FC = () => {
             const isArrivedWaitingSecondPayment = o.status === 'ARRIVED' && o.paymentMode === 'SPLIT_50_50' && !o.isSecondPaid;
 
             return (
-              <Card
+              <div
                 key={o.id}
-                className="space-y-4 border-bunker-border-strong hover:border-bunker-amber-500/60 transition-all shadow-xs"
+                className="industrial-card group relative rounded-2xl p-5 border border-[#1E3A6D] hover:border-[#2E5A9C] bg-[#0A1931] shadow-lg text-white space-y-4 transition-all duration-200"
               >
+                <div className="absolute top-2.5 left-2.5 industrial-rivet opacity-70" />
+                <div className="absolute top-2.5 right-2.5 industrial-rivet opacity-70" />
+
                 {/* Header Row */}
-                <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-bunker-border-subtle font-mono">
+                <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#1E3A6D] font-mono">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center">
-                      <Package className="w-4 h-4 text-bunker-amber-500" />
+                    <div className="w-8 h-8 rounded-xl bg-[#0F2547] border border-[#254B85] flex items-center justify-center">
+                      <Package className="w-4 h-4 text-[#FFB800]" />
                     </div>
                     <div>
-                      <span className="font-bold text-sm text-bunker-text-primary">{o.orderNumber}</span>
-                      <span className="text-[11px] text-bunker-text-muted ml-2">
-                        {new Date(o.createdAt).toLocaleString()}
+                      <span className="font-bold text-sm text-white">{o.orderNumber}</span>
+                      <span className="text-[11px] text-sky-400 ml-2">
+                        {new Date(o.createdAt).toLocaleString('uz-UZ')}
                       </span>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2">
                     {getStatusBadge(o.status)}
-                    <Badge variant="neutral" isMono size="sm">
+                    <span className="bg-[#071326] text-[#FFB800] border border-[#1E3A6D] px-2 py-0.5 rounded text-[10px] font-mono font-bold">
                       {o.paymentMode === 'SPLIT_50_50' ? '50/50 BO‘LIB TO‘LASH' : '100% ESCROW'}
-                    </Badge>
+                    </span>
                   </div>
                 </div>
 
                 {/* Status Progress Line */}
-                <div className="bg-slate-50 border border-bunker-border-subtle rounded-xl p-3 font-mono text-[11px]">
-                  <div className="flex items-center justify-between text-slate-700 font-bold mb-2">
+                <div className="bg-[#071326] border border-[#1E3A6D] rounded-xl p-3 font-mono text-[11px]">
+                  <div className="flex items-center justify-between text-sky-200 font-bold mb-2">
                     <span>Buyurtma bosqichi:</span>
-                    <span className="text-bunker-amber-600 uppercase">{o.status}</span>
+                    <span className="text-[#FFB800] uppercase">{o.status}</span>
                   </div>
-                  <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-[#0F2547] h-2 rounded-full overflow-hidden">
                     <div
-                      className="bg-bunker-amber-500 h-full transition-all duration-500"
+                      className="bg-[#FFB800] h-full transition-all duration-500 shadow-[0_0_8px_rgba(255,184,0,0.5)]"
                       style={{
                         width:
                           o.status === 'PENDING_PAYMENT' ? '10%'
@@ -433,35 +447,35 @@ export const OrdersView: React.FC = () => {
                 </div>
 
                 {/* Primary Information Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-bunker-text-secondary font-mono">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-mono">
                   <div>
-                    <span className="text-bunker-text-muted block uppercase text-[10px]">Qabul qiluvchi:</span>
-                    <p className="font-semibold text-bunker-text-primary mt-0.5">{o.buyerName}</p>
-                    <p className="text-[11px]">{o.buyerPhone}</p>
+                    <span className="text-sky-400 uppercase text-[10px] block">Qabul qiluvchi:</span>
+                    <p className="font-semibold text-white mt-0.5">{o.buyerName}</p>
+                    <p className="text-[11px] text-sky-300">{o.buyerPhone}</p>
                   </div>
 
                   <div>
-                    <span className="text-bunker-text-muted block uppercase text-[10px]">Yetkazish manzili:</span>
-                    <p className="font-semibold text-bunker-text-primary mt-0.5">
+                    <span className="text-sky-400 uppercase text-[10px] block">Yetkazish manzili:</span>
+                    <p className="font-semibold text-white mt-0.5">
                       {o.deliveryAddress?.region || 'Toshkent shahri'}, {o.deliveryAddress?.district || 'Chilonzor'}
                     </p>
-                    <p className="truncate text-[11px] text-bunker-text-muted">{o.deliveryAddress?.street || 'Ko‘rsatilmagan'}</p>
+                    <p className="truncate text-[11px] text-sky-300">{o.deliveryAddress?.street || 'Ko‘rsatilmagan'}</p>
                   </div>
 
                   <div>
-                    <span className="text-bunker-text-muted block uppercase text-[10px]">Jami summa:</span>
-                    <p className="text-base font-extrabold text-bunker-amber-500 mt-0.5">
-                      {Number(o.finalAmount).toLocaleString()} so'm
+                    <span className="text-sky-400 uppercase text-[10px] block">Jami summa:</span>
+                    <p className="text-base font-black text-[#FFB800] mt-0.5 font-mono-numbers">
+                      {Number(o.finalAmount).toLocaleString()} so‘m
                     </p>
-                    <p className="text-[11px] text-bunker-text-muted">Rejim: {o.paymentMode}</p>
+                    <p className="text-[11px] text-sky-300">Rejim: {o.paymentMode}</p>
                   </div>
                 </div>
 
                 {/* 1. INITIAL PAYMENT BUTTON (If pending payment) */}
                 {isPendingPayment && (
-                  <div className="bg-orange-50/70 border border-orange-200 p-3.5 rounded-xl flex flex-wrap items-center justify-between gap-3 font-mono">
-                    <div className="flex items-center gap-2 text-xs text-orange-900">
-                      <CreditCard className="w-4 h-4 shrink-0 text-bunker-amber-500" />
+                  <div className="bg-[#0F2547] border border-[#1E3A6D] p-3.5 rounded-xl flex flex-wrap items-center justify-between gap-3 font-mono">
+                    <div className="flex items-center gap-2 text-xs text-sky-200">
+                      <CreditCard className="w-4 h-4 shrink-0 text-[#FFB800]" />
                       <span>
                         {o.paymentMode === 'SPLIT_50_50'
                           ? `Birinchi 50% avans to‘lovi (${(Number(o.firstPaymentAmount || o.finalAmount / 2)).toLocaleString()} so‘m) kutilmoqda:`
@@ -473,18 +487,18 @@ export const OrdersView: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleOpenPayment(o, 'PAYME')}
-                        className="px-3 py-1.5 rounded-lg bg-white border border-sky-300 text-sky-800 hover:bg-sky-50 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
+                        className="px-3 py-1.5 rounded-lg bg-[#071326] border border-sky-400/50 text-sky-300 hover:text-white hover:bg-sky-950 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
                       >
-                        <CreditCard className="w-3.5 h-3.5 text-sky-600" />
+                        <CreditCard className="w-3.5 h-3.5 text-sky-400" />
                         <span>Payme</span>
                       </button>
 
                       <button
                         type="button"
                         onClick={() => handleOpenPayment(o, 'CLICK')}
-                        className="px-3 py-1.5 rounded-lg bg-white border border-orange-300 text-orange-800 hover:bg-orange-50 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
+                        className="px-3 py-1.5 rounded-lg bg-[#071326] border border-amber-400/50 text-amber-300 hover:text-white hover:bg-amber-950 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
                       >
-                        <CreditCard className="w-3.5 h-3.5 text-orange-600" />
+                        <CreditCard className="w-3.5 h-3.5 text-[#FFB800]" />
                         <span>Click</span>
                       </button>
                     </div>
@@ -493,71 +507,73 @@ export const OrdersView: React.FC = () => {
 
                 {/* 2. 50/50 SECOND PAYMENT PROMPT (When arrived) */}
                 {isArrivedWaitingSecondPayment && (
-                  <div className="bg-amber-50 border-2 border-amber-400 p-4 rounded-xl space-y-3 font-mono">
+                  <div className="bg-[#071326] border-2 border-[#FFB800] p-4 rounded-xl space-y-3 font-mono">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Truck className="w-5 h-5 text-bunker-amber-600" />
-                        <span className="font-extrabold text-xs text-slate-900">
+                        <Truck className="w-5 h-5 text-[#FFB800]" />
+                        <span className="font-extrabold text-xs text-white">
                           YUK MANZILINGIZGA YETIB KELDI!
                         </span>
                       </div>
-                      <Badge variant="warning" size="sm">30 DAQIQA KUTISH TAYMERI</Badge>
+                      <span className="bg-amber-950 text-[#FFB800] border border-[#FFB800]/50 px-2 py-0.5 rounded text-[10px] font-bold">
+                        30 DAQIQA KUTISH TAYMERI
+                      </span>
                     </div>
 
-                    <p className="text-xs text-slate-700 font-sans">
+                    <p className="text-xs text-sky-200/90 font-sans leading-relaxed">
                       Qurilish mollari manzilga yetkazildi. Tushirishdan oldin ikkinchi 50% to‘lovni (
-                      <strong>{(Number(o.secondPaymentAmount || o.finalAmount / 2)).toLocaleString()} so‘m</strong>
+                      <strong className="text-[#FFB800]">{(Number(o.secondPaymentAmount || o.finalAmount / 2)).toLocaleString()} so‘m</strong>
                       ) amalga oshiring. To‘lov o‘tgach, haydovchiga aytish uchun <strong>Qabul Kodi</strong> ekranda paydo bo‘ladi.
                     </p>
 
-                    <Button
-                      size="sm"
-                      variant="primary"
+                    <button
+                      type="button"
                       onClick={() => handlePaySecondHalf(o.id)}
+                      className="btn-industrial-yellow px-4 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 cursor-pointer"
                     >
-                      <CreditCard className="w-4 h-4 mr-1.5" />
+                      <CreditCard className="w-4 h-4" />
                       <span>Ikkinchi 50% to‘lovni tasdiqlash</span>
-                    </Button>
+                    </button>
                   </div>
                 )}
 
-                {/* 3. REVEALED ACCEPTANCE PIN CODE BOX (The core of TZ-1 MJ-11 / MJ-12) */}
+                {/* 3. REVEALED ACCEPTANCE PIN CODE BOX */}
                 {o.isAcceptanceCodeRevealed && o.acceptanceCode && (
-                  <div className="bg-linear-to-r from-amber-500/10 via-amber-400/20 to-amber-500/10 border-2 border-dashed border-bunker-amber-500 rounded-xl p-4 text-center space-y-2 font-mono shadow-xs">
-                    <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-amber-900 uppercase">
-                      <KeyRound className="w-4 h-4 text-bunker-amber-600" />
+                  <div className="bg-gradient-to-r from-[#FFB800]/10 via-[#FFB800]/20 to-[#FFB800]/10 border-2 border-dashed border-[#FFB800] rounded-xl p-5 text-center space-y-2 font-mono shadow-md">
+                    <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-[#FFB800] uppercase">
+                      <KeyRound className="w-4 h-4 text-[#FFB800]" />
                       <span>Maxfiy Qabul Kodi (Delivery PIN)</span>
                     </div>
 
-                    <div className="text-4xl font-extrabold tracking-widest text-slate-900 py-1 select-all">
+                    <div className="text-4xl font-extrabold tracking-widest text-[#FFB800] py-1 select-all font-mono-numbers">
                       {o.acceptanceCode}
                     </div>
 
-                    <p className="text-xs text-slate-700 font-sans max-w-md mx-auto">
+                    <p className="text-xs text-sky-200/90 font-sans max-w-md mx-auto">
                       Ushbu 4-xonali PIN kodni haydovchiga ayting. Haydovchi uni kiritgach yuk topshirilgan hisoblanadi va Escrowdan mablag‘ ajratiladi.
                     </p>
                   </div>
                 )}
 
                 {/* Bottom action row: Chek, B2B Hujjatlar, Nizo ochish, Expand */}
-                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-bunker-border-subtle font-mono text-xs">
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#1E3A6D] font-mono text-xs">
                   <div className="flex items-center gap-2">
                     <a
                       href={`https://bunkerstroy.uz/receipt/${o.id}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-bunker-border-strong text-slate-700 hover:bg-slate-50 transition-colors"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[#1E3A6D] bg-[#071326] text-sky-200 hover:text-white hover:border-[#FFB800] transition-colors"
                     >
-                      <QrCode className="w-3.5 h-3.5 text-bunker-amber-500" />
+                      <QrCode className="w-3.5 h-3.5 text-[#FFB800]" />
                       <span>QR Chek</span>
                     </a>
 
                     <button
                       type="button"
                       onClick={() => setSelectedB2bOrder(o)}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-bunker-border-strong text-slate-800 bg-slate-50 hover:bg-amber-50 hover:border-bunker-amber-500 hover:text-bunker-amber-700 transition-colors cursor-pointer font-bold shadow-2xs"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[#254B85] bg-[#0F2547] text-white hover:border-[#FFB800] transition-colors cursor-pointer font-bold shadow-xs"
                     >
-                      <FileCheck className="w-3.5 h-3.5 text-bunker-amber-600" />
+                      <FileCheck className="w-3.5 h-3.5 text-[#FFB800]" />
                       <span>B2B Hujjatlar</span>
                     </button>
 
@@ -572,7 +588,7 @@ export const OrdersView: React.FC = () => {
                           evidenceUrl: ''
                         })
                       }
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-red-200 text-red-700 hover:bg-red-50 transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-red-500/40 bg-red-950/40 text-red-300 hover:text-white hover:bg-red-900/60 transition-colors cursor-pointer"
                     >
                       <AlertTriangle className="w-3.5 h-3.5" />
                       <span>Nizo ochish</span>
@@ -582,7 +598,7 @@ export const OrdersView: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => toggleExpand(o.id)}
-                    className="flex items-center gap-1 text-slate-600 hover:text-slate-900 cursor-pointer font-semibold py-1"
+                    className="flex items-center gap-1 text-sky-300 hover:text-[#FFB800] cursor-pointer font-semibold py-1 transition-colors"
                   >
                     <span>{isExpanded ? "Tafsilotni yashirish" : "Tovarlar ro‘yxati"}</span>
                     {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -591,38 +607,40 @@ export const OrdersView: React.FC = () => {
 
                 {/* EXPANDABLE ACCORDION CONTENT */}
                 {isExpanded && (
-                  <div className="mt-3 space-y-3 pt-3 border-t border-bunker-border-subtle text-xs animate-in fade-in font-mono">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Mahsulot Nomi</TableHead>
-                          <TableHead className="text-center">Miqdori &amp; Birligi</TableHead>
-                          <TableHead className="text-right">Birlik Narxi</TableHead>
-                          <TableHead className="text-right">Jami Summa</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {o.items.map((item, idx) => (
-                          <TableRow key={idx}>
-                            <TableCell className="font-semibold text-bunker-text-primary">
-                              {item.productTitle}
-                            </TableCell>
-                            <TableCell className="text-center">
-                              {item.quantity} {item.unit}
-                            </TableCell>
-                            <TableCell className="text-right">
-                              {Number(item.unitPrice).toLocaleString()} so'm
-                            </TableCell>
-                            <TableCell className="text-right font-bold text-bunker-amber-500">
-                              {Number(item.totalPrice).toLocaleString()} so'm
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                  <div className="mt-3 space-y-3 pt-3 border-t border-[#1E3A6D] text-xs animate-in fade-in font-mono">
+                    <div className="overflow-x-auto rounded-xl border border-[#1E3A6D]">
+                      <table className="w-full text-left">
+                        <thead className="bg-[#071326] text-sky-300 border-b border-[#1E3A6D]">
+                          <tr>
+                            <th className="py-2.5 px-3">Mahsulot Nomi</th>
+                            <th className="py-2.5 px-3 text-center">Miqdori &amp; Birligi</th>
+                            <th className="py-2.5 px-3 text-right">Birlik Narxi</th>
+                            <th className="py-2.5 px-3 text-right">Jami Summa</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#1E3A6D] bg-[#0A1931]">
+                          {o.items.map((item, idx) => (
+                            <tr key={idx} className="hover:bg-[#0F2547]/50 transition-colors">
+                              <td className="py-2.5 px-3 font-semibold text-white">
+                                {item.productTitle}
+                              </td>
+                              <td className="py-2.5 px-3 text-center text-sky-200">
+                                {item.quantity} {item.unit}
+                              </td>
+                              <td className="py-2.5 px-3 text-right text-sky-300 font-mono-numbers">
+                                {Number(item.unitPrice).toLocaleString()} so‘m
+                              </td>
+                              <td className="py-2.5 px-3 text-right font-black text-[#FFB800] font-mono-numbers">
+                                {Number(item.totalPrice).toLocaleString()} so‘m
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 )}
-              </Card>
+              </div>
             );
           })}
         </div>
@@ -639,12 +657,14 @@ export const OrdersView: React.FC = () => {
         >
           <div className="space-y-3 font-mono text-xs">
             <div>
-              <label className="block text-slate-700 font-bold mb-1">
+              <label htmlFor="dispute-reason-text" className="block text-sky-200 font-bold mb-1">
                 E‘tiroz sababi * (sifat, yetishmovchilik, shikastlanish)
               </label>
               <textarea
+                id="dispute-reason-text"
+                name="reason"
                 rows={3}
-                className="w-full border border-bunker-border-strong rounded-xl p-2.5 text-xs font-sans focus:outline-none focus:border-bunker-amber-500"
+                className="w-full bg-[#071326] border border-[#1E3A6D] text-white rounded-xl p-2.5 text-xs font-sans focus:outline-none focus:border-[#FFB800]"
                 placeholder="Yuk shikastlangan holda yetib keldi yoki miqdori kam..."
                 value={disputeModal.reason}
                 onChange={(e) => setDisputeModal((prev) => ({ ...prev, reason: e.target.value }))}
@@ -652,10 +672,12 @@ export const OrdersView: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-slate-700 font-bold mb-1">
+              <label htmlFor="dispute-evidence-url" className="block text-sky-200 font-bold mb-1">
                 Foto yoki video dalil havolasi (ixtiyoriy)
               </label>
               <Input
+                id="dispute-evidence-url"
+                name="evidenceUrl"
                 sizeVariant="sm"
                 placeholder="https://t.me/... yoki rasm havolasi"
                 value={disputeModal.evidenceUrl}
@@ -664,21 +686,20 @@ export const OrdersView: React.FC = () => {
             </div>
 
             <div className="flex gap-2 pt-2">
-              <Button
-                variant="secondary"
-                size="sm"
+              <button
+                type="button"
+                className="btn-industrial-dark px-3 py-2 rounded-xl flex-1 text-xs font-bold cursor-pointer"
                 onClick={() => setDisputeModal({ isOpen: false, orderId: null, orderNumber: null, reason: '', evidenceUrl: '' })}
               >
                 Bekor qilish
-              </Button>
-              <Button
-                variant="primary"
-                size="sm"
-                isLoading={disputeLoading}
+              </button>
+              <button
+                type="button"
+                className="btn-industrial-yellow px-3 py-2 rounded-xl flex-1 text-xs font-black cursor-pointer shadow-md"
                 onClick={handleSubmitDispute}
               >
-                Nizo Arizasini Yuborish
-              </Button>
+                {disputeLoading ? 'Yuborilmoqda...' : 'Nizo Arizasini Yuborish'}
+              </button>
             </div>
           </div>
         </Modal>
@@ -694,8 +715,8 @@ export const OrdersView: React.FC = () => {
             <div
               className={`w-10 h-10 rounded-xl flex items-center justify-center ${
                 paymentModal.provider === 'PAYME'
-                  ? 'bg-sky-50 border border-sky-200 text-sky-700'
-                  : 'bg-orange-50 border border-orange-200 text-orange-700'
+                  ? 'bg-sky-950 border border-sky-400 text-sky-400'
+                  : 'bg-amber-950 border border-[#FFB800] text-[#FFB800]'
               }`}
             >
               <CreditCard className="w-5 h-5" />
@@ -707,39 +728,38 @@ export const OrdersView: React.FC = () => {
           {paymentError && <Alert variant="error" description={paymentError} onDismiss={() => setPaymentError(null)} />}
           {paymentSuccessMsg && <Alert variant="success" description={paymentSuccessMsg} />}
 
-          <div className="bg-slate-50 border border-bunker-border-strong p-4 rounded-xl space-y-2 text-xs font-mono">
-            <div className="flex justify-between text-bunker-text-secondary">
+          <div className="bg-[#071326] border border-[#1E3A6D] p-4 rounded-xl space-y-2 text-xs font-mono text-white">
+            <div className="flex justify-between text-sky-300">
               <span>Buyurtma raqami:</span>
-              <span className="text-bunker-text-primary font-bold">{paymentModal.order.orderNumber}</span>
+              <span className="text-white font-bold">{paymentModal.order.orderNumber}</span>
             </div>
-            <div className="flex justify-between text-bunker-text-secondary">
+            <div className="flex justify-between text-sky-300">
               <span>To‘lov turi:</span>
-              <span className="text-bunker-text-primary font-bold">
+              <span className="text-white font-bold">
                 {paymentModal.order.paymentMode === 'SPLIT_50_50' ? '50% Avans To‘lovi' : '100% To‘lov'}
               </span>
             </div>
-            <div className="pt-2 border-t border-bunker-border-subtle flex justify-between items-baseline">
-              <span className="font-bold text-bunker-text-primary">To‘lanadigan summa:</span>
-              <span className="text-xl font-extrabold text-bunker-amber-500">
+            <div className="pt-2 border-t border-[#1E3A6D] flex justify-between items-baseline">
+              <span className="font-bold text-sky-200">To‘lanadigan summa:</span>
+              <span className="text-xl font-black text-[#FFB800] font-mono-numbers">
                 {(paymentModal.order.paymentMode === 'SPLIT_50_50'
                   ? Number(paymentModal.order.firstPaymentAmount || paymentModal.order.finalAmount / 2)
                   : Number(paymentModal.order.finalAmount)
-                ).toLocaleString()} so'm
+                ).toLocaleString()} so‘m
               </span>
             </div>
           </div>
 
           <div className="space-y-2.5 pt-2 font-mono">
-            <Button
-              className="w-full"
-              size="md"
+            <button
+              type="button"
+              className="w-full btn-industrial-yellow py-3 rounded-xl font-black text-sm flex items-center justify-center gap-2 cursor-pointer shadow-lg"
               onClick={handleSimulatePayment}
-              isLoading={simulatingPayment}
-              disabled={!!paymentSuccessMsg}
+              disabled={simulatingPayment || !!paymentSuccessMsg}
             >
-              <Sparkles className="w-4 h-4 mr-1.5" />
-              <span>To‘lovni Tasdiqlash</span>
-            </Button>
+              <Sparkles className="w-4 h-4" />
+              <span>{simulatingPayment ? 'To‘lov amalga oshirilmoqda...' : 'To‘lovni Tasdiqlash'}</span>
+            </button>
           </div>
         </Modal>
       )}

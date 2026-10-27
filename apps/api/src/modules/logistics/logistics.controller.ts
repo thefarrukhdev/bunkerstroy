@@ -38,6 +38,7 @@ export class LogisticsController {
   }
 
   @Post('calculate-quote')
+  @Post('quote')
   @ApiOperation({
     summary: 'Masofa va vazn bo‘yicha transport xarajatini hisoblash',
   })

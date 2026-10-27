@@ -295,6 +295,17 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
         {/* Footer info: Staff Role and Online Status */}
         <div className="p-3 border-t-2 border-[#1E3A6D] bg-[#071326] text-xs font-mono space-y-2">
+          <a
+            href={typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3000' : '/'}
+            className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-[#0F2547] hover:bg-[#132C54] border border-[#1E3A6D] hover:border-[#FFB800] text-sky-200 hover:text-white transition-all text-[11px] font-mono font-bold select-none group"
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-[#FFB800] group-hover:scale-110 transition-transform">🏪</span>
+              <span>Bozor Vitrinasi (Port 3000)</span>
+            </div>
+            <span className="text-[10px] text-sky-400 group-hover:text-[#FFB800] transition-colors">↗</span>
+          </a>
+
           <div className="p-2.5 rounded-xl bg-[#0A1931] border border-[#1E3A6D] flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-[#FFB800]/20 border border-[#FFB800]/50 text-[#FFB800] flex items-center justify-center font-bold">

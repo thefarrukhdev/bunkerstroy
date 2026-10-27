@@ -105,7 +105,7 @@ export const LogisticsView: React.FC = () => {
     debounceTimeoutRef.current = setTimeout(async () => {
       setLoadingQuote(true);
       try {
-        const res = await fetch('/api/logistics/quote', {
+        const res = await fetch('/api/logistics/calculate-quote', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -200,109 +200,114 @@ export const LogisticsView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* 1. Minimalist Logistics Header */}
-      <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="mb-1.5">
-            <span className="text-xs font-mono font-bold text-sky-600 uppercase tracking-wider">
-              Dispetcherlik &amp; Marshrut
-            </span>
+    <div className="space-y-6 text-white pb-12 font-sans">
+      {/* 1. Authentic Industrial Logistics Header */}
+      <div className="relative brushed-steel rounded-2xl p-5 sm:p-7 shadow-[0_8px_24px_rgba(7,19,38,0.5)] border border-[#1E3A6D] overflow-hidden">
+        <div className="absolute top-2 left-2 industrial-rivet" />
+        <div className="absolute top-2 right-2 industrial-rivet" />
+        <div className="absolute bottom-2 left-2 industrial-rivet" />
+        <div className="absolute bottom-2 right-2 industrial-rivet" />
+        <div className="absolute inset-0 tech-grid-pattern opacity-40 pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="text-xs font-mono font-bold text-[#FFB800] uppercase tracking-wider flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#FFB800] animate-ping" />
+                Dispetcherlik &amp; Marshrut
+              </span>
+              <span className="bg-[#132C54] text-[#FFB800] border border-[#254B85] px-2 py-0.5 rounded text-[10px] font-mono font-black">
+                GPS TELEMETRIYA
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-heading font-black tracking-tight text-white">
+              Og‘ir Qurilish Texnikalari &amp; Logistika Parki
+            </h1>
+            <p className="text-xs sm:text-sm text-sky-200/90 mt-1 max-w-2xl leading-relaxed">
+              HOWO 25t, Shacman mikser va Isuzu kran. Masofa bo‘yicha avtomatik tarif va GPS telemetriya.
+            </p>
           </div>
-          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-bunker-text-primary">
-            Og‘ir Qurilish Texnikalari &amp; Logistika Parki
-          </h1>
-          <p className="text-xs sm:text-sm text-bunker-text-secondary mt-1">
-            HOWO 25t, Shacman mikser va Isuzu kran. Masofa bo‘yicha avtomatik tarif va GPS telemetriya.
-          </p>
-        </div>
-        <div className="flex items-center gap-2 font-mono text-xs">
-          <Badge variant="neutral" size="sm" isMono>
-            {vehicles.length} ta texnika tayyor
-          </Badge>
+          <div className="flex items-center gap-2 font-mono text-xs shrink-0">
+            <div className="bg-[#071326] border border-[#1E3A6D] px-3.5 py-2 rounded-xl text-sky-200 flex items-center gap-2">
+              <span className="text-[#FFB800] font-black">{vehicles.length}</span>
+              <span>ta maxsus texnika faol</span>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* 2. CONFIRMED DISPATCH ACTIVE CARD */}
       {confirmedDispatch && (
-        <div className="bg-white border-2 border-bunker-amber-500 p-4 sm:p-6 rounded-2xl space-y-4 sm:space-y-5 shadow-xs">
-          <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-bunker-border-strong">
+        <div className="bg-[#0F2547] border-2 border-[#FFB800] p-5 sm:p-6 rounded-2xl space-y-4 shadow-xl text-white">
+          <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[#1E3A6D]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center">
-                <CheckCircle2 className="w-5 h-5 text-bunker-amber-500" />
+              <div className="w-10 h-10 rounded-xl bg-[#071326] border border-[#FFB800] flex items-center justify-center">
+                <CheckCircle2 className="w-5 h-5 text-[#FFB800]" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-base font-bold text-bunker-text-primary">Reys Tasdiqlandi</h3>
-                  <Badge variant="success" size="sm" isMono>
+                  <h3 className="text-base font-bold text-white">Reys Tasdiqlandi</h3>
+                  <span className="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 px-2 py-0.5 rounded text-[10px] font-mono font-bold">
                     STATUS: BIRIKTIRILDI
-                  </Badge>
+                  </span>
                 </div>
-                <p className="text-xs text-bunker-text-secondary mt-0.5 font-mono">
-                  Dispetcherlik ID: <span className="text-bunker-amber-500 font-bold">{confirmedDispatch.id}</span>
+                <p className="text-xs text-sky-300 mt-0.5 font-mono">
+                  Dispetcherlik ID: <span className="text-[#FFB800] font-bold">{confirmedDispatch.id}</span>
                 </p>
               </div>
             </div>
 
-            <Button
-              variant="secondary"
-              size="sm"
+            <button
+              type="button"
               onClick={() => setConfirmedDispatch(null)}
-              className="text-xs font-mono"
+              className="btn-industrial-dark px-3 py-1.5 rounded-xl text-xs font-mono font-bold cursor-pointer"
             >
               Yangi Reys Hisoblash
-            </Button>
+            </button>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 font-mono">
-            <StatCard
-              title="Haydovchi"
-              value={confirmedDispatch.driverName}
-              subtitle={confirmedDispatch.driverPhone}
-              variant="amber"
-              icon={<Phone className="w-4 h-4 text-bunker-amber-500" />}
-            />
-            <StatCard
-              title="Maxsus Texnika"
-              value={confirmedDispatch.vehicleName}
-              subtitle={confirmedDispatch.plateNumber}
-              variant="default"
-              icon={<Truck className="w-4 h-4 text-slate-600" />}
-            />
-            <StatCard
-              title="Masofa & Vaqt"
-              value={confirmedDispatch.distanceKm}
-              unit="km"
-              subtitle={`Taxminiy: ~${confirmedDispatch.estimatedHours} soat`}
-              variant="cyan"
-              icon={<Navigation className="w-4 h-4 text-bunker-status-cyan" />}
-            />
-            <StatCard
-              title="Jami Reys Narxi"
-              value={confirmedDispatch.totalCost.toLocaleString()}
-              unit="so'm"
-              subtitle="Kafolatlangan reys"
-              variant="amber"
-              icon={<CheckCircle2 className="w-4 h-4 text-bunker-amber-500" />}
-            />
+            <div className="bg-[#071326] border border-[#1E3A6D] p-3 rounded-xl space-y-1">
+              <span className="text-[10px] text-sky-400 uppercase font-bold">Haydovchi</span>
+              <p className="text-sm font-black text-white">{confirmedDispatch.driverName}</p>
+              <p className="text-[11px] text-[#FFB800]">{confirmedDispatch.driverPhone}</p>
+            </div>
+
+            <div className="bg-[#071326] border border-[#1E3A6D] p-3 rounded-xl space-y-1">
+              <span className="text-[10px] text-sky-400 uppercase font-bold">Maxsus Texnika</span>
+              <p className="text-sm font-black text-white truncate">{confirmedDispatch.vehicleName}</p>
+              <p className="text-[11px] text-sky-300">{confirmedDispatch.plateNumber}</p>
+            </div>
+
+            <div className="bg-[#071326] border border-[#1E3A6D] p-3 rounded-xl space-y-1">
+              <span className="text-[10px] text-sky-400 uppercase font-bold">Masofa &amp; Vaqt</span>
+              <p className="text-sm font-black text-white font-mono-numbers">{confirmedDispatch.distanceKm} km</p>
+              <p className="text-[11px] text-sky-300">~{confirmedDispatch.estimatedHours} soat</p>
+            </div>
+
+            <div className="bg-[#071326] border border-[#1E3A6D] p-3 rounded-xl space-y-1">
+              <span className="text-[10px] text-sky-400 uppercase font-bold">Jami Reys Narxi</span>
+              <p className="text-sm font-black text-[#FFB800] font-mono-numbers">{confirmedDispatch.totalCost.toLocaleString()} so‘m</p>
+              <p className="text-[11px] text-emerald-400">Kafolatlangan reys</p>
+            </div>
           </div>
 
           {/* Simple 4-Step Route Tracker */}
-          <div className="bg-slate-50 border border-bunker-border-strong p-4 rounded-xl font-mono text-xs">
+          <div className="bg-[#071326] border border-[#1E3A6D] p-4 rounded-xl font-mono text-xs">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="flex items-center gap-2 text-emerald-700 font-bold">
-                <CheckCircle2 className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-emerald-400 font-bold">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                 <span>1. Qabul qilindi</span>
               </div>
-              <div className="flex items-center gap-2 text-bunker-amber-500 font-bold">
-                <Truck className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-[#FFB800] font-bold">
+                <Truck className="w-4 h-4 text-[#FFB800]" />
                 <span>2. Yuklanmoqda</span>
               </div>
-              <div className="flex items-center gap-2 text-bunker-text-muted">
+              <div className="flex items-center gap-2 text-sky-300">
                 <Navigation className="w-4 h-4" />
-                <span>3. Yo'lda</span>
+                <span>3. Yo‘lda</span>
               </div>
-              <div className="flex items-center gap-2 text-bunker-text-muted">
+              <div className="flex items-center gap-2 text-sky-300">
                 <PackageCheck className="w-4 h-4" />
                 <span>4. Ob'ektda</span>
               </div>
@@ -315,12 +320,12 @@ export const LogisticsView: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Vehicles selection list (7 cols) */}
         <div className="lg:col-span-7 space-y-3">
-          <div className="flex items-center justify-between pb-1 border-b border-bunker-border-subtle font-mono text-xs">
-            <span className="font-bold text-bunker-text-primary uppercase flex items-center gap-2">
-              <Truck className="w-4 h-4 text-bunker-amber-500" />
+          <div className="flex items-center justify-between pb-1 border-b border-[#1E3A6D] font-mono text-xs">
+            <span className="font-bold text-white uppercase flex items-center gap-2">
+              <Truck className="w-4 h-4 text-[#FFB800]" />
               1. Maxsus Texnikani Tanlang
             </span>
-            <span className="text-bunker-text-muted">{vehicles.length} ta birlik</span>
+            <span className="text-sky-300">{vehicles.length} ta birlik</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -331,42 +336,42 @@ export const LogisticsView: React.FC = () => {
                 <div
                   key={v.id}
                   onClick={() => setSelectedVehicle(v)}
-                  className={`p-3.5 rounded-xl cursor-pointer border transition-all flex flex-col justify-between shadow-xs ${
+                  className={`industrial-card p-3.5 rounded-2xl cursor-pointer border transition-all flex flex-col justify-between shadow-md ${
                     isSelected
-                      ? 'bg-amber-50/50 border-bunker-amber-500 ring-2 ring-orange-200'
-                      : 'bg-white border-bunker-border-strong hover:border-slate-400'
+                      ? 'bg-[#132C54] border-[#FFB800] ring-1 ring-[#FFB800]'
+                      : 'bg-[#0A1931] border-[#1E3A6D] hover:border-[#2E5A9C]'
                   }`}
                 >
                   <div className="flex items-start gap-3">
                     <img
                       src={v.imageUrl}
                       alt={v.name}
-                      className="w-14 h-14 rounded-lg object-cover shrink-0 border border-bunker-border-subtle bg-slate-100"
+                      className="w-14 h-14 rounded-xl object-cover shrink-0 border border-[#1E3A6D] bg-[#071326]"
                     />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-1">
-                        <h4 className="text-xs font-bold text-bunker-text-primary truncate">{v.name}</h4>
+                        <h4 className="text-xs font-bold text-white truncate">{v.name}</h4>
                         {isSelected && (
-                          <span className="w-2 h-2 rounded-full bg-bunker-amber-500 shrink-0" />
+                          <span className="w-2 h-2 rounded-full bg-[#FFB800] shrink-0" />
                         )}
                       </div>
-                      <p className="text-[11px] font-mono text-bunker-amber-500 mt-0.5 font-bold">
+                      <p className="text-[11px] font-mono text-[#FFB800] mt-0.5 font-bold">
                         {v.capacityTons} tonnagacha sig‘im
                       </p>
-                      <p className="text-[10px] text-bunker-text-secondary mt-0.5 font-mono">
-                        Baza: {Number(v.basePrice).toLocaleString()} so'm
+                      <p className="text-[10px] text-sky-200 mt-0.5 font-mono">
+                        Baza: {Number(v.basePrice).toLocaleString()} so‘m
                       </p>
-                      <p className="text-[10px] text-bunker-text-muted font-mono">
-                        + {Number(v.pricePerKm).toLocaleString()} so'm / km
+                      <p className="text-[10px] text-sky-400 font-mono">
+                        + {Number(v.pricePerKm).toLocaleString()} so‘m / km
                       </p>
                     </div>
                   </div>
 
-                  <div className="mt-2.5 pt-2 border-t border-bunker-border-subtle flex items-center justify-between text-[10px] font-mono">
-                    <span className="text-bunker-text-muted">Davlat raqami:</span>
-                    <Badge variant="neutral" size="sm" isMono>
+                  <div className="mt-2.5 pt-2 border-t border-[#1E3A6D] flex items-center justify-between text-[10px] font-mono">
+                    <span className="text-sky-300">Davlat raqami:</span>
+                    <span className="bg-[#071326] border border-[#1E3A6D] px-2 py-0.5 rounded text-white font-bold">
                       {v.plateNumber}
-                    </Badge>
+                    </span>
                   </div>
                 </div>
               );
@@ -375,25 +380,27 @@ export const LogisticsView: React.FC = () => {
         </div>
 
         {/* Dynamic Route & Price Calculator Form (5 cols) */}
-        <div className="lg:col-span-5 bg-white border border-bunker-border-strong rounded-2xl p-5 space-y-4 shadow-xs">
-          <div className="flex items-center justify-between pb-2 border-b border-bunker-border-subtle font-mono text-xs">
-            <span className="font-bold text-bunker-text-primary uppercase flex items-center gap-1.5">
-              <Compass className="w-4 h-4 text-bunker-amber-500" />
+        <div className="lg:col-span-5 bg-[#0A1931] border border-[#1E3A6D] rounded-2xl p-5 space-y-4 shadow-lg text-white font-mono">
+          <div className="flex items-center justify-between pb-2 border-b border-[#1E3A6D] text-xs">
+            <span className="font-bold text-white uppercase flex items-center gap-1.5">
+              <Compass className="w-4 h-4 text-[#FFB800]" />
               2. Marshrut &amp; Yuk Parametrlari
             </span>
-            {loadingQuote && <span className="text-[10px] text-bunker-amber-500 font-mono">Hisoblanmoqda...</span>}
+            {loadingQuote && <span className="text-[10px] text-[#FFB800] font-mono">Hisoblanmoqda...</span>}
           </div>
 
           {bookingError && (
             <Alert variant="error" description={bookingError} onDismiss={() => setBookingError(null)} />
           )}
 
-          <div className="space-y-3 text-xs font-mono">
+          <div className="space-y-3 text-xs">
             <div>
-              <label className="text-bunker-text-muted block text-[10px] uppercase font-bold mb-1">
+              <label htmlFor="logistics-origin-input" className="text-sky-200 block text-[10px] uppercase font-bold mb-1">
                 Yuklash Nuqtasi (Karyer / Zavod):
               </label>
               <Input
+                id="logistics-origin-input"
+                name="origin"
                 value={origin}
                 onChange={(e) => setOrigin(e.target.value)}
                 placeholder="Yuk ortish manzili..."
@@ -402,10 +409,12 @@ export const LogisticsView: React.FC = () => {
             </div>
 
             <div>
-              <label className="text-bunker-text-muted block text-[10px] uppercase font-bold mb-1">
+              <label htmlFor="logistics-destination-input" className="text-sky-200 block text-[10px] uppercase font-bold mb-1">
                 Yetkazib Berish Ob'ekti:
               </label>
               <Input
+                id="logistics-destination-input"
+                name="destination"
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
                 placeholder="Qurilish ob'ekti manzili..."
@@ -415,10 +424,12 @@ export const LogisticsView: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="text-bunker-text-muted block text-[10px] uppercase font-bold mb-1">
+                <label htmlFor="logistics-distance-input" className="text-sky-200 block text-[10px] uppercase font-bold mb-1">
                   Masofa (km):
                 </label>
                 <Input
+                  id="logistics-distance-input"
+                  name="distanceKm"
                   type="number"
                   min="1"
                   max="1500"
@@ -429,10 +440,12 @@ export const LogisticsView: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-bunker-text-muted block text-[10px] uppercase font-bold mb-1">
-                  Yuk Og'irligi (t):
+                <label htmlFor="logistics-weight-input" className="text-sky-200 block text-[10px] uppercase font-bold mb-1">
+                  Yuk Og‘irligi (t):
                 </label>
                 <Input
+                  id="logistics-weight-input"
+                  name="weightTons"
                   type="number"
                   min="1"
                   max="45"
@@ -446,56 +459,61 @@ export const LogisticsView: React.FC = () => {
             {/* Link to existing Order (optional) */}
             {activeOrders.length > 0 && (
               <div>
-                <label className="text-bunker-text-muted block text-[10px] uppercase font-bold mb-1">
+                <label htmlFor="logistics-order-select" className="text-sky-200 block text-[10px] uppercase font-bold mb-1">
                   Mavjud Buyurtmaga Biriktirish (Ixtiyoriy):
                 </label>
-                <Select
+                <select
+                  id="logistics-order-select"
+                  name="orderId"
                   value={selectedOrderId}
                   onChange={(e) => setSelectedOrderId(e.target.value)}
-                  sizeVariant="sm"
+                  className="w-full h-9 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-xs font-mono text-white outline-none cursor-pointer"
                 >
                   <option value="EXPRESS">Alohida ekspress yuk tashish</option>
                   {activeOrders.map((o) => (
                     <option key={o.id} value={o.id}>
-                      {o.orderNumber} ({Number(o.finalAmount || o.totalAmount).toLocaleString()} so'm)
+                      {o.orderNumber} ({Number(o.finalAmount || o.totalAmount).toLocaleString()} so‘m)
                     </option>
                   ))}
-                </Select>
+                </select>
               </div>
             )}
           </div>
 
           {/* Pricing Summary Box */}
-          <div className="bg-slate-50 border border-bunker-border-strong rounded-xl p-3.5 space-y-2 font-mono text-xs">
-            <div className="flex justify-between text-bunker-text-secondary">
+          <div className="bg-[#071326] border border-[#1E3A6D] rounded-xl p-3.5 space-y-2 font-mono text-xs">
+            <div className="flex justify-between text-sky-300">
               <span>Baza tarifi (chiqish):</span>
-              <span>{selectedVehicle ? Number(selectedVehicle.basePrice).toLocaleString() : 0} so'm</span>
+              <span className="text-white">{selectedVehicle ? Number(selectedVehicle.basePrice).toLocaleString() : 0} so‘m</span>
             </div>
-            <div className="flex justify-between text-bunker-text-secondary">
-              <span>Masofa to'lovi ({distanceKm} km):</span>
-              <span>
-                {selectedVehicle ? (distanceKm * Number(selectedVehicle.pricePerKm)).toLocaleString() : 0} so'm
+            <div className="flex justify-between text-sky-300">
+              <span>Masofa to‘lovi ({distanceKm} km):</span>
+              <span className="text-white">
+                {selectedVehicle ? (distanceKm * Number(selectedVehicle.pricePerKm)).toLocaleString() : 0} so‘m
               </span>
             </div>
-            <div className="pt-2 border-t border-bunker-border-subtle flex justify-between items-center">
-              <span className="font-bold text-bunker-text-primary uppercase text-xs">Jami Reys Narxi:</span>
-              <span className="text-base font-extrabold text-bunker-amber-500">
-                {totalCostValue.toLocaleString()} so'm
+            <div className="pt-2 border-t border-[#1E3A6D] flex justify-between items-center">
+              <span className="font-bold text-sky-200 uppercase text-xs">Jami Reys Narxi:</span>
+              <span className="text-base font-black text-[#FFB800] font-mono-numbers">
+                {totalCostValue.toLocaleString()} so‘m
               </span>
             </div>
           </div>
 
-          <Button
-            variant="primary"
-            size="md"
+          <button
+            type="button"
             onClick={handleBook}
-            isLoading={isBooking}
-            className="w-full text-xs font-mono font-bold"
+            disabled={isBooking}
+            className="w-full btn-industrial-yellow py-3 rounded-xl font-black text-xs flex items-center justify-center gap-2 cursor-pointer shadow-lg select-none"
           >
-            <Truck className="w-4 h-4 mr-2 shrink-0" />
-            <span className="hidden sm:inline">Reysni Tasdiqlash &amp; Dispetcherga Yuborish</span>
-            <span className="sm:hidden">Reysni Dispetcherga Yuborish</span>
-          </Button>
+            <Truck className="w-4 h-4 shrink-0" />
+            <span className="hidden sm:inline">
+              {isBooking ? 'Dispetcherga yuborilmoqda...' : 'Reysni Tasdiqlash & Dispetcherga Yuborish'}
+            </span>
+            <span className="sm:hidden">
+              {isBooking ? 'Yuborilmoqda...' : 'Reysni Dispetcherga Yuborish'}
+            </span>
+          </button>
         </div>
       </div>
     </div>

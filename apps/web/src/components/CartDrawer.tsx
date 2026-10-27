@@ -533,16 +533,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             {deliveryMethod === 'COURIER' && (
               <div className="pt-2 space-y-3">
                 {/* Saved Construction Sites Quick-Picker (MJ-02) */}
-                <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 space-y-2">
+                <div className="bg-[#071326] border border-[#1E3A6D] rounded-lg p-2.5 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-slate-800 flex items-center gap-1.5">
-                      <Bookmark className="w-3.5 h-3.5 text-bunker-amber-500" />
+                    <span className="text-[11px] font-bold text-white flex items-center gap-1.5 font-mono">
+                      <Bookmark className="w-3.5 h-3.5 text-[#FFB800]" />
                       Qurilish Obyektlari (Saqlangan Manzillar)
                     </span>
                     <button
                       type="button"
                       onClick={() => setIsAddingSite(!isAddingSite)}
-                      className="text-[10px] text-bunker-amber-600 font-medium hover:underline"
+                      className="text-[10px] text-[#FFB800] font-bold hover:underline"
                     >
                       {isAddingSite ? 'Yopish' : '+ Obyekt qo‘shish'}
                     </button>
@@ -556,17 +556,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           key={site.id}
                           type="button"
                           onClick={() => handleSelectSite(site)}
-                          className={`p-2 rounded-md border text-left transition-all text-xs flex items-center justify-between ${
+                          className={`p-2 rounded-md border text-left transition-all text-xs flex items-center justify-between cursor-pointer ${
                             isSelected
-                              ? 'border-bunker-amber-500 bg-amber-50/70 font-bold text-slate-900 shadow-xs'
-                              : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                              ? 'border-[#FFB800] bg-[#FFB800]/15 font-bold text-[#FFB800] shadow-sm'
+                              : 'border-[#1E3A6D] bg-[#0A1931] text-slate-200 hover:border-[#FFB800]/60 hover:text-white'
                           }`}
                         >
                           <div className="truncate mr-1">
                             <div className="text-[11px] font-semibold truncate">{site.name}</div>
-                            <div className="text-[9px] text-slate-500 truncate">{site.district}, {site.street}</div>
+                            <div className="text-[9px] text-sky-300/70 truncate">{site.district}, {site.street}</div>
                           </div>
-                          {isSelected && <Check className="w-3.5 h-3.5 text-bunker-amber-600 shrink-0" />}
+                          {isSelected && <Check className="w-3.5 h-3.5 text-[#FFB800] shrink-0" />}
                         </button>
                       );
                     })}
@@ -574,23 +574,23 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     <button
                       type="button"
                       onClick={() => setSelectedSiteId('custom')}
-                      className={`p-2 rounded-md border text-left transition-all text-xs flex items-center justify-between ${
+                      className={`p-2 rounded-md border text-left transition-all text-xs flex items-center justify-between cursor-pointer ${
                         selectedSiteId === 'custom'
-                          ? 'border-bunker-amber-500 bg-amber-50/70 font-bold text-slate-900 shadow-xs'
-                          : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                          ? 'border-[#FFB800] bg-[#FFB800]/15 font-bold text-[#FFB800] shadow-sm'
+                          : 'border-[#1E3A6D] bg-[#0A1931] text-slate-200 hover:border-[#FFB800]/60 hover:text-white'
                       }`}
                     >
                       <div>
                         <div className="text-[11px] font-semibold">Boshqa yangi manzil</div>
-                        <div className="text-[9px] text-slate-500">Qo‘lda kiritish</div>
+                        <div className="text-[9px] text-sky-300/70">Qo‘lda kiritish</div>
                       </div>
-                      {selectedSiteId === 'custom' && <Check className="w-3.5 h-3.5 text-bunker-amber-600 shrink-0" />}
+                      {selectedSiteId === 'custom' && <Check className="w-3.5 h-3.5 text-[#FFB800] shrink-0" />}
                     </button>
                   </div>
 
                   {/* Add New Site Form */}
                   {isAddingSite && (
-                    <div className="pt-2 border-t border-slate-200 flex gap-2">
+                    <div className="pt-2 border-t border-[#1E3A6D] flex gap-2">
                       <Input
                         sizeVariant="sm"
                         placeholder="Obyekt nomi (masalan: Mirzo Ulug‘bek Lot 2)"
