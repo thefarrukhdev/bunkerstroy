@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SupplierCompany, INITIAL_SUPPLIERS } from '../../mocks/suppliersMock';
 import { DataTable, Column } from '../../components/DataTable';
 import { StatusBadge } from '../../components/StatusBadge';
@@ -8,6 +8,7 @@ import { KpiStatCard } from '../../components/KpiStatCard';
 import { Select } from '../../components/Select';
 import { StirVerificationDrawer } from './StirVerificationDrawer';
 import { SupplierFormDrawer } from './SupplierFormDrawer';
+import { apiClient } from '../../services/apiClient';
 import {
   Building2,
   Plus,
@@ -27,6 +28,42 @@ export const SuppliersTable: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [regionFilter, setRegionFilter] = useState<string>('ALL');
   const [typeFilter, setTypeFilter] = useState<string>('ALL');
+
+  useEffect(() => {
+    const fetchSuppliers = async () => {
+      try {
+        const res = await apiClient.get<any>('/admin/suppliers');
+        if (res && res.data && res.data.length > 0) {
+          const mapped: SupplierCompany[] = res.data.map((s: any) => ({
+            id: s.id,
+            companyName: s.companyName,
+            brandName: s.companyName,
+            inn: s.inn,
+            oked: '46.73',
+            supplierType: s.supplierType || 'LOCAL',
+            region: s.region || 'Toshkent shahri',
+            address: s.region || 'Toshkent sh.',
+            director: s.director || 'Rahbar',
+            phone: s.phone,
+            email: 'info@bunkerstroy.uz',
+            vatPayer: true,
+            status: s.status === 'ACTIVE' ? 'VERIFIED' : 'PENDING',
+            statusDescription: s.status === 'ACTIVE' ? 'Tasdiqlangan' : 'Kutilmoqda',
+            stirVerified: true,
+            eimzoCertSerial: '1A987BC4',
+            rating: s.rating || 5.0,
+            productsCount: s.productsCount || 0,
+            totalTurnover: s.totalSalesSum || 0,
+            registrationDate: '2026-01-15'
+          }));
+          setSuppliers(mapped);
+        }
+      } catch (err) {
+        console.warn('Taʼminotchilarni yuklashda xatolik:', err);
+      }
+    };
+    fetchSuppliers();
+  }, []);
 
   // Drawer states
   const [isFormDrawerOpen, setIsFormDrawerOpen] = useState(false);
@@ -73,7 +110,7 @@ export const SuppliersTable: React.FC = () => {
   };
 
   // Update Status from Drawer
-  const handleUpdateStatus = (
+  const handleUpdateStatus = async (
     id: string,
     newStatus: 'VERIFIED' | 'SUSPENDED' | 'PENDING',
     desc?: string
@@ -100,6 +137,14 @@ export const SuppliersTable: React.FC = () => {
             }
           : null
       );
+    }
+
+    try {
+      await apiClient.post(`/admin/suppliers/${id}/verify`, {
+        status: newStatus === 'VERIFIED' ? 'APPROVED' : newStatus === 'SUSPENDED' ? 'SUSPENDED' : 'PENDING'
+      });
+    } catch (err) {
+      console.warn('Taʼminotchi statusini sinxronlashda xatolik:', err);
     }
   };
 

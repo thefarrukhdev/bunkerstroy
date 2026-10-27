@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { OrderRecord, OrderStatus, INITIAL_ORDERS } from '../../mocks/ordersMock';
 import { DataTable, Column } from '../../components/DataTable';
 import { StatusBadge } from '../../components/StatusBadge';
@@ -6,6 +6,7 @@ import { Button } from '../../components/Button';
 import { KpiStatCard } from '../../components/KpiStatCard';
 import { Select } from '../../components/Select';
 import { OrderDetailDrawer } from './OrderDetailDrawer';
+import { apiClient } from '../../services/apiClient';
 import {
   ShoppingCart,
   Building2,
@@ -31,6 +32,53 @@ export const OrdersManager: React.FC = () => {
   // Detail Drawer state
   const [selectedOrder, setSelectedOrder] = useState<OrderRecord | null>(null);
 
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const res = await apiClient.get<any>('/orders');
+        if (res && res.data && res.data.length > 0) {
+          const mapped: OrderRecord[] = res.data.map((o: any) => ({
+            id: o.id,
+            orderNumber: o.orderNumber,
+            buyerName: o.buyer?.displayName || 'Xaridor',
+            buyerPhone: o.buyer?.phone || '+998901234567',
+            buyerInn: o.buyer?.inn,
+            companyName: o.buyer?.companyName || 'B2B Qurilish',
+            deliveryRegion: o.deliveryRegion || 'Toshkent shahri',
+            deliveryDistrict: o.deliveryDistrict || 'Yunusobod tumani',
+            deliveryAddress: o.deliveryAddress || 'Amir Temur shoh ko‘chasi',
+            vehicleType: 'HOWO Samosval 25t',
+            items: (o.items || []).map((i: any) => ({
+              id: i.id,
+              productId: i.productId,
+              productTitle: i.product?.title || 'Mahsulot',
+              sku: 'SKU-001',
+              unit: 'TON',
+              unitPrice: Number(i.unitPrice),
+              quantity: i.quantity,
+              totalPrice: Number(i.totalPrice)
+            })),
+            totalAmount: Number(o.totalAmount),
+            deliveryFee: Number(o.deliveryFee) || 150000,
+            discountAmount: 0,
+            finalAmount: Number(o.finalAmount),
+            status: (o.status === 'ARRIVED' ? 'DELIVERED' : o.status === 'IN_TRANSIT' ? 'IN_TRANSIT' : 'CONFIRMED') as OrderStatus,
+            payment: {
+              provider: 'PAYME',
+              status: 'PAID'
+            },
+            createdAt: new Date(o.createdAt).toLocaleDateString('uz-UZ'),
+            updatedAt: new Date(o.updatedAt || o.createdAt).toLocaleDateString('uz-UZ')
+          }));
+          setOrders(mapped);
+        }
+      } catch (err) {
+        console.warn('Buyurtmalarni yuklashda xatolik:', err);
+      }
+    };
+    fetchOrders();
+  }, []);
+
   // Statistics
   const totalOrders = orders.length;
   const pendingOrders = orders.filter((o) => o.status === 'PENDING').length;
@@ -48,7 +96,7 @@ export const OrdersManager: React.FC = () => {
   });
 
   // Update order status
-  const handleUpdateStatus = (id: string, newStatus: OrderStatus, cancelReason?: string) => {
+  const handleUpdateStatus = async (id: string, newStatus: OrderStatus, cancelReason?: string) => {
     const now = new Date();
     const dateStr = `${now.toISOString().split('T')[0]} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
@@ -75,6 +123,17 @@ export const OrdersManager: React.FC = () => {
             }
           : null
       );
+    }
+
+    try {
+      if (id && !id.startsWith('ord-')) {
+        await apiClient.patch(`/orders/${id}/status`, {
+          status: newStatus,
+          reason: cancelReason
+        });
+      }
+    } catch (err) {
+      console.warn('Buyurtma statusini yangilashda xatolik:', err);
     }
   };
 

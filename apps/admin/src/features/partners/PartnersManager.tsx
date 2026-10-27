@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   CreditCard,
   Building2,
@@ -22,12 +22,42 @@ import {
 import { INITIAL_PARTNERS, PartnerIntegrationItem, PartnerStatus } from '../../mocks/partnersMock';
 import { Button } from '../../components/Button';
 import { SlideOverDrawer } from '../../components/SlideOverDrawer';
+import { apiClient } from '../../services/apiClient';
 
 export const PartnersManager: React.FC = () => {
   const [partners, setPartners] = useState<PartnerIntegrationItem[]>(INITIAL_PARTNERS);
   const [selectedPartner, setSelectedPartner] = useState<PartnerIntegrationItem | null>(null);
   const [syncingId, setSyncingId] = useState<string | null>(null);
   const [filterCategory, setFilterCategory] = useState<string>('ALL');
+
+  useEffect(() => {
+    const fetchPartners = async () => {
+      try {
+        const res = await apiClient.get<any>('/admin/partners');
+        if (res && res.data && res.data.length > 0) {
+          const mapped: PartnerIntegrationItem[] = res.data.map((p: any) => ({
+            id: p.id,
+            code: p.code,
+            name: p.name,
+            provider: p.provider,
+            category: p.code.includes('PAY') || p.code.includes('CLICK') ? 'PAYMENT' : p.code.includes('ESCROW') ? 'BANKING' : p.code.includes('IMZO') ? 'TAX' : p.code.includes('SMS') ? 'MESSAGING' : 'TELEMATICS',
+            status: p.status as PartnerStatus,
+            contractEnd: p.contractEnd ? new Date(p.contractEnd).toLocaleDateString('uz-UZ') : '2027-12-31',
+            lastSyncAt: p.lastSyncAt ? new Date(p.lastSyncAt).toLocaleTimeString('uz-UZ') : 'Yaqinda',
+            errorCount: p.errorCount || 0,
+            uptimePercent: 99.98,
+            apiEndpoint: `https://api.bunkerstroy.uz/partners/${p.code.toLowerCase()}`,
+            contactPerson: 'Texnik qo‘llab-quvvatlash',
+            contactPhone: '+998 (71) 200-45-46'
+          }));
+          setPartners(mapped);
+        }
+      } catch (err) {
+        console.warn('Hamkorlar integratsiyasini yuklashda xatolik:', err);
+      }
+    };
+    fetchPartners();
+  }, []);
 
   const handleSyncPartner = (id: string) => {
     setSyncingId(id);

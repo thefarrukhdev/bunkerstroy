@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AlertTriangle,
   ShieldAlert,
@@ -23,11 +23,43 @@ import { Button } from '../../components/Button';
 import { KpiStatCard } from '../../components/KpiStatCard';
 import { Select } from '../../components/Select';
 import { SlideOverDrawer } from '../../components/SlideOverDrawer';
+import { apiClient } from '../../services/apiClient';
 
 export const DisputesManager: React.FC = () => {
   const [disputes, setDisputes] = useState<DisputeRecord[]>(INITIAL_DISPUTES);
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [selectedDispute, setSelectedDispute] = useState<DisputeRecord | null>(null);
+
+  useEffect(() => {
+    const fetchDisputes = async () => {
+      try {
+        const res = await apiClient.get<any>('/admin/disputes');
+        if (res && res.data && res.data.length > 0) {
+          const mapped: DisputeRecord[] = res.data.map((d: any) => ({
+            id: d.id,
+            disputeNumber: `#DISP-${d.id.substring(0, 6).toUpperCase()}`,
+            orderNumber: d.order?.orderNumber || '#ORD-DEMO',
+            buyerName: d.openedBy?.displayName || 'Xaridor',
+            buyerPhone: d.openedBy?.phone || '+998901234567',
+            companyName: d.openedBy?.companyName || 'B2B Qurilish',
+            supplierName: 'Zavod Ta‘minotchi',
+            productTitle: 'Qurilish tovarlari',
+            claimAmount: Number(d.refundAmount) || 1200000,
+            reason: d.reason,
+            evidencePhotos: d.evidencePhotoUrl ? [d.evidencePhotoUrl] : [],
+            status: d.status as DisputeStatus,
+            resolutionDecision: d.resolutionNote,
+            createdAt: new Date(d.createdAt).toLocaleDateString('uz-UZ'),
+            updatedAt: new Date(d.createdAt).toLocaleDateString('uz-UZ')
+          }));
+          setDisputes(mapped);
+        }
+      } catch (err) {
+        console.warn('Nizolarni yuklashda xatolik:', err);
+      }
+    };
+    fetchDisputes();
+  }, []);
 
   // Decision form state inside drawer
   const [decisionType, setDecisionType] = useState<'REFUND' | 'REPLACE' | 'REJECT'>('REFUND');
@@ -51,6 +83,19 @@ export const DisputesManager: React.FC = () => {
     }
 
     setIsApplyingDecision(true);
+
+    try {
+      if (selectedDispute.id && !selectedDispute.id.startsWith('disp-')) {
+        apiClient.post(`/admin/disputes/${selectedDispute.id}/resolve`, {
+          resolution: decisionType === 'REFUND' ? 'RESOLVED_REFUND' : 'REJECTED',
+          resolutionNote: decisionReason,
+          refundAmount: refundSum
+        });
+      }
+    } catch (e) {
+      console.warn('Dispute resolve sync warning:', e);
+    }
+
     setTimeout(() => {
       const newStatus: DisputeStatus =
         decisionType === 'REFUND'
