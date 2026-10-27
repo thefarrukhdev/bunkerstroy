@@ -51,11 +51,16 @@ Qat'iy JSON formatida javob bering:
   "auditScore": "A+"
 }`;
 
-        const resp = await this.ai.models.generateContent({
-          model: 'gemini-3.8-flash',
-          contents: prompt,
-          config: { responseMimeType: 'application/json' },
-        });
+        const resp = await Promise.race([
+          this.ai.models.generateContent({
+            model: 'gemini-3.8-flash',
+            contents: prompt,
+            config: { responseMimeType: 'application/json' },
+          }),
+          new Promise<any>((_, reject) =>
+            setTimeout(() => reject(new Error('Gemini API call timed out after 3.5s')), 3500)
+          ),
+        ]);
 
         const parsed = JSON.parse(resp.text || '{}');
         return {

@@ -13,11 +13,16 @@ import {
   ChevronRight,
   Globe,
   Scale,
-  Layers
+  Layers,
+  BarChart3,
+  HardHat,
+  MapPin,
+  ShieldCheck
 } from 'lucide-react';
 
 export type AdminTab =
   | 'monitoring'
+  | 'analytics'
   | 'suppliers'
   | 'partners'
   | 'logistics'
@@ -26,49 +31,58 @@ export type AdminTab =
   | 'disputes'
   | 'products'
   | 'orders'
-  | 'super_admin'
-  | 'analytics';
+  | 'super_admin';
 
 interface AdminSidebarProps {
   activeTab: AdminTab;
   setActiveTab: (tab: AdminTab) => void;
   isOpen: boolean;
   onClose: () => void;
+  currentRole?: string;
+  adminName?: string;
 }
 
 export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   activeTab,
   setActiveTab,
   isOpen,
-  onClose
+  onClose,
+  currentRole = 'SUPER ADMIN',
+  adminName = 'ADMIN.'
 }) => {
-  // 5 Canonical TZ-5 Screens
+  // Primary Canonical TZ-5 Screens + BunkerStats 14 Hudud
   const primaryMenuItems: { id: AdminTab; label: string; icon: React.ReactNode; badge?: string }[] = [
     {
       id: 'monitoring',
-      label: 'Monitoring',
+      label: 'Monitoring & Real-Time',
       icon: <Activity className="w-4 h-4" />,
-      badge: 'REAL-TIME'
+      badge: 'LIVE'
+    },
+    {
+      id: 'analytics',
+      label: 'BunkerStats (14 Hudud)',
+      icon: <BarChart3 className="w-4 h-4" />,
+      badge: '14 VILOYAT'
     },
     {
       id: 'suppliers',
-      label: "Ta'minotchilar",
+      label: "Ta'minotchilar (STIR)",
       icon: <Building2 className="w-4 h-4" />
     },
     {
       id: 'partners',
-      label: 'Hamkorlar',
+      label: 'Hamkorlar & API',
       icon: <Globe className="w-4 h-4" />,
-      badge: 'API'
+      badge: 'ESCROW'
     },
     {
       id: 'logistics',
-      label: 'Logistika',
+      label: "Og'ir Flot & Dispecherlik",
       icon: <Truck className="w-4 h-4" />
     },
     {
       id: 'audit_logs',
-      label: 'Audit Loglar',
+      label: 'Xavfsizlik & Audit',
       icon: <ShieldAlert className="w-4 h-4" />
     }
   ];
@@ -77,9 +91,9 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   const secondaryMenuItems: { id: AdminTab; label: string; icon: React.ReactNode; badge?: string }[] = [
     {
       id: 'financial',
-      label: 'Moliya & Escrow',
+      label: 'Moliya & Escrow Kassa',
       icon: <Wallet className="w-4 h-4" />,
-      badge: '2-MAN'
+      badge: '2-KISHI'
     },
     {
       id: 'disputes',
@@ -92,17 +106,17 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   const operationsMenuItems: { id: AdminTab; label: string; icon: React.ReactNode; badge?: string }[] = [
     {
       id: 'orders',
-      label: 'Buyurtmalar Ro‘yxati',
+      label: 'Buyurtmalar & B2B Nazorat',
       icon: <ShoppingCart className="w-4 h-4" />
     },
     {
       id: 'products',
-      label: 'Mahsulotlar Katalogi',
+      label: 'Mahsulotlar & Ombor',
       icon: <Package className="w-4 h-4" />
     },
     {
       id: 'super_admin',
-      label: 'Super Admin Boshqaruvi',
+      label: 'Super Admin & Sub-Adminlar',
       icon: <Users2 className="w-4 h-4" />
     }
   ];
@@ -113,42 +127,46 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       {isOpen && (
         <div
           onClick={onClose}
-          className="fixed inset-0 z-40 bg-black/70 backdrop-blur-xs lg:hidden"
+          className="fixed inset-0 z-40 bg-black/80 backdrop-blur-xs lg:hidden"
         />
       )}
 
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-72 bg-theme-sidebar border-r border-theme flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-72 bg-[#0A1931] border-r-2 border-[#1E3A6D] flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Brand Header */}
-        <div className="p-5 border-b border-theme bg-theme-header">
+        {/* Brand Header with Industrial Rivets & Hazard Stripe Accent */}
+        <div className="p-4 border-b-2 border-[#1E3A6D] bg-[#071326] relative overflow-hidden">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#F59E0B] text-black flex items-center justify-center font-black tracking-widest shadow-xs">
-              <Terminal className="w-5 h-5 stroke-[2.5]" />
+            <div className="w-11 h-11 rounded-xl bg-[#FFB800] text-[#071326] flex items-center justify-center font-black tracking-widest shadow-md shadow-[#FFB800]/25 shrink-0 border border-[#E5A600]">
+              <Terminal className="w-6 h-6 stroke-[3]" />
             </div>
 
             <div>
-              <div className="text-base font-black tracking-wider text-theme-main font-mono uppercase">
-                BUNKERSTROY
+              <div className="text-base font-black tracking-wider text-white font-mono uppercase flex items-center gap-1">
+                BUNKER<span className="text-[#FFB800]">STROY</span>
               </div>
-              <div className="text-[10px] tracking-widest text-theme-muted uppercase font-mono flex items-center gap-1.5 mt-0.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B] animate-pulse" />
-                ENTERPRISE ADMIN
+              <div className="text-[10px] tracking-widest text-sky-200 uppercase font-mono flex items-center gap-1.5 mt-0.5 font-bold">
+                <span className="w-2 h-2 rounded-full bg-[#FFB800] animate-pulse" />
+                ENTERPRISE INDUSTRIAL
               </div>
             </div>
           </div>
+
+          <div className="absolute top-0 right-0 left-0 h-[2px] hazard-stripe-sm" />
         </div>
 
         {/* Navigation Menu */}
         <div className="flex-1 py-4 px-3 overflow-y-auto space-y-4">
           
-          {/* Section 1: Canonical 5 TZ-5 Screens */}
+          {/* Section 1: Asosiy Ekranlar (TZ-5 + BunkerStats) */}
           <div className="space-y-1">
-            <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-amber-500 font-bold flex items-center justify-between">
-              <span>Asosiy Ekranlar (TZ-5)</span>
-              <span className="text-[9px] bg-amber-500/10 px-1.5 py-0.2 rounded border border-amber-500/20">5 TA</span>
+            <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-[#FFB800] font-black flex items-center justify-between">
+              <span>Asosiy Ekranlar (Sanoat)</span>
+              <span className="text-[9px] bg-[#FFB800]/15 text-[#FFB800] px-1.5 py-0.5 rounded border border-[#FFB800]/30 font-bold">
+                6 MODUL
+              </span>
             </div>
 
             {primaryMenuItems.map((item) => {
@@ -162,30 +180,30 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   }}
                   className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-mono text-xs transition-all duration-150 cursor-pointer ${
                     isActive
-                      ? 'bg-[#F59E0B] text-black font-black shadow-md shadow-amber-500/20'
-                      : 'text-theme-muted hover:text-theme-main hover:bg-theme-card-subtle'
+                      ? 'bg-[#FFB800] text-[#071326] font-black shadow-lg shadow-[#FFB800]/30 border border-[#E5A600]'
+                      : 'text-sky-100 hover:text-white hover:bg-[#0F2547] border border-transparent hover:border-[#1E3A6D]'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className={isActive ? 'text-black' : 'text-theme-subtle'}>
+                    <span className={isActive ? 'text-[#071326]' : 'text-[#FFB800]'}>
                       {item.icon}
                     </span>
-                    <span>{item.label}</span>
+                    <span className="truncate">{item.label}</span>
                   </div>
 
                   <div className="flex items-center gap-1.5">
                     {item.badge && (
                       <span
-                        className={`text-[9px] font-mono px-2 py-0.5 rounded-full border uppercase ${
+                        className={`text-[9px] font-mono px-2 py-0.5 rounded-md border uppercase font-bold ${
                           isActive
-                            ? 'bg-black/20 text-black border-black/30'
-                            : 'bg-theme-card-subtle text-theme-muted border-theme'
+                            ? 'bg-[#071326]/20 text-[#071326] border-[#071326]/30'
+                            : 'bg-[#071326] text-sky-200 border-[#1E3A6D]'
                         }`}
                       >
                         {item.badge}
                       </span>
                     )}
-                    {isActive && <ChevronRight className="w-3.5 h-3.5 stroke-[3]" />}
+                    {isActive && <ChevronRight className="w-3.5 h-3.5 stroke-[3] text-[#071326]" />}
                   </div>
                 </button>
               );
@@ -193,8 +211,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           </div>
 
           {/* Section 2: Secondary Financial & Disputes Screens */}
-          <div className="space-y-1 pt-1 border-t border-theme/60">
-            <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-theme-subtle">
+          <div className="space-y-1 pt-2 border-t border-[#1E3A6D]">
+            <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-sky-300 font-bold">
               Moliya &amp; Nizolar
             </div>
 
@@ -209,30 +227,30 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   }}
                   className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-mono text-xs transition-all duration-150 cursor-pointer ${
                     isActive
-                      ? 'bg-[#F59E0B] text-black font-black shadow-md shadow-amber-500/20'
-                      : 'text-theme-muted hover:text-theme-main hover:bg-theme-card-subtle'
+                      ? 'bg-[#FFB800] text-[#071326] font-black shadow-lg shadow-[#FFB800]/30 border border-[#E5A600]'
+                      : 'text-sky-100 hover:text-white hover:bg-[#0F2547] border border-transparent hover:border-[#1E3A6D]'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className={isActive ? 'text-black' : 'text-theme-subtle'}>
+                    <span className={isActive ? 'text-[#071326]' : 'text-[#FFB800]'}>
                       {item.icon}
                     </span>
-                    <span>{item.label}</span>
+                    <span className="truncate">{item.label}</span>
                   </div>
 
                   <div className="flex items-center gap-1.5">
                     {item.badge && (
                       <span
-                        className={`text-[9px] font-mono px-2 py-0.5 rounded-full border uppercase ${
+                        className={`text-[9px] font-mono px-2 py-0.5 rounded-md border uppercase font-bold ${
                           isActive
-                            ? 'bg-black/20 text-black border-black/30'
-                            : 'bg-theme-card-subtle text-theme-muted border-theme'
+                            ? 'bg-[#071326]/20 text-[#071326] border-[#071326]/30'
+                            : 'bg-[#071326] text-sky-200 border-[#1E3A6D]'
                         }`}
                       >
                         {item.badge}
                       </span>
                     )}
-                    {isActive && <ChevronRight className="w-3.5 h-3.5 stroke-[3]" />}
+                    {isActive && <ChevronRight className="w-3.5 h-3.5 stroke-[3] text-[#071326]" />}
                   </div>
                 </button>
               );
@@ -240,8 +258,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           </div>
 
           {/* Section 3: Operations & Catalog */}
-          <div className="space-y-1 pt-1 border-t border-theme/60">
-            <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-theme-subtle">
+          <div className="space-y-1 pt-2 border-t border-[#1E3A6D]">
+            <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-sky-300 font-bold">
               Katalog &amp; Ma’murlar
             </div>
 
@@ -256,18 +274,18 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   }}
                   className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-mono text-xs transition-all duration-150 cursor-pointer ${
                     isActive
-                      ? 'bg-[#F59E0B] text-black font-black shadow-md shadow-amber-500/20'
-                      : 'text-theme-muted hover:text-theme-main hover:bg-theme-card-subtle'
+                      ? 'bg-[#FFB800] text-[#071326] font-black shadow-lg shadow-[#FFB800]/30 border border-[#E5A600]'
+                      : 'text-sky-100 hover:text-white hover:bg-[#0F2547] border border-transparent hover:border-[#1E3A6D]'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className={isActive ? 'text-black' : 'text-theme-subtle'}>
+                    <span className={isActive ? 'text-[#071326]' : 'text-[#FFB800]'}>
                       {item.icon}
                     </span>
-                    <span>{item.label}</span>
+                    <span className="truncate">{item.label}</span>
                   </div>
 
-                  {isActive && <ChevronRight className="w-3.5 h-3.5 stroke-[3]" />}
+                  {isActive && <ChevronRight className="w-3.5 h-3.5 stroke-[3] text-[#071326]" />}
                 </button>
               );
             })}
@@ -275,11 +293,19 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
         </div>
 
-        {/* Footer info (Pill Widget) */}
-        <div className="p-3 border-t border-theme bg-theme-header text-theme-muted text-[11px] font-mono">
-          <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-theme-card-subtle border border-theme">
-            <span className="text-theme-subtle">Tizim holati:</span>
-            <span className="text-emerald-400 font-bold tracking-wider flex items-center gap-1.5">
+        {/* Footer info: Staff Role and Online Status */}
+        <div className="p-3 border-t-2 border-[#1E3A6D] bg-[#071326] text-xs font-mono space-y-2">
+          <div className="p-2.5 rounded-xl bg-[#0A1931] border border-[#1E3A6D] flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-[#FFB800]/20 border border-[#FFB800]/50 text-[#FFB800] flex items-center justify-center font-bold">
+                <ShieldCheck className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="text-[11px] font-black text-white">{adminName}</div>
+                <div className="text-[9px] text-[#FFB800] font-bold">{currentRole}</div>
+              </div>
+            </div>
+            <span className="flex items-center gap-1 text-[10px] text-emerald-400 font-black px-2 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/30">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               ONLINE
             </span>

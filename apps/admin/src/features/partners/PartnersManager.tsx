@@ -107,7 +107,7 @@ export const PartnersManager: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-theme-card p-4 rounded-2xl border border-theme">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#1E66F5] animate-pulse" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#FFB800] animate-pulse" />
             <h1 className="text-xl font-black uppercase tracking-wider text-theme-main">
               Hamkorlar &amp; Tashqi Integratsiyalar
             </h1>
@@ -183,7 +183,7 @@ export const PartnersManager: React.FC = () => {
         {filteredPartners.map((item) => (
           <div
             key={item.id}
-            className="bg-theme-card rounded-2xl border border-theme p-4 flex flex-col justify-between shadow-xs hover:border-[#1E66F5]/50 transition duration-150 space-y-4"
+            className="bg-theme-card rounded-2xl border border-theme p-4 flex flex-col justify-between shadow-xs hover:border-[#FFB800]/50 transition duration-150 space-y-4"
           >
             {/* Card Header */}
             <div>
@@ -254,7 +254,7 @@ export const PartnersManager: React.FC = () => {
                 className="font-mono text-xs px-2.5"
                 title="Sinxronlash"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${syncingId === item.id ? 'animate-spin text-[#1E66F5]' : ''}`} />
+                <RefreshCw className={`w-3.5 h-3.5 ${syncingId === item.id ? 'animate-spin text-[#FFB800]' : ''}`} />
               </Button>
             </div>
           </div>

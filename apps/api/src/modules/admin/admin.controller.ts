@@ -29,6 +29,13 @@ export class AdminController {
     return { success: true, data };
   }
 
+  @Get('regions')
+  @ApiOperation({ summary: 'O‘zbekiston viloyatlari bo‘yicha buyurtmalar va aylanma taqsimoti (Faqat ADMIN)' })
+  async getRegions() {
+    const data = await this.adminService.getRegionalBreakdown();
+    return { success: true, data };
+  }
+
   @Get('logs')
   @ApiOperation({ summary: 'Xavfsizlik va harakatlar audit jurnali (Faqat ADMIN)' })
   async getLogs() {

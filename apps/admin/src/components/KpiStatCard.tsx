@@ -21,20 +21,20 @@ export const KpiStatCard: React.FC<KpiStatCardProps> = ({
   subtitle
 }) => {
   return (
-    <div className="p-5 rounded-2xl border border-theme bg-theme-card text-theme-main shadow-xs transition-colors">
+    <div className="p-5 rounded-2xl border border-[#1E3A6D] bg-[#0A1931] text-white shadow-md hover:border-[#2E5A9C] transition-all">
       <div className="flex items-center justify-between gap-3">
-        <span className="text-xs font-mono font-semibold text-theme-muted uppercase tracking-wider">
+        <span className="text-xs font-mono font-bold text-sky-200 uppercase tracking-wider">
           {title}
         </span>
         {icon && (
-          <div className="w-8 h-8 rounded-xl bg-theme-card-subtle border border-theme flex items-center justify-center text-[#89B4FA]">
+          <div className="w-8 h-8 rounded-xl bg-[#0F2547] border border-[#1E3A6D] flex items-center justify-center text-[#FFB800] shadow-sm">
             {icon}
           </div>
         )}
       </div>
 
       <div className="mt-3 flex items-baseline gap-2">
-        <span className="text-2xl font-black font-mono tracking-tight text-theme-main">
+        <span className="text-2xl font-black font-mono tracking-tight text-white font-mono-numbers">
           {value}
         </span>
       </div>
@@ -45,10 +45,10 @@ export const KpiStatCard: React.FC<KpiStatCardProps> = ({
             <span
               className={`inline-flex items-center gap-1 font-bold ${
                 changeType === 'positive'
-                  ? 'text-[#A6E3A1]'
+                  ? 'text-emerald-400'
                   : changeType === 'negative'
-                  ? 'text-[#F38BA8]'
-                  : 'text-theme-muted'
+                  ? 'text-rose-400'
+                  : 'text-sky-300'
               }`}
             >
               {changeType === 'positive' && <TrendingUp className="w-3.5 h-3.5" />}
@@ -57,7 +57,7 @@ export const KpiStatCard: React.FC<KpiStatCardProps> = ({
               <span>{change}</span>
             </span>
           )}
-          <span className="text-[11px] text-theme-subtle truncate">
+          <span className="text-[11px] text-sky-300/80 truncate">
             {subtitle || periodLabel}
           </span>
         </div>

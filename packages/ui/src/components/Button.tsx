@@ -21,7 +21,7 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variantStyles = {
     primary:
-      'bg-bunker-amber-500 hover:bg-bunker-amber-400 text-white font-semibold focus:ring-bunker-amber-500/30 shadow-xs active:shadow-none',
+      'bg-bunker-amber-500 hover:bg-bunker-amber-400 text-black font-extrabold border border-[#E5A600] focus:ring-bunker-amber-500/30 shadow-xs active:shadow-none',
     secondary:
       'bg-bunker-surface-1 hover:bg-bunker-surface-hover text-bunker-text-primary border border-bunker-border-strong focus:ring-bunker-border-strong shadow-xs active:bg-bunker-surface-2',
     danger:

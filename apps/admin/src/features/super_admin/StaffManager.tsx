@@ -58,7 +58,7 @@ export const StaffManager: React.FC = () => {
       sortable: true,
       render: (row) => (
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-[#89B4FA]/15 border border-[#89B4FA]/30 text-[#89B4FA] flex items-center justify-center font-bold font-mono text-xs">
+          <div className="w-8 h-8 rounded-full bg-[#FFB800]/15 border border-[#FFB800]/40 text-[#FFB800] flex items-center justify-center font-bold font-mono text-xs">
             {row.fullName.slice(0, 2).toUpperCase()}
           </div>
           <div>
@@ -77,8 +77,8 @@ export const StaffManager: React.FC = () => {
       sortable: true,
       render: (row) => {
         const roleLabels: Record<string, { label: string; color: string }> = {
-          SUPER_ADMIN: { label: 'SUPER ADMIN', color: 'bg-[#CBA6F7]/15 text-[#CBA6F7] border-[#CBA6F7]/30' },
-          ADMIN: { label: 'ADMIN', color: 'bg-[#89B4FA]/15 text-[#89B4FA] border-[#89B4FA]/30' },
+          SUPER_ADMIN: { label: 'SUPER ADMIN', color: 'bg-[#FFB800]/20 text-[#FFB800] border-[#FFB800]/50 font-black' },
+          ADMIN: { label: 'ADMIN', color: 'bg-blue-500/15 text-blue-400 border-blue-500/30' },
           FINANCE: { label: 'MOLIYA', color: 'bg-[#A6E3A1]/15 text-[#A6E3A1] border-[#A6E3A1]/30' },
           LOGISTICS: { label: 'LOGISTIKA', color: 'bg-[#FAB387]/15 text-[#FAB387] border-[#FAB387]/30' },
           MODERATOR: { label: 'MODERATOR', color: 'bg-[#F9E2AF]/15 text-[#F9E2AF] border-[#F9E2AF]/30' }
@@ -136,7 +136,7 @@ export const StaffManager: React.FC = () => {
               setIsDrawerOpen(true);
             }}
             title="Tahrirlash"
-            className="p-1.5 rounded-lg text-theme-subtle hover:text-[#89B4FA] hover:bg-theme-card-subtle transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-theme-subtle hover:text-[#FFB800] hover:bg-theme-card-subtle transition-colors cursor-pointer"
           >
             <Edit3 className="w-4 h-4" />
           </button>

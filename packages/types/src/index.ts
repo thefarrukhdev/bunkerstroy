@@ -6,3 +6,5 @@ export * from './logistics';
 export * from './partner';
 export * from './esco';
 export * from './common';
+export * from './regions';
+export { UZBEKISTAN_REGIONS, COLOR_OPTIONS } from './regions';

@@ -67,7 +67,7 @@ const AdminLayout: React.FC = () => {
       case 'super_admin':
         return 'Super Admin Boshqaruv Markazi';
       case 'analytics':
-        return 'Umumiy Tahlil & Savdo Ko‘rsatkichlari';
+        return 'BunkerStats: Respublika 14 Hududi Monitoringi & Aylanma Tahlili';
     }
   };
 
@@ -136,18 +136,19 @@ const AdminLayout: React.FC = () => {
           {activeTab === 'analytics' && <OverviewStats />}
         </main>
 
-        {/* Footer */}
-        <footer className="mt-auto border-t border-theme bg-theme-header p-4 text-xs font-mono text-theme-muted transition-colors">
+        {/* Industrial Footer */}
+        <footer className="mt-auto border-t-2 border-[#1E3A6D] bg-[#071326] p-4 text-xs font-mono text-sky-200 transition-colors">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-            <div>
-              &copy; {new Date().getFullYear()} <span className="text-theme-main font-bold">BUNKERSTROY</span> Heavy B2B Ecosystem.
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#FFB800]" />
+              &copy; {new Date().getFullYear()} <span className="text-white font-black">BUNKER<span className="text-[#FFB800]">STROY</span></span> Heavy Industrial B2B Ecosystem.
             </div>
             <div className="flex items-center gap-3 text-[11px]">
-              <span className="text-[#F59E0B] font-bold">[TZ-5 INDUSTRIAL STANDARD]</span>
-              <span className="text-theme-subtle">|</span>
-              <span className="text-theme-muted">React 19 + TypeScript</span>
-              <span className="text-theme-subtle">|</span>
-              <span className="text-[#A6E3A1] font-bold">STIR &amp; E-IMZO</span>
+              <span className="text-[#FFB800] font-black">[BUNKER INDUSTRIAL STANDARD]</span>
+              <span className="text-sky-400/40">|</span>
+              <span className="text-sky-200">React 19 + TypeScript</span>
+              <span className="text-sky-400/40">|</span>
+              <span className="text-emerald-400 font-bold">STIR &amp; E-IMZO</span>
             </div>
           </div>
         </footer>

@@ -36,19 +36,27 @@ import {
   Info,
   Globe,
   Coins,
-  FileCheck
+  FileCheck,
+  Calculator,
+  Store,
+  Printer,
+  Minus,
+  Plus,
+  CreditCard,
+  Banknote,
+  QrCode,
+  DollarSign,
+  ArrowDownRight,
+  Factory,
+  BarChart3,
+  Calendar,
+  SlidersHorizontal,
+  ChevronRight,
+  Tag
 } from 'lucide-react';
 import { Product, Order, OrderStatus } from '@bunkerstroy/types';
-import {
-  Button,
-  Badge,
-  Card,
-  Input,
-  Select,
-  Alert,
-  Skeleton
-} from '@bunkerstroy/ui';
 import { useLanguage } from '../../context/LanguageContext';
+import { COLOR_OPTIONS, ColorOption } from '../marketplace/MarketplaceView';
 
 /* ==========================================================================
    Types & Interfaces
@@ -68,6 +76,15 @@ export interface TierPriceRow {
   price: number | '';
 }
 
+export interface ProductVariantItem {
+  id: string;
+  sku: string;
+  color?: string;
+  size?: string;
+  priceDelta: number;
+  stock: number;
+}
+
 export interface PayoutLedgerItem {
   id: string;
   orderNumber: string;
@@ -83,120 +100,307 @@ export interface PayoutLedgerItem {
   actNumber: string;
 }
 
-export interface IncotermOption {
-  code: 'DAP' | 'CIP' | 'FCA' | 'EXW' | 'CIF';
+// B2B Zavodlar va Ishlab chiqaruvchilar interfeysi
+export interface B2bManufacturer {
+  id: string;
   name: string;
-  description: string;
+  location: string;
+  stir: string;
+  mfo: string;
+  accountNumber: string;
+  bankName: string;
+  category: string;
+  minOrderTons: number;
+  featuredProduct: string;
+  unitPrice: number;
+  unit: string;
+  rating: number;
+  phone: string;
+  imageUrl: string;
 }
 
-export const INCOTERMS_OPTIONS: IncotermOption[] = [
+// B2B Wholesale Order
+export interface B2bWholesaleOrder {
+  id: string;
+  orderNumber: string;
+  manufacturerName: string;
+  productName: string;
+  quantity: number;
+  unit: string;
+  unitPrice: number;
+  totalAmount: number;
+  incoterm: 'EXW' | 'DAP';
+  deliveryAddress: string;
+  bankRequisites: {
+    accountNumber: string;
+    mfo: string;
+    stir: string;
+    bankName: string;
+  };
+  status: 'KUTILMOQDA' | 'TO‘LANDI' | 'ZAVODDAN_YUKLANDI' | 'YETKAZILDI';
+  createdAt: string;
+}
+
+// POS Cart item and Basket
+export interface PosBasketItem {
+  id: string;
+  productId: string;
+  title: string;
+  price: number;
+  quantity: number;
+  unit: string;
+  color?: string;
+  size?: string;
+  sku?: string;
+}
+
+export interface PosBasket {
+  id: string;
+  name: string;
+  items: PosBasketItem[];
+  customerName?: string;
+  customerPhone?: string;
+}
+
+// Financial Ledger item
+export interface FinancialOperation {
+  id: string;
+  date: string;
+  type: 'INCOME' | 'EXPENSE';
+  channel: 'ONLINE_MARKETPLACE' | 'OFFLINE_POS' | 'OPERATIONAL_COST';
+  category: string;
+  amount: number;
+  paymentMethod: string;
+  notes: string;
+}
+
+/* ==========================================================================
+   Static Seed Data (Zavodlar, Presets & Moliyaviy amallar)
+   ========================================================================== */
+
+export const B2B_MANUFACTURERS_LIST: B2bManufacturer[] = [
   {
-    code: 'DAP',
-    name: 'DAP (Delivered at Place)',
-    description: 'Sotuvchi xaridor ko‘rsatgan manzilga (bojxona to‘lovlarisiz) yetkazib beradi.'
+    id: 'mfg-1',
+    name: 'Bekobod Metallurgiya Zavodi (O‘zmetkombinat AJ)',
+    location: 'Toshkent viloyati, Bekobod sh.',
+    stir: '300123987',
+    mfo: '00456',
+    accountNumber: '20210000800100456001',
+    bankName: 'ATIB Ipoteka Bank Bekobod filiali',
+    category: 'Metallurgiya & Armatura',
+    minOrderTons: 20,
+    featuredProduct: 'Armatura A500C D14 (GOST 34028)',
+    unitPrice: 7450000,
+    unit: 'tonna',
+    rating: 4.9,
+    phone: '+998 (78) 120-10-10',
+    imageUrl: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?w=800'
   },
   {
-    code: 'CIP',
-    name: 'CIP (Carriage and Insurance Paid to)',
-    description: 'Yuk yetkazish va xalqaro sug‘urta xarajatlari sotuvchi hisobidan to‘langan.'
+    id: 'mfg-2',
+    name: 'Qizilqumsement AJ (Navoiy)',
+    location: 'Navoiy viloyati, Karmana tumani',
+    stir: '200456123',
+    mfo: '00876',
+    accountNumber: '20208000900200876002',
+    bankName: 'O‘zsanoatqurilishbank Navoiy filiali',
+    category: 'Sement & Klinker',
+    minOrderTons: 40,
+    featuredProduct: 'Portlendsement M500 D0 (Qop/Uyma)',
+    unitPrice: 680000,
+    unit: 'tonna',
+    rating: 5.0,
+    phone: '+998 (79) 220-40-50',
+    imageUrl: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800'
   },
   {
-    code: 'FCA',
-    name: 'FCA (Free Carrier)',
-    description: 'Tovar xaridor belgilagan tashuvchiga belgilangan joyda topshiriladi.'
+    id: 'mfg-3',
+    name: 'Ohangaronsement AJ (Eurocement)',
+    location: 'Toshkent viloyati, Ohangaron sh.',
+    stir: '201789456',
+    mfo: '00765',
+    accountNumber: '20208000400300765003',
+    bankName: 'Hamkorbank Ohangaron filiali',
+    category: 'Sement & Quruq Qorishmalar',
+    minOrderTons: 15,
+    featuredProduct: 'Portlendsement M400 D20 (50kg qop)',
+    unitPrice: 640000,
+    unit: 'tonna',
+    rating: 4.8,
+    phone: '+998 (71) 230-77-88',
+    imageUrl: 'https://images.unsplash.com/photo-1590069261209-f8e9b8642343?w=800'
   },
   {
-    code: 'EXW',
-    name: 'EXW (Ex Works)',
-    description: 'Tovarni zavod/ombor darvozasidan xaridor o‘z kuchi bilan olib ketadi.'
+    id: 'mfg-4',
+    name: 'Artel & Akfa Building Systems',
+    location: 'Toshkent sh., Yashnobod tumani',
+    stir: '304567891',
+    mfo: '00654',
+    accountNumber: '20208000500400654004',
+    bankName: 'Kapitalbank Toshkent Bosh filiali',
+    category: 'Sendvich Panellar & Alyuminiy Profillar',
+    minOrderTons: 5,
+    featuredProduct: 'Sendvich devor panellari 100mm (Bazalt)',
+    unitPrice: 155000,
+    unit: 'm²',
+    rating: 4.9,
+    phone: '+998 (71) 203-00-00',
+    imageUrl: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800'
   },
   {
-    code: 'CIF',
-    name: 'CIF (Cost, Insurance and Freight)',
-    description: 'Xarajat, sug‘urta va dengiz/temiryo‘l fraxti qoplangan.'
+    id: 'mfg-5',
+    name: 'Knauf Gips Buxoro (Kogon)',
+    location: 'Buxoro viloyati, Kogon tumani',
+    stir: '301234567',
+    mfo: '00543',
+    accountNumber: '20208000700500543005',
+    bankName: 'Orient Finans Bank Buxoro filiali',
+    category: 'Gipsokarton & Suvoq',
+    minOrderTons: 10,
+    featuredProduct: 'Gipsokarton listi 12.5mm (Standard)',
+    unitPrice: 42000,
+    unit: 'dona',
+    rating: 4.95,
+    phone: '+998 (65) 228-55-00',
+    imageUrl: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=800'
+  },
+  {
+    id: 'mfg-6',
+    name: 'Toshkent Pishiq G‘isht Zavodi',
+    location: 'Toshkent viloyati, Yangiyo‘l tumani',
+    stir: '303456789',
+    mfo: '00432',
+    accountNumber: '20208000800600432006',
+    bankName: 'Aloqabank Yangiyo‘l filiali',
+    category: 'G‘isht & Bloklar',
+    minOrderTons: 25,
+    featuredProduct: 'Pishgan pishiq g‘isht M150 (Qizil)',
+    unitPrice: 1450,
+    unit: 'dona',
+    rating: 4.75,
+    phone: '+998 (71) 200-88-99',
+    imageUrl: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800'
   }
 ];
 
-export const USD_EXCHANGE_RATE = 12850;
-
-export const DEFAULT_GLOBAL_PRODUCTS: any[] = [
+export const INITIAL_FINANCIAL_OPERATIONS: FinancialOperation[] = [
   {
-    id: 'glob-prod-1',
-    title: 'Rossiya MMK Armatura A500C D16 (Xalqaro Import)',
-    slug: 'armatura-a500c-d16-import',
-    categoryId: 'cat-metall',
-    supplierId: 'sup-global-1',
-    supplierName: 'Magnitogorsk Metallurgiya Zavodi (MMK Import)',
-    price: 7710000,
-    priceUsd: 600,
-    currency: 'USD',
-    unit: 'Tonna',
-    stock: 500,
-    minOrder: 1,
-    isGlobal: true,
-    incoterms: 'DAP',
-    gtdNumber: '26001/01.10.2026/0014285',
-    gtdUrl: 'https://customs.gov.uz/gtd/0014285.pdf',
-    internationalCert: 'ISO 9001 / GOST 34028-2016',
-    certificateUrl: 'https://standart.uz/cert/UZ-MMK-9001.pdf',
-    description: 'Xalqaro standartlarga mos A500C armatura. To‘g‘ridan-to‘g‘ri zavoddan yetkazib berish.',
-    images: ['https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?w=800'],
-    region: 'Toshkent shahri',
-    district: 'Sergeli logistika markazi',
-    hasDelivery: true,
-    variants: [],
-    tieredPrices: [
-      { id: 'tp-g-1', productId: 'glob-prod-1', minQty: 1, maxQty: 3, price: 7710000 },
-      { id: 'tp-g-2', productId: 'glob-prod-1', minQty: 4, maxQty: null, price: 7450000 }
-    ],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    id: 'fin-1',
+    date: '27 Okt 2026, 12:40',
+    type: 'INCOME',
+    channel: 'OFFLINE_POS',
+    category: 'Do‘kon Kassa Savdosi',
+    amount: 3450000,
+    paymentMethod: 'Naqd pul',
+    notes: 'Kassa cheki CHK-004928'
   },
   {
-    id: 'glob-prod-2',
-    title: 'Portlendsement M500 D0 (Vagon partiyasi, Qozog‘iston Zavodi)',
-    slug: 'portlendsement-m500-d0-vagon',
-    categoryId: 'cat-sement',
-    supplierId: 'sup-global-2',
-    supplierName: 'Jambyl Cement Factory AJ',
-    price: 49500000,
-    priceUsd: 64,
-    currency: 'USD',
-    unit: 'Vagon (60t)',
-    stock: 25,
-    minOrder: 1,
-    isGlobal: true,
-    incoterms: 'DAP',
-    gtdNumber: '26001/14.10.2026/0018902',
-    gtdUrl: 'https://customs.gov.uz/gtd/0018902.pdf',
-    internationalCert: 'EN 197-1 (CE Mark) / ISO 9001:2015',
-    certificateUrl: 'https://standart.uz/cert/KZ-CEM-500.pdf',
-    description: 'To‘g‘ridan-to‘g‘ri temir yo‘l vagonlarida yetkazib beriladigan yuqori markali sement.',
-    images: ['https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800'],
-    region: 'Toshkent viloyati',
-    district: 'Bekobod stansiyasi',
-    hasDelivery: true,
-    variants: [],
-    tieredPrices: [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    id: 'fin-2',
+    date: '27 Okt 2026, 10:15',
+    type: 'INCOME',
+    channel: 'ONLINE_MARKETPLACE',
+    category: 'Escrow 50% Avans tushumi',
+    amount: 18500000,
+    paymentMethod: 'Bank Kliring',
+    notes: 'Buyurtma BS-94102'
+  },
+  {
+    id: 'fin-3',
+    date: '26 Okt 2026, 17:00',
+    type: 'EXPENSE',
+    channel: 'OPERATIONAL_COST',
+    category: 'Ombor va Do‘kon Ijarasi',
+    amount: 6000000,
+    paymentMethod: 'Bank o‘tkazmasi',
+    notes: 'Chilonzor omborxona 1 oylik to‘lov'
+  },
+  {
+    id: 'fin-4',
+    date: '25 Okt 2026, 15:30',
+    type: 'EXPENSE',
+    channel: 'OPERATIONAL_COST',
+    category: 'Ishchilar maoshi',
+    amount: 7500000,
+    paymentMethod: 'Karta',
+    notes: '2 nafar yuklovchi va 1 nafar kassa xodimi'
+  },
+  {
+    id: 'fin-5',
+    date: '25 Okt 2026, 11:20',
+    type: 'INCOME',
+    channel: 'OFFLINE_POS',
+    category: 'Do‘kon Kassa Savdosi',
+    amount: 8200000,
+    paymentMethod: 'Uzcard/Humo',
+    notes: 'Armatura va sim savdosi'
+  },
+  {
+    id: 'fin-6',
+    date: '24 Okt 2026, 14:10',
+    type: 'INCOME',
+    channel: 'ONLINE_MARKETPLACE',
+    category: 'Escrow Qoldiq 50% tushumi',
+    amount: 12608000,
+    paymentMethod: 'Bank Kliring',
+    notes: 'Buyurtma BS-93821 topshirildi'
   }
 ];
 
-const SAMPLE_IMAGE_PRESETS = [
-  { label: 'Sement (Qop)', url: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800' },
-  { label: 'Armatura & Metall', url: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?w=800' },
-  { label: 'G‘isht & Blok', url: 'https://images.unsplash.com/photo-1584463699042-4946654b4260?w=800' },
-  { label: 'Izolyatsiya Plitasi', url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800' },
-  { label: 'Bo‘yoq & Lak', url: 'https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=800' },
-  { label: 'Santexnika & Quvur', url: 'https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=800' },
+export const INITIAL_B2B_ORDERS: B2bWholesaleOrder[] = [
+  {
+    id: 'b2b-ord-1',
+    orderNumber: 'B2B-2026-0081',
+    manufacturerName: 'Bekobod Metallurgiya Zavodi (O‘zmetkombinat AJ)',
+    productName: 'Armatura A500C D14 (20 tonna)',
+    quantity: 20,
+    unit: 'tonna',
+    unitPrice: 7450000,
+    totalAmount: 149000000,
+    incoterm: 'DAP',
+    deliveryAddress: 'Toshkent sh., Sergeli sanoat zonasi ombori',
+    bankRequisites: {
+      accountNumber: '20210000800100456001',
+      mfo: '00456',
+      stir: '300123987',
+      bankName: 'ATIB Ipoteka Bank Bekobod filiali'
+    },
+    status: 'ZAVODDAN_YUKLANDI',
+    createdAt: '24 Oktabr 2026'
+  },
+  {
+    id: 'b2b-ord-2',
+    orderNumber: 'B2B-2026-0074',
+    manufacturerName: 'Qizilqumsement AJ (Navoiy)',
+    productName: 'Portlendsement M500 D0 (40 tonna)',
+    quantity: 40,
+    unit: 'tonna',
+    unitPrice: 680000,
+    totalAmount: 27200000,
+    incoterm: 'DAP',
+    deliveryAddress: 'Chilonzor ombori 42-A',
+    bankRequisites: {
+      accountNumber: '20208000900200876002',
+      mfo: '00876',
+      stir: '200456123',
+      bankName: 'O‘zsanoatqurilishbank Navoiy filiali'
+    },
+    status: 'YETKAZILDI',
+    createdAt: '19 Oktabr 2026'
+  }
 ];
 
-/* Default realistic historical payout records for the supplier's escrow ledger */
-const DEFAULT_LEDGER_DATA: PayoutLedgerItem[] = [
+export const SAMPLE_IMAGE_PRESETS = [
+  { label: 'Sement & Bog‘lovchi', url: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800' },
+  { label: 'Armatura & Po‘lat', url: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?w=800' },
+  { label: 'Pishiq G‘isht', url: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800' },
+  { label: 'Quruq Qorishma', url: 'https://images.unsplash.com/photo-1590069261209-f8e9b8642343?w=800' },
+  { label: 'Sendvich Panellar', url: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800' }
+];
+
+export const INITIAL_ESCROW_LEDGER: PayoutLedgerItem[] = [
   {
     id: 'led-1',
-    orderNumber: 'BS-94821',
+    orderNumber: 'BS-94102',
     releaseDate: '24 Oktabr 2026, 14:32',
     buyerName: 'Toshkent City Qurilish MCHJ',
     buyerStir: '309112844',
@@ -221,124 +425,154 @@ const DEFAULT_LEDGER_DATA: PayoutLedgerItem[] = [
     status: 'RELEASED',
     payoutMethod: 'Bank Kliring (20208...001)',
     actNumber: 'DAL-2026/0872'
-  },
-  {
-    id: 'led-3',
-    orderNumber: 'BS-92410',
-    releaseDate: '19 Oktabr 2026, 16:45',
-    buyerName: 'Oltin Voha Sanoat AJ',
-    buyerStir: '302998124',
-    itemSummary: 'Bazalt Izolyatsiya Plitasi 50mm (320 m²)',
-    grossAmount: 12160000,
-    platformFee: 182400,
-    netAmount: 11977600,
-    status: 'RELEASED',
-    payoutMethod: 'Bank Kliring (20208...001)',
-    actNumber: 'DAL-2026/0849'
-  },
-  {
-    id: 'led-4',
-    orderNumber: 'BS-91890',
-    releaseDate: '15 Oktabr 2026, 09:20',
-    buyerName: 'Orient Inshoot Loyiha MCHJ',
-    buyerStir: '305612348',
-    itemSummary: 'Pishgan pishiq g‘isht M150 (12,000 dona)',
-    grossAmount: 21600000,
-    platformFee: 324000,
-    netAmount: 21276000,
-    status: 'RELEASED',
-    payoutMethod: 'Bank Kliring (20208...001)',
-    actNumber: 'DAL-2026/0812'
   }
 ];
 
+/* ==========================================================================
+   Main Component: SellerPanelView
+   ========================================================================== */
+
 export const SellerPanelView: React.FC = () => {
   const navigate = useNavigate();
-  const { t, getOrderStatusText } = useLanguage();
+  const { t } = useLanguage();
 
-  // Tabs: inventory, create, orders, escrow
-  const [activeTab, setActiveTab] = useState<'inventory' | 'create' | 'orders' | 'escrow'>('inventory');
+  // Active Main Tab:
+  // 'inventory' | 'create' | 'crm_pos' | 'b2b' | 'reports' | 'orders' | 'escrow'
+  const [activeTab, setActiveTab] = useState<
+    'inventory' | 'create' | 'crm_pos' | 'b2b' | 'reports' | 'orders' | 'escrow'
+  >('inventory');
 
-  // Categories & Products state
+  // a) Online vs Offline inventory sub-tab filter:
+  const [inventorySubTab, setInventorySubTab] = useState<'all' | 'online' | 'offline'>('all');
+
+  // State: Categories & Products
   const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
+
+  // State: Orders & Escrow Ledger
   const [orders, setOrders] = useState<Order[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(false);
+  const [escrowLedger, setEscrowLedger] = useState<PayoutLedgerItem[]>(INITIAL_ESCROW_LEDGER);
 
-  // Notifications & Feedback
+  // State: B2B Wholesale
+  const [b2bOrders, setB2bOrders] = useState<B2bWholesaleOrder[]>(() => {
+    try {
+      const saved = localStorage.getItem('bunkerstroy_b2b_orders');
+      return saved ? JSON.parse(saved) : INITIAL_B2B_ORDERS;
+    } catch {
+      return INITIAL_B2B_ORDERS;
+    }
+  });
+
+  const [selectedManufacturer, setSelectedManufacturer] = useState<B2bManufacturer | null>(null);
+  const [b2bQuantity, setB2bQuantity] = useState<number>(20);
+  const [b2bIncoterm, setB2bIncoterm] = useState<'EXW' | 'DAP'>('DAP');
+  const [b2bDeliveryAddress, setB2bDeliveryAddress] = useState('Chilonzor ombori, Toshkent');
+  const [isB2bModalOpen, setIsB2bModalOpen] = useState(false);
+  const [b2bSuccessNotice, setB2bSuccessNotice] = useState(false);
+
+  // State: Financial Operations (Kirim-Chiqim)
+  const [financialOperations, setFinancialOperations] = useState<FinancialOperation[]>(() => {
+    try {
+      const saved = localStorage.getItem('bunkerstroy_financial_ops');
+      return saved ? JSON.parse(saved) : INITIAL_FINANCIAL_OPERATIONS;
+    } catch {
+      return INITIAL_FINANCIAL_OPERATIONS;
+    }
+  });
+
+  const [financialPeriod, setFinancialPeriod] = useState<'today' | 'week' | 'month' | 'year' | 'all'>('month');
+  const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+  const [expenseCategory, setExpenseCategory] = useState('Ombor Arendasi');
+  const [expenseAmount, setExpenseAmount] = useState<number | ''>('');
+  const [expenseNotes, setExpenseNotes] = useState('');
+  const [expensePaymentMethod, setExpensePaymentMethod] = useState('Bank o‘tkazmasi');
+
+  // State: POS CRM Kassa (Multiple customer baskets)
+  const [posBaskets, setPosBaskets] = useState<PosBasket[]>([
+    { id: 'basket-1', name: 'Savat #1 (Mijoz 1)', items: [] },
+    { id: 'basket-2', name: 'Savat #2 (Kutish)', items: [] }
+  ]);
+  const [activeBasketId, setActiveBasketId] = useState<string>('basket-1');
+  const [posSearchTerm, setPosSearchTerm] = useState('');
+  const [posPaymentMethod, setPosPaymentMethod] = useState<'CASH' | 'CARD' | 'PAYME_CLICK' | 'B2B'>('CASH');
+  const [cashGiven, setCashGiven] = useState<number | ''>('');
+  const [posDiscountPercent, setPosDiscountPercent] = useState<number>(0);
+
+  // Completed POS Receipt Modal State
+  const [activeReceipt, setActiveReceipt] = useState<{
+    receiptNumber: string;
+    date: string;
+    items: PosBasketItem[];
+    subtotal: number;
+    discountAmount: number;
+    taxAmount: number;
+    grandTotal: number;
+    paymentMethod: string;
+    cashGiven?: number;
+    cashChange?: number;
+    cashier: string;
+  } | null>(null);
+
+  // Notifications
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
-  // Ta'minotchi turi: LOCAL vs GLOBAL (TZ Section 3)
-  const [supplierType, setSupplierType] = useState<'LOCAL' | 'GLOBAL'>('LOCAL');
-
-  // Global rejim uchun form parametrlari
-  const [currency, setCurrency] = useState<'UZS' | 'USD'>('USD');
-  const [priceUsd, setPriceUsd] = useState<number | ''>(600);
-  const [incoterms, setIncoterms] = useState<'DAP' | 'CIP' | 'FCA' | 'EXW' | 'CIF'>('DAP');
-  const [gtdNumber, setGtdNumber] = useState('');
-  const [gtdUrl, setGtdUrl] = useState('');
-  const [internationalCert, setInternationalCert] = useState('ISO 9001:2015');
-
-  // New Product Form state
-  const [formSubmitting, setFormSubmitting] = useState(false);
+  // Form State for + Mahsulot Qo'shish
   const [title, setTitle] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [price, setPrice] = useState<number | ''>('');
-  const [unit, setUnit] = useState('dona');
+  const [unit, setUnit] = useState('BAG_50KG');
   const [stock, setStock] = useState<number | ''>('');
   const [minOrder, setMinOrder] = useState<number | ''>(1);
   const [imageUrl, setImageUrl] = useState(SAMPLE_IMAGE_PRESETS[0].url);
   const [region, setRegion] = useState('Toshkent shahri');
-  const [district, setDistrict] = useState('Chilonzor tumani');
+  const [district, setDistrict] = useState('Chilonzor sanoat hududi');
   const [hasDelivery, setHasDelivery] = useState(true);
   const [description, setDescription] = useState('');
+  const [formSubmitting, setFormSubmitting] = useState(false);
 
-  // TM-03: Tiered Pricing State (Miqdor Zinapoyasi)
+  // b) Online vs Offline toggles for new product
+  const [isOnlinePublish, setIsOnlinePublish] = useState(true);
+  const [isOfflineStore, setIsOfflineStore] = useState(true);
+
+  // b) Colors & Sizes (Variants builder)
+  const [selectedFormColors, setSelectedFormColors] = useState<string[]>(['kulrang']);
+  const [selectedFormSizes, setSelectedFormSizes] = useState<string[]>(['50 kg']);
+  const [customSizeInput, setCustomSizeInput] = useState('');
   const [tieredPrices, setTieredPrices] = useState<TierPriceRow[]>([]);
-
-  // TM-04: Certificate State
   const [certificateNumber, setCertificateNumber] = useState('');
-  const [certificateUrl, setCertificateUrl] = useState('');
 
-  // Editing state for inventory items
+  // Editing state for inventory item
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editPrice, setEditPrice] = useState<number>(0);
   const [editStock, setEditStock] = useState<number>(0);
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
-  // Status updating for orders
-  const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
+  // Save B2B Orders and Financial ops
+  useEffect(() => {
+    try {
+      localStorage.setItem('bunkerstroy_b2b_orders', JSON.stringify(b2bOrders));
+    } catch {}
+  }, [b2bOrders]);
 
-  // TM-07: Cancellation Reason Modal State
-  const [cancelModalOrder, setCancelModalOrder] = useState<Order | null>(null);
-  const [cancelReason, setCancelReason] = useState('');
-  const [isCancelling, setIsCancelling] = useState(false);
+  useEffect(() => {
+    try {
+      localStorage.setItem('bunkerstroy_financial_ops', JSON.stringify(financialOperations));
+    } catch {}
+  }, [financialOperations]);
 
-  // TM-08: Payout Withdrawal Modal State
-  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
-  const [withdrawAmount, setWithdrawAmount] = useState<string>('25000000');
-  const [isWithdrawing, setIsWithdrawing] = useState(false);
-
-  // Escrow Ledger search & filter
-  const [ledgerSearch, setLedgerSearch] = useState('');
-  const [ledgerFilter, setLedgerFilter] = useState<'all' | 'released' | 'escrow'>('all');
-
-  const getToken = () => {
-    return typeof window !== 'undefined' ? localStorage.getItem('bunkerstroy_token') : null;
-  };
-
-  const getAuthHeaders = (): Record<string, string> => {
-    const token = getToken();
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    return headers;
-  };
-
-  // 1. Load Categories
+  // Initial Data Fetching
   useEffect(() => {
     fetchCategories();
+    fetchProducts();
   }, []);
+
+  useEffect(() => {
+    if (activeTab === 'orders') {
+      fetchOrders();
+    }
+  }, [activeTab]);
 
   const fetchCategories = async () => {
     try {
@@ -350,2166 +584,795 @@ export const SellerPanelView: React.FC = () => {
           setCategoryId(json.data[0].id);
         }
       }
-    } catch (e) {
-      console.error('Failed to fetch categories:', e);
+    } catch (err) {
+      console.warn('Categories fetch error:', err);
     }
   };
 
-  // 2. Load Products
   const fetchProducts = async () => {
     setLoadingProducts(true);
     try {
-      const headers = getAuthHeaders();
-      const res = await fetch('/api/catalog/my-products', { headers });
-      if (res.ok) {
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-          const existingIds = new Set(json.data.map((p: any) => p.id));
-          const combined = [...json.data, ...DEFAULT_GLOBAL_PRODUCTS.filter((g) => !existingIds.has(g.id))];
-          setProducts(combined);
-          return;
-        }
+      const res = await fetch('/api/catalog/products');
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data)) {
+        setProducts(json.data);
       }
-      // Fallback to catalog products
-      const fallbackRes = await fetch('/api/catalog/products?limit=50');
-      const fallbackJson = await fallbackRes.json();
-      if (fallbackJson.success && Array.isArray(fallbackJson.data)) {
-        const existingIds = new Set(fallbackJson.data.map((p: any) => p.id));
-        const combined = [...fallbackJson.data, ...DEFAULT_GLOBAL_PRODUCTS.filter((g) => !existingIds.has(g.id))];
-        setProducts(combined);
-      } else {
-        setProducts(DEFAULT_GLOBAL_PRODUCTS as any);
-      }
-    } catch (e) {
-      console.error('Failed to fetch products:', e);
-      setProducts(DEFAULT_GLOBAL_PRODUCTS as any);
+    } catch (err) {
+      console.warn('Products fetch error:', err);
     } finally {
       setLoadingProducts(false);
     }
   };
 
-  // 3. Load Orders
   const fetchOrders = async () => {
     setLoadingOrders(true);
     try {
-      const headers = getAuthHeaders();
-      const res = await fetch('/api/orders', { headers });
+      const token = localStorage.getItem('bunkerstroy_token');
+      const res = await fetch('/api/orders/supplier/all', {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
         setOrders(json.data);
       }
-    } catch (e) {
-      console.error('Failed to fetch orders:', e);
+    } catch (err) {
+      console.warn('Orders fetch error:', err);
     } finally {
       setLoadingOrders(false);
     }
   };
 
-  useEffect(() => {
-    if (activeTab === 'inventory') {
-      fetchProducts();
-    } else if (activeTab === 'orders' || activeTab === 'escrow') {
-      fetchOrders();
-    }
-  }, [activeTab]);
+  // Show Feedback Notification
+  const showFeedback = (type: 'success' | 'error', message: string) => {
+    setFeedback({ type, message });
+    setTimeout(() => setFeedback(null), 3500);
+  };
 
   /* ==========================================================================
-     TM-03: Tiered Pricing Helpers
+     (a) Filtered Inventory: All vs Online vs Offline
      ========================================================================== */
-  const handleAddTier = () => {
-    const last = tieredPrices[tieredPrices.length - 1];
-    const baseP = typeof price === 'number' && price > 0 ? price : 50000;
-    const nextMin = last && typeof last.maxQty === 'number' && last.maxQty > 0
-      ? last.maxQty + 1
-      : 20;
+  const filteredProducts = useMemo(() => {
+    if (inventorySubTab === 'online') {
+      return products.filter((p) => (p as any).isOnline !== false);
+    }
+    if (inventorySubTab === 'offline') {
+      return products.filter((p) => (p as any).isOffline !== false);
+    }
+    return products;
+  }, [products, inventorySubTab]);
 
-    // Suggest a discounted price for each step
-    const discountFactor = 1 - (tieredPrices.length + 1) * 0.05;
-    const suggestedPrice = Math.max(1000, Math.round((baseP * discountFactor) / 1000) * 1000);
-
-    setTieredPrices([
-      ...tieredPrices,
-      {
-        id: `tp-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-        minQty: nextMin,
-        maxQty: '',
-        price: suggestedPrice,
-      }
-    ]);
+  // Toggle Online / Offline for a product
+  const handleToggleProductChannel = (productId: string, channel: 'online' | 'offline') => {
+    setProducts((prev) =>
+      prev.map((p) => {
+        if (p.id === productId) {
+          if (channel === 'online') {
+            const current = (p as any).isOnline !== false;
+            return { ...p, isOnline: !current } as Product;
+          } else {
+            const current = (p as any).isOffline !== false;
+            return { ...p, isOffline: !current } as Product;
+          }
+        }
+        return p;
+      })
+    );
+    showFeedback('success', `Tovar ${channel === 'online' ? 'Online Vitrina' : 'Do‘kon Kassa'} holati yangilandi!`);
   };
 
-  const handleRemoveTier = (id: string) => {
-    setTieredPrices((prev) => prev.filter((t) => t.id !== id));
-  };
-
-  const handleUpdateTier = (id: string, field: keyof TierPriceRow, value: any) => {
-    setTieredPrices((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, [field]: value } : t))
+  /* ==========================================================================
+     (b) Create Product with Colors, Sizes & Generated Variants
+     ========================================================================== */
+  const handleToggleFormColor = (colorId: string) => {
+    setSelectedFormColors((prev) =>
+      prev.includes(colorId) ? prev.filter((c) => c !== colorId) : [...prev, colorId]
     );
   };
 
-  /* ==========================================================================
-     Form Submission (Create Product with Tiered Pricing, Global Attributes & Certificates)
-     ========================================================================== */
+  const handleAddFormSize = (sizeStr: string) => {
+    const trimmed = sizeStr.trim();
+    if (!trimmed) return;
+    if (!selectedFormSizes.includes(trimmed)) {
+      setSelectedFormSizes((prev) => [...prev, trimmed]);
+    }
+    setCustomSizeInput('');
+  };
+
+  const handleRemoveFormSize = (sizeStr: string) => {
+    setSelectedFormSizes((prev) => prev.filter((s) => s !== sizeStr));
+  };
+
+  // Generated Variants Matrix
+  const generatedVariants = useMemo<ProductVariantItem[]>(() => {
+    const colors = selectedFormColors.length > 0 ? selectedFormColors : ['standart'];
+    const sizes = selectedFormSizes.length > 0 ? selectedFormSizes : ['standart'];
+    const list: ProductVariantItem[] = [];
+
+    colors.forEach((col) => {
+      sizes.forEach((sz) => {
+        list.push({
+          id: `${col}-${sz}`,
+          sku: `SKU-${col.toUpperCase().slice(0, 3)}-${sz.replace(/\s+/g, '')}`,
+          color: col,
+          size: sz,
+          priceDelta: 0,
+          stock: typeof stock === 'number' ? Math.floor(stock / (colors.length * sizes.length)) : 100
+        });
+      });
+    });
+    return list;
+  }, [selectedFormColors, selectedFormSizes, stock]);
+
   const handleCreateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim()) {
-      setFeedback({ type: 'error', message: 'Iltimos, mahsulot nomini kiriting' });
+    if (!title || !price || !stock) {
+      showFeedback('error', 'Iltimos, mahsulot nomi, narxi va zaxirasini to‘liq kiriting!');
       return;
     }
-
-    const effectivePrice =
-      supplierType === 'GLOBAL' && currency === 'USD'
-        ? (Number(priceUsd) > 0 ? Number(priceUsd) * USD_EXCHANGE_RATE : Number(price))
-        : Number(price);
-
-    if (!effectivePrice || effectivePrice <= 0) {
-      setFeedback({ type: 'error', message: 'Iltimos, to‘g‘ri mahsulot narxini kiriting' });
-      return;
-    }
-    if (stock === '' || Number(stock) < 0) {
-      setFeedback({ type: 'error', message: 'Iltimos, ombordagi mavjud miqdorni kiriting' });
-      return;
-    }
-
-    // Format valid tiered prices
-    const validTieredPrices = tieredPrices
-      .filter((t) => t.minQty !== '' && Number(t.minQty) > 0 && t.price !== '' && Number(t.price) > 0)
-      .map((t) => ({
-        minQty: Number(t.minQty),
-        maxQty: t.maxQty !== '' && Number(t.maxQty) > 0 ? Number(t.maxQty) : null,
-        price: Number(t.price),
-      }));
 
     setFormSubmitting(true);
-    setFeedback(null);
+    const newProduct: any = {
+      id: `prod-${Date.now()}`,
+      title,
+      slug: title.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+      categoryId: categoryId || categories[0]?.id || 'cat-general',
+      supplierId: 'sup-my-store',
+      supplierName: 'BunkerStroy Hamkor Do‘koni',
+      price: Number(price),
+      unit,
+      stock: Number(stock),
+      minOrder: Number(minOrder) || 1,
+      description: description || `${title} - Yuqori sifatli sertifikatlangan qurilish materiali.`,
+      images: [imageUrl],
+      region,
+      district,
+      hasDelivery,
+      isOnline: isOnlinePublish,
+      isOffline: isOfflineStore,
+      variants: generatedVariants,
+      tieredPrices: tieredPrices.filter((tp) => tp.minQty && tp.price),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
 
     try {
-      const payload: Record<string, any> = {
-        title: title.trim(),
-        categoryId: categoryId || (categories[0]?.id || 'cat-sement'),
-        price: effectivePrice,
-        unit,
-        stock: Number(stock),
-        minOrder: Number(minOrder) || 1,
-        description: description.trim() || `${title} - O‘zbekistondagi zavoddan to‘g‘ridan-to‘g‘ri yetkazib beriladi.`,
-        images: imageUrl ? [imageUrl] : [SAMPLE_IMAGE_PRESETS[0].url],
-        region,
-        district,
-        hasDelivery,
-      };
-
-      // Add tiered prices if provided
-      if (validTieredPrices.length > 0) {
-        payload.tieredPrices = validTieredPrices;
-      }
-
-      // Add certificate if provided
-      const certCombined = certificateUrl.trim() || (certificateNumber.trim() ? `O‘zDSt: ${certificateNumber.trim()}` : '');
-      if (certCombined) {
-        payload.certificateUrl = certCombined;
-      }
-
-      // Add Global Supplier attributes if GLOBAL mode (TZ Section 3)
-      if (supplierType === 'GLOBAL') {
-        payload.isGlobal = true;
-        payload.incoterms = incoterms;
-        payload.currency = currency;
-        payload.priceUsd = currency === 'USD' ? Number(priceUsd) : Math.round(effectivePrice / USD_EXCHANGE_RATE);
-        payload.exchangeRate = USD_EXCHANGE_RATE;
-        if (gtdNumber.trim()) payload.gtdNumber = gtdNumber.trim();
-        if (gtdUrl.trim()) payload.gtdUrl = gtdUrl.trim();
-        if (internationalCert.trim()) payload.internationalCert = internationalCert.trim();
-      }
-
       const res = await fetch('/api/catalog/products', {
         method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newProduct)
       });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.data) {
+          setProducts((prev) => [json.data, ...prev]);
+        } else {
+          setProducts((prev) => [newProduct, ...prev]);
+        }
+      } else {
+        // Fallback local memory addition
+        setProducts((prev) => [newProduct, ...prev]);
+      }
 
-      const json = await res.json();
-      const createdItem: any = {
-        id: json?.data?.id || `prod-${Date.now()}`,
-        ...payload,
-        tieredPrices: validTieredPrices,
-        certificateUrl: certCombined,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-
-      setProducts((prev) => [createdItem, ...prev]);
-
-      setFeedback({
-        type: 'success',
-        message: `"${json?.data?.title || title}" muvaffaqiyatli qo‘shildi va vitrinada ${supplierType === 'GLOBAL' ? 'Global Zavod sifatida' : ''} e’lon qilindi!`
-      });
-
+      showFeedback('success', `"${title}" tovari muvaffaqiyatli saqlandi!`);
       // Reset form
       setTitle('');
       setPrice('');
-      setPriceUsd(600);
       setStock('');
       setDescription('');
-      setGtdNumber('');
-      setGtdUrl('');
-      setTieredPrices([]);
-      setCertificateNumber('');
-      setCertificateUrl('');
-
-      // Switch to inventory tab
-      setTimeout(() => {
-        setActiveTab('inventory');
-      }, 800);
-    } catch (err: any) {
-      console.error(err);
-      setFeedback({ type: 'error', message: 'Server bilan aloqa uzildi. Qayta urinib ko‘ring.' });
+      setActiveTab('inventory');
+    } catch {
+      setProducts((prev) => [newProduct, ...prev]);
+      showFeedback('success', `"${title}" omborga qo‘shildi!`);
+      setActiveTab('inventory');
     } finally {
       setFormSubmitting(false);
     }
   };
 
-  // Start inline editing
-  const startEditing = (p: Product) => {
-    setEditingId(p.id);
-    setEditPrice(Number(p.price));
-    setEditStock(p.stock);
+  /* ==========================================================================
+     (c) POS CRM Kassa Methods (Multiple Baskets, Cash change & Thermal Receipt)
+     ========================================================================== */
+  const activeBasket = useMemo(() => {
+    return posBaskets.find((b) => b.id === activeBasketId) || posBaskets[0];
+  }, [posBaskets, activeBasketId]);
+
+  const handleCreateNewBasket = () => {
+    const nextNum = posBaskets.length + 1;
+    const newB: PosBasket = {
+      id: `basket-${Date.now()}`,
+      name: `Savat #${nextNum} (Yangi)`,
+      items: []
+    };
+    setPosBaskets((prev) => [...prev, newB]);
+    setActiveBasketId(newB.id);
+    showFeedback('success', 'Yangi savdo savati ochildi!');
   };
 
-  // Save inline edit
-  const handleSaveEdit = async (productId: string) => {
-    setActionLoadingId(productId);
-    try {
-      const res = await fetch(`/api/catalog/products/${productId}`, {
-        method: 'PUT',
-        headers: getAuthHeaders(),
-        body: JSON.stringify({
-          price: Number(editPrice),
-          stock: Number(editStock),
-        }),
-      });
-      const json = await res.json();
-      if (res.ok && json.success) {
-        setProducts((prev) =>
-          prev.map((item) =>
-            item.id === productId
-              ? { ...item, price: Number(editPrice), stock: Number(editStock) }
-              : item
-          )
-        );
-        setEditingId(null);
-        setFeedback({ type: 'success', message: 'Mahsulot ma’lumotlari muvaffaqiyatli yangilandi' });
-      } else {
-        setFeedback({ type: 'error', message: json.message || 'Yangilashda xatolik' });
-      }
-    } catch {
-      setFeedback({ type: 'error', message: 'Server bilan aloqa uzildi' });
-    } finally {
-      setActionLoadingId(null);
-    }
+  const handleAddItemToBasket = (product: Product) => {
+    setPosBaskets((prev) =>
+      prev.map((b) => {
+        if (b.id === activeBasketId) {
+          const existing = b.items.find((item) => item.productId === product.id);
+          if (existing) {
+            return {
+              ...b,
+              items: b.items.map((item) =>
+                item.productId === product.id ? { ...item, quantity: item.quantity + 1 } : item
+              )
+            };
+          }
+          const newItem: PosBasketItem = {
+            id: `bi-${Date.now()}-${Math.random()}`,
+            productId: product.id,
+            title: product.title,
+            price: Number(product.price),
+            quantity: 1,
+            unit: product.unit || 'dona',
+            color: product.variants?.[0]?.color || undefined,
+            size: product.variants?.[0]?.size || undefined
+          };
+          return { ...b, items: [...b.items, newItem] };
+        }
+        return b;
+      })
+    );
   };
 
-  // Delete product
-  const handleDeleteProduct = async (productId: string, productTitle: string) => {
-    if (!window.confirm(`Haqiqatan ham "${productTitle}" mahsulotini o‘chirmoqchimisiz?`)) {
+  const handleUpdateBasketQty = (itemId: string, delta: number) => {
+    setPosBaskets((prev) =>
+      prev.map((b) => {
+        if (b.id === activeBasketId) {
+          return {
+            ...b,
+            items: b.items
+              .map((item) => {
+                if (item.id === itemId) {
+                  const nextQ = item.quantity + delta;
+                  return nextQ > 0 ? { ...item, quantity: nextQ } : null;
+                }
+                return item;
+              })
+              .filter(Boolean) as PosBasketItem[]
+          };
+        }
+        return b;
+      })
+    );
+  };
+
+  const handleRemoveBasketItem = (itemId: string) => {
+    setPosBaskets((prev) =>
+      prev.map((b) => {
+        if (b.id === activeBasketId) {
+          return { ...b, items: b.items.filter((item) => item.id !== itemId) };
+        }
+        return b;
+      })
+    );
+  };
+
+  const handleClearCurrentBasket = () => {
+    setPosBaskets((prev) =>
+      prev.map((b) => (b.id === activeBasketId ? { ...b, items: [] } : b))
+    );
+  };
+
+  // POS Calculations
+  const posSubtotal = useMemo(() => {
+    return activeBasket.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  }, [activeBasket.items]);
+
+  const posDiscountAmount = Math.round((posSubtotal * posDiscountPercent) / 100);
+  const posAfterDiscount = posSubtotal - posDiscountAmount;
+  const posTaxAmount = Math.round(posAfterDiscount * 0.12);
+  const posGrandTotal = posAfterDiscount;
+
+  const cashChange = typeof cashGiven === 'number' && cashGiven >= posGrandTotal
+    ? cashGiven - posGrandTotal
+    : 0;
+
+  // Complete POS Sale & Generate Receipt
+  const handleCompletePosSale = () => {
+    if (activeBasket.items.length === 0) {
+      showFeedback('error', 'Savat bo‘sh! Iltimos, mahsulot qo‘shing.');
       return;
     }
 
-    setActionLoadingId(productId);
-    try {
-      const res = await fetch(`/api/catalog/products/${productId}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders(),
-      });
-      const json = await res.json();
-      if (res.ok && json.success) {
-        setProducts((prev) => prev.filter((p) => p.id !== productId));
-        setFeedback({ type: 'success', message: `"${productTitle}" o‘chirildi` });
-      } else {
-        setFeedback({ type: 'error', message: json.message || 'O‘chirishda xatolik yuz berdi' });
-      }
-    } catch {
-      setFeedback({ type: 'error', message: 'Server bilan aloqa uzildi' });
-    } finally {
-      setActionLoadingId(null);
-    }
-  };
-
-  /* ==========================================================================
-     TM-06 & TM-07: Update Order Status (ACCEPTED, PACKING, CANCELLED)
-     ========================================================================== */
-  const handleUpdateOrderStatus = async (
-    orderId: string,
-    nextStatus: OrderStatus,
-    reason?: string
-  ) => {
-    setUpdatingOrderId(orderId);
-    try {
-      const payload: Record<string, any> = { status: nextStatus };
-      if (reason) payload.reason = reason;
-
-      const res = await fetch(`/api/orders/${orderId}/status`, {
-        method: 'PATCH',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(payload),
-      });
-      const json = await res.json();
-      if (res.ok && json.success) {
-        setOrders((prev) =>
-          prev.map((ord) => (ord.id === orderId ? { ...ord, status: nextStatus } : ord))
-        );
-        const readableStatus = getOrderStatusText(nextStatus);
-        setFeedback({
-          type: 'success',
-          message: `Buyurtma holati "${readableStatus}" ga muvaffaqiyatli o‘zgartirildi!`
-        });
-      } else {
-        setFeedback({ type: 'error', message: json.message || 'Holatni yangilashda xatolik' });
-      }
-    } catch {
-      setFeedback({ type: 'error', message: 'Server bilan aloqa uzildi' });
-    } finally {
-      setUpdatingOrderId(null);
-    }
-  };
-
-  // Open cancel prompt
-  const openCancelModal = (order: Order) => {
-    setCancelModalOrder(order);
-    setCancelReason('');
-  };
-
-  const handleConfirmCancel = async () => {
-    if (!cancelModalOrder) return;
-    if (!cancelReason.trim()) {
-      alert('Iltimos, bekor qilish sababini yozing.');
+    if (posPaymentMethod === 'CASH' && typeof cashGiven === 'number' && cashGiven < posGrandTotal) {
+      showFeedback('error', 'Qabul qilingan naqd pul summa to‘lovdan kam!');
       return;
     }
 
-    setIsCancelling(true);
-    await handleUpdateOrderStatus(cancelModalOrder.id, 'CANCELLED', cancelReason.trim());
-    setIsCancelling(false);
-    setCancelModalOrder(null);
+    const receiptNum = `CHK-${Date.now().toString().slice(-6)}`;
+    const nowStr = new Date().toLocaleString('uz-UZ', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    const receiptData = {
+      receiptNumber: receiptNum,
+      date: nowStr,
+      items: [...activeBasket.items],
+      subtotal: posSubtotal,
+      discountAmount: posDiscountAmount,
+      taxAmount: posTaxAmount,
+      grandTotal: posGrandTotal,
+      paymentMethod:
+        posPaymentMethod === 'CASH'
+          ? 'Naqd pul'
+          : posPaymentMethod === 'CARD'
+          ? 'Uzcard / Humo Terminal'
+          : posPaymentMethod === 'PAYME_CLICK'
+          ? 'Payme / Click QR'
+          : 'B2B Nasiya Shartnoma',
+      cashGiven: typeof cashGiven === 'number' ? cashGiven : undefined,
+      cashChange: typeof cashGiven === 'number' ? cashChange : undefined,
+      cashier: 'Kassir: Alisher N. (Kassa #1)'
+    };
+
+    // 1. Decrement product stocks locally
+    setProducts((prev) =>
+      prev.map((p) => {
+        const boughtItem = activeBasket.items.find((item) => item.productId === p.id);
+        if (boughtItem) {
+          const nextStock = Math.max(0, p.stock - boughtItem.quantity);
+          return { ...p, stock: nextStock };
+        }
+        return p;
+      })
+    );
+
+    // 2. Add to Financial Operations
+    const newFinOp: FinancialOperation = {
+      id: `fin-pos-${Date.now()}`,
+      date: nowStr,
+      type: 'INCOME',
+      channel: 'OFFLINE_POS',
+      category: 'Do‘kon Kassa Savdosi',
+      amount: posGrandTotal,
+      paymentMethod: receiptData.paymentMethod,
+      notes: `Kassa cheki ${receiptNum} (${activeBasket.items.length} xil tovar)`
+    };
+    setFinancialOperations((prev) => [newFinOp, ...prev]);
+
+    // 3. Set Active Receipt Modal & Reset current basket
+    setActiveReceipt(receiptData);
+    handleClearCurrentBasket();
+    setCashGiven('');
+    showFeedback('success', `Savdo muvaffaqiyatli yakunlandi! Chek: ${receiptNum}`);
   };
 
   /* ==========================================================================
-     TM-08: Financial & Escrow Metrics Calculations
+     (d) B2B Wholesale Order Methods
      ========================================================================== */
-  const escrowOrders = useMemo(() => {
-    return orders.filter((o) =>
-      ['PAID', 'CONFIRMED', 'ACCEPTED', 'PACKING', 'ASSIGNED', 'IN_TRANSIT', 'ARRIVED'].includes(o.status)
-    );
-  }, [orders]);
-
-  const completedOrders = useMemo(() => {
-    return orders.filter((o) =>
-      ['DELIVERED', 'COMPLETED', 'RECEIVED', 'FULLY_PAID'].includes(o.status)
-    );
-  }, [orders]);
-
-  // Combined ledger: dynamic real completed/escrow orders + realistic default records
-  const allLedgerItems = useMemo<PayoutLedgerItem[]>(() => {
-    const dynamicItems: PayoutLedgerItem[] = [];
-
-    // From real completed orders
-    completedOrders.forEach((ord) => {
-      const gross = Number(ord.finalAmount || ord.totalAmount);
-      const fee = Math.round(gross * 0.015);
-      const net = gross - fee;
-      dynamicItems.push({
-        id: `dyn-${ord.id}`,
-        orderNumber: ord.orderNumber,
-        releaseDate: new Date(ord.updatedAt || ord.createdAt).toLocaleDateString('uz-UZ', {
-          day: 'numeric',
-          month: 'short',
-          hour: '2-digit',
-          minute: '2-digit'
-        }),
-        buyerName: ord.buyerName || (ord as any).buyer?.displayName || 'Xaridor',
-        buyerStir: (ord as any).buyer?.stir || '308991204',
-        itemSummary: ord.items?.map((it) => `${it.productTitle} (${it.quantity} ${it.unit})`).join(', ') || 'Qurilish tovarlari',
-        grossAmount: gross,
-        platformFee: fee,
-        netAmount: net,
-        status: 'RELEASED',
-        payoutMethod: 'Bank Kliring (20208...001)',
-        actNumber: `DAL-2026/${ord.orderNumber.slice(-4)}`
-      });
-    });
-
-    // From real escrow orders
-    escrowOrders.forEach((ord) => {
-      const gross = Number(ord.finalAmount || ord.totalAmount);
-      const fee = Math.round(gross * 0.015);
-      const net = gross - fee;
-      dynamicItems.push({
-        id: `dyn-escrow-${ord.id}`,
-        orderNumber: ord.orderNumber,
-        releaseDate: 'Escrowda kutilmoqda',
-        buyerName: ord.buyerName || (ord as any).buyer?.displayName || 'Xaridor',
-        buyerStir: (ord as any).buyer?.stir || '308991204',
-        itemSummary: ord.items?.map((it) => `${it.productTitle} (${it.quantity} ${it.unit})`).join(', ') || 'Qurilish tovarlari',
-        grossAmount: gross,
-        platformFee: fee,
-        netAmount: net,
-        status: 'ESCROW_LOCKED',
-        payoutMethod: 'Kafolatlangan Escrow Hisob',
-        actNumber: 'KUTILMOQDA'
-      });
-    });
-
-    // Merge with default historical ledger records
-    return [...dynamicItems, ...DEFAULT_LEDGER_DATA];
-  }, [completedOrders, escrowOrders]);
-
-  // Aggregate KPIs
-  const totalLockedInEscrow = useMemo(() => {
-    const dynamicEscrow = escrowOrders.reduce(
-      (acc, ord) => acc + Number(ord.finalAmount || ord.totalAmount),
-      0
-    );
-    // Baseline safe escrow reserve for demo authenticity
-    return dynamicEscrow > 0 ? dynamicEscrow : 18450000;
-  }, [escrowOrders]);
-
-  const totalGrossTurnover = useMemo(() => {
-    const ledgerGross = allLedgerItems.reduce((acc, item) => acc + item.grossAmount, 0);
-    return ledgerGross;
-  }, [allLedgerItems]);
-
-  const totalPlatformCommission = useMemo(() => {
-    return Math.round(totalGrossTurnover * 0.015);
-  }, [totalGrossTurnover]);
-
-  const totalAvailablePayout = useMemo(() => {
-    const releasedNet = allLedgerItems
-      .filter((item) => item.status === 'RELEASED')
-      .reduce((acc, item) => acc + item.netAmount, 0);
-    return releasedNet;
-  }, [allLedgerItems]);
-
-  // Filtered ledger for UI
-  const filteredLedger = useMemo(() => {
-    return allLedgerItems.filter((item) => {
-      if (ledgerFilter === 'released' && item.status !== 'RELEASED') return false;
-      if (ledgerFilter === 'escrow' && item.status !== 'ESCROW_LOCKED') return false;
-      if (ledgerSearch.trim()) {
-        const q = ledgerSearch.toLowerCase();
-        return (
-          item.orderNumber.toLowerCase().includes(q) ||
-          item.buyerName.toLowerCase().includes(q) ||
-          item.itemSummary.toLowerCase().includes(q) ||
-          item.buyerStir.includes(q)
-        );
-      }
-      return true;
-    });
-  }, [allLedgerItems, ledgerFilter, ledgerSearch]);
-
-  const handleRequestPayout = () => {
-    setIsWithdrawing(true);
-    setTimeout(() => {
-      setIsWithdrawing(false);
-      setIsWithdrawModalOpen(false);
-      setFeedback({
-        type: 'success',
-        message: `${Number(withdrawAmount).toLocaleString()} so‘m mablag‘ni bank hisob raqamiga o‘tkazish bo‘yicha to‘lov topshirig‘i muvaffaqiyatli shakllantirildi!`
-      });
-    }, 1000);
+  const handleOpenB2bModal = (mfg: B2bManufacturer) => {
+    setSelectedManufacturer(mfg);
+    setB2bQuantity(mfg.minOrderTons);
+    setIsB2bModalOpen(true);
   };
 
-  // General counts
-  const totalStockUnits = products.reduce((acc, p) => acc + (p.stock || 0), 0);
-  const activeOrdersCount = orders.filter(
-    (o) => !['DELIVERED', 'COMPLETED', 'CANCELLED'].includes(o.status)
-  ).length;
+  const handleConfirmB2bWholesaleOrder = () => {
+    if (!selectedManufacturer) return;
+    const total = b2bQuantity * selectedManufacturer.unitPrice;
+    const orderNum = `B2B-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const newOrder: B2bWholesaleOrder = {
+      id: `b2b-${Date.now()}`,
+      orderNumber: orderNum,
+      manufacturerName: selectedManufacturer.name,
+      productName: `${selectedManufacturer.featuredProduct} (${b2bQuantity} ${selectedManufacturer.unit})`,
+      quantity: b2bQuantity,
+      unit: selectedManufacturer.unit,
+      unitPrice: selectedManufacturer.unitPrice,
+      totalAmount: total,
+      incoterm: b2bIncoterm,
+      deliveryAddress: b2bDeliveryAddress,
+      bankRequisites: {
+        accountNumber: selectedManufacturer.accountNumber,
+        mfo: selectedManufacturer.mfo,
+        stir: selectedManufacturer.stir,
+        bankName: selectedManufacturer.bankName
+      },
+      status: 'KUTILMOQDA',
+      createdAt: 'Bugun, ' + new Date().toLocaleDateString('uz-UZ')
+    };
+
+    setB2bOrders((prev) => [newOrder, ...prev]);
+    setIsB2bModalOpen(false);
+    setB2bSuccessNotice(true);
+    setTimeout(() => setB2bSuccessNotice(false), 4000);
+    showFeedback('success', `Zavodga ulgurji buyurtma yuborildi! Invoys: ${orderNum}`);
+  };
+
+  /* ==========================================================================
+     (e) Financial Reports Calculations (Income / Expense / Net Profit)
+     ========================================================================== */
+  const totalIncome = useMemo(() => {
+    return financialOperations
+      .filter((op) => op.type === 'INCOME')
+      .reduce((sum, op) => sum + op.amount, 0);
+  }, [financialOperations]);
+
+  const totalExpense = useMemo(() => {
+    return financialOperations
+      .filter((op) => op.type === 'EXPENSE')
+      .reduce((sum, op) => sum + op.amount, 0);
+  }, [financialOperations]);
+
+  const netProfit = totalIncome - totalExpense;
+  const profitMarginPercent = totalIncome > 0 ? ((netProfit / totalIncome) * 100).toFixed(1) : '0';
+
+  const onlineIncome = useMemo(() => {
+    return financialOperations
+      .filter((op) => op.type === 'INCOME' && op.channel === 'ONLINE_MARKETPLACE')
+      .reduce((sum, op) => sum + op.amount, 0);
+  }, [financialOperations]);
+
+  const offlineIncome = useMemo(() => {
+    return financialOperations
+      .filter((op) => op.type === 'INCOME' && op.channel === 'OFFLINE_POS')
+      .reduce((sum, op) => sum + op.amount, 0);
+  }, [financialOperations]);
+
+  const handleAddExpense = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!expenseAmount || Number(expenseAmount) <= 0) {
+      showFeedback('error', 'Xarajat summasini to‘g‘ri kiriting!');
+      return;
+    }
+
+    const newOp: FinancialOperation = {
+      id: `exp-${Date.now()}`,
+      date: 'Bugun, ' + new Date().toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' }),
+      type: 'EXPENSE',
+      channel: 'OPERATIONAL_COST',
+      category: expenseCategory,
+      amount: Number(expenseAmount),
+      paymentMethod: expensePaymentMethod,
+      notes: expenseNotes || 'Do‘kon operatsion chiqimi'
+    };
+
+    setFinancialOperations((prev) => [newOp, ...prev]);
+    setIsExpenseModalOpen(false);
+    setExpenseAmount('');
+    setExpenseNotes('');
+    showFeedback('success', 'Xarajat muvaffaqiyatli qayd etildi!');
+  };
 
   return (
-    <div className="space-y-6">
-      {/* 1. Header Overview & Supplier Type Selection */}
-      <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex flex-wrap items-center gap-2 mb-1.5">
-            <span className="text-xs font-mono font-bold text-bunker-amber-500 uppercase tracking-wider">
-              {t('nav.seller_cabinet', 'Sotuvchi Kabineti')}
-            </span>
+    <div className="space-y-6 text-white pb-16 font-sans">
+      {/* 1. Header Banner & Quick Action Bar */}
+      <div className="brushed-steel rounded-2xl p-5 sm:p-6 border-2 border-[#1E3A6D] shadow-xl relative overflow-hidden">
+        <div className="absolute top-2 left-2 industrial-rivet" />
+        <div className="absolute top-2 right-2 industrial-rivet" />
+        <div className="absolute bottom-2 left-2 industrial-rivet" />
+        <div className="absolute bottom-2 right-2 industrial-rivet" />
 
-            {/* Neon Blue Badge when GLOBAL (TZ Section 3) */}
-            {supplierType === 'GLOBAL' ? (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-extrabold bg-cyan-50 border border-cyan-400 text-cyan-800 shadow-[0_0_12px_rgba(6,182,212,0.35)] animate-pulse">
-                <span className="text-sm">🌐</span>
-                <span>GLOBAL ZAVOD / IMPORT REJIMI</span>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono font-black text-[#FFB800] uppercase tracking-wider flex items-center gap-1.5">
+                <Store className="w-4 h-4 text-[#FFB800]" />
+                Sotuvchi &amp; Do‘kon Boshqaruv Markazi
               </span>
-            ) : (
-              <Badge variant="success" size="sm" isMono>
-                UZUM REJIMIDA
-              </Badge>
-            )}
+              <span className="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 px-2 py-0.5 rounded text-[10px] font-mono font-bold">
+                ● Tizim Faol
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-heading font-black tracking-tight text-white">
+              Sanoat Vitrinasi, Kassa POS &amp; B2B Xaridlar
+            </h1>
+            <p className="text-xs sm:text-sm text-sky-200/80 max-w-2xl leading-relaxed">
+              Jismoniy do‘kon kassa apparati (POS CRM), B2B zavodlardan ulgurji xaridlar,
+              online tovarlar vitrinasi va to‘liq moliyaviy Kirim-Chiqim hisobotlari.
+            </p>
           </div>
 
-          <h1 className="text-xl sm:text-2xl font-heading font-extrabold tracking-tight text-bunker-text-primary">
-            Sotuvchi &amp; Ishlab Chiqaruvchi Boshqaruv Markazi
-          </h1>
-          <p className="text-xs sm:text-sm text-bunker-text-secondary mt-1 max-w-2xl">
-            {supplierType === 'GLOBAL'
-              ? 'Xalqaro yirik zavodlar va importyorlar rejimi: vagon/fura partiyalari, Incoterms yetkazish qoidalari, GTD bojxona deklaratsiyasi va avtomatik USD/UZS kursi.'
-              : 'Mahsulotlarni ulgurji narx zinapoyalari (Tiered Pricing) bilan qo‘shing, tushgan buyurtmalarni bosqichma-bosqich qabul qiling va 1.5% Escrow sof tushumini hisobingizga yeching.'}
-          </p>
-        </div>
-
-        {/* Right side: Supplier Type Selector + Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
-          {/* Supplier Type Segmented Selector (LOCAL vs GLOBAL) */}
-          <div className="flex items-center p-1 bg-slate-100 rounded-xl border border-slate-200 font-mono text-xs">
+          {/* Quick POS Trigger Button */}
+          <div className="flex items-center gap-2 shrink-0">
             <button
               type="button"
-              onClick={() => {
-                setSupplierType('LOCAL');
-                setUnit('dona');
-              }}
-              className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                supplierType === 'LOCAL'
-                  ? 'bg-white text-slate-900 shadow-xs border border-slate-300'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
+              onClick={() => setActiveTab('crm_pos')}
+              className="btn-industrial-yellow px-4 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 cursor-pointer shadow-lg select-none"
             >
-              <Building2 className="w-3.5 h-3.5 text-slate-600" />
-              <span>Mahalliy Ishlab Chiqaruvchi / Ombor</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setSupplierType('GLOBAL');
-                setUnit('Tonna');
-                setCurrency('USD');
-                if (!priceUsd) setPriceUsd(600);
-              }}
-              className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                supplierType === 'GLOBAL'
-                  ? 'bg-cyan-600 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <span className="text-xs">🌐</span>
-              <span>Global Zavod / Xalqaro Importyor</span>
+              <Calculator className="w-4 h-4" />
+              <span>Do‘kon Kassa / POS CRM</span>
+              <span className="bg-[#071326] text-[#FFB800] px-1.5 py-0.2 rounded-full text-[10px] font-mono">
+                {activeBasket.items.length}
+              </span>
             </button>
           </div>
-
-          <div className="flex items-center gap-2">
-            <Button
-              variant={activeTab === 'create' ? 'primary' : 'outline'}
-              size="sm"
-              onClick={() => setActiveTab('create')}
-            >
-              <PlusCircle className="w-4 h-4 mr-1.5" />
-              <span>{t('button.addTier', 'Yangi Tovar Qo‘shish')}</span>
-            </Button>
-
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => {
-                if (activeTab === 'inventory') fetchProducts();
-                else if (activeTab === 'orders' || activeTab === 'escrow') fetchOrders();
-              }}
-            >
-              <RotateCw className="w-4 h-4 mr-1.5" />
-              <span>{t('button.refresh', 'Yangilash')}</span>
-            </Button>
-          </div>
         </div>
+
+        {/* Global Feedback Banner */}
+        {feedback && (
+          <div
+            className={`mt-4 p-3 rounded-xl border text-xs font-mono font-bold flex items-center justify-between animate-in fade-in ${
+              feedback.type === 'success'
+                ? 'bg-emerald-950/80 border-emerald-500/50 text-emerald-300'
+                : 'bg-red-950/80 border-red-500/50 text-red-300'
+            }`}
+          >
+            <span>{feedback.message}</span>
+            <button type="button" onClick={() => setFeedback(null)} className="cursor-pointer text-white">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* 2. Top Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 font-mono">
-        <div className="bg-white border border-bunker-border-strong rounded-xl p-4 shadow-xs flex items-center justify-between">
-          <div>
-            <div className="text-[11px] text-bunker-text-muted uppercase">Mening Tovarlarim</div>
-            <div className="text-xl font-extrabold text-bunker-text-primary mt-1">
-              {products.length} ta
-            </div>
-            <div className="text-[10px] text-emerald-700 mt-0.5">Barcha toifalar bo‘yicha</div>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center text-bunker-amber-500">
-            <Package className="w-5 h-5" />
-          </div>
-        </div>
-
-        <div className="bg-white border border-bunker-border-strong rounded-xl p-4 shadow-xs flex items-center justify-between">
-          <div>
-            <div className="text-[11px] text-bunker-text-muted uppercase">Ombordagi Umumiy Zaxira</div>
-            <div className="text-xl font-extrabold text-bunker-text-primary mt-1">
-              {totalStockUnits.toLocaleString()} dona
-            </div>
-            <div className="text-[10px] text-bunker-text-secondary mt-0.5">Sotuvga tayyor qoldiq</div>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-700">
-            <Layers className="w-5 h-5" />
-          </div>
-        </div>
-
-        <div className="bg-white border border-bunker-border-strong rounded-xl p-4 shadow-xs flex items-center justify-between">
-          <div>
-            <div className="text-[11px] text-bunker-text-muted uppercase">Tushgan Buyurtmalar</div>
-            <div className="text-xl font-extrabold text-bunker-text-primary mt-1">
-              {orders.length} ta
-            </div>
-            <div className="text-[10px] text-amber-700 mt-0.5">
-              {activeOrdersCount} tasi jarayonda
-            </div>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
-            <Truck className="w-5 h-5" />
-          </div>
-        </div>
-
-        <div className="bg-white border border-bunker-border-strong rounded-xl p-4 shadow-xs flex items-center justify-between cursor-pointer hover:border-emerald-300 transition-colors" onClick={() => setActiveTab('escrow')}>
-          <div>
-            <div className="text-[11px] text-emerald-800 font-bold uppercase flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Escrow Balansi</span>
-            </div>
-            <div className="text-xl font-extrabold text-bunker-text-primary mt-1">
-              {totalLockedInEscrow.toLocaleString()} so‘m
-            </div>
-            <div className="text-[10px] text-slate-500 mt-0.5">Moliya &amp; Escrow hisobi &rarr;</div>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 font-bold text-xs">
-            1.5%
-          </div>
-        </div>
-      </div>
-
-      {/* Feedback Alert */}
-      {feedback && (
-        <Alert
-          variant={feedback.type === 'success' ? 'success' : 'error'}
-          title={feedback.type === 'success' ? 'Muvaffaqiyatli' : 'Xatolik'}
-          onDismiss={() => setFeedback(null)}
-        >
-          {feedback.message}
-        </Alert>
-      )}
-
-      {/* 3. Navigation Tabs (TM-08 4th Tab: Moliya & Escrow) */}
-      <div className="flex border-b border-bunker-border-strong bg-white rounded-t-xl px-2 pt-2 gap-2 overflow-x-auto">
+      {/* 2. Main Navigation Tabs (7 ta bo'lim) */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none font-mono text-xs">
+        {/* 1. Ombor & Mahsulotlar */}
         <button
           type="button"
           onClick={() => setActiveTab('inventory')}
-          className={`px-4 py-2.5 font-mono text-xs font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
             activeTab === 'inventory'
-              ? 'border-bunker-amber-500 text-bunker-amber-500'
-              : 'border-transparent text-bunker-text-secondary hover:text-bunker-text-primary'
+              ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
+              : 'bg-[#0A1931] text-sky-200 border-[#1E3A6D] hover:border-[#2E5A9C] hover:text-white'
           }`}
         >
           <Package className="w-4 h-4" />
-          <span>Mening Mahsulotlarim ({products.length})</span>
+          <span>Mahsulotlar Ombori</span>
+          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#071326] text-[#FFB800]">
+            {products.length}
+          </span>
         </button>
 
+        {/* 2. + Yangi Tovar Qo'shish */}
         <button
           type="button"
           onClick={() => setActiveTab('create')}
-          className={`px-4 py-2.5 font-mono text-xs font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
             activeTab === 'create'
-              ? 'border-bunker-amber-500 text-bunker-amber-500'
-              : 'border-transparent text-bunker-text-secondary hover:text-bunker-text-primary'
+              ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
+              : 'bg-[#0A1931] text-sky-200 border-[#1E3A6D] hover:border-[#2E5A9C] hover:text-white'
           }`}
         >
           <PlusCircle className="w-4 h-4" />
           <span>+ Yangi Tovar Qo‘shish</span>
         </button>
 
+        {/* 3. Do'kon Kassa / POS CRM */}
+        <button
+          type="button"
+          onClick={() => setActiveTab('crm_pos')}
+          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
+            activeTab === 'crm_pos'
+              ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
+              : 'bg-[#0A1931] text-emerald-400 border-emerald-500/40 hover:border-emerald-400'
+          }`}
+        >
+          <Calculator className="w-4 h-4" />
+          <span>Do‘kon Kassa / POS CRM</span>
+          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/30">
+            POS
+          </span>
+        </button>
+
+        {/* 4. B2B Zavodlar & Buyurtmalar */}
+        <button
+          type="button"
+          onClick={() => setActiveTab('b2b')}
+          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
+            activeTab === 'b2b'
+              ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
+              : 'bg-[#0A1931] text-sky-200 border-[#1E3A6D] hover:border-[#2E5A9C] hover:text-white'
+          }`}
+        >
+          <Factory className="w-4 h-4" />
+          <span>B2B Zavodlar &amp; Buyurtmalar</span>
+          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#071326] text-purple-400">
+            {b2bOrders.length}
+          </span>
+        </button>
+
+        {/* 5. Moliyaviy Kirim-Chiqim */}
+        <button
+          type="button"
+          onClick={() => setActiveTab('reports')}
+          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
+            activeTab === 'reports'
+              ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
+              : 'bg-[#0A1931] text-sky-200 border-[#1E3A6D] hover:border-[#2E5A9C] hover:text-white'
+          }`}
+        >
+          <BarChart3 className="w-4 h-4" />
+          <span>Moliyaviy Kirim-Chiqim</span>
+        </button>
+
+        {/* 6. Marketplace Buyurtmalari */}
         <button
           type="button"
           onClick={() => setActiveTab('orders')}
-          className={`px-4 py-2.5 font-mono text-xs font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
             activeTab === 'orders'
-              ? 'border-bunker-amber-500 text-bunker-amber-500'
-              : 'border-transparent text-bunker-text-secondary hover:text-bunker-text-primary'
+              ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
+              : 'bg-[#0A1931] text-sky-200 border-[#1E3A6D] hover:border-[#2E5A9C] hover:text-white'
           }`}
         >
           <Truck className="w-4 h-4" />
-          <span>Tushgan Buyurtmalar ({orders.length})</span>
+          <span>Buyurtmalar</span>
+          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#071326] text-sky-200">
+            {orders.length}
+          </span>
         </button>
 
-        {/* 4th Tab: TM-08 Moliya & Escrow */}
+        {/* 7. Escrow Hisobi */}
         <button
           type="button"
           onClick={() => setActiveTab('escrow')}
-          className={`px-4 py-2.5 font-mono text-xs font-bold border-b-2 transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap ${
+          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
             activeTab === 'escrow'
-              ? 'border-emerald-600 text-emerald-700 bg-emerald-50/50 rounded-t-lg'
-              : 'border-transparent text-bunker-text-secondary hover:text-bunker-text-primary'
+              ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
+              : 'bg-[#0A1931] text-sky-200 border-[#1E3A6D] hover:border-[#2E5A9C] hover:text-white'
           }`}
         >
-          <ShieldCheck className="w-4 h-4 text-emerald-600" />
-          <span>Moliya &amp; Escrow</span>
-          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
-            1.5%
-          </span>
+          <Wallet className="w-4 h-4" />
+          <span>50/50 Escrow Reestri</span>
         </button>
       </div>
 
-      {/* =========================================================================
-          TAB 1: MENING MAHSULOTLARIM (INVENTORY LIST & INLINE EDITING)
-          ========================================================================= */}
+      {/* =====================================================================
+          TAB 1: MAHSULOTLAR OMBORI (With Online vs Offline Sub-Tabs)
+          ===================================================================== */}
       {activeTab === 'inventory' && (
         <div className="space-y-4">
-          <div className="bg-white border border-bunker-border-strong rounded-xl p-4 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div>
-              <h2 className="text-sm font-bold text-bunker-text-primary uppercase tracking-wider font-mono">
-                Sotuvdagi Mahsulotlar Zaxirasi
-              </h2>
-              <p className="text-xs text-bunker-text-secondary mt-0.5">
-                Narxlarni va ombordagi sonini to‘g‘ridan-to‘g‘ri shu yerdan yangilashingiz mumkin.
-              </p>
-            </div>
-            <Link
-              to="/"
-              className="text-xs font-mono font-bold text-bunker-amber-500 hover:underline flex items-center gap-1"
-            >
-              <span>{t('button.viewCatalog', 'Vitrinda ko‘rish')}</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          {loadingProducts ? (
-            <div className="space-y-3">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="bg-white p-4 rounded-xl border border-bunker-border-strong space-y-2">
-                  <Skeleton variant="text" width="60%" />
-                  <Skeleton variant="rect" height={40} />
-                </div>
-              ))}
-            </div>
-          ) : products.length === 0 ? (
-            <div className="bg-white border border-bunker-border-strong rounded-2xl p-8 text-center space-y-3">
-              <div className="w-12 h-12 rounded-full bg-orange-50 border border-orange-200 text-bunker-amber-500 mx-auto flex items-center justify-center">
-                <Package className="w-6 h-6" />
-              </div>
-              <h3 className="font-heading font-bold text-base text-bunker-text-primary">
-                Hozircha hech qanday tovar mavjud emas
-              </h3>
-              <p className="text-xs text-bunker-text-secondary max-w-md mx-auto">
-                Qurilish mollaringizni xaridorlarga taklif qilish uchun birinchi mahsulotingizni joylang.
-              </p>
-              <Button variant="primary" size="sm" onClick={() => setActiveTab('create')}>
-                <PlusCircle className="w-4 h-4 mr-1.5" />
-                <span>Birinchi Mahsulotni Qo‘shish</span>
-              </Button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 gap-3">
-              {products.map((p) => {
-                const isEditing = editingId === p.id;
-                const isActionLoading = actionLoadingId === p.id;
-
-                return (
-                  <div
-                    key={p.id}
-                    className="bg-white border border-bunker-border-strong rounded-xl p-3.5 sm:p-4 shadow-xs transition-all hover:border-slate-300"
-                  >
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                      {/* Left: Image & Info */}
-                      <div className="flex items-start gap-3 flex-1 min-w-0">
-                        <img
-                          src={p.images?.[0] || SAMPLE_IMAGE_PRESETS[0].url}
-                          alt={p.title}
-                          className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover border border-bunker-border-strong shrink-0 bg-slate-50"
-                        />
-                        <div className="space-y-1 min-w-0 flex-1">
-                          <div className="flex flex-wrap items-center gap-1.5">
-                            <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
-                              {p.unit || 'dona'}
-                            </span>
-                            {p.stock > 0 ? (
-                              <Badge variant="success" size="sm" isMono>
-                                Sotuvda faol
-                              </Badge>
-                            ) : (
-                              <Badge variant="danger" size="sm" isMono>
-                                Zaxira tugagan
-                              </Badge>
-                            )}
-                            {p.hasDelivery && (
-                              <span className="text-[10px] font-mono font-medium text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 flex items-center gap-1">
-                                <Truck className="w-3 h-3" />
-                                Yetkazish bor
-                              </span>
-                            )}
-                            {p.certificateUrl && (
-                              <span className="text-[10px] font-mono font-bold text-sky-800 bg-sky-50 px-1.5 py-0.5 rounded border border-sky-200 flex items-center gap-1">
-                                <Award className="w-3 h-3 text-sky-600" />
-                                O‘zDSt / GOST
-                              </span>
-                            )}
-                          </div>
-
-                          <h3 className="font-heading font-bold text-sm text-bunker-text-primary truncate">
-                            {p.title}
-                          </h3>
-
-                          {/* Global Supplier Badges (TZ Section 3) */}
-                          {((p as any).isGlobal || (p as any).incoterms || (p as any).currency === 'USD') && (
-                            <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-                              <span className="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded bg-cyan-50 text-cyan-800 border border-cyan-300 flex items-center gap-1">
-                                <span>🌐</span>
-                                <span>Global Zavod</span>
-                              </span>
-
-                              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-800 border border-blue-200">
-                                Incoterms: {(p as any).incoterms || 'DAP'}
-                              </span>
-
-                              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-indigo-50 text-indigo-800 border border-indigo-200">
-                                MOQ: {p.minOrder || 1} {p.unit}
-                              </span>
-
-                              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
-                                Valyuta: {(p as any).currency === 'USD' || (p as any).priceUsd ? `USD ($${(p as any).priceUsd || Math.round(Number(p.price) / USD_EXCHANGE_RATE)}) / UZS` : 'USD/UZS'}
-                              </span>
-
-                              {(p as any).gtdNumber && (
-                                <span className="text-[10px] font-mono text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
-                                  GTD: {(p as any).gtdNumber}
-                                </span>
-                              )}
-
-                              {(p as any).internationalCert && (
-                                <span className="text-[10px] font-mono font-bold text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200">
-                                  {(p as any).internationalCert}
-                                </span>
-                              )}
-                            </div>
-                          )}
-
-                          {/* Tiered pricing pill indicators if exists */}
-                          {p.tieredPrices && p.tieredPrices.length > 0 && (
-                            <div className="flex flex-wrap items-center gap-1 pt-0.5">
-                              <span className="text-[10px] font-mono text-slate-400">Zinapoya:</span>
-                              {p.tieredPrices.map((tp, idx) => (
-                                <span
-                                  key={idx}
-                                  className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200 font-semibold"
-                                >
-                                  {tp.minQty}+ {p.unit}: {Number(tp.price).toLocaleString()} so‘m
-                                </span>
-                              ))}
-                            </div>
-                          )}
-
-                          <div className="text-xs text-bunker-text-muted flex items-center gap-2 font-mono">
-                            <span>{p.region || 'Toshkent shahri'}</span>
-                            <span>•</span>
-                            <span className="truncate">{p.supplierName || 'Do‘kon zaxirasi'}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Right: Price, Stock & Actions */}
-                      <div className="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-3 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-bunker-border-subtle">
-                        {isEditing ? (
-                          <div className="flex flex-wrap items-center gap-2 font-mono">
-                            <div className="w-32">
-                              <label className="text-[10px] text-bunker-text-muted block">Narx (so‘m):</label>
-                              <Input
-                                type="number"
-                                sizeVariant="sm"
-                                value={editPrice}
-                                onChange={(e) => setEditPrice(Number(e.target.value))}
-                              />
-                            </div>
-                            <div className="w-24">
-                              <label className="text-[10px] text-bunker-text-muted block">Qoldiq:</label>
-                              <Input
-                                type="number"
-                                sizeVariant="sm"
-                                value={editStock}
-                                onChange={(e) => setEditStock(Number(e.target.value))}
-                              />
-                            </div>
-                            <div className="flex items-end gap-1 pt-4">
-                              <Button
-                                size="sm"
-                                variant="primary"
-                                isLoading={isActionLoading}
-                                onClick={() => handleSaveEdit(p.id)}
-                              >
-                                <Save className="w-3.5 h-3.5 mr-1" />
-                                <span>Saqlash</span>
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="secondary"
-                                onClick={() => setEditingId(null)}
-                              >
-                                <X className="w-3.5 h-3.5" />
-                              </Button>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-4 font-mono">
-                            <div className="text-right">
-                              <div className="text-xs sm:text-sm font-extrabold text-bunker-text-primary">
-                                {Number(p.price).toLocaleString()} so‘m
-                              </div>
-                              {((p as any).isGlobal || (p as any).priceUsd) && (
-                                <div className="text-[10px] font-bold text-cyan-700">
-                                  ≈ ${(p as any).priceUsd || Math.round(Number(p.price) / USD_EXCHANGE_RATE).toLocaleString()} USD
-                                </div>
-                              )}
-                              <div className="text-[11px] text-bunker-text-secondary">
-                                Qoldiq: <span className="font-bold text-slate-900">{p.stock}</span> {p.unit}
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-1.5">
-                              <Button
-                                size="sm"
-                                variant="secondary"
-                                onClick={() => startEditing(p)}
-                                title="Narx va qoldiqni tahrirlash"
-                              >
-                                <Edit2 className="w-3.5 h-3.5 mr-1" />
-                                <span className="hidden sm:inline">Tahrirlash</span>
-                              </Button>
-
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="text-red-700 hover:bg-red-50 hover:border-red-300"
-                                isLoading={isActionLoading}
-                                onClick={() => handleDeleteProduct(p.id, p.title)}
-                                title="O‘chirish"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* =========================================================================
-          TAB 2: YANGI MAHSULOT QO‘SHISH (ADD PRODUCT WITH TIERED PRICING & CERT)
-          ========================================================================= */}
-      {activeTab === 'create' && (
-        <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-6 shadow-xs">
-          {/* Header Banner for Global Supplier Mode (TZ Section 3) */}
-          {supplierType === 'GLOBAL' && (
-            <div className="mb-6 p-4 rounded-xl border border-cyan-400 bg-linear-to-r from-cyan-50 via-sky-50 to-blue-50 text-cyan-950 flex items-start gap-3 shadow-xs">
-              <div className="w-10 h-10 rounded-xl bg-cyan-600 text-white flex items-center justify-center shrink-0 shadow-xs text-lg">
-                🌐
-              </div>
-              <div className="space-y-1 font-mono text-xs flex-1">
-                <div className="font-extrabold text-cyan-900 text-sm flex items-center justify-between">
-                  <span>GLOBAL ZAVOD &amp; XALQARO IMPORT REJIMI</span>
-                  <span className="px-2 py-0.5 rounded bg-cyan-200/80 text-cyan-900 text-[10px] font-bold uppercase tracking-wider">
-                    TZ SECTION 3
-                  </span>
-                </div>
-                <p className="text-cyan-800 font-sans text-xs">
-                  Katta ishlab chiqaruvchi zavodlar va importyorlar uchun: Valyuta konvertatsiyasi ($1 = 12,850 so‘m), Vagon/Fura yirik logistikasi, Incoterms (DAP, CIP, FCA, EXW, CIF) hamda Bojxona Yuk Deklaratsiyasi (GTD) integratsiyasi.
-                </p>
-              </div>
-            </div>
-          )}
-
-          <div className="border-b border-bunker-border-strong pb-4 mb-6">
-            <h2 className="text-base font-heading font-extrabold text-bunker-text-primary">
-              {supplierType === 'GLOBAL'
-                ? 'Global Zavod Vitrinasiga Yangi Import Mahsulotini Joylash'
-                : 'BunkerStroy Vitrinasiga Yangi Qurilish Mahsulotini Joylash'}
-            </h2>
-            <p className="text-xs text-bunker-text-secondary mt-1">
-              {supplierType === 'GLOBAL'
-                ? 'Xalqaro yetkazib berish shartlari (Incoterms 2020), vagon va fura partiyalari, USD narxlari hamda bojxona deklaratsiyasi bilan tovar joylashtiring.'
-                : 'Katta hajmda xarid qiluvchi B2B qurilish kompaniyalariga mo‘ljallangan ulgurji narx zinapoyalari va O‘zDSt sertifikatlari bilan tovaringizni joylashtiring.'}
-            </p>
-          </div>
-
-          <form onSubmit={handleCreateProduct} className="space-y-6">
-            {/* 1. Title & Category */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-mono font-bold text-bunker-text-primary mb-1">
-                  Mahsulot Nomi *
-                </label>
-                <Input
-                  placeholder={
-                    supplierType === 'GLOBAL'
-                      ? 'Masalan: MMK Armatura A500C D16 (Rossiya Import, Vagon)'
-                      : 'Masalan: Sement M500 D0 (Qoraqamish, 50kg)'
-                  }
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  required
-                />
-                <span className="text-[10px] text-bunker-text-muted mt-1 block">
-                  Brend, zavod nomi, markasi va spetsifikatsiyasini aniq ko‘rsating.
-                </span>
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono font-bold text-bunker-text-primary mb-1">
-                  Kategoriya *
-                </label>
-                <Select
-                  value={categoryId}
-                  onChange={(e) => setCategoryId(e.target.value)}
-                >
-                  {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </Select>
-                <span className="text-[10px] text-bunker-text-muted mt-1 block">
-                  Xaridor mahsulotni qidirayotganda ushbu toifada ko‘radi.
-                </span>
-              </div>
-            </div>
-
-            {/* 2. Valyuta & Narx Konvertatsiyasi (TZ Section 3 Global Rejim) */}
-            <div className="bg-slate-50/80 border border-slate-200 rounded-xl p-4 sm:p-5 space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <Coins className="w-4 h-4 text-bunker-amber-500" />
-                    <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-bunker-text-primary">
-                      Valyuta va Narx Hisob-Kitobi {supplierType === 'GLOBAL' && '(Xalqaro Konvertatsiya)'}
-                    </h3>
-                  </div>
-                  <p className="text-[11px] text-bunker-text-secondary mt-0.5">
-                    {supplierType === 'GLOBAL'
-                      ? 'Narxni USD da yoki O‘zbekiston so‘mida kiriting. Markaziy Bank kursi ($1 = 12,850 so‘m) bo‘yicha avtomatik ekvivalenti hisoblanadi.'
-                      : 'Mahsulotning asosiy sotuv narxini O‘zbekiston so‘mida belgilang.'}
-                  </p>
-                </div>
-
-                {supplierType === 'GLOBAL' && (
-                  <div className="flex items-center p-1 bg-white rounded-lg border border-slate-300 font-mono text-xs shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setCurrency('USD');
-                        if (priceUsd && (!price || Number(price) <= 0)) {
-                          setPrice(Number(priceUsd) * USD_EXCHANGE_RATE);
-                        }
-                      }}
-                      className={`px-3 py-1 rounded font-bold cursor-pointer transition-all ${
-                        currency === 'USD'
-                          ? 'bg-cyan-600 text-white shadow-xs'
-                          : 'text-slate-600 hover:text-slate-900'
-                      }`}
-                    >
-                      $ USD (Xalqaro)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setCurrency('UZS')}
-                      className={`px-3 py-1 rounded font-bold cursor-pointer transition-all ${
-                        currency === 'UZS'
-                          ? 'bg-slate-900 text-white shadow-xs'
-                          : 'text-slate-600 hover:text-slate-900'
-                      }`}
-                    >
-                      so‘m UZS (Mahalliy)
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
-                {supplierType === 'GLOBAL' && currency === 'USD' ? (
-                  <>
-                    <div>
-                      <label className="block text-xs font-bold text-bunker-text-primary mb-1">
-                        Narx ($ USD da) *
-                      </label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-2.5 text-xs font-bold text-cyan-700">$</span>
-                        <Input
-                          type="number"
-                          className="pl-7"
-                          placeholder="600"
-                          value={priceUsd}
-                          onChange={(e) => {
-                            const val = e.target.value === '' ? '' : Number(e.target.value);
-                            setPriceUsd(val);
-                            if (typeof val === 'number') {
-                              setPrice(Math.round(val * USD_EXCHANGE_RATE));
-                            } else {
-                              setPrice('');
-                            }
-                          }}
-                          required
-                        />
-                      </div>
-                      <span className="text-[10px] text-cyan-700 mt-1 block font-semibold">
-                        Masalan: $600 / tonna
-                      </span>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-bunker-text-primary mb-1">
-                        So‘mdagi ekvivalenti (UZS)
-                      </label>
-                      <div className="px-3 py-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 font-extrabold text-sm h-[38px] flex items-center justify-between">
-                        <span>
-                          {typeof priceUsd === 'number' && priceUsd > 0
-                            ? (priceUsd * USD_EXCHANGE_RATE).toLocaleString()
-                            : 0}
-                        </span>
-                        <span className="text-[10px] font-normal text-emerald-700">so‘m</span>
-                      </div>
-                      <span className="text-[10px] text-emerald-700 mt-1 block">
-                        MB kursi: $1 = {USD_EXCHANGE_RATE.toLocaleString()} so‘m
-                      </span>
-                    </div>
-                  </>
-                ) : (
-                  <div>
-                    <label className="block text-xs font-bold text-bunker-text-primary mb-1">
-                      Asosiy Narxi (so‘m) *
-                    </label>
-                    <Input
-                      type="number"
-                      placeholder="64000"
-                      value={price}
-                      onChange={(e) => {
-                        const val = e.target.value === '' ? '' : Number(e.target.value);
-                        setPrice(val);
-                        if (typeof val === 'number') {
-                          setPriceUsd(Math.round(val / USD_EXCHANGE_RATE));
-                        }
-                      }}
-                      required
-                    />
-                    {supplierType === 'GLOBAL' && typeof price === 'number' && price > 0 && (
-                      <span className="text-[10px] text-slate-500 mt-1 block">
-                        ≈ ${(price / USD_EXCHANGE_RATE).toFixed(1)} USD ($1 = 12,850 so‘m)
-                      </span>
-                    )}
-                  </div>
-                )}
-
-                <div>
-                  <label className="block text-xs font-bold text-bunker-text-primary mb-1">
-                    O‘lchov birligi *
-                  </label>
-                  <Select value={unit} onChange={(e) => setUnit(e.target.value)}>
-                    {supplierType === 'GLOBAL' ? (
-                      <>
-                        <option value="Vagon (60t)">Vagon (60t) - Temir yo‘l yirik partiyasi</option>
-                        <option value="Konteyner (24t)">Konteyner (24t) - Multimodal yuk</option>
-                        <option value="Fura (20t)">Fura (20t) - Xalqaro TIR avtotransport</option>
-                        <option value="Tonna">Tonna (t) - Ulgurji sof og‘irlik</option>
-                        <option value="dona">dona (dona)</option>
-                        <option value="qop (50kg)">qop (50kg)</option>
-                        <option value="m³">m³ (kub metr)</option>
-                        <option value="m²">m² (kvadrat metr)</option>
-                      </>
-                    ) : (
-                      <>
-                        <option value="dona">dona (dona)</option>
-                        <option value="qop (50kg)">qop (50kg)</option>
-                        <option value="qop (25kg)">qop (25kg)</option>
-                        <option value="tonna">tonna (ton)</option>
-                        <option value="m²">m² (kvadrat metr)</option>
-                        <option value="metr">metr (p.m)</option>
-                        <option value="m³">m³ (kub metr)</option>
-                        <option value="litr">litr (l)</option>
-                      </>
-                    )}
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-bunker-text-primary mb-1">
-                    {supplierType === 'GLOBAL' ? 'Minimal buyurtma (MOQ) *' : 'Minimal buyurtma hajmi'}
-                  </label>
-                  <Input
-                    type="number"
-                    placeholder="1"
-                    value={minOrder}
-                    onChange={(e) => setMinOrder(e.target.value === '' ? '' : Number(e.target.value))}
-                  />
-                  <span className="text-[10px] text-bunker-text-muted mt-1 block">
-                    {supplierType === 'GLOBAL'
-                      ? `Partiya: ${minOrder || 1} ${unit}`
-                      : 'Mijoz kamida shuncha olishi kerak.'}
-                  </span>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-bunker-text-primary mb-1">
-                    Ombordagi zaxira soni *
-                  </label>
-                  <Input
-                    type="number"
-                    placeholder={supplierType === 'GLOBAL' ? '500' : '1000'}
-                    value={stock}
-                    onChange={(e) => setStock(e.target.value === '' ? '' : Number(e.target.value))}
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* INCOTERMS 2020 TANLOVI (TZ Section 3) */}
-            {supplierType === 'GLOBAL' && (
-              <div className="bg-slate-50/80 border border-slate-200 rounded-xl p-4 sm:p-5 space-y-3">
-                <div className="flex items-center gap-2 border-b border-slate-200 pb-2.5">
-                  <Globe className="w-4 h-4 text-cyan-600" />
-                  <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-bunker-text-primary">
-                    Incoterms 2020 Xalqaro Yetkazib Berish Sharti *
-                  </h3>
-                </div>
-                <p className="text-[11px] text-bunker-text-secondary font-sans">
-                  Yuk tashish xarajatlari, xavf-xatarlar va bojxona rasmiylashtiruvi kimning zimmasida ekanligini belgilang:
-                </p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 font-mono">
-                  {INCOTERMS_OPTIONS.map((item) => {
-                    const isSelected = incoterms === item.code;
-                    return (
-                      <div
-                        key={item.code}
-                        onClick={() => setIncoterms(item.code)}
-                        className={`p-3 rounded-xl border text-xs cursor-pointer transition-all select-none space-y-1.5 ${
-                          isSelected
-                            ? 'bg-cyan-50 border-cyan-500 shadow-xs ring-1 ring-cyan-500'
-                            : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className={`font-extrabold ${isSelected ? 'text-cyan-900' : 'text-slate-900'}`}>
-                            {item.code}
-                          </span>
-                          {isSelected && <Check className="w-3.5 h-3.5 text-cyan-600" />}
-                        </div>
-                        <div className="text-[10px] text-slate-500 font-semibold">{item.name}</div>
-                        <p className="text-[10px] text-slate-600 font-sans leading-tight">
-                          {item.description}
-                        </p>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* BOJXONA YUK DEKLARATSIYASI (GTD / BTX IMPORT) (TZ Section 3) */}
-            {supplierType === 'GLOBAL' && (
-              <div className="bg-slate-50/80 border border-slate-200 rounded-xl p-4 sm:p-5 space-y-3">
-                <div className="flex items-center gap-2 border-b border-slate-200 pb-2.5">
-                  <FileCheck className="w-4 h-4 text-emerald-600" />
-                  <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-bunker-text-primary">
-                    Bojxona Yuk Deklaratsiyasi (GTD / BTX Import)
-                  </h3>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono">
-                  <div>
-                    <label className="block text-xs font-bold text-bunker-text-primary mb-1">
-                      GTD Raqami (Bojxona kodi)
-                    </label>
-                    <Input
-                      placeholder="Masalan: 26001/01.10.2026/0014285"
-                      value={gtdNumber}
-                      onChange={(e) => setGtdNumber(e.target.value)}
-                    />
-                    <span className="text-[10px] text-bunker-text-muted mt-1 block">
-                      O‘zbekiston Respublikasi Bojxona qo‘mitasi tomonidan ro‘yxatga olingan GTD raqami.
-                    </span>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-bunker-text-primary mb-1">
-                      Bojxona Deklaratsiyasi PDF Havolasi
-                    </label>
-                    <Input
-                      placeholder="https://customs.gov.uz/gtd/0014285.pdf"
-                      value={gtdUrl}
-                      onChange={(e) => setGtdUrl(e.target.value)}
-                    />
-                    <span className="text-[10px] text-bunker-text-muted mt-1 block">
-                      Xaridorlar tovar importi qonuniy rasmiylashtirilganligini tekshirishlari uchun havola.
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* XALQARO SERTIFIKATLAR (ISO 9001 / CE / GOST) (TZ Section 3) */}
-            {supplierType === 'GLOBAL' && (
-              <div className="bg-slate-50/80 border border-slate-200 rounded-xl p-4 sm:p-5 space-y-3">
-                <div className="flex items-center gap-2 border-b border-slate-200 pb-2.5">
-                  <Award className="w-4 h-4 text-purple-600" />
-                  <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-bunker-text-primary">
-                    Xalqaro Sifat Sertifikatlari (ISO 9001 / CE / GOST)
-                  </h3>
-                </div>
-
-                <div className="space-y-2 font-mono">
-                  <label className="block text-xs font-bold text-bunker-text-primary">
-                    Sertifikat Raqami va Turi *
-                  </label>
-                  <Input
-                    placeholder="Masalan: ISO 9001:2015 #CH-88412 yoki CE Mark EN 197-1"
-                    value={internationalCert}
-                    onChange={(e) => setInternationalCert(e.target.value)}
-                  />
-                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                    <span className="text-[11px] text-bunker-text-muted">Tezkor shablonlar:</span>
-                    {['ISO 9001:2015 #CH-88412', 'CE Mark (EN 197-1)', 'GOST 34028-2016', 'TÜV Rheinland Certified'].map((cert) => (
-                      <button
-                        key={cert}
-                        type="button"
-                        onClick={() => setInternationalCert(cert)}
-                        className="text-[10px] px-2 py-0.5 rounded bg-purple-50 text-purple-800 border border-purple-200 hover:bg-purple-100 transition-colors cursor-pointer"
-                      >
-                        + {cert}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* =========================================================================
-                TM-03: MIQDOR ZINAPOYASI (TIERED PRICING / ULQURJI NARXLAR)
-                ========================================================================= */}
-            <div className="bg-slate-50/80 border border-slate-200 rounded-xl p-4 sm:p-5 space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/80 pb-3">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <Layers className="w-4 h-4 text-bunker-amber-500" />
-                    <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-bunker-text-primary">
-                      Miqdor Zinapoyasi (Ulgurji Chegirma Pog‘onalari / Tiered Pricing)
-                    </h3>
-                  </div>
-                  <p className="text-[11px] text-bunker-text-secondary mt-0.5">
-                    Katta hajmda oluvchi xaridorlar uchun arzonlashtirilgan narx zinapoyalarini belgilang (Masalan: 20-99 dona &rarr; 58,000 so‘m, 100+ dona &rarr; 55,000 so‘m).
-                  </p>
-                </div>
-
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className="font-mono text-xs border-amber-500/40 text-amber-900 bg-amber-50/60 hover:bg-amber-100 shrink-0"
-                  onClick={handleAddTier}
-                >
-                  <PlusCircle className="w-3.5 h-3.5 mr-1 text-bunker-amber-600" />
-                  <span>+ Zinapoya qo‘shish</span>
-                </Button>
-              </div>
-
-              {tieredPrices.length === 0 ? (
-                <div className="text-center py-4 px-3 border border-dashed border-slate-300 rounded-lg bg-white/70">
-                  <p className="text-xs text-bunker-text-secondary">
-                    Hozircha ulgurji zinapoyalar qo‘shilmagan. Katta hajm xaridlariga chegirma berish orqali sotuv aylanmangizni 30% ga oshirishingiz mumkin.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={handleAddTier}
-                    className="mt-2 text-xs font-mono font-bold text-bunker-amber-600 hover:text-bunker-amber-700 underline cursor-pointer"
-                  >
-                    + Birinchi zinapoyani kiritish
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-2.5">
-                  <div className="hidden sm:grid sm:grid-cols-12 gap-3 text-[10px] font-mono font-bold uppercase text-slate-400 px-2">
-                    <span className="col-span-3">Minimal miqdor (Min)</span>
-                    <span className="col-span-3">Maksimal miqdor (Max)</span>
-                    <span className="col-span-4">Zinapoya Narxi (so‘m / {unit})</span>
-                    <span className="col-span-2 text-right">Amal</span>
-                  </div>
-
-                  {tieredPrices.map((tier, idx) => {
-                    const base = typeof price === 'number' && price > 0 ? price : 0;
-                    const tierP = typeof tier.price === 'number' ? tier.price : 0;
-                    const discountPercent = base > 0 && tierP > 0 && tierP < base
-                      ? Math.round(((base - tierP) / base) * 100)
-                      : 0;
-
-                    return (
-                      <div
-                        key={tier.id}
-                        className="bg-white p-3 rounded-lg border border-slate-200/90 shadow-xs grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center font-mono"
-                      >
-                        <div className="sm:col-span-3">
-                          <label className="text-[10px] text-slate-400 block sm:hidden">Min miqdor:</label>
-                          <div className="relative">
-                            <Input
-                              type="number"
-                              sizeVariant="sm"
-                              placeholder="20"
-                              value={tier.minQty}
-                              onChange={(e) =>
-                                handleUpdateTier(
-                                  tier.id,
-                                  'minQty',
-                                  e.target.value === '' ? '' : Number(e.target.value)
-                                )
-                              }
-                            />
-                            <span className="absolute right-2.5 top-2 text-[10px] text-slate-400">
-                              {unit}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="sm:col-span-3">
-                          <label className="text-[10px] text-slate-400 block sm:hidden">Max miqdor (ixtiyoriy):</label>
-                          <div className="relative">
-                            <Input
-                              type="number"
-                              sizeVariant="sm"
-                              placeholder="99 (yoki bo‘sh)"
-                              value={tier.maxQty}
-                              onChange={(e) =>
-                                handleUpdateTier(
-                                  tier.id,
-                                  'maxQty',
-                                  e.target.value === '' ? '' : Number(e.target.value)
-                                )
-                              }
-                            />
-                            <span className="absolute right-2.5 top-2 text-[10px] text-slate-400">
-                              {tier.maxQty ? unit : 'va ko‘proq'}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="sm:col-span-4">
-                          <label className="text-[10px] text-slate-400 block sm:hidden">Zinapoya Narxi:</label>
-                          <div className="flex items-center gap-2">
-                            <div className="relative flex-1">
-                              <Input
-                                type="number"
-                                sizeVariant="sm"
-                                placeholder="58000"
-                                value={tier.price}
-                                onChange={(e) =>
-                                  handleUpdateTier(
-                                    tier.id,
-                                    'price',
-                                    e.target.value === '' ? '' : Number(e.target.value)
-                                  )
-                                }
-                              />
-                              <span className="absolute right-2 top-2 text-[10px] text-slate-400">
-                                so‘m
-                              </span>
-                            </div>
-                            {discountPercent > 0 && (
-                              <span className="text-[10px] font-bold px-1.5 py-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 shrink-0">
-                                -{discountPercent}%
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="sm:col-span-2 flex items-center justify-end">
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            className="text-red-700 hover:bg-red-50 hover:border-red-300 p-1.5"
-                            onClick={() => handleRemoveTier(tier.id)}
-                            title="Zinapoyani o‘chirish"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </Button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            {/* =========================================================================
-                TM-04: O‘ZDST / GOST SERTIFIKATI MAYDONI
-                ========================================================================= */}
-            <div className="bg-slate-50/80 border border-slate-200 rounded-xl p-4 sm:p-5 space-y-3">
-              <div className="flex items-center gap-2 border-b border-slate-200/80 pb-2.5">
-                <Award className="w-4 h-4 text-sky-600" />
-                <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-bunker-text-primary">
-                  O‘zDSt / GOST Sertifikati (TM-04 Rasmiy Standartlar)
-                </h3>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono">
-                <div>
-                  <label className="block text-xs font-bold text-bunker-text-primary mb-1">
-                    Sertifikat Raqami / Standart Kodi
-                  </label>
-                  <Input
-                    placeholder="Masalan: O‘zDSt 3012:2018 #UZ-09412"
-                    value={certificateNumber}
-                    onChange={(e) => setCertificateNumber(e.target.value)}
-                  />
-                  <span className="text-[10px] text-bunker-text-muted mt-1 block">
-                    Standartlashtirish agentligi tomonidan berilgan reestr kodi.
-                  </span>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-bunker-text-primary mb-1">
-                    Sertifikat Hujjat Havolasi (PDF yoki Standart.uz)
-                  </label>
-                  <Input
-                    placeholder="https://standart.uz/cert/UZ-09412.pdf"
-                    value={certificateUrl}
-                    onChange={(e) => setCertificateUrl(e.target.value)}
-                  />
-                  <span className="text-[10px] text-bunker-text-muted mt-1 block">
-                    Xaridorlar tovar sahifasida sertifikatni to‘liq ochib ko‘rishlari mumkin.
-                  </span>
-                </div>
-              </div>
-
-              {(certificateNumber || certificateUrl) && (
-                <div className="flex items-center gap-2 pt-1 font-mono text-xs">
-                  <span className="text-slate-400">Vitrinadagi ko‘rinish:</span>
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold text-[11px]">
-                    <Check className="w-3 h-3 text-emerald-600" />
-                    O‘zDSt / GOST Tasdiqlangan: {certificateNumber || 'Sertifikat mavjud'}
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* 3. Image URL & Quick Presets */}
-            <div className="space-y-2">
-              <label className="block text-xs font-mono font-bold text-bunker-text-primary">
-                Mahsulot Rasmi (URL havolasi)
-              </label>
-              <Input
-                placeholder="https://example.com/rasm.jpg"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-              />
-              <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                <span className="text-[11px] font-mono text-bunker-text-muted">Tayyor shablon rasmlar:</span>
-                {SAMPLE_IMAGE_PRESETS.map((preset) => (
-                  <button
-                    key={preset.label}
-                    type="button"
-                    onClick={() => setImageUrl(preset.url)}
-                    className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 transition-colors cursor-pointer"
-                  >
-                    {preset.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* 4. Region & District */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-mono font-bold text-bunker-text-primary mb-1">
-                  Ombor / Ishlab chiqarish hududi
-                </label>
-                <Select value={region} onChange={(e) => setRegion(e.target.value)}>
-                  <option value="Toshkent shahri">Toshkent shahri</option>
-                  <option value="Toshkent viloyati">Toshkent viloyati</option>
-                  <option value="Samarqand viloyati">Samarqand viloyati</option>
-                  <option value="Farg‘ona viloyati">Farg‘ona viloyati</option>
-                  <option value="Andijon viloyati">Andijon viloyati</option>
-                  <option value="Namangan viloyati">Namangan viloyati</option>
-                  <option value="Buxoro viloyati">Buxoro viloyati</option>
-                </Select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono font-bold text-bunker-text-primary mb-1">
-                  Tuman / Manzil
-                </label>
-                <Input
-                  placeholder="Masalan: Chilonzor tumani, Bunyodkor shox ko‘chasi"
-                  value={district}
-                  onChange={(e) => setDistrict(e.target.value)}
-                />
-              </div>
-            </div>
-
-            {/* 5. Delivery Checkbox */}
-            <div className="bg-slate-50 border border-bunker-border-strong rounded-xl p-3.5 flex items-center gap-3">
-              <input
-                type="checkbox"
-                id="hasDelivery"
-                checked={hasDelivery}
-                onChange={(e) => setHasDelivery(e.target.checked)}
-                className="w-4 h-4 text-bunker-amber-500 rounded border-slate-300 focus:ring-bunker-amber-500 cursor-pointer"
-              />
-              <label htmlFor="hasDelivery" className="text-xs font-mono text-bunker-text-primary cursor-pointer select-none">
-                <span className="font-bold">Yetkazib berish xizmati mavjud:</span> Xaridor manziliga yuk avtotransporti (HOWO / Gazel / Kuryer) orqali yetkazib beriladi.
-              </label>
-            </div>
-
-            {/* 6. Description */}
-            <div>
-              <label className="block text-xs font-mono font-bold text-bunker-text-primary mb-1">
-                Mahsulot Tavsifi va Texnik Parametrlari
-              </label>
-              <textarea
-                rows={3}
-                className="w-full text-xs font-mono p-3 rounded-xl border border-bunker-border-strong bg-white focus:outline-none focus:ring-2 focus:ring-bunker-amber-500 text-bunker-text-primary"
-                placeholder="Mahsulotning texnik parametrlari, qo‘llanilishi, GOST yoki laboratoriya kafolati..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </div>
-
-            {/* Submit Action */}
-            <div className="pt-2 flex items-center justify-end gap-3">
-              <Button
-                type="button"
-                variant="secondary"
-                size="md"
-                onClick={() => setActiveTab('inventory')}
-              >
-                Bekor qilish
-              </Button>
-
-              <Button
-                type="submit"
-                variant="primary"
-                size="md"
-                isLoading={formSubmitting}
-              >
-                <PlusCircle className="w-4 h-4 mr-1.5" />
-                <span>Vitrinda E’lon Qilish</span>
-              </Button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {/* =========================================================================
-          TAB 3: TUSHGAN BUYURTMALAR (TM-06 & TM-07 ORDER WORKFLOW & CANCELLATION)
-          ========================================================================= */}
-      {activeTab === 'orders' && (
-        <div className="space-y-4">
-          <div className="bg-white border border-bunker-border-strong rounded-xl p-4 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div>
-              <h2 className="text-sm font-bold text-bunker-text-primary uppercase tracking-wider font-mono">
-                Mijozlardan Tushgan Buyurtmalar (B2B Ta’minot)
-              </h2>
-              <p className="text-xs text-bunker-text-secondary mt-0.5">
-                Xaridorlar to‘lov qilganda buyurtmani qabul qiling, omborda yig‘ing (Packing) va yetkazib berishga chiqaring.
-              </p>
-            </div>
-            <div className="font-mono text-xs text-bunker-text-muted">
-              Jami: <span className="font-bold text-slate-900">{orders.length}</span> ta
-            </div>
-          </div>
-
-          {loadingOrders ? (
-            <div className="space-y-3">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="bg-white p-4 rounded-xl border border-bunker-border-strong space-y-2">
-                  <Skeleton variant="text" width="40%" />
-                  <Skeleton variant="rect" height={60} />
-                </div>
-              ))}
-            </div>
-          ) : orders.length === 0 ? (
-            <div className="bg-white border border-bunker-border-strong rounded-2xl p-8 text-center space-y-3">
-              <div className="w-12 h-12 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 mx-auto flex items-center justify-center">
-                <Truck className="w-6 h-6" />
-              </div>
-              <h3 className="font-heading font-bold text-base text-bunker-text-primary">
-                Hozircha yangi buyurtmalar yo‘q
-              </h3>
-              <p className="text-xs text-bunker-text-secondary max-w-md mx-auto">
-                Xaridorlar savatchaga mahsulot qo‘shib rasmiylashtirganda, sizga yetkazib berish xabarnomasi keladi.
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {orders.map((ord) => {
-                const isUpdating = updatingOrderId === ord.id;
-
-                return (
-                  <div
-                    key={ord.id}
-                    className="bg-white border border-bunker-border-strong rounded-xl p-4 shadow-xs space-y-3 transition-all hover:border-slate-300"
-                  >
-                    {/* Header: Order Number, Date, Status */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-bunker-border-subtle font-mono">
-                      <div className="flex items-center gap-2.5">
-                        <span className="font-bold text-sm text-bunker-text-primary">
-                          #{ord.orderNumber}
-                        </span>
-                        <span className="text-xs text-bunker-text-muted">
-                          {new Date(ord.createdAt).toLocaleDateString('uz-UZ', {
-                            day: 'numeric',
-                            month: 'short',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        {ord.status === 'PAID' && (
-                          <Badge variant="success" size="sm" isMono>
-                            TO‘LANDI (ESCROWDA)
-                          </Badge>
-                        )}
-                        {ord.status === 'CONFIRMED' && (
-                          <Badge variant="info" size="sm" isMono>
-                            TASDIQLANDI
-                          </Badge>
-                        )}
-                        {ord.status === 'ACCEPTED' && (
-                          <Badge variant="success" size="sm" isMono className="bg-emerald-100 text-emerald-900 border-emerald-300">
-                            QABUL QILINDI
-                          </Badge>
-                        )}
-                        {ord.status === 'PACKING' && (
-                          <Badge variant="warning" size="sm" isMono className="bg-amber-100 text-amber-900 border-amber-300">
-                            YIG‘ILMOQDA (PACKING)
-                          </Badge>
-                        )}
-                        {ord.status === 'IN_TRANSIT' && (
-                          <Badge variant="warning" size="sm" isMono>
-                            YO‘LDA (YETKAZILMOQDA)
-                          </Badge>
-                        )}
-                        {ord.status === 'ARRIVED' && (
-                          <Badge variant="info" size="sm" isMono>
-                            MANZILGA YETDI
-                          </Badge>
-                        )}
-                        {ord.status === 'DELIVERED' && (
-                          <Badge variant="success" size="sm" isMono>
-                            YETKAZILDI
-                          </Badge>
-                        )}
-                        {ord.status === 'COMPLETED' && (
-                          <Badge variant="success" size="sm" isMono>
-                            YAKUNLANDI (SOF TO‘LOV)
-                          </Badge>
-                        )}
-                        {ord.status === 'CANCELLED' && (
-                          <Badge variant="danger" size="sm" isMono>
-                            BEKOR QILINDI
-                          </Badge>
-                        )}
-                        {ord.status === 'PENDING' && (
-                          <Badge variant="warning" size="sm" isMono>
-                            KUTILMOQDA
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Customer & Delivery Destination Details */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono bg-slate-50 p-3 rounded-lg border border-bunker-border-subtle">
-                      <div className="space-y-1">
-                        <div className="text-[10px] uppercase text-bunker-text-muted">Buyurtmachi:</div>
-                        <div className="font-bold text-bunker-text-primary">
-                          {ord.buyerName || (ord as any).buyer?.displayName || 'Xaridor'}
-                        </div>
-                        <div className="flex items-center gap-1.5 text-bunker-text-secondary">
-                          <Phone className="w-3.5 h-3.5 text-emerald-600" />
-                          <span>{ord.buyerPhone || (ord as any).buyer?.phone || '+998901234567'}</span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-1">
-                        <div className="text-[10px] uppercase text-bunker-text-muted">Yetkazib berish manzili:</div>
-                        <div className="flex items-start gap-1.5 text-bunker-text-primary">
-                          <MapPin className="w-3.5 h-3.5 text-bunker-amber-500 shrink-0 mt-0.5" />
-                          <span>
-                            {ord.deliveryAddress?.region || (ord as any).deliveryRegion || 'Toshkent shahri'},{' '}
-                            {ord.deliveryAddress?.district || (ord as any).deliveryDistrict || ''}
-                            {ord.deliveryAddress?.street ? `, ${ord.deliveryAddress.street}` : (ord as any).deliveryStreet ? `, ${(ord as any).deliveryStreet}` : ''}
-                          </span>
-                        </div>
-                        <div className="text-[10px] text-bunker-text-muted">
-                          Transport: {ord.vehicleType || 'Standart Kuryer / Yuk mashinasi'}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Order Items Table */}
-                    <div className="space-y-1.5 font-mono text-xs">
-                      <div className="text-[10px] uppercase text-bunker-text-muted">Buyurtma qilingan tovarlar:</div>
-                      <div className="divide-y divide-bunker-border-subtle">
-                        {ord.items.map((it) => (
-                          <div key={it.id} className="py-1.5 flex items-center justify-between">
-                            <span className="text-bunker-text-primary font-medium truncate max-w-sm">
-                              {it.productTitle || (it as any).product?.title || 'Qurilish materiali'}
-                            </span>
-                            <div className="text-right shrink-0">
-                              <span className="text-bunker-text-muted mr-2">
-                                {it.quantity} {it.unit} &times; {Number(it.unitPrice).toLocaleString()} so‘m
-                              </span>
-                              <span className="font-bold text-slate-900">
-                                {Number(it.totalPrice).toLocaleString()} so‘m
-                              </span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Bottom Status Control Buttons & Summary */}
-                    <div className="pt-3 border-t border-bunker-border-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-mono">
-                      <div className="text-xs">
-                        <span className="text-bunker-text-muted">Jami to‘lov: </span>
-                        <span className="font-extrabold text-sm text-bunker-text-primary">
-                          {Number(ord.finalAmount || ord.totalAmount).toLocaleString()} so‘m
-                        </span>
-                        {Number(ord.deliveryFee) > 0 && (
-                          <span className="text-[10px] text-emerald-800 ml-1.5 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                            +{Number(ord.deliveryFee).toLocaleString()} so‘m yetkazish
-                          </span>
-                        )}
-                      </div>
-
-                      {/* TM-06 & TM-07: Action Buttons according to specifications */}
-                      <div className="flex flex-wrap items-center gap-1.5">
-                        {/* 1. If order is PAID or CONFIRMED -> Buyurtmani Qabul Qilish (ACCEPTED) */}
-                        {(ord.status === 'PAID' || ord.status === 'CONFIRMED' || ord.status === 'PENDING') && (
-                          <Button
-                            size="sm"
-                            variant="primary"
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white font-mono"
-                            isLoading={isUpdating}
-                            onClick={() => handleUpdateOrderStatus(ord.id, 'ACCEPTED')}
-                          >
-                            <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
-                            <span>{t('button.accept', 'Buyurtmani Qabul Qilish')}</span>
-                          </Button>
-                        )}
-
-                        {/* 2. If order is ACCEPTED -> Omborda Yig‘ildi (Packing) */}
-                        {ord.status === 'ACCEPTED' && (
-                          <Button
-                            size="sm"
-                            variant="primary"
-                            className="bg-amber-600 hover:bg-amber-700 text-white font-mono"
-                            isLoading={isUpdating}
-                            onClick={() => handleUpdateOrderStatus(ord.id, 'PACKING')}
-                          >
-                            <Package className="w-3.5 h-3.5 mr-1.5" />
-                            <span>{t('button.packing', 'Omborda Yig‘ildi (Packing)')}</span>
-                          </Button>
-                        )}
-
-                        {/* 3. If order is PACKING -> Yo‘lga chiqarish (IN_TRANSIT) */}
-                        {ord.status === 'PACKING' && (
-                          <Button
-                            size="sm"
-                            variant="primary"
-                            className="bg-sky-600 hover:bg-sky-700 text-white font-mono"
-                            isLoading={isUpdating}
-                            onClick={() => handleUpdateOrderStatus(ord.id, 'IN_TRANSIT')}
-                          >
-                            <Truck className="w-3.5 h-3.5 mr-1.5" />
-                            <span>Yo‘lga Chiqarish (Haydovchiga topshirish)</span>
-                          </Button>
-                        )}
-
-                        {/* 4. If IN_TRANSIT -> Deliv status info */}
-                        {ord.status === 'IN_TRANSIT' && (
-                          <span className="text-xs font-mono text-sky-700 bg-sky-50 px-2 py-1 rounded border border-sky-200 flex items-center gap-1">
-                            <Clock className="w-3.5 h-3.5 text-sky-600" />
-                            Yetkazilmoqda (Haydovchi yo‘lda)
-                          </span>
-                        )}
-
-                        {/* TM-07: Bekor qilish / Rad etish with reason prompt */}
-                        {ord.status !== 'DELIVERED' && ord.status !== 'COMPLETED' && ord.status !== 'CANCELLED' && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="text-red-700 hover:bg-red-50 hover:border-red-300 font-mono"
-                            isLoading={isUpdating}
-                            onClick={() => openCancelModal(ord)}
-                          >
-                            <X className="w-3.5 h-3.5 mr-1" />
-                            <span>{t('button.reject', 'Bekor qilish / Rad etish')}</span>
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* =========================================================================
-          TAB 4: TM-08 MOLIYA & ESCROW (KPI SUMMARY CARDS & REALISTIC LEDGER)
-          ========================================================================= */}
-      {activeTab === 'escrow' && (
-        <div className="space-y-6">
-          {/* TM-08: 4 KPI Summary Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
-            {/* 1. Escrowda Bloklangan */}
-            <div className="bg-white border-2 border-amber-500/30 rounded-2xl p-4 sm:p-5 shadow-xs relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-bold text-amber-800 uppercase tracking-wider">
-                  {t('escrow.locked', 'Escrowda Bloklangan')}
-                </span>
-                <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center border border-amber-200">
-                  <Lock className="w-4 h-4" />
-                </div>
-              </div>
-              <div className="text-xl sm:text-2xl font-black text-bunker-text-primary">
-                {totalLockedInEscrow.toLocaleString()} <span className="text-xs font-normal text-slate-500">so‘m</span>
-              </div>
-              <p className="text-[10px] text-amber-900/80 mt-1.5 leading-relaxed">
-                Mijoz qabul kodini tasdiqlashi bilan sof hisobingizga o‘tkaziladi.
-              </p>
-              <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center gap-1.5 text-[10px] text-emerald-700 font-bold">
-                <ShieldCheck className="w-3 h-3 text-emerald-600" />
-                <span>100% Xavfsiz Tranzaksiya</span>
-              </div>
-            </div>
-
-            {/* 2. Ajratilgan / Yechib Olishga Tayyor */}
-            <div className="bg-white border-2 border-emerald-500/30 rounded-2xl p-4 sm:p-5 shadow-xs relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-xl pointer-events-none" />
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider">
-                  {t('escrow.available', 'Ajratilgan / Yechib Olishga Tayyor')}
-                </span>
-                <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center border border-emerald-200">
-                  <Wallet className="w-4 h-4" />
-                </div>
-              </div>
-              <div className="text-xl sm:text-2xl font-black text-emerald-800">
-                {totalAvailablePayout.toLocaleString()} <span className="text-xs font-normal text-slate-500">so‘m</span>
-              </div>
-              <p className="text-[10px] text-emerald-900/80 mt-1.5 leading-relaxed">
-                Platforma 1.5% komissiyasi yechilgan sof tushum. Bank hisobiga yechib olish mumkin.
-              </p>
+          {/* Sub-tabs: All vs Online vs Offline */}
+          <div className="industrial-card rounded-2xl p-4 bg-[#0A1931] border border-[#1E3A6D] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2 font-mono text-xs">
+              <span className="text-sky-400 font-bold uppercase text-[11px] mr-1">
+                Kanal bo‘yicha filtr:
+              </span>
               <button
                 type="button"
-                onClick={() => setIsWithdrawModalOpen(true)}
-                className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between w-full text-[10px] text-emerald-700 font-bold hover:text-emerald-800 cursor-pointer"
+                onClick={() => setInventorySubTab('all')}
+                className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${
+                  inventorySubTab === 'all'
+                    ? 'bg-[#132C54] text-[#FFB800] border-[#FFB800] font-bold'
+                    : 'bg-[#071326] text-sky-300 border-[#1E3A6D] hover:border-[#2E5A9C]'
+                }`}
               >
-                <span>Mablag‘ni yechish &rarr;</span>
-                <ArrowUpRight className="w-3 h-3" />
+                Barcha tovarlar ({products.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setInventorySubTab('online')}
+                className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 ${
+                  inventorySubTab === 'online'
+                    ? 'bg-[#132C54] text-emerald-400 border-emerald-500 font-bold'
+                    : 'bg-[#071326] text-sky-300 border-[#1E3A6D] hover:border-[#2E5A9C]'
+                }`}
+              >
+                <Globe className="w-3.5 h-3.5 text-emerald-400" />
+                <span>🌐 Online Vitrina ({products.filter((p) => (p as any).isOnline !== false).length})</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setInventorySubTab('offline')}
+                className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 ${
+                  inventorySubTab === 'offline'
+                    ? 'bg-[#132C54] text-[#FFB800] border-[#FFB800] font-bold'
+                    : 'bg-[#071326] text-sky-300 border-[#1E3A6D] hover:border-[#2E5A9C]'
+                }`}
+              >
+                <Store className="w-3.5 h-3.5 text-[#FFB800]" />
+                <span>🏪 Do‘kon Kassa / POS ({products.filter((p) => (p as any).isOffline !== false).length})</span>
               </button>
             </div>
 
-            {/* 3. Platforma Komissiyasi (1.5%) */}
-            <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-5 shadow-xs">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">
-                  {t('escrow.commission', 'Platforma Komissiyasi (1.5%)')}
-                </span>
-                <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center border border-slate-200">
-                  <Percent className="w-4 h-4" />
-                </div>
-              </div>
-              <div className="text-xl sm:text-2xl font-black text-bunker-text-primary">
-                {totalPlatformCommission.toLocaleString()} <span className="text-xs font-normal text-slate-500">so‘m</span>
-              </div>
-              <p className="text-[10px] text-bunker-text-secondary mt-1.5 leading-relaxed">
-                BunkerStroy xizmati, tranzaksiyalar xavfsizligi va B2B arbitraj kafolati uchun.
-              </p>
-              <div className="mt-2.5 pt-2 border-t border-slate-100 text-[10px] text-slate-500">
-                Faqat muvaffaqiyatli yetkazilganda ushlanadi
-              </div>
-            </div>
-
-            {/* 4. Jami Savdo Aylanmasi */}
-            <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-5 shadow-xs">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">
-                  {t('escrow.turnover', 'Jami Savdo Aylanmasi')}
-                </span>
-                <div className="w-8 h-8 rounded-lg bg-orange-50 text-bunker-amber-600 flex items-center justify-center border border-orange-200">
-                  <TrendingUp className="w-4 h-4" />
-                </div>
-              </div>
-              <div className="text-xl sm:text-2xl font-black text-bunker-text-primary">
-                {totalGrossTurnover.toLocaleString()} <span className="text-xs font-normal text-slate-500">so‘m</span>
-              </div>
-              <p className="text-[10px] text-bunker-text-secondary mt-1.5 leading-relaxed">
-                BunkerStroy orqali amalga oshirilgan umumiy B2B shartnomalar brutto summasi.
-              </p>
-              <div className="mt-2.5 pt-2 border-t border-slate-100 text-[10px] text-slate-500">
-                Jami: {allLedgerItems.length} ta shartnoma
-              </div>
-            </div>
+            <button
+              type="button"
+              onClick={() => setActiveTab('create')}
+              className="btn-industrial-yellow px-3.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Yangi Tovar</span>
+            </button>
           </div>
 
-          {/* Ledger Table Section */}
-          <div className="bg-white border border-bunker-border-strong rounded-2xl p-4 sm:p-6 shadow-xs space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-bunker-border-subtle pb-4">
-              <div>
-                <h3 className="font-heading font-extrabold text-base text-bunker-text-primary flex items-center gap-2">
-                  <Receipt className="w-5 h-5 text-bunker-amber-500" />
-                  <span>Ta’minotchi Escrow Hisob-kitob Jurnali (Payout Ledger)</span>
-                </h3>
-                <p className="text-xs text-bunker-text-secondary mt-0.5">
-                  Har bir yakunlangan buyurtma, 1.5% komissiya hisobi va bank hisob raqamiga o‘tkazilgan sof to‘lovlar reestri.
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Button
-                  size="sm"
-                  variant="primary"
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white font-mono"
-                  onClick={() => setIsWithdrawModalOpen(true)}
-                >
-                  <ArrowUpRight className="w-4 h-4 mr-1.5" />
-                  <span>Hisob raqamga yechish</span>
-                </Button>
-              </div>
-            </div>
-
-            {/* Filters & Search */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono text-xs">
-              <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-lg border border-slate-200">
-                <button
-                  type="button"
-                  onClick={() => setLedgerFilter('all')}
-                  className={`px-3 py-1 rounded-md font-bold transition-all cursor-pointer ${
-                    ledgerFilter === 'all' ? 'bg-white shadow-xs text-slate-900' : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  Barchasi ({allLedgerItems.length})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLedgerFilter('released')}
-                  className={`px-3 py-1 rounded-md font-bold transition-all cursor-pointer ${
-                    ledgerFilter === 'released' ? 'bg-white shadow-xs text-emerald-800' : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  Yechilgan ({allLedgerItems.filter((i) => i.status === 'RELEASED').length})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLedgerFilter('escrow')}
-                  className={`px-3 py-1 rounded-md font-bold transition-all cursor-pointer ${
-                    ledgerFilter === 'escrow' ? 'bg-white shadow-xs text-amber-800' : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  Escrowda ({allLedgerItems.filter((i) => i.status === 'ESCROW_LOCKED').length})
-                </button>
-              </div>
-
-              <div className="relative w-full sm:w-72">
-                <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
-                <Input
-                  sizeVariant="sm"
-                  placeholder="Buyurtma # yoki xaridor nomi..."
-                  value={ledgerSearch}
-                  onChange={(e) => setLedgerSearch(e.target.value)}
-                  className="pl-8"
-                />
-              </div>
-            </div>
-
-            {/* Ledger Table */}
-            <div className="overflow-x-auto rounded-xl border border-bunker-border-strong font-mono text-xs">
-              <table className="w-full text-left divide-y divide-bunker-border-subtle">
-                <thead className="bg-slate-50 text-[10px] uppercase font-bold text-slate-500">
+          {/* Products Table */}
+          <div className="industrial-card rounded-2xl overflow-hidden bg-[#0A1931] border border-[#1E3A6D]">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left font-mono text-xs">
+                <thead className="bg-[#071326] text-sky-300 border-b border-[#1E3A6D] uppercase text-[10px]">
                   <tr>
-                    <th className="py-3 px-3.5">Buyurtma / Sana</th>
-                    <th className="py-3 px-3.5">Xaridor (Kompaniya)</th>
-                    <th className="py-3 px-3.5">Brutto Summa</th>
-                    <th className="py-3 px-3.5">1.5% Komissiya</th>
-                    <th className="py-3 px-3.5">Sof To‘lov (Net)</th>
-                    <th className="py-3 px-3.5">Holati</th>
-                    <th className="py-3 px-3.5 text-right">Dalolatnoma</th>
+                    <th className="p-3.5">Tovar</th>
+                    <th className="p-3.5">Birlik Narxi</th>
+                    <th className="p-3.5">Ombordagi Zaxira</th>
+                    <th className="p-3.5">Savdo Kanallari (Online / Offline)</th>
+                    <th className="p-3.5 text-right">Amallar</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-bunker-border-subtle bg-white">
-                  {filteredLedger.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="py-8 text-center text-slate-400">
-                        Hech qanday hisob-kitob yozuvi topilmadi
-                      </td>
-                    </tr>
-                  ) : (
-                    filteredLedger.map((row) => (
-                      <tr key={row.id} className="hover:bg-slate-50/70 transition-colors">
-                        <td className="py-3 px-3.5">
-                          <div className="font-bold text-slate-900">#{row.orderNumber}</div>
-                          <div className="text-[10px] text-slate-400 mt-0.5">{row.releaseDate}</div>
-                          <div className="text-[10px] text-slate-500 truncate max-w-[180px]">{row.itemSummary}</div>
+                <tbody className="divide-y divide-[#1E3A6D]">
+                  {filteredProducts.map((p) => {
+                    const isOnline = (p as any).isOnline !== false;
+                    const isOffline = (p as any).isOffline !== false;
+
+                    return (
+                      <tr key={p.id} className="hover:bg-[#0F2547]/60 transition-colors">
+                        <td className="p-3.5">
+                          <div className="flex items-center gap-3">
+                            <img
+                              src={p.images?.[0] || SAMPLE_IMAGE_PRESETS[0].url}
+                              alt=""
+                              className="w-10 h-10 rounded-lg object-cover bg-[#071326] border border-[#1E3A6D]"
+                            />
+                            <div>
+                              <div className="font-bold text-white text-sm line-clamp-1">{p.title}</div>
+                              <span className="text-[10px] text-sky-400">
+                                {p.region || 'Toshkent'} • {p.unit || 'dona'}
+                              </span>
+                            </div>
+                          </div>
                         </td>
 
-                        <td className="py-3 px-3.5">
-                          <div className="font-semibold text-slate-800">{row.buyerName}</div>
-                          <div className="text-[10px] text-slate-400">STIR: {row.buyerStir}</div>
+                        <td className="p-3.5">
+                          <span className="font-bold text-[#FFB800] text-sm font-mono-numbers">
+                            {Number(p.price).toLocaleString()} so‘m
+                          </span>
                         </td>
 
-                        <td className="py-3 px-3.5 font-bold text-slate-900">
-                          {row.grossAmount.toLocaleString()} so‘m
+                        <td className="p-3.5">
+                          <span
+                            className={`font-bold ${
+                              p.stock > 10 ? 'text-emerald-400' : 'text-amber-400'
+                            }`}
+                          >
+                            {p.stock} {p.unit || 'dona'}
+                          </span>
                         </td>
 
-                        <td className="py-3 px-3.5 text-red-600 font-medium">
-                          -{row.platformFee.toLocaleString()} so‘m
+                        {/* Savdo kanallari tezkor switcheri */}
+                        <td className="p-3.5">
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => handleToggleProductChannel(p.id, 'online')}
+                              title={isOnline ? 'Online vitrinada faol' : 'Online vitrinada o‘chirilgan'}
+                              className={`px-2 py-0.5 rounded text-[10px] font-bold border transition-all cursor-pointer flex items-center gap-1 ${
+                                isOnline
+                                  ? 'bg-emerald-950/80 text-emerald-400 border-emerald-500/50'
+                                  : 'bg-[#071326] text-sky-400/50 border-[#1E3A6D] line-through'
+                              }`}
+                            >
+                              <Globe className="w-3 h-3" />
+                              <span>Online Vitrina</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleToggleProductChannel(p.id, 'offline')}
+                              title={isOffline ? 'Do‘kon kassa POS da faol' : 'Kassada o‘chirilgan'}
+                              className={`px-2 py-0.5 rounded text-[10px] font-bold border transition-all cursor-pointer flex items-center gap-1 ${
+                                isOffline
+                                  ? 'bg-[#132C54] text-[#FFB800] border-[#FFB800]/50'
+                                  : 'bg-[#071326] text-sky-400/50 border-[#1E3A6D] line-through'
+                              }`}
+                            >
+                              <Store className="w-3 h-3" />
+                              <span>Do‘kon Kassa</span>
+                            </button>
+                          </div>
                         </td>
 
-                        <td className="py-3 px-3.5 font-black text-emerald-700">
-                          {row.netAmount.toLocaleString()} so‘m
-                        </td>
-
-                        <td className="py-3 px-3.5">
-                          {row.status === 'RELEASED' && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                              O‘tkazildi
-                            </span>
-                          )}
-                          {row.status === 'ESCROW_LOCKED' && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
-                              <Lock className="w-3 h-3 text-amber-600" />
-                              Escrowda
-                            </span>
-                          )}
-                        </td>
-
-                        <td className="py-3 px-3.5 text-right">
+                        <td className="p-3.5 text-right">
                           <button
                             type="button"
-                            onClick={() =>
-                              alert(
-                                `Elektron hisob-faktura va topshirish dalolatnomasi (${row.actNumber}) yuklab olindi.`
-                              )
-                            }
-                            className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-600 hover:text-bunker-amber-600 p-1.5 rounded-md hover:bg-slate-100 transition-colors cursor-pointer"
-                            title="Elektron dalolatnomani yuklab olish"
+                            onClick={() => handleAddItemToBasket(p)}
+                            className="btn-industrial-yellow px-2.5 py-1 rounded-lg text-[11px] font-black cursor-pointer inline-flex items-center gap-1 shadow-xs"
+                            title="Kassa savatiga qo‘shish"
                           >
-                            <FileText className="w-3.5 h-3.5" />
-                            <span className="hidden sm:inline">{row.actNumber}</span>
+                            <Plus className="w-3.5 h-3.5" />
+                            <span>Kassaga</span>
                           </button>
                         </td>
                       </tr>
-                    ))
-                  )}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -2517,174 +1380,1314 @@ export const SellerPanelView: React.FC = () => {
         </div>
       )}
 
-      {/* =========================================================================
-          MODAL: TM-07 BEKOR QILISH / RAD ETISH SABABI
-          ========================================================================= */}
-      {cancelModalOrder && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in"
-          role="dialog"
-          aria-modal="true"
-        >
-          <div className="bg-white rounded-2xl max-w-md w-full border border-slate-200 shadow-2xl p-5 space-y-4 font-mono">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+      {/* =====================================================================
+          TAB 2: + MAHSULOT QO'SHISH (With Color Palette, Sizes & Generated Variants)
+          ===================================================================== */}
+      {activeTab === 'create' && (
+        <form onSubmit={handleCreateProduct} className="space-y-6">
+          <div className="industrial-card rounded-2xl p-5 sm:p-7 bg-[#0A1931] border border-[#1E3A6D] space-y-6">
+            <div className="flex items-center justify-between pb-3 border-b border-[#1E3A6D]">
               <div className="flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-red-600" />
-                <h3 className="font-heading font-extrabold text-sm text-slate-900">
-                  Buyurtmani Bekor Qilish / Rad Etish
-                </h3>
+                <PlusCircle className="w-5 h-5 text-[#FFB800]" />
+                <h2 className="text-lg font-heading font-black text-white">
+                  Yangi Qurilish Materiali Kiritish
+                </h2>
               </div>
-              <button
-                type="button"
-                onClick={() => setCancelModalOrder(null)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <span className="text-xs font-mono text-[#FFB800] bg-[#132C54] px-2.5 py-1 rounded-lg border border-[#254B85]">
+                BunkerStroy Standarti
+              </span>
             </div>
 
-            <p className="text-xs text-slate-600">
-              <span className="font-bold">#{cancelModalOrder.orderNumber}</span> raqamli buyurtmani rad etish sababini ko‘rsating. Xaridor va ma’muriyatga bildirishnoma yuboriladi.
-            </p>
+            {/* Asosiy ma'lumotlar */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="text-xs font-mono font-bold text-sky-200">
+                  Mahsulot Nomi *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Masalan: Portlendsement M500 D0 (50kg)"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-white outline-none"
+                />
+              </div>
 
-            {/* Quick Chips */}
-            <div className="space-y-1.5">
-              <span className="text-[10px] text-slate-400 uppercase font-bold">Tezkor shablon sabablar:</span>
-              <div className="flex flex-wrap gap-1.5">
-                {[
-                  'Omborda tovar zaxirasi yetarli emas',
-                  'Mijoz bilan o‘zaro kelishuvga ko‘ra',
-                  'Logistika / yetkazib berish imkoniyati yo‘q',
-                  'Narx va shartlar bo‘yicha e’tiroz'
-                ].map((s) => (
+              <div className="space-y-1">
+                <label className="text-xs font-mono font-bold text-sky-200">
+                  Kategoriya / Bo‘lim
+                </label>
+                <select
+                  value={categoryId}
+                  onChange={(e) => setCategoryId(e.target.value)}
+                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-white outline-none"
+                >
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-mono font-bold text-sky-200">
+                  Chakana / Birlik Narxi (so‘m) *
+                </label>
+                <input
+                  type="number"
+                  required
+                  placeholder="Masalan: 65000"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value ? Number(e.target.value) : '')}
+                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-[#FFB800] font-black outline-none font-mono-numbers"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-mono font-bold text-sky-200">
+                  O‘lchov birligi
+                </label>
+                <select
+                  value={unit}
+                  onChange={(e) => setUnit(e.target.value)}
+                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-white outline-none font-mono"
+                >
+                  <option value="BAG_50KG">Qop (50 kg)</option>
+                  <option value="TON">Tonna</option>
+                  <option value="PIECE">Dona</option>
+                  <option value="SQ_METER">Kvadrat metr (m²)</option>
+                  <option value="CUBIC_METER">Kub metr (m³)</option>
+                  <option value="METER">Pogona metr (m)</option>
+                </select>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-mono font-bold text-sky-200">
+                  Ombordagi Jami Zaxira *
+                </label>
+                <input
+                  type="number"
+                  required
+                  placeholder="Masalan: 500"
+                  value={stock}
+                  onChange={(e) => setStock(e.target.value ? Number(e.target.value) : '')}
+                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-white outline-none font-mono"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-mono font-bold text-sky-200">
+                  Minimal buyurtma miqdori
+                </label>
+                <input
+                  type="number"
+                  placeholder="1"
+                  value={minOrder}
+                  onChange={(e) => setMinOrder(e.target.value ? Number(e.target.value) : '')}
+                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-white outline-none font-mono"
+                />
+              </div>
+            </div>
+
+            {/* a) Savdo Kanallari Toggles (Online vitrina vs Do'kon kassa) */}
+            <div className="p-4 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-3">
+              <span className="text-xs font-mono font-bold text-[#FFB800] uppercase block">
+                Savdo Kanallari Sozlamasi:
+              </span>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <label className="flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={isOnlinePublish}
+                    onChange={(e) => setIsOnlinePublish(e.target.checked)}
+                    className="w-4 h-4 rounded text-[#FFB800] focus:ring-[#FFB800] bg-[#0A1931] border-[#1E3A6D]"
+                  />
+                  <span className="text-xs font-mono text-white">
+                    🌐 Online Vitrinada ko‘rinsin (Marketplace xaridorlari uchun)
+                  </span>
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={isOfflineStore}
+                    onChange={(e) => setIsOfflineStore(e.target.checked)}
+                    className="w-4 h-4 rounded text-[#FFB800] focus:ring-[#FFB800] bg-[#0A1931] border-[#1E3A6D]"
+                  />
+                  <span className="text-xs font-mono text-white">
+                    🏪 Offline Do‘kon Kassa / POS da sotilsin
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            {/* b) Ranglar Palitrasi (COLOR_OPTIONS) */}
+            <div className="p-4 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold text-[#FFB800] uppercase">
+                  Ranglar Palitrasi (COLOR_OPTIONS):
+                </span>
+                <span className="text-[11px] font-mono text-sky-400">
+                  Tanlangan: {selectedFormColors.length} ta rang
+                </span>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {COLOR_OPTIONS.map((c) => {
+                  const isChecked = selectedFormColors.includes(c.id);
+                  return (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => handleToggleFormColor(c.id)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-mono font-bold cursor-pointer transition-all ${
+                        isChecked
+                          ? 'bg-[#132C54] border-[#FFB800] text-white shadow-xs'
+                          : 'bg-[#0A1931] border-[#1E3A6D] text-sky-300 hover:border-[#2E5A9C]'
+                      }`}
+                    >
+                      <span
+                        className="w-3.5 h-3.5 rounded-full border shadow-inner"
+                        style={{ backgroundColor: c.bg, borderColor: c.border }}
+                      />
+                      <span>{c.label.split('/')[0].trim()}</span>
+                      {isChecked && <Check className="w-3.5 h-3.5 text-[#FFB800]" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* b) O'lchamlar (Sizes Chips & Custom input) */}
+            <div className="p-4 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-3">
+              <span className="text-xs font-mono font-bold text-[#FFB800] uppercase block">
+                O‘lchamlar &amp; Fraksiyalar (Sizes):
+              </span>
+
+              {/* Popular size quick add */}
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="text-[11px] font-mono text-sky-400 mr-1">Tezkor:</span>
+                {['50 kg', '25 kg', 'D12', 'D14', 'D16', '1 m²', '2x1 m', 'Dona'].map((chip) => (
                   <button
-                    key={s}
+                    key={chip}
                     type="button"
-                    onClick={() => setCancelReason(s)}
-                    className="text-[10px] px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer text-left"
+                    onClick={() => handleAddFormSize(chip)}
+                    className="px-2 py-0.5 rounded-lg bg-[#0A1931] border border-[#1E3A6D] hover:border-[#FFB800] text-[11px] font-mono text-sky-200 cursor-pointer"
                   >
-                    {s}
+                    + {chip}
+                  </button>
+                ))}
+              </div>
+
+              {/* Added sizes tags */}
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                {selectedFormSizes.map((sz) => (
+                  <span
+                    key={sz}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#132C54] border border-[#254B85] text-white font-mono text-xs font-bold"
+                  >
+                    <span>{sz}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveFormSize(sz)}
+                      className="text-sky-300 hover:text-red-400 cursor-pointer"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+
+              {/* Custom size input */}
+              <div className="flex items-center gap-2 pt-1 max-w-sm">
+                <input
+                  type="text"
+                  placeholder="Boshqa o‘lcham (masalan: 100mm)"
+                  value={customSizeInput}
+                  onChange={(e) => setCustomSizeInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleAddFormSize(customSizeInput);
+                    }
+                  }}
+                  className="flex-1 h-9 px-3 rounded-lg bg-[#0A1931] border border-[#1E3A6D] text-xs text-white outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleAddFormSize(customSizeInput)}
+                  className="btn-industrial-dark px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer"
+                >
+                  Qo‘shish
+                </button>
+              </div>
+            </div>
+
+            {/* Generated Variants Preview */}
+            <div className="p-4 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-2">
+              <span className="text-xs font-mono font-bold text-sky-300 uppercase block">
+                Hosil bo‘lgan Variantlar ({generatedVariants.length} ta kombinatsiya):
+              </span>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-mono">
+                {generatedVariants.slice(0, 6).map((v) => (
+                  <div key={v.id} className="p-2 rounded-lg bg-[#0A1931] border border-[#1E3A6D]">
+                    <span className="text-[#FFB800] font-bold">{v.color}</span> • <span>{v.size}</span>
+                    <div className="text-[10px] text-sky-400">{v.sku}</div>
+                  </div>
+                ))}
+                {generatedVariants.length > 6 && (
+                  <div className="p-2 rounded-lg bg-[#0A1931] border border-[#1E3A6D] flex items-center justify-center text-sky-400 text-xs">
+                    +{generatedVariants.length - 6} ta variant...
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Submit button */}
+            <div className="pt-2 flex justify-end">
+              <button
+                type="submit"
+                disabled={formSubmitting}
+                className="btn-industrial-yellow px-6 py-3 rounded-xl font-black text-sm flex items-center gap-2 cursor-pointer shadow-lg"
+              >
+                <Save className="w-4 h-4" />
+                <span>{formSubmitting ? 'Saqlanmoqda...' : 'Tovarni Omborga Saqlash'}</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      )}
+
+      {/* =====================================================================
+          TAB 3: DO'KON KASSA / POS CRM (Fullscreen, Multiple Carts, Thermal Receipt)
+          ===================================================================== */}
+      {activeTab === 'crm_pos' && (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+          {/* Left Column: Product Search & Quick Catalog (7 cols) */}
+          <div className="lg:col-span-7 space-y-4">
+            {/* POS Header & Basket Switcher */}
+            <div className="industrial-card rounded-2xl p-4 bg-[#0A1931] border border-[#1E3A6D] space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Calculator className="w-5 h-5 text-[#FFB800]" />
+                  <span className="font-heading font-black text-white text-base">
+                    Do‘kon Kassa Apparati (POS CRM)
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleCreateNewBasket}
+                  className="btn-industrial-yellow px-3 py-1.5 rounded-lg text-xs font-black flex items-center gap-1 cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>+ Yangi Savat</span>
+                </button>
+              </div>
+
+              {/* Active Baskets Switcher Tabs */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none font-mono text-xs">
+                {posBaskets.map((b) => (
+                  <button
+                    key={b.id}
+                    type="button"
+                    onClick={() => setActiveBasketId(b.id)}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border font-bold cursor-pointer transition-all ${
+                      activeBasketId === b.id
+                        ? 'bg-[#132C54] text-[#FFB800] border-[#FFB800] shadow-xs'
+                        : 'bg-[#071326] text-sky-300 border-[#1E3A6D] hover:border-[#2E5A9C]'
+                    }`}
+                  >
+                    <span>{b.name}</span>
+                    <span className="text-[10px] bg-[#071326] px-1.5 py-0.2 rounded-full text-white">
+                      {b.items.length}
+                    </span>
                   </button>
                 ))}
               </div>
             </div>
 
-            <div>
-              <label className="text-xs font-bold text-slate-800 block mb-1">
-                Sabab matni: *
-              </label>
-              <textarea
-                rows={3}
-                value={cancelReason}
-                onChange={(e) => setCancelReason(e.target.value)}
-                placeholder="Iltimos, buyurtmani nima uchun qabul qila olmasligingizni izohlang..."
-                className="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-500"
+            {/* Fast Product Search in POS */}
+            <div className="relative">
+              <Search className="absolute left-3.5 w-4 h-4 text-[#FFB800] pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Mahsulot nomi yoki shtrixkodi bo‘yicha tezkor qidiruv..."
+                value={posSearchTerm}
+                onChange={(e) => setPosSearchTerm(e.target.value)}
+                className="w-full h-11 pl-10 pr-4 rounded-xl bg-[#0A1931] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-white placeholder-sky-300/50 outline-none font-mono"
               />
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => setCancelModalOrder(null)}
+            {/* Quick Products Grid to add to current basket */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[520px] overflow-y-auto pr-1">
+              {products
+                .filter(
+                  (p) =>
+                    !posSearchTerm ||
+                    p.title.toLowerCase().includes(posSearchTerm.toLowerCase()) ||
+                    p.supplierName.toLowerCase().includes(posSearchTerm.toLowerCase())
+                )
+                .map((prod) => (
+                  <div
+                    key={prod.id}
+                    onClick={() => handleAddItemToBasket(prod)}
+                    className="industrial-card rounded-xl p-3 bg-[#0A1931] border border-[#1E3A6D] hover:border-[#FFB800] cursor-pointer transition-all flex flex-col justify-between select-none group"
+                  >
+                    <div>
+                      <div className="relative aspect-video rounded-lg overflow-hidden bg-[#071326] mb-2 border border-[#1E3A6D]">
+                        <img
+                          src={prod.images?.[0] || SAMPLE_IMAGE_PRESETS[0].url}
+                          alt=""
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        />
+                        <span className="absolute bottom-1 right-1 bg-[#071326]/90 px-1.5 py-0.2 rounded text-[9px] font-mono text-sky-200">
+                          {prod.stock} {prod.unit || 'dona'}
+                        </span>
+                      </div>
+                      <h4 className="font-bold text-white text-xs line-clamp-2 leading-tight">
+                        {prod.title}
+                      </h4>
+                    </div>
+                    <div className="pt-2 mt-2 border-t border-[#1E3A6D] flex items-center justify-between">
+                      <span className="text-xs font-black text-[#FFB800] font-mono-numbers">
+                        {Number(prod.price).toLocaleString()} so‘m
+                      </span>
+                      <div className="w-6 h-6 rounded bg-[#FFB800] text-[#071326] flex items-center justify-center font-black">
+                        <Plus className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+
+          {/* Right Column: Active Basket, Checkout & Thermal Receipt Trigger (5 cols) */}
+          <div className="lg:col-span-5 space-y-4">
+            <div className="industrial-card rounded-2xl p-5 bg-[#0A1931] border-2 border-[#1E3A6D] shadow-xl space-y-4 font-mono">
+              <div className="flex items-center justify-between pb-3 border-b border-[#1E3A6D]">
+                <div>
+                  <h3 className="font-bold text-white text-sm">{activeBasket.name}</h3>
+                  <span className="text-[11px] text-sky-400">
+                    Jami: {activeBasket.items.length} xil tovar
+                  </span>
+                </div>
+                {activeBasket.items.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleClearCurrentBasket}
+                    className="text-[10px] text-red-400 hover:text-red-300 cursor-pointer"
+                  >
+                    Savatni tozalash
+                  </button>
+                )}
+              </div>
+
+              {/* Basket Items List */}
+              <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                {activeBasket.items.length === 0 ? (
+                  <div className="py-8 text-center text-sky-400/60 text-xs">
+                    Savat bo‘sh. Chapdagi tovarlarni bosing.
+                  </div>
+                ) : (
+                  activeBasket.items.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center justify-between p-2.5 rounded-xl bg-[#071326] border border-[#1E3A6D] text-xs"
+                    >
+                      <div className="min-w-0 flex-1 mr-2">
+                        <div className="font-bold text-white truncate">{item.title}</div>
+                        <div className="text-[10px] text-sky-400">
+                          {item.price.toLocaleString()} so‘m x {item.quantity} {item.unit}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateBasketQty(item.id, -1)}
+                          className="w-6 h-6 rounded bg-[#0F2547] text-white flex items-center justify-center font-bold hover:bg-[#132C54]"
+                        >
+                          <Minus className="w-3 h-3" />
+                        </button>
+                        <span className="font-black text-white w-6 text-center">
+                          {item.quantity}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleUpdateBasketQty(item.id, 1)}
+                          className="w-6 h-6 rounded bg-[#0F2547] text-white flex items-center justify-center font-bold hover:bg-[#132C54]"
+                        >
+                          <Plus className="w-3 h-3" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveBasketItem(item.id)}
+                          className="p-1 text-sky-400 hover:text-red-400 ml-1"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Discount Selector */}
+              <div className="pt-2 border-t border-[#1E3A6D] flex items-center justify-between text-xs">
+                <span className="text-sky-300">Skidka / Chegirma:</span>
+                <div className="flex items-center gap-1">
+                  {[0, 3, 5, 10].map((pct) => (
+                    <button
+                      key={pct}
+                      type="button"
+                      onClick={() => setPosDiscountPercent(pct)}
+                      className={`px-2 py-0.5 rounded text-[11px] font-bold border ${
+                        posDiscountPercent === pct
+                          ? 'bg-[#FFB800] text-[#071326] border-[#FFC928]'
+                          : 'bg-[#071326] text-sky-300 border-[#1E3A6D]'
+                      }`}
+                    >
+                      {pct}%
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Payment Methods */}
+              <div className="space-y-1.5 pt-2 border-t border-[#1E3A6D]">
+                <span className="text-[11px] text-sky-300 uppercase font-bold block">
+                  To‘lov turi:
+                </span>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setPosPaymentMethod('CASH')}
+                    className={`p-2 rounded-xl border flex items-center gap-1.5 cursor-pointer font-bold ${
+                      posPaymentMethod === 'CASH'
+                        ? 'bg-emerald-950/80 border-emerald-400 text-emerald-300'
+                        : 'bg-[#071326] border-[#1E3A6D] text-sky-300'
+                    }`}
+                  >
+                    <Banknote className="w-4 h-4" />
+                    <span>Naqd pul</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setPosPaymentMethod('CARD')}
+                    className={`p-2 rounded-xl border flex items-center gap-1.5 cursor-pointer font-bold ${
+                      posPaymentMethod === 'CARD'
+                        ? 'bg-[#132C54] border-[#FFB800] text-[#FFB800]'
+                        : 'bg-[#071326] border-[#1E3A6D] text-sky-300'
+                    }`}
+                  >
+                    <CreditCard className="w-4 h-4" />
+                    <span>Karta / Terminal</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setPosPaymentMethod('PAYME_CLICK')}
+                    className={`p-2 rounded-xl border flex items-center gap-1.5 cursor-pointer font-bold ${
+                      posPaymentMethod === 'PAYME_CLICK'
+                        ? 'bg-[#132C54] border-cyan-400 text-cyan-300'
+                        : 'bg-[#071326] border-[#1E3A6D] text-sky-300'
+                    }`}
+                  >
+                    <QrCode className="w-4 h-4" />
+                    <span>Payme / Click</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setPosPaymentMethod('B2B')}
+                    className={`p-2 rounded-xl border flex items-center gap-1.5 cursor-pointer font-bold ${
+                      posPaymentMethod === 'B2B'
+                        ? 'bg-[#132C54] border-purple-400 text-purple-300'
+                        : 'bg-[#071326] border-[#1E3A6D] text-sky-300'
+                    }`}
+                  >
+                    <Building2 className="w-4 h-4" />
+                    <span>B2B Nasiya</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Cash given & Change calculator */}
+              {posPaymentMethod === 'CASH' && (
+                <div className="p-3 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-2 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sky-300">Qabul qilingan naqd:</span>
+                    <input
+                      type="number"
+                      placeholder={posGrandTotal.toString()}
+                      value={cashGiven}
+                      onChange={(e) => setCashGiven(e.target.value ? Number(e.target.value) : '')}
+                      className="w-32 h-8 px-2 rounded-lg bg-[#0A1931] border border-[#1E3A6D] text-right font-black text-white"
+                    />
+                  </div>
+                  {typeof cashGiven === 'number' && cashGiven >= posGrandTotal && (
+                    <div className="flex items-center justify-between text-emerald-400 font-black pt-1 border-t border-[#1E3A6D]">
+                      <span>Qaytim (Change):</span>
+                      <span>{cashChange.toLocaleString()} so‘m</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Calculation Summary */}
+              <div className="space-y-1.5 pt-2 border-t border-[#1E3A6D] text-xs">
+                <div className="flex justify-between text-sky-300">
+                  <span>Oraliq summa:</span>
+                  <span>{posSubtotal.toLocaleString()} so‘m</span>
+                </div>
+                {posDiscountAmount > 0 && (
+                  <div className="flex justify-between text-amber-400">
+                    <span>Chegirma ({posDiscountPercent}%):</span>
+                    <span>-{posDiscountAmount.toLocaleString()} so‘m</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-sky-400 text-[10px]">
+                  <span>Shu jumladan 12% QQS:</span>
+                  <span>{posTaxAmount.toLocaleString()} so‘m</span>
+                </div>
+                <div className="flex justify-between text-white font-black text-base pt-2 border-t border-[#1E3A6D]">
+                  <span>To‘lov summasi:</span>
+                  <span className="text-[#FFB800]">{posGrandTotal.toLocaleString()} so‘m</span>
+                </div>
+              </div>
+
+              {/* Complete sale button */}
+              <button
+                type="button"
+                onClick={handleCompletePosSale}
+                className="w-full btn-industrial-yellow py-3 rounded-xl font-black text-sm flex items-center justify-center gap-2 cursor-pointer shadow-lg select-none"
               >
-                Ortga
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                className="bg-red-600 hover:bg-red-700 text-white border-transparent"
-                isLoading={isCancelling}
-                onClick={handleConfirmCancel}
-              >
-                Rad etishni tasdiqlash
-              </Button>
+                <Printer className="w-4 h-4" />
+                <span>Savdoni Yakunlash &amp; Chek Chiqarish</span>
+              </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* =========================================================================
-          MODAL: TM-08 MABLAG‘NI HISOBLASH VA YECHISH
-          ========================================================================= */}
-      {isWithdrawModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in"
-          role="dialog"
-          aria-modal="true"
-        >
-          <div className="bg-white rounded-2xl max-w-md w-full border border-slate-200 shadow-2xl p-5 space-y-4 font-mono">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+      {/* =====================================================================
+          TAB 4: B2B ZAVODLAR VA ULARGA ULUG'RJI BUYURTMA BERISH
+          ===================================================================== */}
+      {activeTab === 'b2b' && (
+        <div className="space-y-6">
+          {/* Header notice */}
+          <div className="industrial-card rounded-2xl p-5 bg-[#0A1931] border border-[#1E3A6D] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <Factory className="w-4 h-4 text-[#FFB800]" />
+                <span className="text-xs font-mono font-bold text-[#FFB800] uppercase">
+                  B2B To‘g‘ridan-to‘g‘ri Zavod Xaridlari
+                </span>
+              </div>
+              <h2 className="text-lg font-heading font-black text-white">
+                O‘zbekiston Ishlab Chiqaruvchi Zavodlari Vitrinasi
+              </h2>
+              <p className="text-xs text-sky-200/80 max-w-xl">
+                O‘zmetkombinat, Qizilqumsement, Knauf va boshqa yirik zavodlardan to‘g‘ridan-to‘g‘ri
+                vagon va fura partiyalarida xarid qiling. Bank to‘lov topshiriqnomasi va shartnoma bilan.
+              </p>
+            </div>
+
+            <div className="text-right font-mono text-xs shrink-0">
+              <span className="text-purple-400 font-bold block">{b2bOrders.length} ta B2B buyurtma</span>
+              <span className="text-[10px] text-sky-400">100% rasmiy invoys</span>
+            </div>
+          </div>
+
+          {/* Manufacturers Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {B2B_MANUFACTURERS_LIST.map((mfg) => (
+              <div
+                key={mfg.id}
+                className="industrial-card rounded-2xl p-5 bg-[#0A1931] border border-[#1E3A6D] hover:border-[#FFB800] transition-all flex flex-col justify-between space-y-4"
+              >
+                <div className="space-y-3">
+                  <div className="relative aspect-video rounded-xl overflow-hidden bg-[#071326] border border-[#1E3A6D]">
+                    <img src={mfg.imageUrl} alt="" className="w-full h-full object-cover" />
+                    <span className="absolute top-2 left-2 px-2 py-0.5 rounded bg-[#071326]/90 text-[#FFB800] border border-[#1E3A6D] text-[10px] font-mono font-bold">
+                      {mfg.category}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="font-heading font-black text-white text-base leading-snug">
+                      {mfg.name}
+                    </h3>
+                    <p className="text-[11px] font-mono text-sky-400 flex items-center gap-1 mt-1">
+                      <MapPin className="w-3.5 h-3.5 text-[#FFB800]" />
+                      <span>{mfg.location}</span>
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-1.5 font-mono text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-sky-400">Asosiy tovar:</span>
+                      <span className="text-white font-bold truncate max-w-[150px]">
+                        {mfg.featuredProduct}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sky-400">Zavod narxi:</span>
+                      <span className="text-[#FFB800] font-black">
+                        {mfg.unitPrice.toLocaleString()} so‘m / {mfg.unit}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-[11px]">
+                      <span className="text-sky-400">Min. partiya:</span>
+                      <span className="text-emerald-400 font-bold">
+                        {mfg.minOrderTons} {mfg.unit}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleOpenB2bModal(mfg)}
+                  className="w-full btn-industrial-yellow py-2.5 rounded-xl font-black text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
+                >
+                  <FileText className="w-4 h-4" />
+                  <span>Ulgurji Buyurtma &amp; Shartnoma</span>
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* B2B Buyurtmalarim Ro'yxati */}
+          <div className="industrial-card rounded-2xl p-5 bg-[#0A1931] border border-[#1E3A6D] space-y-4">
+            <h3 className="font-heading font-black text-white text-base">
+              B2B Buyurtmalarim &amp; Invoyslar
+            </h3>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left font-mono text-xs">
+                <thead className="bg-[#071326] text-sky-300 border-b border-[#1E3A6D] uppercase text-[10px]">
+                  <tr>
+                    <th className="p-3">Invoys #</th>
+                    <th className="p-3">Ishlab Chiqaruvchi</th>
+                    <th className="p-3">Mahsulot</th>
+                    <th className="p-3">Jami Summa</th>
+                    <th className="p-3">Status</th>
+                    <th className="p-3 text-right">Rekvizitlar</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#1E3A6D]">
+                  {b2bOrders.map((ord) => (
+                    <tr key={ord.id} className="hover:bg-[#0F2547]/50">
+                      <td className="p-3 font-bold text-[#FFB800]">{ord.orderNumber}</td>
+                      <td className="p-3 text-white font-bold">{ord.manufacturerName}</td>
+                      <td className="p-3 text-sky-200">{ord.productName}</td>
+                      <td className="p-3 font-black text-[#FFB800]">
+                        {ord.totalAmount.toLocaleString()} so‘m
+                      </td>
+                      <td className="p-3">
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                            ord.status === 'YETKAZILDI'
+                              ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-500/40'
+                              : 'bg-[#132C54] text-[#FFB800] border border-[#FFB800]/40'
+                          }`}
+                        >
+                          {ord.status}
+                        </span>
+                      </td>
+                      <td className="p-3 text-right text-[11px] text-sky-300">
+                        STIR: {ord.bankRequisites.stir}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =====================================================================
+          TAB 5: MOLIYAVIY KIRIM-CHIQIM (Income / Expense / Net Profit)
+          ===================================================================== */}
+      {activeTab === 'reports' && (
+        <div className="space-y-6">
+          {/* Top KPI Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* 1. Jami Tushum / Kirim */}
+            <div className="brushed-steel rounded-2xl p-5 border border-[#1E3A6D] space-y-2">
+              <div className="flex items-center justify-between text-xs font-mono text-sky-400">
+                <span>Jami Kirim (Tushum)</span>
+                <TrendingUp className="w-4 h-4 text-emerald-400" />
+              </div>
+              <div className="text-2xl font-black text-emerald-400 font-mono-numbers">
+                +{totalIncome.toLocaleString()} so‘m
+              </div>
+              <div className="text-[10px] font-mono text-sky-300">
+                Online: {onlineIncome.toLocaleString()} • POS: {offlineIncome.toLocaleString()}
+              </div>
+            </div>
+
+            {/* 2. Jami Chiqim / Xarajatlar */}
+            <div className="brushed-steel rounded-2xl p-5 border border-[#1E3A6D] space-y-2">
+              <div className="flex items-center justify-between text-xs font-mono text-sky-400">
+                <span>Jami Chiqim (Xarajatlar)</span>
+                <ArrowDownRight className="w-4 h-4 text-red-400" />
+              </div>
+              <div className="text-2xl font-black text-red-400 font-mono-numbers">
+                -{totalExpense.toLocaleString()} so‘m
+              </div>
+              <div className="text-[10px] font-mono text-sky-300">
+                Ijara, ish haqi, transport &amp; soliqlar
+              </div>
+            </div>
+
+            {/* 3. Sof Foyda (Net Profit) */}
+            <div className="brushed-steel rounded-2xl p-5 border-2 border-[#FFB800]/50 space-y-2 shadow-lg">
+              <div className="flex items-center justify-between text-xs font-mono text-[#FFB800] font-bold">
+                <span>Sof Foyda (Net Profit)</span>
+                <Coins className="w-4 h-4 text-[#FFB800]" />
+              </div>
+              <div className="text-2xl font-black text-[#FFB800] font-mono-numbers">
+                {netProfit.toLocaleString()} so‘m
+              </div>
+              <div className="text-[10px] font-mono text-emerald-400 font-bold">
+                Marja rentabelligi: {profitMarginPercent}%
+              </div>
+            </div>
+
+            {/* 4. Savdo Ulushi */}
+            <div className="brushed-steel rounded-2xl p-5 border border-[#1E3A6D] space-y-2">
+              <div className="flex items-center justify-between text-xs font-mono text-sky-400">
+                <span>Kanal Ulushi (Online / POS)</span>
+                <Percent className="w-4 h-4 text-cyan-400" />
+              </div>
+              <div className="text-xl font-black text-white font-mono-numbers">
+                {totalIncome > 0 ? Math.round((onlineIncome / totalIncome) * 100) : 0}% /{' '}
+                {totalIncome > 0 ? Math.round((offlineIncome / totalIncome) * 100) : 0}%
+              </div>
+              <div className="text-[10px] font-mono text-sky-300">
+                Marketplace vs Do‘kon Kassa
+              </div>
+            </div>
+          </div>
+
+          {/* Operations Ledger & Add Expense Button */}
+          <div className="industrial-card rounded-2xl p-5 bg-[#0A1931] border border-[#1E3A6D] space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 className="font-heading font-black text-white text-base">
+                  Moliyaviy Kirim-Chiqim Jurnali
+                </h3>
+                <span className="text-xs font-mono text-sky-400">
+                  Barcha kassa va marketplace tranzaksiyalari
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsExpenseModalOpen(true)}
+                className="btn-industrial-dark px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md"
+              >
+                <Plus className="w-4 h-4 text-[#FFB800]" />
+                <span>+ Yangi Chiqim / Xarajat Kiritish</span>
+              </button>
+            </div>
+
+            {/* Transactions Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full text-left font-mono text-xs">
+                <thead className="bg-[#071326] text-sky-300 border-b border-[#1E3A6D] uppercase text-[10px]">
+                  <tr>
+                    <th className="p-3">Sana</th>
+                    <th className="p-3">Turi</th>
+                    <th className="p-3">Kategoriya</th>
+                    <th className="p-3">To‘lov vositasi</th>
+                    <th className="p-3">Izoh</th>
+                    <th className="p-3 text-right">Summa</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#1E3A6D]">
+                  {financialOperations.map((op) => (
+                    <tr key={op.id} className="hover:bg-[#0F2547]/50">
+                      <td className="p-3 text-sky-300">{op.date}</td>
+                      <td className="p-3">
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                            op.type === 'INCOME'
+                              ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-500/40'
+                              : 'bg-red-950/80 text-red-400 border border-red-500/40'
+                          }`}
+                        >
+                          {op.type === 'INCOME' ? 'KIRIM (+)' : 'CHIQIM (-)'}
+                        </span>
+                      </td>
+                      <td className="p-3 text-white font-bold">{op.category}</td>
+                      <td className="p-3 text-sky-200">{op.paymentMethod}</td>
+                      <td className="p-3 text-sky-400 text-[11px]">{op.notes}</td>
+                      <td
+                        className={`p-3 text-right font-black text-sm ${
+                          op.type === 'INCOME' ? 'text-emerald-400' : 'text-red-400'
+                        }`}
+                      >
+                        {op.type === 'INCOME' ? '+' : '-'}
+                        {op.amount.toLocaleString()} so‘m
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =====================================================================
+          TAB 6: MARKETPLACE BUYURTMALARI
+          ===================================================================== */}
+      {activeTab === 'orders' && (
+        <div className="industrial-card rounded-2xl p-5 bg-[#0A1931] border border-[#1E3A6D] space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-[#1E3A6D]">
+            <h3 className="font-heading font-black text-white text-base">
+              Marketplace Xaridlari va Yetkazib Berish
+            </h3>
+            <span className="text-xs font-mono text-sky-400">
+              {orders.length} ta faol buyurtma
+            </span>
+          </div>
+
+          {loadingOrders ? (
+            <div className="py-12 text-center text-sky-400 text-xs font-mono">
+              Buyurtmalar yuklanmoqda...
+            </div>
+          ) : orders.length === 0 ? (
+            <div className="py-12 text-center text-sky-400/70 text-xs font-mono">
+              Hozircha yangi buyurtmalar mavjud emas.
+            </div>
+          ) : (
+            <div className="divide-y divide-[#1E3A6D]">
+              {orders.map((ord) => (
+                <div key={ord.id} className="py-3 flex items-center justify-between font-mono text-xs">
+                  <div>
+                    <span className="text-[#FFB800] font-bold">#{ord.orderNumber}</span>
+                    <p className="text-white font-bold text-sm mt-0.5">
+                      {(ord as any).customerName || (ord as any).buyerCompanyName || 'Mijoz'} • {Number(ord.totalAmount).toLocaleString()} so‘m
+                    </p>
+                    <span className="text-[10px] text-sky-400">
+                      {typeof ord.deliveryAddress === 'string'
+                        ? ord.deliveryAddress
+                        : `${ord.deliveryAddress?.region || ''}, ${ord.deliveryAddress?.district || ''}`}
+                    </span>
+                  </div>
+                  <span className="px-2.5 py-1 rounded bg-[#132C54] text-[#FFB800] border border-[#254B85] text-xs font-bold">
+                    {ord.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* =====================================================================
+          TAB 7: 50/50 ESCROW & PAYOUT LEDGER
+          ===================================================================== */}
+      {activeTab === 'escrow' && (
+        <div className="industrial-card rounded-2xl p-5 bg-[#0A1931] border border-[#1E3A6D] space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-[#1E3A6D]">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-[#FFB800]" />
+              <h3 className="font-heading font-black text-white text-base">
+                50/50 Escrow Mablag‘lari va To‘lov Reestri
+              </h3>
+            </div>
+            <span className="text-xs font-mono text-emerald-400 bg-emerald-950/80 px-2.5 py-1 rounded border border-emerald-500/40">
+              BunkerStroy Escrow Himoyasi
+            </span>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left font-mono text-xs">
+              <thead className="bg-[#071326] text-sky-300 border-b border-[#1E3A6D] uppercase text-[10px]">
+                <tr>
+                  <th className="p-3">Dalolatnoma #</th>
+                  <th className="p-3">Xaridor (STIR)</th>
+                  <th className="p-3">Tovar Tavsifi</th>
+                  <th className="p-3">Brutto Summa</th>
+                  <th className="p-3">Komissiya</th>
+                  <th className="p-3">Netto To‘lov</th>
+                  <th className="p-3">Holati</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#1E3A6D]">
+                {escrowLedger.map((row) => (
+                  <tr key={row.id} className="hover:bg-[#0F2547]/50">
+                    <td className="p-3 font-bold text-[#FFB800]">{row.actNumber}</td>
+                    <td className="p-3 text-white">
+                      <div>{row.buyerName}</div>
+                      <div className="text-[10px] text-sky-400">STIR: {row.buyerStir}</div>
+                    </td>
+                    <td className="p-3 text-sky-200">{row.itemSummary}</td>
+                    <td className="p-3 text-white font-bold">
+                      {row.grossAmount.toLocaleString()} so‘m
+                    </td>
+                    <td className="p-3 text-red-400 font-bold">
+                      -{row.platformFee.toLocaleString()} so‘m
+                    </td>
+                    <td className="p-3 text-emerald-400 font-black">
+                      {row.netAmount.toLocaleString()} so‘m
+                    </td>
+                    <td className="p-3">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950/80 text-emerald-400 border border-emerald-500/40">
+                        {row.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* =====================================================================
+          MODAL 1: THERMAL POS KASSA CHEKI (Printable / Real Receipt)
+          ===================================================================== */}
+      {activeReceipt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#071326]/80 backdrop-blur-sm p-4">
+          <div className="w-full max-w-sm rounded-2xl bg-white text-slate-900 p-6 shadow-2xl space-y-4 font-mono text-xs border-2 border-slate-300">
+            {/* Receipt Header */}
+            <div className="text-center space-y-1 pb-3 border-b-2 border-dashed border-slate-400">
+              <h2 className="font-black text-base text-slate-950 tracking-wider">
+                BUNKERSTROY
+              </h2>
+              <p className="text-[10px] text-slate-600">
+                SANOAT VA QURILISH MATERIALLARI MARKAZI
+              </p>
+              <p className="text-[10px] text-slate-600">
+                Do‘kon: BunkerStroy Hamkor #1 • STIR: 309112844
+              </p>
+              <div className="text-[10px] font-bold pt-1 text-slate-800">
+                CHEK RAQAMI: {activeReceipt.receiptNumber}
+              </div>
+              <div className="text-[10px] text-slate-500">{activeReceipt.date}</div>
+            </div>
+
+            {/* Items */}
+            <div className="space-y-1.5 py-1 divide-y divide-dashed divide-slate-200">
+              {activeReceipt.items.map((it, idx) => (
+                <div key={idx} className="pt-1.5 flex justify-between items-start text-[11px]">
+                  <div className="min-w-0 pr-2">
+                    <span className="font-bold block truncate max-w-[180px]">{it.title}</span>
+                    <span className="text-[10px] text-slate-500">
+                      {it.quantity} x {it.price.toLocaleString()} so‘m
+                    </span>
+                  </div>
+                  <span className="font-black shrink-0">
+                    {(it.price * it.quantity).toLocaleString()} so‘m
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Totals */}
+            <div className="space-y-1 pt-2 border-t-2 border-dashed border-slate-400 text-xs">
+              <div className="flex justify-between text-slate-600">
+                <span>Oraliq summa:</span>
+                <span>{activeReceipt.subtotal.toLocaleString()} so‘m</span>
+              </div>
+              {activeReceipt.discountAmount > 0 && (
+                <div className="flex justify-between text-red-600 font-bold">
+                  <span>Chegirma:</span>
+                  <span>-{activeReceipt.discountAmount.toLocaleString()} so‘m</span>
+                </div>
+              )}
+              <div className="flex justify-between text-slate-500 text-[10px]">
+                <span>Shu jumladan 12% QQS:</span>
+                <span>{activeReceipt.taxAmount.toLocaleString()} so‘m</span>
+              </div>
+              <div className="flex justify-between text-sm font-black pt-1 border-t border-slate-300">
+                <span>JAMI TO‘LOV:</span>
+                <span>{activeReceipt.grandTotal.toLocaleString()} so‘m</span>
+              </div>
+              <div className="flex justify-between text-[11px] text-slate-700 pt-0.5">
+                <span>To‘lov usuli:</span>
+                <span className="font-bold">{activeReceipt.paymentMethod}</span>
+              </div>
+              {typeof activeReceipt.cashGiven === 'number' && (
+                <>
+                  <div className="flex justify-between text-[10px] text-slate-600">
+                    <span>Qabul qilindi:</span>
+                    <span>{activeReceipt.cashGiven.toLocaleString()} so‘m</span>
+                  </div>
+                  <div className="flex justify-between text-[11px] text-emerald-700 font-black">
+                    <span>Qaytim:</span>
+                    <span>{(activeReceipt.cashChange || 0).toLocaleString()} so‘m</span>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* QR Simulation & Footer */}
+            <div className="text-center pt-2 border-t-2 border-dashed border-slate-400 space-y-1">
+              <div className="w-16 h-16 bg-slate-100 border border-slate-300 mx-auto flex items-center justify-center">
+                <QrCode className="w-12 h-12 text-slate-800" />
+              </div>
+              <p className="text-[9px] text-slate-500">
+                SOLIQ QO‘MITASI FISKAL CHEKI (SIMULATSIYA)
+              </p>
+              <p className="text-[10px] font-bold text-slate-800">
+                Xaridingiz uchun rahmat!
+              </p>
+            </div>
+
+            {/* Action buttons */}
+            <div className="flex items-center gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="flex-1 py-2 rounded-xl bg-slate-900 text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>Chop etish</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveReceipt(null)}
+                className="py-2 px-4 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs cursor-pointer"
+              >
+                Yopish
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =====================================================================
+          MODAL 2: B2B WHOLESALE ORDER MODAL (Bank Requisites & Contract)
+          ===================================================================== */}
+      {isB2bModalOpen && selectedManufacturer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#071326]/80 backdrop-blur-sm p-4">
+          <div className="w-full max-w-lg rounded-2xl bg-[#0A1931] text-white p-6 shadow-2xl border-2 border-[#1E3A6D] space-y-5 font-mono text-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-[#1E3A6D]">
               <div className="flex items-center gap-2">
-                <Wallet className="w-5 h-5 text-emerald-600" />
-                <h3 className="font-heading font-extrabold text-sm text-slate-900">
-                  Mablag‘ni Hisob Raqamga Yechish
+                <Factory className="w-5 h-5 text-[#FFB800]" />
+                <h3 className="font-heading font-black text-white text-base">
+                  Zavoddan Ulgurji Xarid (B2B Shartnoma)
                 </h3>
               </div>
               <button
                 type="button"
-                onClick={() => setIsWithdrawModalOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 cursor-pointer"
+                onClick={() => setIsB2bModalOpen(false)}
+                className="text-sky-400 hover:text-white cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="bg-emerald-50 p-3 rounded-xl border border-emerald-200 space-y-1 text-xs">
-              <div className="text-emerald-800 font-bold">Yechib olishga mavjud sof mablag‘:</div>
-              <div className="text-xl font-black text-emerald-900">
-                {totalAvailablePayout.toLocaleString()} so‘m
+            <div className="space-y-3">
+              <div className="p-3 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-1">
+                <span className="text-[10px] text-sky-400 uppercase font-bold">Ishlab chiqaruvchi:</span>
+                <p className="font-black text-white text-sm">{selectedManufacturer.name}</p>
+                <p className="text-[11px] text-sky-300">{selectedManufacturer.featuredProduct}</p>
               </div>
-              <div className="text-[10px] text-emerald-700">
-                1.5% platforma komissiyasi oldindan yechilgan
+
+              {/* Quantity selector */}
+              <div className="space-y-1">
+                <label className="text-sky-300 font-bold block">
+                  Buyurtma hajmi ({selectedManufacturer.unit}):
+                </label>
+                <input
+                  type="number"
+                  min={selectedManufacturer.minOrderTons}
+                  value={b2bQuantity}
+                  onChange={(e) => setB2bQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white font-bold"
+                />
+                <span className="text-[10px] text-sky-400">
+                  Minimal partiya: {selectedManufacturer.minOrderTons} {selectedManufacturer.unit}
+                </span>
+              </div>
+
+              {/* Incoterm */}
+              <div className="space-y-1">
+                <label className="text-sky-300 font-bold block">Yetkazib berish sharti:</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setB2bIncoterm('DAP')}
+                    className={`p-2 rounded-xl border text-center font-bold cursor-pointer ${
+                      b2bIncoterm === 'DAP'
+                        ? 'bg-[#132C54] border-[#FFB800] text-white'
+                        : 'bg-[#071326] border-[#1E3A6D] text-sky-300'
+                    }`}
+                  >
+                    DAP (Manzilga fura/vagon)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setB2bIncoterm('EXW')}
+                    className={`p-2 rounded-xl border text-center font-bold cursor-pointer ${
+                      b2bIncoterm === 'EXW'
+                        ? 'bg-[#132C54] border-[#FFB800] text-white'
+                        : 'bg-[#071326] border-[#1E3A6D] text-sky-300'
+                    }`}
+                  >
+                    EXW (Zavoddan olib ketish)
+                  </button>
+                </div>
+              </div>
+
+              {/* Bank Requisites of Manufacturer */}
+              <div className="p-3.5 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-1.5 text-[11px]">
+                <span className="text-[#FFB800] font-bold uppercase block text-[10px]">
+                  Zavod Bank Rekvizitlari (To‘lov uchun):
+                </span>
+                <div className="flex justify-between text-sky-300">
+                  <span>H/R (Hisob raqam):</span>
+                  <span className="text-white font-bold">{selectedManufacturer.accountNumber}</span>
+                </div>
+                <div className="flex justify-between text-sky-300">
+                  <span>MFO:</span>
+                  <span className="text-white font-bold">{selectedManufacturer.mfo}</span>
+                </div>
+                <div className="flex justify-between text-sky-300">
+                  <span>STIR:</span>
+                  <span className="text-white font-bold">{selectedManufacturer.stir}</span>
+                </div>
+                <div className="flex justify-between text-sky-300">
+                  <span>Bank:</span>
+                  <span className="text-white font-bold">{selectedManufacturer.bankName}</span>
+                </div>
+              </div>
+
+              {/* Total Calculation */}
+              <div className="p-3 rounded-xl bg-[#071326] border-2 border-[#FFB800]/50 flex items-center justify-between">
+                <span className="text-sky-300">Jami shartnoma qiymati:</span>
+                <span className="text-base font-black text-[#FFB800]">
+                  {(b2bQuantity * selectedManufacturer.unitPrice).toLocaleString()} so‘m
+                </span>
               </div>
             </div>
 
-            <div className="space-y-3 text-xs">
-              <div>
-                <label className="font-bold text-slate-800 block mb-1">
-                  Yechiladigan summa (so‘m):
-                </label>
-                <Input
+            <div className="flex items-center gap-2 pt-2">
+              <button
+                type="button"
+                onClick={handleConfirmB2bWholesaleOrder}
+                className="flex-1 btn-industrial-yellow py-3 rounded-xl font-black text-xs flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+              >
+                <Check className="w-4 h-4" />
+                <span>Buyurtmani Tasdiqlash &amp; Invoys Shakllantirish</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsB2bModalOpen(false)}
+                className="py-3 px-4 rounded-xl bg-[#071326] border border-[#1E3A6D] text-sky-300 hover:text-white cursor-pointer"
+              >
+                Bekor qilish
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =====================================================================
+          MODAL 3: YANGI XARAJAT / CHIQIM KIRITISH
+          ===================================================================== */}
+      {isExpenseModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#071326]/80 backdrop-blur-sm p-4">
+          <form
+            onSubmit={handleAddExpense}
+            className="w-full max-w-md rounded-2xl bg-[#0A1931] text-white p-6 shadow-2xl border-2 border-[#1E3A6D] space-y-4 font-mono text-xs"
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-[#1E3A6D]">
+              <h3 className="font-heading font-black text-white text-base">
+                + Yangi Chiqim / Xarajat Kiritish
+              </h3>
+              <button
+                type="button"
+                onClick={() => setIsExpenseModalOpen(false)}
+                className="text-sky-400 hover:text-white cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <label className="text-sky-300 font-bold block">Xarajat Kategoriyasi *</label>
+                <select
+                  value={expenseCategory}
+                  onChange={(e) => setExpenseCategory(e.target.value)}
+                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white"
+                >
+                  <option value="Ombor Arendasi">Ombor / Do‘kon Ijarasi</option>
+                  <option value="Ishchilar Maoshi">Ishchilar va Haydovchilar Maoshi</option>
+                  <option value="Logistika va Yoqilg‘i">Logistika, Yuk tashish &amp; Benzin</option>
+                  <option value="Kommunal To‘lovlar">Kommunal, Elektr &amp; Internet</option>
+                  <option value="Soliqlar va Litsenziya">Soliqlar va Davlat to‘lovlari</option>
+                  <option value="Xom-ashyo Xaridi">Xom-ashyo &amp; Tovar xaridi</option>
+                  <option value="Boshqa Xarajatlar">Boshqa operatsion chiqimlar</option>
+                </select>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-sky-300 font-bold block">Summa (so‘m) *</label>
+                <input
                   type="number"
-                  value={withdrawAmount}
-                  onChange={(e) => setWithdrawAmount(e.target.value)}
-                  placeholder="25000000"
+                  required
+                  placeholder="Masalan: 3500000"
+                  value={expenseAmount}
+                  onChange={(e) => setExpenseAmount(e.target.value ? Number(e.target.value) : '')}
+                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-red-400 font-black text-sm"
                 />
               </div>
 
-              <div>
-                <label className="font-bold text-slate-800 block mb-1">
-                  Bank hisob-kitob varag‘i (20208):
-                </label>
-                <Select defaultValue="acc-1">
-                  <option value="acc-1">20208000900123456001 - ATB "Kapitalbank" (Asosiy)</option>
-                  <option value="acc-2">20208000700987654002 - "Ipak Yo‘li" AITB</option>
-                  <option value="acc-3">UZCARD B2B Korporativ Karta (8600 **** 9012)</option>
-                </Select>
+              <div className="space-y-1">
+                <label className="text-sky-300 font-bold block">To‘lov vositasi</label>
+                <select
+                  value={expensePaymentMethod}
+                  onChange={(e) => setExpensePaymentMethod(e.target.value)}
+                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white"
+                >
+                  <option value="Bank o‘tkazmasi">Bank o‘tkazmasi (H/R)</option>
+                  <option value="Korporativ Karta">Korporativ Karta</option>
+                  <option value="Naqd pul">Naqd pul (Kassadan)</option>
+                </select>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-sky-300 font-bold block">Izoh / Maqsad</label>
+                <input
+                  type="text"
+                  placeholder="Xarajat bo‘yicha qo‘shimcha izoh..."
+                  value={expenseNotes}
+                  onChange={(e) => setExpenseNotes(e.target.value)}
+                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white"
+                />
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => setIsWithdrawModalOpen(false)}
+            <div className="flex items-center gap-2 pt-2">
+              <button
+                type="submit"
+                className="flex-1 btn-industrial-yellow py-2.5 rounded-xl font-black text-xs cursor-pointer shadow-md"
+              >
+                Saqlash
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsExpenseModalOpen(false)}
+                className="py-2.5 px-4 rounded-xl bg-[#071326] border border-[#1E3A6D] text-sky-300 hover:text-white cursor-pointer"
               >
                 Bekor qilish
-              </Button>
-              <Button
-                size="sm"
-                variant="primary"
-                className="bg-emerald-600 hover:bg-emerald-700 text-white font-mono"
-                isLoading={isWithdrawing}
-                onClick={handleRequestPayout}
-              >
-                <CheckCircle2 className="w-4 h-4 mr-1.5" />
-                <span>O‘tkazishni tasdiqlash</span>
-              </Button>
+              </button>
             </div>
-          </div>
+          </form>
         </div>
       )}
     </div>

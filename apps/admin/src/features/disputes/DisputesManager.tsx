@@ -124,7 +124,7 @@ export const DisputesManager: React.FC = () => {
           <span className="font-mono font-bold text-xs text-theme-main block">
             {row.disputeNumber}
           </span>
-          <span className="font-mono text-[11px] text-[#1E66F5] font-semibold">
+          <span className="font-mono text-[11px] text-[#FFB800] font-semibold">
             {row.orderNumber}
           </span>
           <div className="text-[10px] font-mono text-theme-muted mt-0.5">

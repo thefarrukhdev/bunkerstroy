@@ -37,8 +37,8 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       case 'COMPLETED':
       case 'AVAILABLE':
         return {
-          container: 'bg-[#A6E3A1]/15 text-[#A6E3A1] border border-[#A6E3A1]/30 font-bold',
-          dot: 'bg-[#A6E3A1]',
+          container: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-black',
+          dot: 'bg-emerald-400',
           defaultText: customLabel || normalized
         };
 
@@ -46,8 +46,8 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       case 'PENDING_REVIEW':
       case 'ON_ROUTE':
         return {
-          container: 'bg-[#F9E2AF]/15 text-[#F9E2AF] border border-[#F9E2AF]/30 font-medium',
-          dot: 'bg-[#F9E2AF] animate-pulse',
+          container: 'bg-[#FFB800]/15 text-[#FFB800] border border-[#FFB800]/30 font-bold',
+          dot: 'bg-[#FFB800] animate-pulse',
           defaultText: customLabel || normalized
         };
 
@@ -56,23 +56,23 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       case 'FAILED':
       case 'CANCELLED':
         return {
-          container: 'bg-[#F38BA8]/15 text-[#F38BA8] border border-[#F38BA8]/30 font-medium',
-          dot: 'bg-[#F38BA8]',
+          container: 'bg-rose-500/15 text-rose-400 border border-rose-500/30 font-bold',
+          dot: 'bg-rose-400',
           defaultText: customLabel || normalized
         };
 
       case 'LOW_STOCK':
       case 'MAINTENANCE':
         return {
-          container: 'bg-[#FAB387]/15 text-[#FAB387] border border-[#FAB387]/30 font-bold',
-          dot: 'bg-[#FAB387]',
+          container: 'bg-amber-500/15 text-amber-400 border border-amber-500/30 font-bold',
+          dot: 'bg-amber-400',
           defaultText: customLabel || normalized
         };
 
       default:
         return {
-          container: 'bg-theme-card-subtle text-theme-muted border border-theme',
-          dot: 'bg-neutral-500',
+          container: 'bg-[#0F2547] text-sky-200 border border-[#1E3A6D]',
+          dot: 'bg-sky-400',
           defaultText: customLabel || normalized
         };
     }

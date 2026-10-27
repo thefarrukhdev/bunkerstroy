@@ -26,15 +26,15 @@ export const Button: React.FC<ButtonProps> = ({
   const getVariantStyles = () => {
     switch (variant) {
       case 'primary':
-        return 'dark:bg-[#89B4FA] dark:text-[#11111B] bg-[#1E66F5] text-white hover:opacity-90 font-bold shadow-xs';
+        return 'bg-[#FFB800] text-[#071326] hover:bg-[#FFC928] border border-[#E5A600] font-black shadow-md shadow-[#FFB800]/20 active:translate-y-[1px]';
       case 'secondary':
-        return 'bg-theme-card-subtle border border-theme text-theme-main hover:border-theme-subtle font-medium';
+        return 'bg-[#0F2547] border border-[#1E3A6D] text-white hover:border-[#FFB800] hover:text-[#FFB800] font-bold';
       case 'danger':
-        return 'bg-[#F38BA8]/15 border border-[#F38BA8]/30 text-[#F38BA8] hover:bg-[#F38BA8]/25 font-bold';
+        return 'bg-[#F43F5E]/15 border border-[#F43F5E]/40 text-[#F43F5E] hover:bg-[#F43F5E]/25 font-bold';
       case 'outline':
-        return 'bg-transparent border border-theme text-theme-main hover:border-theme-subtle font-medium';
+        return 'bg-transparent border border-[#1E3A6D] text-white hover:border-[#FFB800] hover:text-[#FFB800] font-bold';
       case 'ghost':
-        return 'bg-transparent text-theme-muted hover:text-theme-main hover:bg-theme-card-subtle font-medium';
+        return 'bg-transparent text-sky-200 hover:text-white hover:bg-[#0F2547] font-medium';
     }
   };
 
@@ -56,7 +56,7 @@ export const Button: React.FC<ButtonProps> = ({
       {...props}
     >
       {isLoading ? (
-        <Loader2 className="w-4 h-4 animate-spin" />
+        <Loader2 className="w-4 h-4 animate-spin text-inherit" />
       ) : (
         <>
           {leftIcon && <span className="shrink-0">{leftIcon}</span>}

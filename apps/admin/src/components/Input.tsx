@@ -15,14 +15,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full space-y-1.5 font-mono">
         {label && (
-          <label htmlFor={inputId} className="block text-xs font-semibold text-theme-muted uppercase tracking-wider">
+          <label htmlFor={inputId} className="block text-xs font-bold text-sky-200 uppercase tracking-wider">
             {label}
           </label>
         )}
 
         <div className="relative flex items-center">
           {leftIcon && (
-            <div className="absolute left-3 text-theme-subtle pointer-events-none flex items-center">
+            <div className="absolute left-3 text-sky-300 pointer-events-none flex items-center">
               {leftIcon}
             </div>
           )}
@@ -31,13 +31,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             ref={ref}
             disabled={disabled}
-            className={`w-full py-2 text-xs bg-theme-main text-theme-main border rounded-xl transition-all duration-150 placeholder:text-theme-subtle focus:outline-none focus:ring-1 ${
+            className={`w-full py-2 text-xs bg-[#071326] text-white border rounded-xl transition-all duration-150 placeholder:text-sky-300/40 focus:outline-none focus:ring-1 ${
               leftIcon ? 'pl-9' : 'pl-3.5'
             } ${rightAction ? 'pr-10' : 'pr-3.5'} ${
               error
-                ? 'border-[#F38BA8] focus:border-[#F38BA8] focus:ring-[#F38BA8]/40'
-                : 'border-theme focus:border-[#89B4FA] focus:ring-[#89B4FA]/40'
-            } ${disabled ? 'opacity-40 cursor-not-allowed bg-theme-card-subtle' : ''} ${className}`}
+                ? 'border-rose-500 focus:border-rose-500 focus:ring-rose-500/40'
+                : 'border-[#1E3A6D] focus:border-[#FFB800] focus:ring-[#FFB800]/40'
+            } ${disabled ? 'opacity-40 cursor-not-allowed bg-[#0A1931]' : ''} ${className}`}
             {...props}
           />
 
@@ -45,9 +45,9 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         {error ? (
-          <p className="text-[11px] text-[#F38BA8] font-medium">{error}</p>
+          <p className="text-[11px] text-rose-400 font-medium">{error}</p>
         ) : helperText ? (
-          <p className="text-[11px] text-theme-subtle">{helperText}</p>
+          <p className="text-[11px] text-sky-300/80">{helperText}</p>
         ) : null}
       </div>
     );

@@ -163,30 +163,33 @@ export const AppContent: React.FC = () => {
       </main>
 
       {/* 3. Minimalist Industrial Footer */}
-      <footer className="mt-auto bg-white border-t border-bunker-border-strong text-bunker-text-secondary">
+      <footer className="mt-auto bg-[#0A1931] border-t-2 border-[#1E3A6D] text-sky-200">
+        <div className="h-[2px] w-full hazard-stripe-sm opacity-90" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
             {/* Column 1: Brand Info */}
             <div className="lg:col-span-2 space-y-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-orange-50 border border-orange-200 flex items-center justify-center">
-                  <HardHat className="w-4 h-4 text-bunker-amber-500" />
+                <div className="relative w-8 h-8 rounded-lg bg-[#0F2547] border border-[#254B85] flex items-center justify-center">
+                  <div className="absolute top-0.5 left-0.5 industrial-rivet" />
+                  <div className="absolute top-0.5 right-0.5 industrial-rivet" />
+                  <HardHat className="w-4 h-4 text-[#FFB800]" />
                 </div>
-                <span className="font-heading text-lg font-extrabold tracking-tight text-bunker-text-primary">
-                  <span className="text-bunker-amber-500">BUNKER</span>STROY
+                <span className="font-heading text-lg font-extrabold tracking-tight text-white">
+                  <span className="text-[#FFB800]">BUNKER</span>STROY
                 </span>
               </div>
 
-              <p className="text-xs text-bunker-text-secondary max-w-sm leading-relaxed">
+              <p className="text-xs text-sky-200/80 max-w-sm leading-relaxed">
                 Qurilish mollari ishlab chiqaruvchilar, do‘konlar va xaridorlarni to‘g‘ridan-to‘g‘ri
                 birlashtiruvchi zamonaviy marketplace va og‘ir yuk logistika platformasi.
               </p>
 
               <div className="flex items-center gap-2 pt-1 font-mono text-[10px]">
-                <span className="bg-slate-50 border border-bunker-border-strong px-2 py-0.5 rounded text-bunker-text-secondary">
+                <span className="bg-[#0F2547] border border-[#1E3A6D] px-2 py-0.5 rounded text-sky-200">
                   ISO 9001:2015
                 </span>
-                <span className="bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-emerald-800 font-bold">
+                <span className="bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded text-emerald-400 font-bold">
                   O‘zDSt &amp; GOST
                 </span>
               </div>
@@ -194,37 +197,37 @@ export const AppContent: React.FC = () => {
 
             {/* Column 2: Platform Links */}
             <div className="space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary font-mono">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[#FFB800] font-mono">
                 Platforma
               </h4>
-              <ul className="space-y-1 text-xs font-mono">
+              <ul className="space-y-1.5 text-xs font-mono text-sky-100">
                 <li>
-                  <Link to="/" className="hover:text-bunker-amber-500 transition-colors">
+                  <Link to="/" className="hover:text-[#FFB800] transition-colors">
                     Katalog &amp; Vitrina
                   </Link>
                 </li>
                 <li>
-                  <Link to="/suppliers" className="hover:text-bunker-amber-500 transition-colors">
+                  <Link to="/suppliers" className="hover:text-[#FFB800] transition-colors">
                     Do‘konlar &amp; Zavodlar
                   </Link>
                 </li>
                 <li>
-                  <Link to="/orders" className="hover:text-bunker-amber-500 transition-colors">
+                  <Link to="/orders" className="hover:text-[#FFB800] transition-colors">
                     Mening Buyurtmalarim
                   </Link>
                 </li>
                 <li>
-                  <Link to="/seller-panel" className="text-bunker-amber-500 font-bold hover:underline transition-colors">
-                    + Sotuvchi Kabineti
+                  <Link to="/seller-panel" className="text-[#FFB800] font-bold hover:underline transition-colors">
+                    + Sotuvchi Kabineti (POS &amp; CRM)
                   </Link>
                 </li>
                 <li>
-                  <Link to="/logistics" className="hover:text-bunker-amber-500 transition-colors">
+                  <Link to="/logistics" className="hover:text-[#FFB800] transition-colors">
                     Yetkazib berish (Logistika)
                   </Link>
                 </li>
                 <li>
-                  <Link to="/driver" className="text-amber-600 font-bold hover:underline transition-colors flex items-center gap-1">
+                  <Link to="/driver" className="text-amber-400 font-bold hover:underline transition-colors flex items-center gap-1">
                     <span>🚛 Haydovchi Kabineti</span>
                   </Link>
                 </li>
@@ -233,20 +236,24 @@ export const AppContent: React.FC = () => {
 
             {/* Column 3: Standards & Integrations */}
             <div className="space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary font-mono">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[#FFB800] font-mono">
                 Afzalliklar
               </h4>
-              <ul className="space-y-1.5 text-xs font-mono text-bunker-text-secondary">
+              <ul className="space-y-1.5 text-xs font-mono text-sky-200/90">
                 <li className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-bunker-amber-500" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FFB800]" />
                   <span>Zavod va ishlab chiqaruvchi narxlari</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-bunker-amber-500" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FFB800]" />
                   <span>Ob'ektgacha yuk yetkazib berish</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <span>50/50 Xavfsiz Escrow to‘lovi</span>
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                   <span>Payme, Click, Naqd va B2B to‘lov</span>
                 </li>
               </ul>
@@ -254,35 +261,35 @@ export const AppContent: React.FC = () => {
 
             {/* Column 4: Contact & Support */}
             <div className="space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-bunker-text-primary font-mono">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[#FFB800] font-mono">
                 Dispetcherlik
               </h4>
-              <div className="space-y-1.5 text-xs text-bunker-text-secondary font-mono">
+              <div className="space-y-1.5 text-xs text-sky-200/90 font-mono">
                 <div className="flex items-center gap-1.5">
-                  <PhoneCall className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span className="text-bunker-text-primary font-bold">+998 (71) 200-45-46</span>
+                  <PhoneCall className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span className="text-white font-bold">+998 (71) 200-45-46</span>
                 </div>
                 <div className="flex items-start gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-bunker-amber-500 shrink-0 mt-0.5" />
+                  <MapPin className="w-3.5 h-3.5 text-[#FFB800] shrink-0 mt-0.5" />
                   <span>Toshkent sh., Bunyodkor shoh ko'chasi 42-A</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-bunker-text-muted">
-                  <Clock className="w-3.5 h-3.5 text-bunker-amber-500 shrink-0" />
-                  <span>24/7 uzluksiz</span>
+                <div className="flex items-center gap-1.5 text-sky-300/70">
+                  <Clock className="w-3.5 h-3.5 text-[#FFB800] shrink-0" />
+                  <span>24/7 uzluksiz xizmat</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Bottom Copyright */}
-          <div className="mt-8 pt-4 border-t border-bunker-border-strong flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono">
-            <p className="text-bunker-text-muted">
-              &copy; 2026 BunkerStroy Enterprise LLC.
+          <div className="mt-8 pt-4 border-t border-[#1E3A6D] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono">
+            <p className="text-sky-300/70">
+              &copy; 2026 BunkerStroy Enterprise LLC. Barcha huquqlar himoyalangan.
             </p>
             <div className="flex items-center gap-2">
-              <Badge variant="success" size="sm" isMono dot className="bg-emerald-50 text-emerald-700 border-emerald-200">
-                SLA: 99.98%
-              </Badge>
+              <span className="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 px-2.5 py-0.5 rounded text-[11px] font-bold">
+                ● SLA: 99.98%
+              </span>
             </div>
           </div>
         </div>
