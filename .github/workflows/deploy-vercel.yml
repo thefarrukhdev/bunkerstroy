@@ -1,0 +1,42 @@
+name: Deploy BunkerStroy to Vercel (farrukh-jumayevs-projects)
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-panels:
+    name: Deploy Web & Admin Panels
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.2
+
+      - name: Install Dependencies & Build Types
+        run: |
+          pnpm install --frozen-lockfile=false
+          pnpm --filter @bunkerstroy/types build
+
+      - name: Deploy Vitrina & Marketplace (bunkerstroy-web)
+        run: |
+          pnpm dlx vercel --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.VERCEL_ORG_ID }} --project bunkerstroy-web --prod --yes
+
+      - name: Deploy Industrial Admin Dashboard (bunkerstroy-admin)
+        run: |
+          pnpm dlx vercel --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.VERCEL_ORG_ID }} --project bunkerstroy-admin --prod --yes
