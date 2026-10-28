@@ -5,6 +5,7 @@ import {
   Patch,
   Body,
   Param,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
@@ -42,8 +43,14 @@ export class OrdersController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Foydalanuvchi buyurtmalari (Admin barcha buyurtmalarni ko‘radi)' })
-  async findAll(@CurrentUser() user: CurrentUserPayload) {
-    const data = await this.ordersService.findAll(user);
+  async findAll(
+    @CurrentUser() user: CurrentUserPayload,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const pageNum = page ? parseInt(page, 10) : 1;
+    const limitNum = limit ? parseInt(limit, 10) : 50;
+    const data = await this.ordersService.findAll(user, pageNum, limitNum);
     return { success: true, data, total: data.length };
   }
 
@@ -52,8 +59,14 @@ export class OrdersController {
   @Roles(Role.ADMIN, Role.SUPPLIER)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Sotuvchining barcha buyurtmalari (Admin va Ta\'minotchi uchun)' })
-  async findSupplierOrders(@CurrentUser() user: CurrentUserPayload) {
-    const data = await this.ordersService.findAll(user);
+  async findSupplierOrders(
+    @CurrentUser() user: CurrentUserPayload,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const pageNum = page ? parseInt(page, 10) : 1;
+    const limitNum = limit ? parseInt(limit, 10) : 50;
+    const data = await this.ordersService.findAll(user, pageNum, limitNum);
     return { success: true, data, total: data.length };
   }
 

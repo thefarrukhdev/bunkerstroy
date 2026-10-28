@@ -8,19 +8,27 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   private client: Redis | null = null;
   private isConnected = false;
   private memoryFallback = new Map<string, { value: string; expiresAt: number }>();
+  private cleanupInterval: NodeJS.Timeout | null = null;
 
   async onModuleInit() {
+    this.cleanupInterval = setInterval(() => {
+      const now = Date.now();
+      for (const [key, item] of this.memoryFallback.entries()) {
+        if (item.expiresAt && now > item.expiresAt) {
+          this.memoryFallback.delete(key);
+        }
+      }
+    }, 60000);
+
     try {
       this.client = new Redis(env.REDIS_URL, {
         lazyConnect: true,
         maxRetriesPerRequest: 1,
         connectTimeout: 3000,
         retryStrategy: (times) => {
-          if (times > 3) {
-            this.logger.warn('Redis reconnection retries exhausted, switching to fallback');
-            return null;
-          }
-          return Math.min(times * 100, 2000);
+          const delay = Math.min(times * 150, 3000);
+          this.logger.debug(`Redis reconnection attempt #${times} (backoff ${delay}ms)`);
+          return delay;
         }
       });
 
@@ -58,6 +66,10 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   }
 
   async onModuleDestroy() {
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+      this.cleanupInterval = null;
+    }
     if (this.client) {
       try {
         await this.client.quit();
@@ -120,5 +132,34 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   async exists(key: string): Promise<boolean> {
     const val = await this.get(key);
     return val !== null;
+  }
+
+  async incr(key: string, ttlSeconds?: number): Promise<number> {
+    if (this.isConnected && this.client) {
+      try {
+        const val = await this.client.incr(key);
+        if (ttlSeconds) {
+          const ttl = await this.client.ttl(key);
+          if (ttl < 0) {
+            await this.client.expire(key, ttlSeconds);
+          }
+        }
+        return val;
+      } catch (err: any) {
+        this.logger.warn(`Redis incr error for key ${key}: ${err.message}`);
+      }
+    }
+
+    // Memory fallback
+    const item = this.memoryFallback.get(key);
+    const now = Date.now();
+    let currentVal = 0;
+    if (item && now <= item.expiresAt) {
+      currentVal = parseInt(item.value, 10) || 0;
+    }
+    const newVal = currentVal + 1;
+    const expiresAt = ttlSeconds && ttlSeconds > 0 ? now + ttlSeconds * 1000 : (item ? item.expiresAt : Infinity);
+    this.memoryFallback.set(key, { value: newVal.toString(), expiresAt });
+    return newVal;
   }
 }

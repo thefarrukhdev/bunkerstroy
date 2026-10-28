@@ -1,6 +1,7 @@
-import { Controller, Post, Body, Headers } from '@nestjs/common';
+import { Controller, Post, Body, Headers, ForbiddenException } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { PaymentsService } from './payments.service';
+import { env } from '../../config/env';
 
 @ApiTags('Payment Gateways (Payme & Click)')
 @Controller('api/payments')
@@ -25,6 +26,9 @@ export class PaymentsController {
   @Post('simulate')
   @ApiOperation({ summary: 'Payme va Click to‘lovlarini tezkor simulyatsiya qilish (Test muhiti)' })
   async simulatePayment(@Body() body: { orderId: string; provider: 'PAYME' | 'CLICK' }) {
+    if (env.NODE_ENV === 'production') {
+      throw new ForbiddenException("Test to'lov simulyatsiyasi production muhitida taqiqlangan");
+    }
     const data = await this.paymentsService.simulatePayment(body.orderId, body.provider || 'PAYME');
     return { success: true, data, message: "To'lov muvaffaqiyatli qabul qilindi" };
   }

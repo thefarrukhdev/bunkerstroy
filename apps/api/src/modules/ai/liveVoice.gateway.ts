@@ -4,7 +4,7 @@ import { GoogleGenAI, Modality, LiveServerMessage } from '@google/genai';
 import { env } from '../../config/env';
 
 export function setupLiveVoiceGateway(server: Server) {
-  const wss = new WebSocketServer({ server, path: '/api/live' });
+  const wss = new WebSocketServer({ server, path: '/api/live', maxPayload: 1024 * 1024 });
 
   wss.on('connection', async (clientWs: WebSocket) => {
     console.log('Client connected to Live Voice Gateway');
@@ -22,7 +22,7 @@ export function setupLiveVoiceGateway(server: Server) {
     try {
       const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
       const session = await ai.live.connect({
-        model: 'gemini-3.8-live',
+        model: 'gemini-2.0-flash-exp',
         config: {
           responseModalities: [Modality.AUDIO],
           speechConfig: {

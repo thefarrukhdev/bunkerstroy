@@ -21,6 +21,16 @@ const envSchema = z.object({
   ESKIZ_EMAIL: z.string().optional(),
   ESKIZ_PASSWORD: z.string().optional(),
   ESKIZ_FROM: z.string().default('4546')
+}).superRefine((data, ctx) => {
+  if (data.NODE_ENV === 'production') {
+    if (!process.env.JWT_SECRET || data.JWT_SECRET === 'bunkerstroy_default_jwt_secret_dev_environment_key') {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'JWT_SECRET must be explicitly set to a strong unique secret in production!',
+        path: ['JWT_SECRET'],
+      });
+    }
+  }
 });
 
 export const env = envSchema.parse(process.env);

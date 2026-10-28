@@ -6,6 +6,7 @@ import {
   UnauthorizedException,
   Logger,
 } from '@nestjs/common';
+import crypto from 'crypto';
 import {
   Role,
   OrderStatus,
@@ -17,8 +18,10 @@ import {
 } from '@bunkerstroy/db';
 import { Order, Dispute, PaymentMethod } from '@bunkerstroy/types';
 import { PrismaService } from '../../prisma/prisma.service';
+import { RedisService } from '../../redis/redis.service';
 import { AuditLogService } from '../admin/audit-log.service';
 import { CurrentUserPayload } from '../../common/decorators/current-user.decorator';
+import { timingSafePinCompare } from '../../common';
 import {
   CreateOrderDto,
   UpdateOrderStatusDto,
@@ -64,9 +67,10 @@ export class OrdersService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly auditLogService: AuditLogService,
+    private readonly redis: RedisService,
   ) {}
 
-  private mapPrismaOrder(o: PrismaOrderWithRelations): Order {
+  private mapPrismaOrder(o: PrismaOrderWithRelations, currentUser?: CurrentUserPayload | null): Order {
     const payments = Array.isArray(o.payments) ? o.payments : [];
     const hasPaidPayment = payments.some((p) => p.status === PaymentStatus.PAID);
     const latestPayment = payments[0] || null;
@@ -86,6 +90,12 @@ export class OrdersService {
         paymentMethod = latestPayment.provider as PaymentMethod;
       }
     }
+
+    // CRITICAL DATA LEAK FIX: acceptanceCode must only be visible to the buyer or ADMIN
+    // and only when isAcceptanceCodeRevealed === true. Otherwise null/undefined.
+    const isBuyer = Boolean(currentUser?.id && o.buyerId === currentUser.id);
+    const isAdmin = currentUser?.role === Role.ADMIN;
+    const canSeeAcceptanceCode = (isBuyer || isAdmin) && Boolean(o.isAcceptanceCodeRevealed);
 
     return {
       id: o.id,
@@ -116,7 +126,7 @@ export class OrdersService {
             status: so.status,
             subTotal: Number(so.subTotal),
             deliveryFee: Number(so.deliveryFee),
-            acceptanceCode: so.acceptanceCode,
+            acceptanceCode: canSeeAcceptanceCode ? so.acceptanceCode : null,
             arrivedAt: so.arrivedAt ? so.arrivedAt.toISOString() : null,
             completedAt: so.completedAt ? so.completedAt.toISOString() : null,
             driverId: so.driverId,
@@ -150,7 +160,7 @@ export class OrdersService {
       secondPaymentAmount: o.secondPaymentAmount ? Number(o.secondPaymentAmount) : null,
       isFirstPaid: Boolean(o.isFirstPaid),
       isSecondPaid: Boolean(o.isSecondPaid),
-      acceptanceCode: o.isAcceptanceCodeRevealed ? o.acceptanceCode : null,
+      acceptanceCode: canSeeAcceptanceCode ? o.acceptanceCode : null,
       isAcceptanceCodeRevealed: Boolean(o.isAcceptanceCodeRevealed),
       arrivedAt: o.arrivedAt instanceof Date ? o.arrivedAt.toISOString() : null,
       waitingDeadline: o.waitingDeadline instanceof Date ? o.waitingDeadline.toISOString() : null,
@@ -238,9 +248,9 @@ export class OrdersService {
       consolidatedMap.set(it.productId, current + Math.max(1, it.quantity));
     }
 
-    // 3. Generate random secure 4-digit acceptance PIN
-    const acceptanceCode = Math.floor(1000 + Math.random() * 9000).toString();
-    const orderNumber = `BS-${Math.floor(100000 + Math.random() * 900000)}`;
+    // 3. Generate random secure 4-digit acceptance PIN and collision-free order number
+    const acceptanceCode = crypto.randomInt(1000, 10000).toString();
+    const orderNumber = `BS-${Date.now().toString(36).toUpperCase()}-${crypto.randomInt(1000, 10000)}`;
     const deliveryFee = 150000;
 
     // 4. Interactive Transaction
@@ -364,9 +374,15 @@ export class OrdersService {
         },
       });
 
-      // Create multi-vendor SubOrder records
+      // Find created order items to associate with subOrders
+      const createdItems = await tx.orderItem.findMany({
+        where: { orderId: order.id },
+        include: { product: true },
+      });
+
+      // Create multi-vendor SubOrder records and link order items (fixes ghost items bug)
       for (const [supId, group] of supplierItemsMap.entries()) {
-        await tx.subOrder.create({
+        const subOrder = await tx.subOrder.create({
           data: {
             orderId: order.id,
             supplierId: supId,
@@ -376,6 +392,17 @@ export class OrdersService {
             acceptanceCode,
           },
         });
+
+        const supGroupItemIds = createdItems
+          .filter((it) => it.product?.supplierId === supId)
+          .map((it) => it.id);
+
+        if (supGroupItemIds.length > 0) {
+          await tx.orderItem.updateMany({
+            where: { id: { in: supGroupItemIds } },
+            data: { subOrderId: subOrder.id },
+          });
+        }
       }
 
       // Initial PaymentTransaction
@@ -408,13 +435,21 @@ export class OrdersService {
       level: 'INFO',
     });
 
-    return this.mapPrismaOrder(createdOrder);
+    return this.mapPrismaOrder(createdOrder, actorUser ?? { id: buyerId, role: Role.CLIENT });
   }
 
-  async findAll(currentUser?: CurrentUserPayload | null): Promise<Order[]> {
+  async findAll(
+    currentUser?: CurrentUserPayload | null,
+    page: number = 1,
+    limit: number = 50,
+  ): Promise<Order[]> {
     if (!currentUser || !currentUser.id) {
       throw new UnauthorizedException('Avtorizatsiya talab qilinadi');
     }
+
+    const pageNum = Math.max(1, Number(page) || 1);
+    const limitNum = Math.min(100, Math.max(1, Number(limit) || 50));
+    const skip = (pageNum - 1) * limitNum;
 
     const where: Prisma.OrderWhereInput = {};
     if (currentUser.role === Role.ADMIN) {
@@ -451,9 +486,11 @@ export class OrdersService {
       where,
       include: ORDER_FULL_INCLUDE,
       orderBy: { createdAt: 'desc' },
+      skip,
+      take: limitNum,
     });
 
-    return orders.map((o) => this.mapPrismaOrder(o));
+    return orders.map((o) => this.mapPrismaOrder(o, currentUser));
   }
 
   async findOne(id: string, currentUser?: CurrentUserPayload | null): Promise<Order> {
@@ -481,7 +518,7 @@ export class OrdersService {
       }
     }
 
-    return this.mapPrismaOrder(order);
+    return this.mapPrismaOrder(order, currentUser);
   }
 
   async updateStatus(
@@ -533,7 +570,7 @@ export class OrdersService {
       level: 'INFO',
     });
 
-    return this.mapPrismaOrder(updated);
+    return this.mapPrismaOrder(updated, currentUser);
   }
 
   async markArrived(orderId: string, currentUser?: CurrentUserPayload | null): Promise<Order> {
@@ -570,7 +607,7 @@ export class OrdersService {
       level: 'INFO',
     });
 
-    return this.mapPrismaOrder(updated);
+    return this.mapPrismaOrder(updated, currentUser);
   }
 
   async verifyAcceptanceCode(
@@ -586,6 +623,17 @@ export class OrdersService {
       throw new NotFoundException(`Buyurtma topilmadi: ${orderId}`);
     }
 
+    // PIN brute force protection via Redis (5 attempts lockout for 15 minutes)
+    const attemptsKey = `pin_failed_attempts:${order.id}`;
+    const failedAttemptsStr = await this.redis.get(attemptsKey);
+    const failedAttempts = failedAttemptsStr ? parseInt(failedAttemptsStr, 10) : 0;
+
+    if (failedAttempts >= 5) {
+      throw new BadRequestException(
+        'PIN kod ketma-ket 5 marta noto‘g‘ri kiritildi. Xavfsizlik yuzasidan buyurtma 15 daqiqaga bloklandi!'
+      );
+    }
+
     if (!dto.code || typeof dto.code !== 'string') {
       throw new BadRequestException('Qabul kodi kiritilmadi');
     }
@@ -594,9 +642,23 @@ export class OrdersService {
       throw new BadRequestException('Ikkinchi 50% to‘lov hali to‘lanmagan. Yukni topshirish mumkin emas!');
     }
 
-    if (order.acceptanceCode !== dto.code.trim()) {
+    const isPinValid = timingSafePinCompare(order.acceptanceCode || '', dto.code);
+
+    if (!isPinValid) {
+      const newAttempts = failedAttempts + 1;
+      await this.redis.set(attemptsKey, newAttempts.toString(), 900); // 15 mins TTL
+
+      if (newAttempts >= 5) {
+        throw new BadRequestException(
+          'PIN kod ketma-ket 5 marta noto‘g‘ri kiritildi. Xavfsizlik yuzasidan buyurtma 15 daqiqaga bloklandi!'
+        );
+      }
+
       throw new BadRequestException('Kiritilgan qabul kodi noto‘g‘ri! Iltimos, mijozdan to‘g‘ri PIN kodni oling.');
     }
+
+    // Successful PIN verification -> clear failed attempts counter
+    await this.redis.del(attemptsKey);
 
     const updated = await this.prisma.$transaction(async (tx) => {
       await tx.subOrder.updateMany({
@@ -606,6 +668,19 @@ export class OrdersService {
           completedAt: new Date(),
         },
       });
+
+      // Release any assigned vehicle
+      const dispatches = await tx.logisticsDispatch.findMany({
+        where: { orderId: order.id, vehicleId: { not: null } },
+      });
+      for (const d of dispatches) {
+        if (d.vehicleId) {
+          await tx.logisticsVehicle.updateMany({
+            where: { id: d.vehicleId },
+            data: { isAvailable: true },
+          });
+        }
+      }
 
       return tx.order.update({
         where: { id: order.id },
@@ -624,7 +699,7 @@ export class OrdersService {
       level: 'INFO',
     });
 
-    return this.mapPrismaOrder(updated);
+    return this.mapPrismaOrder(updated, currentUser);
   }
 
   async paySecondHalf(orderId: string, currentUser?: CurrentUserPayload | null): Promise<Order> {
@@ -634,6 +709,14 @@ export class OrdersService {
 
     if (!order) {
       throw new NotFoundException(`Buyurtma topilmadi: ${orderId}`);
+    }
+
+    if (!currentUser || !currentUser.id) {
+      throw new UnauthorizedException('Avtorizatsiya talab qilinadi');
+    }
+
+    if (currentUser.role !== Role.ADMIN && order.buyerId !== currentUser.id) {
+      throw new ForbiddenException('Faqat buyurtmachi yoki administrator ikkinchi to‘lovni amalga oshirishi mumkin');
     }
 
     if (order.paymentMode !== PaymentMode.SPLIT_50_50) {
@@ -678,7 +761,7 @@ export class OrdersService {
       level: 'INFO',
     });
 
-    return this.mapPrismaOrder(updated);
+    return this.mapPrismaOrder(updated, currentUser);
   }
 
   async openDispute(orderId: string, dto: OpenDisputeDto, currentUser?: CurrentUserPayload | null): Promise<Dispute> {
@@ -692,6 +775,10 @@ export class OrdersService {
 
     if (!order) {
       throw new NotFoundException(`Buyurtma topilmadi: ${orderId}`);
+    }
+
+    if (currentUser.role !== Role.ADMIN && order.buyerId !== currentUser.id) {
+      throw new ForbiddenException('Faqat buyurtmachi yoki administrator buyurtma bo‘yicha nizo ocha oladi');
     }
 
     const dispute = await this.prisma.$transaction(async (tx) => {

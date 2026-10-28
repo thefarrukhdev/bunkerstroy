@@ -5,11 +5,14 @@ import {
   BadRequestException,
   Logger,
 } from '@nestjs/common';
+import crypto from 'crypto';
 import { LogisticsVehicle } from '@bunkerstroy/types';
 import { Role, OrderStatus, PaymentMode, Prisma } from '@bunkerstroy/db';
 import { PrismaService } from '../../prisma/prisma.service';
+import { RedisService } from '../../redis/redis.service';
 import { AuditLogService } from '../admin/audit-log.service';
 import { CurrentUserPayload } from '../../common/decorators/current-user.decorator';
+import { timingSafePinCompare } from '../../common';
 import {
   CalculateQuoteDto,
   DispatchOrderDto,
@@ -26,6 +29,7 @@ export class LogisticsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly auditLogService: AuditLogService,
+    private readonly redis: RedisService,
   ) {}
 
   private readonly defaultVehicles: LogisticsVehicle[] = [
@@ -161,7 +165,7 @@ export class LogisticsService {
         if (dbUser) {
           order = await this.prisma.order.create({
             data: {
-              orderNumber: `BS-EXP-${Math.floor(100000 + Math.random() * 900000)}`,
+              orderNumber: `BS-EXP-${Date.now().toString(36).toUpperCase()}-${crypto.randomInt(1000, 10000)}`,
               buyerId: dbUser.id,
               totalAmount: totalCost,
               deliveryFee: totalCost,
@@ -207,6 +211,13 @@ export class LogisticsService {
         where: { id: targetOrderId },
         data: { status: 'ASSIGNED_TO_FLEET' },
       });
+
+      if (vehicle?.id) {
+        await tx.logisticsVehicle.update({
+          where: { id: vehicle.id },
+          data: { isAvailable: false },
+        });
+      }
 
       return createdDispatch;
     });
@@ -291,6 +302,12 @@ export class LogisticsService {
           where: { id: dispatch.orderId },
           data: { status: OrderStatus.DELIVERED },
         });
+        if (dispatch.vehicleId) {
+          await tx.logisticsVehicle.updateMany({
+            where: { id: dispatch.vehicleId },
+            data: { isAvailable: true },
+          });
+        }
       }
 
       return updated;
@@ -452,15 +469,20 @@ export class LogisticsService {
       );
     }
 
+    // PIN brute force protection via Redis (5 failed attempts locks for 15 minutes)
+    const attemptsKey = `pin_failed_attempts:${dispatch.order.id}`;
+    const failedAttemptsStr = await this.redis.get(attemptsKey);
+    const failedAttempts = failedAttemptsStr ? parseInt(failedAttemptsStr, 10) : 0;
+
+    if (failedAttempts >= 5) {
+      throw new BadRequestException(
+        'PIN kod ketma-ket 5 marta noto‘g‘ri kiritildi. Xavfsizlik yuzasidan buyurtma 15 daqiqaga bloklandi!'
+      );
+    }
+
     const trimmedCode = code ? code.trim() : '';
     if (!trimmedCode) {
       throw new BadRequestException('Mijoz qabul kodi kiritilishi shart');
-    }
-
-    if (dispatch.order.acceptanceCode !== trimmedCode) {
-      throw new BadRequestException(
-        'Mijoz taqdim etgan qabul kodi xato! Iltimos, mijozdan tasdiqlangan PIN kodni oling.'
-      );
     }
 
     if (
@@ -471,6 +493,26 @@ export class LogisticsService {
         'Ikkinchi 50% to‘lov hali to‘lanmagan. Yukni topshirish mumkin emas!'
       );
     }
+
+    const isPinValid = timingSafePinCompare(dispatch.order.acceptanceCode || '', trimmedCode);
+
+    if (!isPinValid) {
+      const newAttempts = failedAttempts + 1;
+      await this.redis.set(attemptsKey, newAttempts.toString(), 900); // 15 mins TTL
+
+      if (newAttempts >= 5) {
+        throw new BadRequestException(
+          'PIN kod ketma-ket 5 marta noto‘g‘ri kiritildi. Xavfsizlik yuzasidan buyurtma 15 daqiqaga bloklandi!'
+        );
+      }
+
+      throw new BadRequestException(
+        'Mijoz taqdim etgan qabul kodi xato! Iltimos, mijozdan tasdiqlangan PIN kodni oling.'
+      );
+    }
+
+    // Successful PIN verification -> clear failed attempts counter
+    await this.redis.del(attemptsKey);
 
     const updated = await this.prisma.$transaction(async (tx) => {
       const updatedDispatch = await tx.logisticsDispatch.update({
@@ -496,6 +538,14 @@ export class LogisticsService {
           completedAt: new Date(),
         },
       });
+
+      // Release vehicle availability
+      if (dispatch.vehicleId) {
+        await tx.logisticsVehicle.updateMany({
+          where: { id: dispatch.vehicleId },
+          data: { isAvailable: true },
+        });
+      }
 
       return updatedDispatch;
     });

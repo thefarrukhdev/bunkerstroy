@@ -106,6 +106,10 @@ export class AuthService {
     if (user) {
       const isPasswordValid = await bcrypt.compare(pass, user.passwordHash);
       if (isPasswordValid) {
+        if (user.isBlocked) {
+          throw new UnauthorizedException('Hisobingiz bloklangan');
+        }
+
         const tokens = this.generateTokens(user);
 
         await this.auditLogService.logAction({
@@ -132,114 +136,116 @@ export class AuthService {
       }
     }
 
-    // 2. Demo credentials fallback with auto-upsert in Prisma
-    const isAdminDemo =
-      cleanLogin === 'admin' ||
-      cleanLogin === 'admin@bunkerstroy.uz' ||
-      normalizedPhone === '+998901234567';
-    if (isAdminDemo && (pass === 'bunker2026' || pass === 'admin123')) {
-      user = await this.prisma.user.upsert({
-        where: { phone: '+998901234567' },
-        update: { role: Role.ADMIN },
-        create: {
-          phone: '+998901234567',
-          email: 'admin@bunkerstroy.uz',
-          passwordHash: await bcrypt.hash('bunker2026', 10),
-          displayName: 'Bunker Admin',
-          role: Role.ADMIN,
-          userType: UserType.LEGAL_ENTITY,
-          verificationStatus: VerificationStatus.VERIFIED,
-          inn: '201122334',
-          companyName: '«BUNKER STROY INVEST» MChJ',
-        },
-      });
+    // 2. Demo credentials fallback with auto-upsert in Prisma (DEVELOPMENT & TEST ONLY)
+    if (env.NODE_ENV !== 'production') {
+      const isAdminDemo =
+        cleanLogin === 'admin' ||
+        cleanLogin === 'admin@bunkerstroy.uz' ||
+        normalizedPhone === '+998901234567';
+      if (isAdminDemo && (pass === 'bunker2026' || pass === 'admin123')) {
+        user = await this.prisma.user.upsert({
+          where: { phone: '+998901234567' },
+          update: { role: Role.ADMIN },
+          create: {
+            phone: '+998901234567',
+            email: 'admin@bunkerstroy.uz',
+            passwordHash: await bcrypt.hash('bunker2026', 10),
+            displayName: 'Bunker Admin',
+            role: Role.ADMIN,
+            userType: UserType.LEGAL_ENTITY,
+            verificationStatus: VerificationStatus.VERIFIED,
+            inn: '201122334',
+            companyName: '«BUNKER STROY INVEST» MChJ',
+          },
+        });
 
-      const tokens = this.generateTokens(user);
-      return {
-        ...tokens,
-        user: {
-          id: user.id,
-          displayName: user.displayName,
-          role: user.role,
-          email: user.email,
-          phone: user.phone,
-          inn: user.inn,
-          companyName: user.companyName,
-          verificationStatus: user.verificationStatus,
-        },
-      };
-    }
+        const tokens = this.generateTokens(user);
+        return {
+          ...tokens,
+          user: {
+            id: user.id,
+            displayName: user.displayName,
+            role: user.role,
+            email: user.email,
+            phone: user.phone,
+            inn: user.inn,
+            companyName: user.companyName,
+            verificationStatus: user.verificationStatus,
+          },
+        };
+      }
 
-    const isSupplierDemo =
-      cleanLogin === 'supplier' ||
-      cleanLogin.startsWith('supplier') ||
-      normalizedPhone === '+998971112233' ||
-      requestedRole === 'supplier' ||
-      requestedRole === 'SUPPLIER';
+      const isSupplierDemo =
+        cleanLogin === 'supplier' ||
+        cleanLogin.startsWith('supplier') ||
+        normalizedPhone === '+998971112233' ||
+        requestedRole === 'supplier' ||
+        requestedRole === 'SUPPLIER';
 
-    if (isSupplierDemo && (pass === 'bunker2026' || pass === 'supplier123')) {
-      user = await this.prisma.user.upsert({
-        where: { phone: '+998971112233' },
-        update: { role: Role.SUPPLIER },
-        create: {
-          phone: '+998971112233',
-          email: 'supplier@toshkentsement.uz',
-          passwordHash: await bcrypt.hash('supplier123', 10),
-          displayName: 'Toshkent Sement Servis MChJ',
-          role: Role.SUPPLIER,
-          userType: UserType.LEGAL_ENTITY,
-          verificationStatus: VerificationStatus.VERIFIED,
-          inn: '305566778',
-          companyName: '«TOSHKENT G\'ISHT VA SEMENT SERVIS» MChJ',
-        },
-      });
+      if (isSupplierDemo && (pass === 'bunker2026' || pass === 'supplier123')) {
+        user = await this.prisma.user.upsert({
+          where: { phone: '+998971112233' },
+          update: { role: Role.SUPPLIER },
+          create: {
+            phone: '+998971112233',
+            email: 'supplier@toshkentsement.uz',
+            passwordHash: await bcrypt.hash('supplier123', 10),
+            displayName: 'Toshkent Sement Servis MChJ',
+            role: Role.SUPPLIER,
+            userType: UserType.LEGAL_ENTITY,
+            verificationStatus: VerificationStatus.VERIFIED,
+            inn: '305566778',
+            companyName: '«TOSHKENT G\'ISHT VA SEMENT SERVIS» MChJ',
+          },
+        });
 
-      const tokens = this.generateTokens(user);
-      return {
-        ...tokens,
-        user: {
-          id: user.id,
-          displayName: user.displayName,
-          role: user.role,
-          email: user.email,
-          phone: user.phone,
-          inn: user.inn,
-          companyName: user.companyName,
-          verificationStatus: user.verificationStatus,
-        },
-      };
-    }
+        const tokens = this.generateTokens(user);
+        return {
+          ...tokens,
+          user: {
+            id: user.id,
+            displayName: user.displayName,
+            role: user.role,
+            email: user.email,
+            phone: user.phone,
+            inn: user.inn,
+            companyName: user.companyName,
+            verificationStatus: user.verificationStatus,
+          },
+        };
+      }
 
-    // Contractor demo
-    if (cleanLogin === 'contractor' && (pass === 'bunker2026' || pass === 'contractor123')) {
-      user = await this.prisma.user.upsert({
-        where: { phone: '+998905556677' },
-        update: {},
-        create: {
-          phone: '+998905556677',
-          displayName: 'Mega Bino Qurilish MChJ',
-          role: Role.CONTRACTOR,
-          userType: UserType.LEGAL_ENTITY,
-          verificationStatus: VerificationStatus.VERIFIED,
-          inn: '201122334',
-          companyName: '«MEGA BINO QURILISH» MChJ',
-          passwordHash: await bcrypt.hash('contractor123', 10),
-        },
-      });
+      // Contractor demo
+      if (cleanLogin === 'contractor' && (pass === 'bunker2026' || pass === 'contractor123')) {
+        user = await this.prisma.user.upsert({
+          where: { phone: '+998905556677' },
+          update: {},
+          create: {
+            phone: '+998905556677',
+            displayName: 'Mega Bino Qurilish MChJ',
+            role: Role.CONTRACTOR,
+            userType: UserType.LEGAL_ENTITY,
+            verificationStatus: VerificationStatus.VERIFIED,
+            inn: '201122334',
+            companyName: '«MEGA BINO QURILISH» MChJ',
+            passwordHash: await bcrypt.hash('contractor123', 10),
+          },
+        });
 
-      const tokens = this.generateTokens(user);
-      return {
-        ...tokens,
-        user: {
-          id: user.id,
-          displayName: user.displayName,
-          role: user.role,
-          phone: user.phone,
-          inn: user.inn,
-          companyName: user.companyName,
-          verificationStatus: user.verificationStatus,
-        },
-      };
+        const tokens = this.generateTokens(user);
+        return {
+          ...tokens,
+          user: {
+            id: user.id,
+            displayName: user.displayName,
+            role: user.role,
+            phone: user.phone,
+            inn: user.inn,
+            companyName: user.companyName,
+            verificationStatus: user.verificationStatus,
+          },
+        };
+      }
     }
 
     await this.auditLogService.logAction({
@@ -253,10 +259,26 @@ export class AuthService {
   }
 
   async refreshToken(refreshToken: string) {
+    if (!refreshToken) {
+      throw new UnauthorizedException('Refresh token yaroqsiz yoki muddati o‘tgan');
+    }
+
     try {
       const payload = this.jwtService.verify(refreshToken, {
         secret: env.REFRESH_SECRET,
       });
+
+      if (!payload || !payload.id) {
+        throw new UnauthorizedException('Refresh token yaroqsiz yoki muddati o‘tgan');
+      }
+
+      // Token rotation and revocation check
+      const tokenHash = crypto.createHash('sha256').update(refreshToken).digest('hex');
+      const isRevoked = await this.redisService.exists(`revoked_refresh_token:${tokenHash}`);
+      if (isRevoked) {
+        this.logger.warn(`Revoked refresh token reuse attempt detected for user: ${payload.id}`);
+        throw new UnauthorizedException('Refresh token allaqachon ishlatilgan yoki bekor qilingan');
+      }
 
       const user = await this.prisma.user.findUnique({
         where: { id: payload.id },
@@ -265,6 +287,13 @@ export class AuthService {
       if (!user) {
         throw new UnauthorizedException('Foydalanuvchi topilmadi');
       }
+
+      if (user.isBlocked) {
+        throw new UnauthorizedException('Hisobingiz bloklangan');
+      }
+
+      // Revoke the old refresh token (rotate) with 30 days TTL (matching 30d refresh expiry)
+      await this.redisService.set(`revoked_refresh_token:${tokenHash}`, '1', 30 * 24 * 3600);
 
       const tokens = this.generateTokens(user);
       return {
@@ -279,7 +308,10 @@ export class AuthService {
           companyName: user.companyName,
         },
       };
-    } catch {
+    } catch (err: any) {
+      if (err instanceof UnauthorizedException) {
+        throw err;
+      }
       throw new UnauthorizedException('Refresh token yaroqsiz yoki muddati o‘tgan');
     }
   }
@@ -290,6 +322,15 @@ export class AuthService {
       throw new BadRequestException('Telefon raqami noto‘g‘ri kiritildi');
     }
 
+    // Check if user is locked out due to brute force (15 minutes block)
+    const blockKey = `otp_blocked:${cleanPhone}`;
+    const failedKey = `otp_failed_attempts:${cleanPhone}`;
+    const isBlocked = await this.redisService.exists(blockKey);
+    const failedAttempts = parseInt((await this.redisService.get(failedKey)) || '0', 10);
+    if (isBlocked || failedAttempts >= 5) {
+      throw new BadRequestException('Urinishlar soni oshib ketganligi sababli 15 daqiqaga bloklangansiz');
+    }
+
     // Rate-limiting check: 1 SMS per 60 seconds
     const cooldownKey = `otp_cooldown:${cleanPhone}`;
     const isInCooldown = await this.redisService.exists(cooldownKey);
@@ -297,8 +338,8 @@ export class AuthService {
       throw new BadRequestException('Iltimos, 1 daqiqadan so‘ng qayta urinib ko‘ring (Cheklov)');
     }
 
-    // Generate secure 6-digit random code
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    // Generate cryptographically secure 6-digit random code
+    const code = crypto.randomInt(100000, 1000000).toString();
 
     // Store in Redis with 120s (2 minutes) TTL
     const otpKey = `otp:${cleanPhone}`;
@@ -321,6 +362,15 @@ export class AuthService {
   async verifyOtp(phone: string, code: string) {
     const cleanPhone = this.normalizePhone(phone);
     const otpKey = `otp:${cleanPhone}`;
+    const failedKey = `otp_failed_attempts:${cleanPhone}`;
+    const blockKey = `otp_blocked:${cleanPhone}`;
+
+    // 1. Check if user is locked out due to brute force (15 minutes block)
+    const isBlocked = await this.redisService.exists(blockKey);
+    const failedAttempts = parseInt((await this.redisService.get(failedKey)) || '0', 10);
+    if (isBlocked || failedAttempts >= 5) {
+      throw new BadRequestException('Urinishlar soni oshib ketganligi sababli 15 daqiqaga bloklangansiz');
+    }
 
     const storedCode = await this.redisService.get(otpKey);
     const isMasterTestCode = code === '123456' && env.NODE_ENV !== 'production';
@@ -329,13 +379,24 @@ export class AuthService {
       throw new BadRequestException('Tasdiqlash kodi muddati o‘tgan yoki yuborilmagan');
     }
 
-    if (storedCode !== code && !isMasterTestCode) {
-      throw new BadRequestException('Noto‘g‘ri tasdiqlash kodi kiritildi');
+    const isCodeValid = isMasterTestCode || storedCode === code;
+    if (!isCodeValid) {
+      const attempts = await this.redisService.incr(failedKey, 900); // 15 min TTL
+      if (attempts >= 5) {
+        // 5 marta xato kiritilsa, OTP o'chirib tashlanadi va foydalanuvchi 15 daqiqaga bloklanadi
+        await this.redisService.del(otpKey);
+        await this.redisService.del(`otp_cooldown:${cleanPhone}`);
+        await this.redisService.set(blockKey, '1', 900);
+        throw new BadRequestException('Noto‘g‘ri kod 5 marta kiritildi. Xavfsizlik maqsadida OTP bekor qilindi va 15 daqiqaga bloklandingiz');
+      }
+      throw new BadRequestException(`Noto‘g‘ri tasdiqlash kodi kiritildi (${attempts}/5)`);
     }
 
-    // Clean up Redis keys
+    // Clean up Redis keys upon successful OTP verification
     await this.redisService.del(otpKey);
     await this.redisService.del(`otp_cooldown:${cleanPhone}`);
+    await this.redisService.del(failedKey);
+    await this.redisService.del(blockKey);
 
     // Find or create user
     let user = await this.prisma.user.findFirst({
@@ -353,6 +414,10 @@ export class AuthService {
           passwordHash: await bcrypt.hash(crypto.randomUUID(), 10),
         },
       });
+    }
+
+    if (user.isBlocked) {
+      throw new UnauthorizedException('Hisobingiz bloklangan');
     }
 
     const tokens = this.generateTokens(user);

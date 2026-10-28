@@ -229,6 +229,8 @@ model ProductVariant {
   createdAt  DateTime @default(now())
 
   product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
 }
 
 model Order {
@@ -269,6 +271,8 @@ model Order {
   @@index([buyerId])
   @@index([status])
   @@index([paymentMode])
+  @@index([createdAt])
+  @@index([buyerId, createdAt])
 }
 
 model SubOrder {
@@ -311,6 +315,7 @@ model OrderItem {
 
   @@index([orderId])
   @@index([subOrderId])
+  @@index([productId])
 }
 
 model PaymentTransaction {
@@ -327,6 +332,9 @@ model PaymentTransaction {
   updatedAt      DateTime        @updatedAt
 
   order          Order           @relation(fields: [orderId], references: [id])
+
+  @@index([orderId])
+  @@index([status])
 }
 
 model Dispute {
@@ -406,6 +414,12 @@ model LogisticsDispatch {
   order                  Order             @relation(fields: [orderId], references: [id])
   vehicle                LogisticsVehicle? @relation(fields: [vehicleId], references: [id])
   driver                 User?             @relation("DriverDispatches", fields: [driverId], references: [id])
+
+  @@index([orderId])
+  @@index([vehicleId])
+  @@index([driverId])
+  @@index([status])
+  @@index([dispatchedAt])
 }
 
 model EscoAudit {
@@ -423,6 +437,9 @@ model EscoAudit {
   createdAt             DateTime @default(now())
 
   client                User     @relation(fields: [clientId], references: [id])
+
+  @@index([clientId])
+  @@index([createdAt])
 }
 
 model AuditLog {
@@ -441,4 +458,6 @@ model AuditLog {
 
   @@index([category])
   @@index([createdAt])
+  @@index([actorId])
+  @@index([actorId, createdAt])
 }

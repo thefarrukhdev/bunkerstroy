@@ -61,6 +61,9 @@ async function bootstrap() {
 
   app.useGlobalFilters(new HttpExceptionFilter());
 
+  // Enable graceful shutdown hooks for Prisma, Redis, etc.
+  app.enableShutdownHooks();
+
 
   // Swagger OpenAPI Documentation
   const config = new DocumentBuilder()
