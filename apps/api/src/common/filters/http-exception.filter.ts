@@ -12,39 +12,64 @@ import { Response, Request } from 'express';
 export class HttpExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(HttpExceptionFilter.name);
 
-  catch(exception: unknown, host: ArgumentsHost) {
+  catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
     let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
     let errorMessage = 'Ichki server xatoligi yuz berdi';
+    let validationDetails: string[] | undefined = undefined;
 
     if (exception instanceof HttpException) {
       statusCode = exception.getStatus();
       const res = exception.getResponse();
+
       if (typeof res === 'string') {
         errorMessage = res;
       } else if (typeof res === 'object' && res !== null) {
-        const anyRes = res as any;
+        const anyRes = res as Record<string, any>;
         if (Array.isArray(anyRes.message)) {
-          errorMessage = anyRes.message.join('; ');
-        } else if (anyRes.message) {
+          // ValidationPipe errors (array of constraint messages)
+          validationDetails = anyRes.message.map(String);
+          errorMessage = validationDetails.join('; ');
+        } else if (typeof anyRes.message === 'string') {
           errorMessage = anyRes.message;
-        } else if (anyRes.error) {
+        } else if (typeof anyRes.error === 'string') {
           errorMessage = anyRes.error;
         }
       }
     } else if (exception instanceof Error) {
-      this.logger.error(`Unhandled Exception at ${request.url}: ${exception.message}`, exception.stack);
-      errorMessage = exception.message || 'Kutilmagan xatolik yuz berdi';
+      errorMessage = exception.message || 'Kutilmagan server xatoligi yuz berdi';
     }
 
-    response.status(statusCode).json({
+    const requestPath = request.originalUrl || request.url || '';
+
+    // Log error with appropriate severity
+    if (statusCode >= 500) {
+      this.logger.error(
+        `[${request.method || 'HTTP'}] ${requestPath} - Status: ${statusCode} - Error: ${errorMessage}`,
+        exception instanceof Error ? exception.stack : undefined
+      );
+    } else {
+      this.logger.warn(
+        `[${request.method || 'HTTP'}] ${requestPath} - Status: ${statusCode} - Message: ${errorMessage}`
+      );
+    }
+
+    const errorPayload: Record<string, any> = {
       success: false,
-      error: errorMessage,
       statusCode,
+      error: errorMessage,
+      message: errorMessage,
+      path: requestPath,
       timestamp: new Date().toISOString(),
-    });
+    };
+
+    if (validationDetails && validationDetails.length > 0) {
+      errorPayload.details = validationDetails;
+    }
+
+    response.status(statusCode).json(errorPayload);
   }
 }

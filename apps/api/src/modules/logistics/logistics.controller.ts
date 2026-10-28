@@ -14,6 +14,9 @@ import {
   CalculateQuoteDto,
   DispatchOrderDto,
   UpdateDispatchStatusDto,
+  DriverMarkLoadedDto,
+  DriverVerifyCodeDto,
+  DriverReportIssueDto,
 } from './dto/logistics.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -110,10 +113,10 @@ export class LogisticsController {
   @ApiOperation({ summary: 'Haydovchi yukni yuklaganini belgilash (foto biriktirish)' })
   async driverMarkLoaded(
     @Param('id') id: string,
-    @Body('photoUrl') photoUrl: string | undefined,
+    @Body() dto: DriverMarkLoadedDto,
     @CurrentUser() user: CurrentUserPayload
   ) {
-    const data = await this.logisticsService.driverMarkLoaded(id, photoUrl, user);
+    const data = await this.logisticsService.driverMarkLoaded(id, dto, user);
     return { success: true, data, message: 'Yuk yuklandi va yo‘lga chiqildi' };
   }
 
@@ -137,11 +140,10 @@ export class LogisticsController {
   @ApiOperation({ summary: 'Haydovchi mijoz qabul kodini kiritishi va topshirishi' })
   async driverVerifyAcceptanceCode(
     @Param('id') id: string,
-    @Body('code') code: string,
-    @Body('photoUrl') photoUrl: string | undefined,
+    @Body() dto: DriverVerifyCodeDto,
     @CurrentUser() user: CurrentUserPayload
   ) {
-    const data = await this.logisticsService.driverVerifyAcceptanceCode(id, code, photoUrl, user);
+    const data = await this.logisticsService.driverVerifyAcceptanceCode(id, dto, user);
     return { success: true, data, message: 'Qabul kodi tasdiqlandi. Yuk muvaffaqiyatli topshirildi!' };
   }
 
@@ -152,11 +154,10 @@ export class LogisticsController {
   @ApiOperation({ summary: 'Haydovchi muammo qayd etishi (kechikish, shikastlanish, mijoz topilmadi)' })
   async driverReportIssue(
     @Param('id') id: string,
-    @Body('reason') reason: string,
-    @Body('photoUrl') photoUrl: string | undefined,
+    @Body() dto: DriverReportIssueDto,
     @CurrentUser() user: CurrentUserPayload
   ) {
-    const data = await this.logisticsService.driverReportIssue(id, reason, photoUrl, user);
+    const data = await this.logisticsService.driverReportIssue(id, dto, user);
     return { success: true, data, message: 'Muammo muvaffaqiyatli qayd etildi va adminga yuborildi.' };
   }
 }

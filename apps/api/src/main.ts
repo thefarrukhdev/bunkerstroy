@@ -13,13 +13,34 @@ async function bootstrap() {
     'http://localhost:3000',
     'http://localhost:3001',
     'http://localhost:3002',
+    'http://localhost:3003',
     'http://localhost:4000',
     'http://localhost:4050',
   ];
 
   app.enableCors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.bunkerstroy.uz')) {
+      // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      // Allow configured local origins or any localhost / 127.0.0.1 port
+      const isLocalOrigin =
+        allowedOrigins.includes(origin) ||
+        origin.startsWith('http://localhost:') ||
+        origin.startsWith('http://127.0.0.1:') ||
+        origin.startsWith('https://localhost:') ||
+        origin.startsWith('https://127.0.0.1:');
+
+      // Allow Vercel preview / production deployments and BunkerStroy domains
+      const isAllowedDomain =
+        origin.endsWith('.vercel.app') ||
+        origin.endsWith('.bunkerstroy.uz') ||
+        origin === 'https://bunkerstroy.uz' ||
+        origin === 'http://bunkerstroy.uz';
+
+      if (isLocalOrigin || isAllowedDomain) {
         callback(null, true);
       } else {
         callback(null, false);

@@ -6,13 +6,56 @@ import {
   UnauthorizedException,
   Logger,
 } from '@nestjs/common';
-import crypto from 'crypto';
-import { Role, OrderStatus, UserType, PaymentProvider, PaymentStatus, PaymentMode } from '@bunkerstroy/db';
-import { Order, OrderItem, SubOrder, Dispute } from '@bunkerstroy/types';
+import {
+  Role,
+  OrderStatus,
+  UserType,
+  PaymentProvider,
+  PaymentStatus,
+  PaymentMode,
+  Prisma,
+} from '@bunkerstroy/db';
+import { Order, Dispute, PaymentMethod } from '@bunkerstroy/types';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AuditLogService } from '../admin/audit-log.service';
 import { CurrentUserPayload } from '../../common/decorators/current-user.decorator';
-import { CreateOrderDto, UpdateOrderStatusDto, VerifyAcceptanceCodeDto, OpenDisputeDto } from './dto/order.dto';
+import {
+  CreateOrderDto,
+  UpdateOrderStatusDto,
+  VerifyAcceptanceCodeDto,
+  OpenDisputeDto,
+} from './dto/order.dto';
+
+export const ORDER_FULL_INCLUDE = {
+  buyer: true,
+  items: { include: { product: true } },
+  subOrders: {
+    include: {
+      supplier: true,
+      driver: true,
+      items: { include: { product: true } },
+    },
+  },
+  payments: { orderBy: { createdAt: 'desc' } },
+  dispatches: { include: { driver: true, vehicle: true } },
+  disputes: { include: { openedBy: true } },
+} satisfies Prisma.OrderInclude;
+
+export type PrismaOrderWithRelations = Prisma.OrderGetPayload<{
+  include: typeof ORDER_FULL_INCLUDE;
+}>;
+
+interface SupplierItemGroup {
+  subTotal: number;
+  items: Array<{
+    productId: string;
+    supplierId: string;
+    quantity: number;
+    unit: string;
+    unitPrice: number;
+    totalPrice: number;
+  }>;
+}
 
 @Injectable()
 export class OrdersService {
@@ -23,19 +66,26 @@ export class OrdersService {
     private readonly auditLogService: AuditLogService,
   ) {}
 
-  private mapPrismaOrder(o: any): Order {
+  private mapPrismaOrder(o: PrismaOrderWithRelations): Order {
     const payments = Array.isArray(o.payments) ? o.payments : [];
-    const hasPaidPayment = payments.some((p: any) => p.status === PaymentStatus.PAID);
+    const hasPaidPayment = payments.some((p) => p.status === PaymentStatus.PAID);
     const latestPayment = payments[0] || null;
 
-    let paymentStatus: any = 'PENDING';
+    let paymentStatus: 'PENDING' | 'PREAUTHORIZED' | 'PAID' | 'FAILED' | 'REFUNDED' = 'PENDING';
     if (hasPaidPayment) {
       paymentStatus = 'PAID';
     } else if (latestPayment?.status) {
-      paymentStatus = latestPayment.status;
+      paymentStatus = latestPayment.status as typeof paymentStatus;
     }
 
-    const paymentMethod: any = latestPayment?.provider || 'CASH_ON_DELIVERY';
+    let paymentMethod: PaymentMethod = 'CASH_ON_DELIVERY';
+    if (latestPayment?.provider) {
+      if (latestPayment.provider === PaymentProvider.CASH) {
+        paymentMethod = 'CASH_ON_DELIVERY';
+      } else {
+        paymentMethod = latestPayment.provider as PaymentMethod;
+      }
+    }
 
     return {
       id: o.id,
@@ -44,26 +94,26 @@ export class OrdersService {
       buyerName: o.buyer?.displayName || 'Hurmatli Buyurtmachi',
       buyerPhone: o.buyer?.phone || '',
       items: Array.isArray(o.items)
-        ? o.items.map((it: any) => ({
+        ? o.items.map((it) => ({
             id: it.id,
             orderId: o.id,
-            subOrderId: it.subOrderId || undefined,
+            subOrderId: it.subOrderId ?? undefined,
             productId: it.productId,
             productTitle: it.product?.title || 'Qurilish materiali',
-            supplierId: it.product?.supplierId || 'sup-1',
+            supplierId: it.product?.supplierId || undefined,
             quantity: it.quantity,
-            unit: it.unit as any,
+            unit: it.unit,
             unitPrice: Number(it.unitPrice),
             totalPrice: Number(it.totalPrice),
           }))
         : [],
       subOrders: Array.isArray(o.subOrders)
-        ? o.subOrders.map((so: any) => ({
+        ? o.subOrders.map((so) => ({
             id: so.id,
             orderId: so.orderId,
             supplierId: so.supplierId,
-            supplierName: so.supplier?.displayName || so.supplier?.companyName || 'Ta\'minotchi',
-            status: so.status as any,
+            supplierName: so.supplier?.displayName || so.supplier?.companyName || "Ta'minotchi",
+            status: so.status,
             subTotal: Number(so.subTotal),
             deliveryFee: Number(so.deliveryFee),
             acceptanceCode: so.acceptanceCode,
@@ -72,6 +122,20 @@ export class OrdersService {
             driverId: so.driverId,
             driverName: so.driver?.displayName || null,
             driverPhone: so.driver?.phone || null,
+            items: Array.isArray(so.items)
+              ? so.items.map((it) => ({
+                  id: it.id,
+                  orderId: o.id,
+                  subOrderId: so.id,
+                  productId: it.productId,
+                  productTitle: it.product?.title || 'Qurilish materiali',
+                  supplierId: it.product?.supplierId || so.supplierId,
+                  quantity: it.quantity,
+                  unit: it.unit,
+                  unitPrice: Number(it.unitPrice),
+                  totalPrice: Number(it.totalPrice),
+                }))
+              : [],
             createdAt: so.createdAt ? so.createdAt.toISOString() : undefined,
             updatedAt: so.updatedAt ? so.updatedAt.toISOString() : undefined,
           }))
@@ -80,8 +144,8 @@ export class OrdersService {
       deliveryFee: Number(o.deliveryFee),
       discountAmount: Number(o.discountAmount || 0),
       finalAmount: Number(o.finalAmount),
-      status: o.status as any,
-      paymentMode: (o.paymentMode as any) || 'FULL_100',
+      status: o.status,
+      paymentMode: o.paymentMode || 'FULL_100',
       firstPaymentAmount: o.firstPaymentAmount ? Number(o.firstPaymentAmount) : null,
       secondPaymentAmount: o.secondPaymentAmount ? Number(o.secondPaymentAmount) : null,
       isFirstPaid: Boolean(o.isFirstPaid),
@@ -97,19 +161,22 @@ export class OrdersService {
         district: o.deliveryDistrict || 'Chilonzor tumani',
         street: o.deliveryStreet || '',
         landmark: o.deliveryLandmark || '',
+        latitude: o.deliveryLat ?? null,
+        longitude: o.deliveryLng ?? null,
       },
       vehicleType: o.vehicleType || 'Samosval (HOWO)',
+      assignedDriverId: o.dispatches?.[0]?.driverId || o.subOrders?.[0]?.driverId || null,
       trackingCode: o.orderNumber,
       paymentTransactionId: latestPayment?.transactionId || null,
       disputes: Array.isArray(o.disputes)
-        ? o.disputes.map((d: any) => ({
+        ? o.disputes.map((d) => ({
             id: d.id,
             orderId: d.orderId,
             openedById: d.openedById,
             openedByName: d.openedBy?.displayName || null,
             reason: d.reason,
             evidenceUrls: d.evidenceUrls || [],
-            status: d.status as any,
+            status: d.status as 'OPEN' | 'RESOLVED_REFUND' | 'REJECTED',
             resolutionNote: d.resolutionNote,
             refundAmount: d.refundAmount ? Number(d.refundAmount) : null,
             resolvedAt: d.resolvedAt ? d.resolvedAt.toISOString() : null,
@@ -189,7 +256,7 @@ export class OrdersService {
       }> = [];
 
       // Map to group items by supplier for multi-vendor shipments
-      const supplierItemsMap = new Map<string, { subTotal: number; items: any[] }>();
+      const supplierItemsMap = new Map<string, SupplierItemGroup>();
 
       for (const [productId, qty] of consolidatedMap.entries()) {
         const product = await tx.product.findFirst({
@@ -282,6 +349,8 @@ export class OrdersService {
           deliveryDistrict: deliveryAddress.district,
           deliveryStreet: deliveryAddress.street || null,
           deliveryLandmark: deliveryAddress.landmark || null,
+          deliveryLat: deliveryAddress.deliveryLat || null,
+          deliveryLng: deliveryAddress.deliveryLng || null,
           vehicleType: vehicleType || 'Samosval (HOWO)',
           items: {
             create: orderItemsToCreate.map((it) => ({
@@ -292,14 +361,6 @@ export class OrdersService {
               totalPrice: it.totalPrice,
             })),
           },
-        },
-        include: {
-          buyer: true,
-          items: {
-            include: { product: true },
-          },
-          subOrders: true,
-          payments: true,
         },
       });
 
@@ -335,13 +396,7 @@ export class OrdersService {
 
       return tx.order.findUniqueOrThrow({
         where: { id: order.id },
-        include: {
-          buyer: true,
-          items: { include: { product: true } },
-          subOrders: { include: { supplier: true, driver: true } },
-          payments: true,
-          disputes: true,
-        },
+        include: ORDER_FULL_INCLUDE,
       });
     });
 
@@ -361,19 +416,30 @@ export class OrdersService {
       throw new UnauthorizedException('Avtorizatsiya talab qilinadi');
     }
 
-    const where: any = {};
+    const where: Prisma.OrderWhereInput = {};
     if (currentUser.role === Role.ADMIN) {
-      // Admin sees all
+      // Admin sees all orders
     } else if (currentUser.role === Role.CLIENT) {
       where.buyerId = currentUser.id;
     } else if (currentUser.role === Role.SUPPLIER) {
-      where.items = {
-        some: {
-          product: {
-            supplierId: currentUser.id,
+      where.OR = [
+        {
+          items: {
+            some: {
+              product: {
+                supplierId: currentUser.id,
+              },
+            },
           },
         },
-      };
+        {
+          subOrders: {
+            some: {
+              supplierId: currentUser.id,
+            },
+          },
+        },
+      ];
     } else if (currentUser.role === Role.LOGISTICS_DRIVER) {
       where.OR = [
         { dispatches: { some: { driverId: currentUser.id } } },
@@ -383,13 +449,7 @@ export class OrdersService {
 
     const orders = await this.prisma.order.findMany({
       where,
-      include: {
-        buyer: true,
-        items: { include: { product: true } },
-        subOrders: { include: { supplier: true, driver: true } },
-        payments: true,
-        disputes: { include: { openedBy: true } },
-      },
+      include: ORDER_FULL_INCLUDE,
       orderBy: { createdAt: 'desc' },
     });
 
@@ -401,13 +461,7 @@ export class OrdersService {
       where: {
         OR: [{ id }, { orderNumber: id }],
       },
-      include: {
-        buyer: true,
-        items: { include: { product: true } },
-        subOrders: { include: { supplier: true, driver: true } },
-        payments: true,
-        disputes: { include: { openedBy: true } },
-      },
+      include: ORDER_FULL_INCLUDE,
     });
 
     if (!order) {
@@ -416,8 +470,12 @@ export class OrdersService {
 
     if (currentUser && currentUser.role !== Role.ADMIN) {
       const isBuyer = order.buyerId === currentUser.id;
-      const isSupplier = order.items.some((it) => it.product?.supplierId === currentUser.id);
-      const isDriver = order.subOrders.some((so) => so.driverId === currentUser.id);
+      const isSupplier =
+        order.items.some((it) => it.product?.supplierId === currentUser.id) ||
+        order.subOrders.some((so) => so.supplierId === currentUser.id);
+      const isDriver =
+        order.subOrders.some((so) => so.driverId === currentUser.id) ||
+        order.dispatches.some((d) => d.driverId === currentUser.id);
       if (!isBuyer && !isSupplier && !isDriver) {
         throw new ForbiddenException('Ushbu buyurtmani ko‘rish uchun ruxsat mavjud emas');
       }
@@ -450,7 +508,7 @@ export class OrdersService {
         newStatus !== OrderStatus.PACKING &&
         newStatus !== OrderStatus.CANCELLED
       ) {
-        throw new ForbiddenException('Ta\'minotchi faqat TASDIQLASH, YIG‘ISH yoki BEKOR QILISH holatini belgilashi mumkin');
+        throw new ForbiddenException("Ta'minotchi faqat TASDIQLASH, YIG‘ISH yoki BEKOR QILISH holatini belgilashi mumkin");
       }
     }
 
@@ -462,13 +520,7 @@ export class OrdersService {
           newStatus === OrderStatus.FULLY_PAID ||
           (newStatus === OrderStatus.ARRIVED && order.paymentMode === PaymentMode.FULL_100),
       },
-      include: {
-        buyer: true,
-        items: { include: { product: true } },
-        subOrders: { include: { supplier: true, driver: true } },
-        payments: true,
-        disputes: true,
-      },
+      include: ORDER_FULL_INCLUDE,
     });
 
     await this.auditLogService.logAction({
@@ -507,13 +559,7 @@ export class OrdersService {
         waitingDeadline,
         isAcceptanceCodeRevealed: revealCode,
       },
-      include: {
-        buyer: true,
-        items: { include: { product: true } },
-        subOrders: { include: { supplier: true, driver: true } },
-        payments: true,
-        disputes: true,
-      },
+      include: ORDER_FULL_INCLUDE,
     });
 
     await this.auditLogService.logAction({
@@ -552,24 +598,22 @@ export class OrdersService {
       throw new BadRequestException('Kiritilgan qabul kodi noto‘g‘ri! Iltimos, mijozdan to‘g‘ri PIN kodni oling.');
     }
 
-    const updated = await this.prisma.order.update({
-      where: { id: order.id },
-      data: {
-        status: OrderStatus.RECEIVED,
-      },
-      include: {
-        buyer: true,
-        items: { include: { product: true } },
-        subOrders: { include: { supplier: true, driver: true } },
-        payments: true,
-        disputes: true,
-      },
-    });
+    const updated = await this.prisma.$transaction(async (tx) => {
+      await tx.subOrder.updateMany({
+        where: { orderId: order.id },
+        data: {
+          status: OrderStatus.COMPLETED,
+          completedAt: new Date(),
+        },
+      });
 
-    // Mark completed & release escrow
-    await this.prisma.order.update({
-      where: { id: order.id },
-      data: { status: OrderStatus.COMPLETED },
+      return tx.order.update({
+        where: { id: order.id },
+        data: {
+          status: OrderStatus.COMPLETED,
+        },
+        include: ORDER_FULL_INCLUDE,
+      });
     });
 
     await this.auditLogService.logAction({
@@ -602,32 +646,28 @@ export class OrdersService {
 
     const amount = Number(order.secondPaymentAmount || Math.round(Number(order.finalAmount) / 2));
 
-    await this.prisma.paymentTransaction.create({
-      data: {
-        orderId: order.id,
-        provider: PaymentProvider.PAYME,
-        paymentType: 'SECOND_50',
-        transactionId: `TX-${order.orderNumber}-P2`,
-        amount,
-        status: PaymentStatus.PAID,
-        qrReceiptUrl: `https://bunkerstroy.uz/receipt/${order.id}-p2`,
-      },
-    });
+    const updated = await this.prisma.$transaction(async (tx) => {
+      await tx.paymentTransaction.create({
+        data: {
+          orderId: order.id,
+          provider: PaymentProvider.PAYME,
+          paymentType: 'SECOND_50',
+          transactionId: `TX-${order.orderNumber}-P2`,
+          amount,
+          status: PaymentStatus.PAID,
+          qrReceiptUrl: `https://bunkerstroy.uz/receipt/${order.id}-p2`,
+        },
+      });
 
-    const updated = await this.prisma.order.update({
-      where: { id: order.id },
-      data: {
-        isSecondPaid: true,
-        status: OrderStatus.FULLY_PAID,
-        isAcceptanceCodeRevealed: true,
-      },
-      include: {
-        buyer: true,
-        items: { include: { product: true } },
-        subOrders: { include: { supplier: true, driver: true } },
-        payments: true,
-        disputes: true,
-      },
+      return tx.order.update({
+        where: { id: order.id },
+        data: {
+          isSecondPaid: true,
+          status: OrderStatus.FULLY_PAID,
+          isAcceptanceCodeRevealed: true,
+        },
+        include: ORDER_FULL_INCLUDE,
+      });
     });
 
     await this.auditLogService.logAction({
@@ -654,20 +694,24 @@ export class OrdersService {
       throw new NotFoundException(`Buyurtma topilmadi: ${orderId}`);
     }
 
-    const dispute = await this.prisma.dispute.create({
-      data: {
-        orderId: order.id,
-        openedById: currentUser.id,
-        reason: dto.reason,
-        evidenceUrls: dto.evidenceUrls || [],
-        status: 'OPEN',
-      },
-      include: { openedBy: true },
-    });
+    const dispute = await this.prisma.$transaction(async (tx) => {
+      const created = await tx.dispute.create({
+        data: {
+          orderId: order.id,
+          openedById: currentUser.id,
+          reason: dto.reason,
+          evidenceUrls: dto.evidenceUrls || [],
+          status: 'OPEN',
+        },
+        include: { openedBy: true },
+      });
 
-    await this.prisma.order.update({
-      where: { id: order.id },
-      data: { status: OrderStatus.DISPUTE },
+      await tx.order.update({
+        where: { id: order.id },
+        data: { status: OrderStatus.DISPUTE },
+      });
+
+      return created;
     });
 
     await this.auditLogService.logAction({
@@ -685,7 +729,7 @@ export class OrdersService {
       openedByName: dispute.openedBy.displayName,
       reason: dispute.reason,
       evidenceUrls: dispute.evidenceUrls,
-      status: dispute.status as any,
+      status: dispute.status as 'OPEN' | 'RESOLVED_REFUND' | 'REJECTED',
       resolutionNote: dispute.resolutionNote,
       refundAmount: dispute.refundAmount ? Number(dispute.refundAmount) : null,
       resolvedAt: dispute.resolvedAt ? dispute.resolvedAt.toISOString() : null,

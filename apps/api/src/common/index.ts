@@ -4,4 +4,3 @@ export * from './decorators/current-user.decorator';
 export * from './guards/jwt-auth.guard';
 export * from './guards/roles.guard';
 export * from './filters/http-exception.filter';
-export * from './middlewares/authGuard';

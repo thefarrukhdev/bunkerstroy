@@ -3,7 +3,9 @@ import { AppModule } from '../src/app.module';
 import { AuthService } from '../src/modules/auth/auth.service';
 import { CatalogService } from '../src/modules/catalog/catalog.service';
 import { OrdersService } from '../src/modules/orders/orders.service';
+import { OrdersController } from '../src/modules/orders/orders.controller';
 import { LogisticsService } from '../src/modules/logistics/logistics.service';
+import { LogisticsController } from '../src/modules/logistics/logistics.controller';
 import { EscoService } from '../src/modules/esco/esco.service';
 import { PaymentsService } from '../src/modules/payments/payments.service';
 import { AdminService } from '../src/modules/admin/admin.service';
@@ -25,7 +27,9 @@ async function runAllBackendVerificationTests() {
   const authService = app.get(AuthService);
   const catalogService = app.get(CatalogService);
   const ordersService = app.get(OrdersService);
+  const ordersController = app.get(OrdersController);
   const logisticsService = app.get(LogisticsService);
+  const logisticsController = app.get(LogisticsController);
   const escoService = app.get(EscoService);
   const paymentsService = app.get(PaymentsService);
   const adminService = app.get(AdminService);
@@ -66,6 +70,31 @@ async function runAllBackendVerificationTests() {
     assert(
       mockRes.statusCode === 200 && mockRes.data.status === 'ok' && mockRes.data.services.database.status === 'healthy',
       'HealthController /api/health returns 200 OK with connected database and redis'
+    );
+
+    // Test HttpExceptionFilter error structure and validation formatting
+    const { HttpExceptionFilter } = await import('../src/common/filters/http-exception.filter');
+    const { BadRequestException } = await import('@nestjs/common');
+    const filter = new HttpExceptionFilter();
+    let capturedResponse: any = null;
+    const mockHost: any = {
+      switchToHttp: () => ({
+        getResponse: () => ({
+          status: (code: number) => ({
+            json: (payload: any) => { capturedResponse = { code, payload }; }
+          })
+        }),
+        getRequest: () => ({ url: '/api/orders', originalUrl: '/api/orders', method: 'POST' })
+      })
+    };
+    filter.catch(new BadRequestException(['productId kiritilishi shart', 'quantity kamida 1 bo‘lishi shart']), mockHost);
+    assert(
+      capturedResponse?.code === 400 &&
+      capturedResponse?.payload?.success === false &&
+      capturedResponse?.payload?.path === '/api/orders' &&
+      Array.isArray(capturedResponse?.payload?.details) &&
+      capturedResponse.payload.details.length === 2,
+      'HttpExceptionFilter formats validation errors with clean details array and request path'
     );
 
     console.log('\n--- 2. Testing AuthService (Login, OTP, Refresh, STIR, Me) ---');
@@ -205,6 +234,13 @@ async function runAllBackendVerificationTests() {
     const adminOrders = await ordersService.findAll({ id: adminLogin.user.id, role: Role.ADMIN });
     assert(adminOrders.length >= clientOrders.length, 'Admin sees all orders');
 
+    // Supplier orders query (used by apps/seller /api/orders/supplier/all)
+    const supplierOrders = await ordersService.findAll({ id: supplierLogin.user.id, role: Role.SUPPLIER });
+    assert(Array.isArray(supplierOrders), 'Supplier findAll returns supplier-scoped orders for POS/CRM');
+
+    const supplierControllerOrders = await ordersController.findSupplierOrders({ id: supplierLogin.user.id, role: Role.SUPPLIER });
+    assert(supplierControllerOrders.success === true && Array.isArray(supplierControllerOrders.data), 'OrdersController findSupplierOrders GET /api/orders/supplier/all returns success and data array');
+
 
     console.log('\n--- 5. Testing LogisticsModule (Vehicles, Quote, Dispatch, Status Tracking) ---');
     const vehicles = await logisticsService.getVehicles();
@@ -259,6 +295,31 @@ async function runAllBackendVerificationTests() {
     // Verify order status synchronized to DELIVERED
     const orderDelivered = await prisma.order.findUnique({ where: { id: createdOrder.id } });
     assert(orderDelivered?.status === 'DELIVERED', 'Order status synchronizes to DELIVERED upon completion');
+
+    // Test driver dedicated actions (Driver PWA endpoints)
+    const loadedRes = await logisticsService.driverMarkLoaded(dispatch.id, { photoUrl: 'https://cdn.bunkerstroy.uz/proof-load.jpg' }, { id: adminLogin.user.id, role: Role.ADMIN });
+    assert(loadedRes.status === 'IN_TRANSIT' && loadedRes.loadingPhotoUrl === 'https://cdn.bunkerstroy.uz/proof-load.jpg', 'driverMarkLoaded sets IN_TRANSIT and saves loading photo');
+
+    const arrivedRes = await logisticsService.driverMarkArrived(dispatch.id, { id: adminLogin.user.id, role: Role.ADMIN });
+    assert(arrivedRes.status === 'ARRIVED' && !!arrivedRes.waitingTimerExpiresAt, 'driverMarkArrived activates ARRIVED and sets waiting timer');
+
+    const issueRes = await logisticsService.driverReportIssue(dispatch.id, { reason: 'TRAFFIC_JAM', photoUrl: 'https://cdn.bunkerstroy.uz/jam.jpg' }, { id: adminLogin.user.id, role: Role.ADMIN });
+    assert(issueRes.issueReason === 'TRAFFIC_JAM' && !!issueRes.issuePhotoUrl, 'driverReportIssue records issue and triggers alert');
+
+    // Test driver endpoints via LogisticsController
+    const controllerLoadedRes = await logisticsController.driverMarkLoaded(
+      dispatch.id,
+      { photoUrl: 'https://cdn.bunkerstroy.uz/proof-load-controller.jpg' },
+      { id: adminLogin.user.id, role: Role.ADMIN }
+    );
+    assert(controllerLoadedRes.success === true, 'logisticsController.driverMarkLoaded with DriverMarkLoadedDto succeeds');
+
+    const controllerIssueRes = await logisticsController.driverReportIssue(
+      dispatch.id,
+      { reason: 'ROAD_CONSTRUCTION', photoUrl: 'https://cdn.bunkerstroy.uz/detour.jpg' },
+      { id: adminLogin.user.id, role: Role.ADMIN }
+    );
+    assert(controllerIssueRes.success === true && controllerIssueRes.data.issueReason === 'ROAD_CONSTRUCTION', 'logisticsController.driverReportIssue with DriverReportIssueDto succeeds');
 
 
     console.log('\n--- 6. Testing EscoModule (Thermodynamic Calculation, DB Persistence, Access Control) ---');

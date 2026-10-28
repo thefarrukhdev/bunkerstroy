@@ -47,6 +47,16 @@ export class OrdersController {
     return { success: true, data, total: data.length };
   }
 
+  @Get('supplier/all')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.SUPPLIER)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Sotuvchining barcha buyurtmalari (Admin va Ta\'minotchi uchun)' })
+  async findSupplierOrders(@CurrentUser() user: CurrentUserPayload) {
+    const data = await this.ordersService.findAll(user);
+    return { success: true, data, total: data.length };
+  }
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

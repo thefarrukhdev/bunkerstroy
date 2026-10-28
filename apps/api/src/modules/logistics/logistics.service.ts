@@ -6,7 +6,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { LogisticsVehicle } from '@bunkerstroy/types';
-import { Role, OrderStatus } from '@bunkerstroy/db';
+import { Role, OrderStatus, PaymentMode, Prisma } from '@bunkerstroy/db';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AuditLogService } from '../admin/audit-log.service';
 import { CurrentUserPayload } from '../../common/decorators/current-user.decorator';
@@ -14,6 +14,9 @@ import {
   CalculateQuoteDto,
   DispatchOrderDto,
   DispatchStatusType,
+  DriverMarkLoadedDto,
+  DriverVerifyCodeDto,
+  DriverReportIssueDto,
 } from './dto/logistics.dto';
 
 @Injectable()
@@ -80,7 +83,7 @@ export class LogisticsService {
         return dbVehicles.map((v) => ({
           id: v.id,
           name: v.name,
-          type: v.type as any,
+          type: v.type as LogisticsVehicle['type'],
           plateNumber: v.plateNumber || '01 777 BSK',
           capacityTons: v.capacityTons,
           basePrice: Number(v.basePrice),
@@ -92,8 +95,9 @@ export class LogisticsService {
           imageUrl: v.imageUrl,
         }));
       }
-    } catch (err: any) {
-      this.logger.warn(`Prisma LogisticsService getVehicles warning: ${err?.message}`);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.logger.warn(`Prisma LogisticsService getVehicles warning: ${message}`);
     }
 
     return this.defaultVehicles;
@@ -177,35 +181,41 @@ export class LogisticsService {
       throw new NotFoundException(`Buyurtma topilmadi: ${dto.orderId}`);
     }
 
-    const dispatch = await this.prisma.logisticsDispatch.create({
-      data: {
-        orderId: order.id,
-        vehicleId: vehicle?.id || null,
-        driverId: dto.driverId || null,
-        status: 'ASSIGNED',
-        origin: dto.origin,
-        destination: dto.destination,
-        distanceKm: dto.distanceKm,
-        totalCost,
-      },
-      include: {
-        order: true,
-        vehicle: true,
-        driver: true,
-      },
-    });
+    const targetOrderId = order.id;
+    const orderNumber = order.orderNumber;
 
-    // Update order status to ASSIGNED_TO_FLEET
-    await this.prisma.order.update({
-      where: { id: order.id },
-      data: { status: 'ASSIGNED_TO_FLEET' },
+    const dispatch = await this.prisma.$transaction(async (tx) => {
+      const createdDispatch = await tx.logisticsDispatch.create({
+        data: {
+          orderId: targetOrderId,
+          vehicleId: vehicle?.id || null,
+          driverId: dto.driverId || null,
+          status: 'ASSIGNED',
+          origin: dto.origin,
+          destination: dto.destination,
+          distanceKm: dto.distanceKm,
+          totalCost,
+        },
+        include: {
+          order: true,
+          vehicle: true,
+          driver: true,
+        },
+      });
+
+      await tx.order.update({
+        where: { id: targetOrderId },
+        data: { status: 'ASSIGNED_TO_FLEET' },
+      });
+
+      return createdDispatch;
     });
 
     await this.auditLogService.logAction({
-      actorId: dto.driverId || null,
+      actorId: dto.driverId || currentUser?.id || null,
       action: 'LOGISTICS_DISPATCH',
       category: 'LOGISTICS',
-      details: `Buyurtmaga (${order.orderNumber}) maxsus texnika biriktirildi. Narx: ${totalCost} so'm`,
+      details: `Buyurtmaga (${orderNumber}) maxsus texnika biriktirildi. Narx: ${totalCost} so'm`,
       level: 'INFO',
     });
 
@@ -213,7 +223,7 @@ export class LogisticsService {
   }
 
   async getDispatches(currentUser: CurrentUserPayload) {
-    const where: any = {};
+    const where: Prisma.LogisticsDispatchWhereInput = {};
     if (currentUser.role === Role.LOGISTICS_DRIVER) {
       where.driverId = currentUser.id;
     }
@@ -255,32 +265,36 @@ export class LogisticsService {
       );
     }
 
-    const dataToUpdate: any = { status };
+    const dataToUpdate: Prisma.LogisticsDispatchUpdateInput = { status };
     if (status === 'DELIVERED') {
       dataToUpdate.deliveredAt = new Date();
     }
 
-    const updatedDispatch = await this.prisma.logisticsDispatch.update({
-      where: { id: dispatchId },
-      data: dataToUpdate,
-      include: {
-        order: true,
-        vehicle: true,
-        driver: true,
-      },
-    });
+    const updatedDispatch = await this.prisma.$transaction(async (tx) => {
+      const updated = await tx.logisticsDispatch.update({
+        where: { id: dispatchId },
+        data: dataToUpdate,
+        include: {
+          order: true,
+          vehicle: true,
+          driver: true,
+        },
+      });
 
-    if (status === 'IN_TRANSIT') {
-      await this.prisma.order.update({
-        where: { id: dispatch.orderId },
-        data: { status: OrderStatus.IN_TRANSIT },
-      });
-    } else if (status === 'DELIVERED') {
-      await this.prisma.order.update({
-        where: { id: dispatch.orderId },
-        data: { status: OrderStatus.DELIVERED },
-      });
-    }
+      if (status === 'IN_TRANSIT') {
+        await tx.order.update({
+          where: { id: dispatch.orderId },
+          data: { status: OrderStatus.IN_TRANSIT },
+        });
+      } else if (status === 'DELIVERED') {
+        await tx.order.update({
+          where: { id: dispatch.orderId },
+          data: { status: OrderStatus.DELIVERED },
+        });
+      }
+
+      return updated;
+    });
 
     await this.auditLogService.logAction({
       actorId: currentUser.id,
@@ -293,25 +307,48 @@ export class LogisticsService {
     return updatedDispatch;
   }
 
-  async driverMarkLoaded(dispatchId: string, photoUrl: string | undefined, currentUser: CurrentUserPayload) {
+  async driverMarkLoaded(
+    dispatchId: string,
+    dtoOrPhotoUrl: DriverMarkLoadedDto | string | undefined,
+    currentUser: CurrentUserPayload
+  ) {
     const dispatch = await this.prisma.logisticsDispatch.findUnique({
       where: { id: dispatchId },
       include: { order: true },
     });
     if (!dispatch) throw new NotFoundException('Dispetcherlik topilmadi');
 
-    const updated = await this.prisma.logisticsDispatch.update({
-      where: { id: dispatchId },
-      data: {
-        status: 'IN_TRANSIT',
-        loadedAt: new Date(),
-        loadingPhotoUrl: photoUrl || null,
-      },
-    });
+    if (
+      currentUser.role === Role.LOGISTICS_DRIVER &&
+      dispatch.driverId &&
+      dispatch.driverId !== currentUser.id
+    ) {
+      throw new ForbiddenException(
+        "Faqat o'zingizga biriktirilgan dispetcherlik vazifasini yangilashingiz mumkin"
+      );
+    }
 
-    await this.prisma.order.update({
-      where: { id: dispatch.orderId },
-      data: { status: OrderStatus.IN_TRANSIT },
+    const photoUrl =
+      typeof dtoOrPhotoUrl === 'string'
+        ? dtoOrPhotoUrl
+        : dtoOrPhotoUrl?.photoUrl;
+
+    const updated = await this.prisma.$transaction(async (tx) => {
+      const updatedDispatch = await tx.logisticsDispatch.update({
+        where: { id: dispatchId },
+        data: {
+          status: 'IN_TRANSIT',
+          loadedAt: new Date(),
+          loadingPhotoUrl: photoUrl || null,
+        },
+      });
+
+      await tx.order.update({
+        where: { id: dispatch.orderId },
+        data: { status: OrderStatus.IN_TRANSIT },
+      });
+
+      return updatedDispatch;
     });
 
     await this.auditLogService.logAction({
@@ -332,25 +369,40 @@ export class LogisticsService {
     });
     if (!dispatch) throw new NotFoundException('Dispetcherlik topilmadi');
 
+    if (
+      currentUser.role === Role.LOGISTICS_DRIVER &&
+      dispatch.driverId &&
+      dispatch.driverId !== currentUser.id
+    ) {
+      throw new ForbiddenException(
+        "Faqat o'zingizga biriktirilgan dispetcherlik vazifasini yangilashingiz mumkin"
+      );
+    }
+
     const waitingDeadline = new Date(Date.now() + 30 * 60 * 1000); // 30 min timer
 
-    const updated = await this.prisma.logisticsDispatch.update({
-      where: { id: dispatchId },
-      data: {
-        status: 'ARRIVED',
-        arrivedAt: new Date(),
-        waitingTimerExpiresAt: waitingDeadline,
-      },
-    });
+    const updated = await this.prisma.$transaction(async (tx) => {
+      const updatedDispatch = await tx.logisticsDispatch.update({
+        where: { id: dispatchId },
+        data: {
+          status: 'ARRIVED',
+          arrivedAt: new Date(),
+          waitingTimerExpiresAt: waitingDeadline,
+        },
+      });
 
-    await this.prisma.order.update({
-      where: { id: dispatch.orderId },
-      data: {
-        status: OrderStatus.ARRIVED,
-        arrivedAt: new Date(),
-        waitingDeadline,
-        isAcceptanceCodeRevealed: dispatch.order.paymentMode === 'FULL_100' || dispatch.order.isSecondPaid,
-      },
+      await tx.order.update({
+        where: { id: dispatch.orderId },
+        data: {
+          status: OrderStatus.ARRIVED,
+          arrivedAt: new Date(),
+          waitingDeadline,
+          isAcceptanceCodeRevealed:
+            dispatch.order.paymentMode === PaymentMode.FULL_100 || dispatch.order.isSecondPaid,
+        },
+      });
+
+      return updatedDispatch;
     });
 
     await this.auditLogService.logAction({
@@ -366,9 +418,9 @@ export class LogisticsService {
 
   async driverVerifyAcceptanceCode(
     dispatchId: string,
-    code: string,
-    photoUrl: string | undefined,
-    currentUser: CurrentUserPayload
+    dtoOrCode: DriverVerifyCodeDto | string,
+    photoUrlOrUser?: string | CurrentUserPayload,
+    maybeUser?: CurrentUserPayload
   ) {
     const dispatch = await this.prisma.logisticsDispatch.findUnique({
       where: { id: dispatchId },
@@ -376,37 +428,80 @@ export class LogisticsService {
     });
     if (!dispatch) throw new NotFoundException('Dispetcherlik topilmadi');
 
-    if (dispatch.order.acceptanceCode !== code.trim()) {
-      throw new BadRequestException('Mijoz taqdim etgan qabul kodi xato! Iltimos, mijozdan tasdiqlangan PIN kodni oling.');
+    let code: string;
+    let photoUrl: string | undefined;
+    let currentUser: CurrentUserPayload;
+
+    if (typeof dtoOrCode === 'string') {
+      code = dtoOrCode;
+      photoUrl = typeof photoUrlOrUser === 'string' ? photoUrlOrUser : undefined;
+      currentUser = (maybeUser || photoUrlOrUser) as CurrentUserPayload;
+    } else {
+      code = dtoOrCode?.code ?? '';
+      photoUrl = dtoOrCode?.photoUrl;
+      currentUser = photoUrlOrUser as CurrentUserPayload;
     }
 
-    if (dispatch.order.paymentMode === 'SPLIT_50_50' && !dispatch.order.isSecondPaid) {
-      throw new BadRequestException('Ikkinchi 50% to‘lov hali to‘lanmagan. Yukni topshirish mumkin emas!');
+    if (
+      currentUser?.role === Role.LOGISTICS_DRIVER &&
+      dispatch.driverId &&
+      dispatch.driverId !== currentUser.id
+    ) {
+      throw new ForbiddenException(
+        "Faqat o'zingizga biriktirilgan dispetcherlik vazifasini yangilashingiz mumkin"
+      );
     }
 
-    const updated = await this.prisma.logisticsDispatch.update({
-      where: { id: dispatchId },
-      data: {
-        status: 'DELIVERED',
-        acceptanceCode: code,
-        acceptancePhotoUrl: photoUrl || null,
-        deliveredAt: new Date(),
-      },
-    });
+    const trimmedCode = code ? code.trim() : '';
+    if (!trimmedCode) {
+      throw new BadRequestException('Mijoz qabul kodi kiritilishi shart');
+    }
 
-    await this.prisma.order.update({
-      where: { id: dispatch.orderId },
-      data: { status: OrderStatus.RECEIVED },
-    });
+    if (dispatch.order.acceptanceCode !== trimmedCode) {
+      throw new BadRequestException(
+        'Mijoz taqdim etgan qabul kodi xato! Iltimos, mijozdan tasdiqlangan PIN kodni oling.'
+      );
+    }
 
-    // Mark order COMPLETED and release Escrow
-    await this.prisma.order.update({
-      where: { id: dispatch.orderId },
-      data: { status: OrderStatus.COMPLETED },
+    if (
+      dispatch.order.paymentMode === PaymentMode.SPLIT_50_50 &&
+      !dispatch.order.isSecondPaid
+    ) {
+      throw new BadRequestException(
+        'Ikkinchi 50% to‘lov hali to‘lanmagan. Yukni topshirish mumkin emas!'
+      );
+    }
+
+    const updated = await this.prisma.$transaction(async (tx) => {
+      const updatedDispatch = await tx.logisticsDispatch.update({
+        where: { id: dispatchId },
+        data: {
+          status: 'DELIVERED',
+          acceptanceCode: trimmedCode,
+          acceptancePhotoUrl: photoUrl || null,
+          deliveredAt: new Date(),
+        },
+      });
+
+      // Update Order to COMPLETED and mark SubOrders
+      await tx.order.update({
+        where: { id: dispatch.orderId },
+        data: { status: OrderStatus.COMPLETED },
+      });
+
+      await tx.subOrder.updateMany({
+        where: { orderId: dispatch.orderId },
+        data: {
+          status: OrderStatus.COMPLETED,
+          completedAt: new Date(),
+        },
+      });
+
+      return updatedDispatch;
     });
 
     await this.auditLogService.logAction({
-      actorId: currentUser.id,
+      actorId: currentUser?.id || 'DRIVER',
       action: 'DRIVER_CODE_VERIFIED_AND_DELIVERED',
       category: 'ESCROW',
       details: `Haydovchi qabul kodini muvaffaqiyatli tasdiqladi. Yuk topshirildi va Escrow ajratildi: ${dispatch.order.orderNumber}`,
@@ -418,15 +513,39 @@ export class LogisticsService {
 
   async driverReportIssue(
     dispatchId: string,
-    reason: string,
-    photoUrl: string | undefined,
-    currentUser: CurrentUserPayload
+    dtoOrReason: DriverReportIssueDto | string,
+    photoUrlOrUser?: string | CurrentUserPayload,
+    maybeUser?: CurrentUserPayload
   ) {
     const dispatch = await this.prisma.logisticsDispatch.findUnique({
       where: { id: dispatchId },
       include: { order: true },
     });
     if (!dispatch) throw new NotFoundException('Dispetcherlik topilmadi');
+
+    let reason: string;
+    let photoUrl: string | undefined;
+    let currentUser: CurrentUserPayload;
+
+    if (typeof dtoOrReason === 'string') {
+      reason = dtoOrReason;
+      photoUrl = typeof photoUrlOrUser === 'string' ? photoUrlOrUser : undefined;
+      currentUser = (maybeUser || photoUrlOrUser) as CurrentUserPayload;
+    } else {
+      reason = dtoOrReason?.reason ?? '';
+      photoUrl = dtoOrReason?.photoUrl;
+      currentUser = photoUrlOrUser as CurrentUserPayload;
+    }
+
+    if (
+      currentUser?.role === Role.LOGISTICS_DRIVER &&
+      dispatch.driverId &&
+      dispatch.driverId !== currentUser.id
+    ) {
+      throw new ForbiddenException(
+        "Faqat o'zingizga biriktirilgan dispetcherlik vazifasini yangilashingiz mumkin"
+      );
+    }
 
     const updated = await this.prisma.logisticsDispatch.update({
       where: { id: dispatchId },
@@ -437,7 +556,7 @@ export class LogisticsService {
     });
 
     await this.auditLogService.logAction({
-      actorId: currentUser.id,
+      actorId: currentUser?.id || 'DRIVER',
       action: 'DRIVER_ISSUE_REPORTED',
       category: 'LOGISTICS',
       details: `Haydovchi muammo qayd etdi: "${reason}". Buyurtma: ${dispatch.order.orderNumber}`,
