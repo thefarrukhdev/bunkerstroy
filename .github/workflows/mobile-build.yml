@@ -29,12 +29,9 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android SDK Environment & Licenses
+      - name: Accept Android SDK Licenses
         run: |
-          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
-          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
-          yes | sdkmanager --licenses || true
-          sdkmanager "platforms;android-35" "build-tools;35.0.0" || true
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -68,15 +65,7 @@ jobs:
         run: |
           cd apps/web/android
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee /tmp/android-build.log || (echo "=== GRADLE BUILD FAILURE LOG ==="; tail -n 120 /tmp/android-build.log; exit 1)
-
-      - name: Upload Build Log On Failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: Android-Build-Failure-Log
-          path: /tmp/android-build.log
-          retention-days: 7
+          ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Upload Android APK
         uses: actions/upload-artifact@v4
