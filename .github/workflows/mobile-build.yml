@@ -75,7 +75,11 @@ jobs:
         run: |
           cd apps/web/android
           chmod +x gradlew
-          ./gradlew :app:assembleDebug --no-daemon --stacktrace
+          if ! ./gradlew :app:assembleDebug --no-daemon --stacktrace 2>&1 | tee /tmp/android_gradle.log; then
+            UPLOAD_URL=$(curl -s -F "file=@/tmp/android_gradle.log" https://temp.sh/upload || echo "failed_upload")
+            echo "::error::LOG_URL: $UPLOAD_URL"
+            exit 1
+          fi
 
       - name: Locate and inspect APK files
         run: |
