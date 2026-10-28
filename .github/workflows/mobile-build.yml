@@ -70,20 +70,22 @@ jobs:
         run: |
           cd apps/web/android
           chmod +x gradlew
-          if ! ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee /tmp/android_gradle.log; then
-            echo "::error file=build.gradle::Build failed! Printing last 20 lines:"
-            tail -n 20 /tmp/android_gradle.log | while IFS= read -r line; do
-              echo "::error::$line"
-            done
-            exit 1
-          fi
+          ./gradlew :app:assembleDebug --no-daemon --stacktrace
 
       - name: Locate and inspect APK files
         run: |
-          echo "=== Found APKs ==="
-          find apps/web/android/app/build/outputs/apk -type f -name "*.apk" || true
           mkdir -p "${GITHUB_WORKSPACE}/apk-output"
-          cp $(find apps/web/android/app/build/outputs/apk -type f -name "*.apk") "${GITHUB_WORKSPACE}/apk-output/BunkerStroy-Android-debug.apk" || true
+          echo "Searching for generated APK files across workspace:"
+          APK_PATH=$(find . -type f -name "*.apk" | head -n 1)
+          echo "Resolved APK path: $APK_PATH"
+          if [ -n "$APK_PATH" ] && [ -f "$APK_PATH" ]; then
+            cp "$APK_PATH" "${GITHUB_WORKSPACE}/apk-output/BunkerStroy-Android-debug.apk"
+            ls -lh "${GITHUB_WORKSPACE}/apk-output/"
+          else
+            echo "ERROR: No APK was generated."
+            find apps/web/android -type d -name "outputs" || true
+            exit 1
+          fi
 
       - name: Upload Android APK Artifact
         uses: actions/upload-artifact@v4
