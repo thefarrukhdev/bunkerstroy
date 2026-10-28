@@ -30,6 +30,7 @@ import {
   Layers,
   Volume2
 } from 'lucide-react';
+import { isNative, takeMobilePhoto, triggerHaptic } from '../../services/mobileBridge';
 
 /* ==========================================================================
    Types & Enums
@@ -125,6 +126,46 @@ export const DriverMobileView: React.FC = () => {
   const [deliveryPhoto, setDeliveryPhoto] = useState<string | null>(null);
   const loadingInputRef = useRef<HTMLInputElement>(null);
   const deliveryInputRef = useRef<HTMLInputElement>(null);
+
+  // Native & Fallback Photo Handlers
+  const handleCaptureLoadingPhoto = async () => {
+    triggerHaptic('light');
+    if (isNative) {
+      const photo = await takeMobilePhoto();
+      if (photo) {
+        setLoadingPhoto(photo);
+        triggerHaptic('success');
+        return;
+      }
+    }
+    loadingInputRef.current?.click();
+  };
+
+  const handleCaptureDeliveryPhoto = async () => {
+    triggerHaptic('light');
+    if (isNative) {
+      const photo = await takeMobilePhoto();
+      if (photo) {
+        setDeliveryPhoto(photo);
+        triggerHaptic('success');
+        return;
+      }
+    }
+    deliveryInputRef.current?.click();
+  };
+
+  const handleCaptureProblemPhoto = async () => {
+    triggerHaptic('light');
+    if (isNative) {
+      const photo = await takeMobilePhoto();
+      if (photo) {
+        setProblemPhoto(photo);
+        triggerHaptic('success');
+        return;
+      }
+    }
+    problemInputRef.current?.click();
+  };
 
   // 30-min Countdown Timer for 50/50 Payment when arrived
   const [timerSecondsRemaining, setTimerSecondsRemaining] = useState<number>(30 * 60); // 30 minutes
@@ -783,7 +824,7 @@ export const DriverMobileView: React.FC = () => {
                       <span>Yuklandi</span>
                     </div>
                     <button
-                      onClick={() => loadingInputRef.current?.click()}
+                      onClick={handleCaptureLoadingPhoto}
                       className="absolute bottom-2 right-2 bg-black/70 hover:bg-black text-white text-xs px-2.5 py-1 rounded-lg border border-slate-500 font-mono flex items-center gap-1"
                     >
                       <RotateCcw className="w-3 h-3" />
@@ -792,7 +833,7 @@ export const DriverMobileView: React.FC = () => {
                   </div>
                 ) : (
                   <button
-                    onClick={() => loadingInputRef.current?.click()}
+                    onClick={handleCaptureLoadingPhoto}
                     className="w-full h-32 rounded-xl border-2 border-dashed border-slate-600 hover:border-[#F59E0B] bg-slate-800/40 hover:bg-slate-800/80 flex flex-col items-center justify-center gap-2 text-slate-400 hover:text-white transition cursor-pointer"
                   >
                     <div className="w-10 h-10 rounded-full bg-slate-700/80 flex items-center justify-center text-[#F59E0B]">
@@ -1050,7 +1091,7 @@ export const DriverMobileView: React.FC = () => {
                       <span>Dalolatnoma tayyor</span>
                     </div>
                     <button
-                      onClick={() => deliveryInputRef.current?.click()}
+                      onClick={handleCaptureDeliveryPhoto}
                       className="absolute bottom-2 right-2 bg-black/70 hover:bg-black text-white text-xs px-2.5 py-1 rounded-lg border border-slate-500 font-mono flex items-center gap-1"
                     >
                       <RotateCcw className="w-3 h-3" />
@@ -1059,7 +1100,7 @@ export const DriverMobileView: React.FC = () => {
                   </div>
                 ) : (
                   <button
-                    onClick={() => deliveryInputRef.current?.click()}
+                    onClick={handleCaptureDeliveryPhoto}
                     className="w-full h-32 rounded-xl border-2 border-dashed border-slate-600 hover:border-emerald-500 bg-slate-800/40 hover:bg-slate-800/80 flex flex-col items-center justify-center gap-2 text-slate-400 hover:text-white transition cursor-pointer"
                   >
                     <div className="w-10 h-10 rounded-full bg-slate-700/80 flex items-center justify-center text-emerald-400">
@@ -1254,7 +1295,7 @@ export const DriverMobileView: React.FC = () => {
                 ) : (
                   <button
                     type="button"
-                    onClick={() => problemInputRef.current?.click()}
+                    onClick={handleCaptureProblemPhoto}
                     className="w-full py-2 px-3 rounded-xl border border-dashed border-slate-600 hover:border-red-400 bg-slate-900 text-xs font-mono text-slate-300 flex items-center justify-center gap-1.5"
                   >
                     <Camera className="w-3.5 h-3.5 text-red-400" />

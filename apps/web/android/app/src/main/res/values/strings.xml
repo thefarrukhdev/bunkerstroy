@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">BunkerStroy</string>
+    <string name="title_activity_main">BunkerStroy</string>
+    <string name="package_name">uz.bunkerstroy.app</string>
+    <string name="custom_url_scheme">uz.bunkerstroy.app</string>
+</resources>

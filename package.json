@@ -13,7 +13,11 @@
     "clean": "turbo run clean && rm -rf node_modules",
     "db:generate": "pnpm --filter @bunkerstroy/db generate",
     "db:migrate": "pnpm --filter @bunkerstroy/db migrate",
-    "db:seed": "pnpm --filter @bunkerstroy/db seed"
+    "db:seed": "pnpm --filter @bunkerstroy/db seed",
+    "mobile:build": "pnpm --filter @bunkerstroy/web cap:build",
+    "mobile:sync": "pnpm --filter @bunkerstroy/web cap:sync",
+    "mobile:android": "pnpm --filter @bunkerstroy/web cap:android",
+    "mobile:ios": "pnpm --filter @bunkerstroy/web cap:ios"
   },
   "devDependencies": {
     "turbo": "^2.4.4",

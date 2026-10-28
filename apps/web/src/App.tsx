@@ -16,9 +16,11 @@ import {
   HardHat,
   PhoneCall,
   MapPin,
-  Clock
+  Clock,
+  WifiOff
 } from 'lucide-react';
 import { Badge } from '@bunkerstroy/ui';
+import { initializeMobilePlatform, triggerHaptic } from './services/mobileBridge';
 
 export const AppContent: React.FC = () => {
   const navigate = useNavigate();
@@ -26,6 +28,37 @@ export const AppContent: React.FC = () => {
   // Modals state
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isOffline, setIsOffline] = useState(false);
+
+  // References for native back button handling
+  const isCartOpenRef = React.useRef(isCartOpen);
+  const isAuthOpenRef = React.useRef(isAuthOpen);
+  isCartOpenRef.current = isCartOpen;
+  isAuthOpenRef.current = isAuthOpen;
+
+  // Initialize native mobile features (StatusBar, Splash, Network, BackButton)
+  useEffect(() => {
+    const cleanupPromise = initializeMobilePlatform({
+      onBackPress: () => {
+        if (isCartOpenRef.current) {
+          setIsCartOpen(false);
+          return true;
+        }
+        if (isAuthOpenRef.current) {
+          setIsAuthOpen(false);
+          return true;
+        }
+        return false;
+      },
+      onNetworkChange: (connected) => {
+        setIsOffline(!connected);
+      }
+    });
+
+    return () => {
+      cleanupPromise.then((cleanup) => cleanup && cleanup());
+    };
+  }, []);
 
   // User state
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -79,6 +112,7 @@ export const AppContent: React.FC = () => {
 
   // Cart actions
   const handleAddToCart = (product: Product, quantity: number = 1) => {
+    triggerHaptic('medium');
     const qtyToAdd = Math.max(1, quantity);
     setCart((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
@@ -134,6 +168,14 @@ export const AppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-bunker-base text-bunker-text-primary selection:bg-bunker-amber-500 selection:text-white font-sans transition-colors duration-200">
+      {/* Mobile Offline Notice Banner */}
+      {isOffline && (
+        <div className="sticky top-0 z-50 bg-amber-500 text-slate-950 text-xs font-bold py-1.5 px-4 text-center flex items-center justify-center gap-2 shadow-sm animate-pulse">
+          <WifiOff className="w-3.5 h-3.5" />
+          <span>Internet aloqasi uzildi. Ilova oflayn rejimda ishlamoqda.</span>
+        </div>
+      )}
+
       {/* 1. Header Navigation Bar */}
       <Navbar
         cartCount={cartCount}
