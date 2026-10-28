@@ -70,13 +70,13 @@ jobs:
         run: |
           cd apps/web/android
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee /tmp/android_gradle.log || {
-            echo "## Gradle Build Failure Log" >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            tail -n 80 /tmp/android_gradle.log >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
+          if ! ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee /tmp/android_gradle.log; then
+            echo "::error file=build.gradle::Build failed! Printing last 20 lines:"
+            tail -n 20 /tmp/android_gradle.log | while IFS= read -r line; do
+              echo "::error::$line"
+            done
             exit 1
-          }
+          fi
 
       - name: Upload Android APK Artifact
         uses: actions/upload-artifact@v4
