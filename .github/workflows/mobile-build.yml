@@ -68,7 +68,15 @@ jobs:
         run: |
           cd apps/web/android
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon --stacktrace
+          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee /tmp/android-build.log || (echo "=== GRADLE BUILD FAILURE LOG ==="; tail -n 120 /tmp/android-build.log; exit 1)
+
+      - name: Upload Build Log On Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Android-Build-Failure-Log
+          path: /tmp/android-build.log
+          retention-days: 7
 
       - name: Upload Android APK
         uses: actions/upload-artifact@v4
