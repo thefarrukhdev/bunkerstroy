@@ -78,11 +78,18 @@ jobs:
             exit 1
           fi
 
+      - name: Locate and inspect APK files
+        run: |
+          echo "=== Found APKs ==="
+          find apps/web/android/app/build/outputs/apk -type f -name "*.apk" || true
+          mkdir -p "${GITHUB_WORKSPACE}/apk-output"
+          cp $(find apps/web/android/app/build/outputs/apk -type f -name "*.apk") "${GITHUB_WORKSPACE}/apk-output/BunkerStroy-Android-debug.apk" || true
+
       - name: Upload Android APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: BunkerStroy-Android-Debug-APK
-          path: apps/web/android/app/build/outputs/apk/debug/app-debug.apk
+          path: apk-output/*.apk
           if-no-files-found: error
           retention-days: 14
 
@@ -94,7 +101,7 @@ jobs:
           name: BunkerStroy Mobile Build (Latest)
           draft: false
           prerelease: false
-          files: apps/web/android/app/build/outputs/apk/debug/app-debug.apk
+          files: apk-output/*.apk
 
   build-ios:
     name: Build iOS App
