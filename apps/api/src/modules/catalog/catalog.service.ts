@@ -367,10 +367,14 @@ export class CatalogService {
 
     // 3. Generate unique slug
     let slug = dto.slug?.trim() || this.slugify(dto.title);
-    const existing = await this.prisma.product.findUnique({ where: { slug } });
-    if (existing) {
-      slug = `${slug}-${Date.now().toString().slice(-4)}`;
+    let candidateSlug = slug;
+    let attempts = 0;
+    while (await this.prisma.product.findUnique({ where: { slug: candidateSlug } })) {
+      candidateSlug = `${slug}-${Date.now().toString().slice(-6)}-${Math.floor(100 + Math.random() * 900)}`;
+      attempts++;
+      if (attempts > 5) break;
     }
+    slug = candidateSlug;
 
     const created = await this.prisma.product.create({
       data: {
