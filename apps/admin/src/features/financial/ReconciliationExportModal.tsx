@@ -83,30 +83,31 @@ export const ReconciliationExportModal: React.FC<ReconciliationExportModalProps>
       />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-xl bg-[var(--color-surface-card)] border border-[var(--color-border-subtle)] rounded-2xl shadow-2xl p-6 z-10 text-[var(--color-text-primary)] space-y-4 animate-in fade-in zoom-in-95 duration-150">
+      <div className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto bg-[var(--color-surface-card)] border border-[var(--color-border-subtle)] rounded-2xl shadow-2xl p-4 sm:p-6 z-10 text-[var(--color-text-primary)] space-y-4 animate-in fade-in zoom-in-95 duration-150 flex flex-col">
         <div className="flex items-center justify-between pb-3 border-b border-[var(--color-border-subtle)]">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2.5 rounded-xl bg-[var(--color-accent-green)]/15 text-[var(--color-accent-green)]">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="p-2.5 rounded-xl bg-[var(--color-accent-green)]/15 text-[var(--color-accent-green)] shrink-0">
               <FileSpreadsheet className="w-5 h-5" />
             </div>
-            <div>
-              <h3 className="text-base font-bold text-[var(--color-text-primary)]">
+            <div className="min-w-0">
+              <h3 className="text-base font-bold text-[var(--color-text-primary)] truncate">
                 Solishtirma Dalolatnoma (Act Sverki) Eksporti
               </h3>
-              <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+              <p className="text-xs text-[var(--color-text-secondary)] mt-0.5 truncate">
                 Buxgalteriya o‘zaro hisob-kitoblar balansi va aylanmasi akti
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
+            aria-label="Yopish"
+            className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="space-y-3.5">
+        <div className="space-y-3.5 flex-1">
           {/* Supplier selection */}
           <Select
             label="Hamkor korxona (Ta’minotchi / Xaridor) *"
@@ -128,31 +129,31 @@ export const ReconciliationExportModal: React.FC<ReconciliationExportModalProps>
             <label className="block text-xs font-semibold text-[var(--color-text-secondary)]">
               Eksport fayl formati *
             </label>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
                 type="button"
                 onClick={() => setExportFormat('EXCEL')}
-                className={`p-3 rounded-xl border text-left transition-all flex items-center gap-2.5 ${
+                className={`p-3 min-h-[44px] rounded-xl border text-left transition-all flex items-center gap-2.5 cursor-pointer ${
                   exportFormat === 'EXCEL'
                     ? 'border-[var(--color-accent-green)] bg-[var(--color-accent-green)]/10 text-[var(--color-text-primary)] font-semibold'
                     : 'border-[var(--color-border-subtle)] bg-[var(--color-surface-bg)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'
                 }`}
               >
                 <FileSpreadsheet className="w-4 h-4 text-[var(--color-accent-green)]" />
-                <span className="text-xs">Excel jadvali (.xlsx)</span>
+                <span className="text-xs font-medium">Excel jadvali (.xlsx)</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setExportFormat('PDF')}
-                className={`p-3 rounded-xl border text-left transition-all flex items-center gap-2.5 ${
+                className={`p-3 min-h-[44px] rounded-xl border text-left transition-all flex items-center gap-2.5 cursor-pointer ${
                   exportFormat === 'PDF'
                     ? 'border-[var(--color-accent-blue)] bg-[var(--color-accent-blue)]/10 text-[var(--color-text-primary)] font-semibold'
                     : 'border-[var(--color-border-subtle)] bg-[var(--color-surface-bg)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]'
                 }`}
               >
                 <FileText className="w-4 h-4 text-[var(--color-accent-blue)]" />
-                <span className="text-xs">Chop etish hujjati (.pdf)</span>
+                <span className="text-xs font-medium">Chop etish hujjati (.pdf)</span>
               </button>
             </div>
           </div>

@@ -67,11 +67,11 @@ export const StirVerificationDrawer: React.FC<StirVerificationDrawerProps> = ({
       title="Ta’minotchi Yuridik Pasporti & STIR"
       subtitle={`STIR (INN): ${supplier.inn} • ${supplier.companyName}`}
       footer={
-        <div className="flex items-center justify-between w-full">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 w-full">
           <div>
             <StatusBadge status={supplier.status} />
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {supplier.status === 'PENDING' && (
               <>
                 <Button

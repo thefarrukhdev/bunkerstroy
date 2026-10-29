@@ -96,6 +96,7 @@ export const FinancialLedger: React.FC = () => {
     {
       key: 'trxNumber',
       header: 'Tranzaksiya & Sana',
+      className: 'whitespace-nowrap',
       render: (row) => (
         <div>
           <div className="font-mono font-bold text-sm text-[var(--color-accent-blue)]">
@@ -110,6 +111,7 @@ export const FinancialLedger: React.FC = () => {
     {
       key: 'type',
       header: 'Amal Turi',
+      className: 'whitespace-nowrap',
       render: (row) => {
         const isInc = row.type === 'INCOME';
         return (
@@ -133,6 +135,7 @@ export const FinancialLedger: React.FC = () => {
     {
       key: 'counterparty',
       header: 'Kontragent & Hujjat',
+      className: 'whitespace-nowrap',
       render: (row) => (
         <div>
           <div className="font-semibold text-xs text-[var(--color-text-primary)] flex items-center gap-1">
@@ -148,6 +151,7 @@ export const FinancialLedger: React.FC = () => {
     {
       key: 'method',
       header: 'To‘lov Shlyuzi',
+      className: 'whitespace-nowrap',
       render: (row) => (
         <div className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-[var(--color-surface-hover)] border border-[var(--color-border-subtle)] text-[var(--color-text-primary)] inline-block">
           {row.paymentMethod}
@@ -157,6 +161,7 @@ export const FinancialLedger: React.FC = () => {
     {
       key: 'amount',
       header: 'Summa',
+      className: 'whitespace-nowrap',
       render: (row) => {
         const isInc = row.type === 'INCOME';
         return (
@@ -173,11 +178,13 @@ export const FinancialLedger: React.FC = () => {
     {
       key: 'status',
       header: 'Holati',
+      className: 'whitespace-nowrap',
       render: (row) => <StatusBadge status={row.status} />
     },
     {
       key: 'actions',
       header: 'Amallar',
+      className: 'whitespace-nowrap',
       render: (row) => (
         <Button
           variant="secondary"
@@ -204,12 +211,13 @@ export const FinancialLedger: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <Button
             variant="primary"
             size="md"
             onClick={() => setIsExportModalOpen(true)}
             leftIcon={<FileSpreadsheet className="w-4 h-4" />}
+            className="w-full sm:w-auto"
           >
             Solishtirma Dalolatnoma (Act Sverki)
           </Button>
@@ -257,22 +265,22 @@ export const FinancialLedger: React.FC = () => {
           emptyTitle="Hech qanday moliyaviy operatsiya topilmadi"
           emptyDescription="Filtr parametrlarini o‘zgartiring yoki qidiruv so‘rovini tekshiring."
           actionsSlot={
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="w-56">
+            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+              <div className="w-full sm:w-56">
                 <Select
                   value={typeFilter}
                   onChange={(e) => setTypeFilter(e.target.value)}
                   options={typeOptions}
                 />
               </div>
-              <div className="w-48">
+              <div className="w-full sm:w-48">
                 <Select
                   value={methodFilter}
                   onChange={(e) => setMethodFilter(e.target.value)}
                   options={methodOptions}
                 />
               </div>
-              <div className="w-44">
+              <div className="w-full sm:w-44">
                 <Select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}

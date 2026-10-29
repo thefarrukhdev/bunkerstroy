@@ -94,7 +94,7 @@ export const Drawer: React.FC<DrawerProps> = ({
     >
       <div
         className={cn(
-          'w-full h-full bg-bunker-surface-1 border-bunker-border-strong flex flex-col justify-between p-4 sm:p-6 shadow-2xl overflow-y-auto text-bunker-text-primary transition-transform duration-300',
+          'w-full h-full bg-bunker-surface-1 border-bunker-border-strong flex flex-col justify-between p-3.5 sm:p-6 shadow-2xl overflow-hidden text-bunker-text-primary transition-transform duration-300',
           sizeClasses[size],
           positionClasses[position],
           className
@@ -131,7 +131,7 @@ export const Drawer: React.FC<DrawerProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="text-bunker-text-secondary hover:text-bunker-text-primary p-2 rounded-xl bg-bunker-surface-2 border border-bunker-border-subtle cursor-pointer transition-colors shrink-0 hover:bg-bunker-surface-hover"
+                className="text-bunker-text-secondary hover:text-bunker-text-primary p-2 min-w-[40px] min-h-[40px] flex items-center justify-center rounded-xl bg-bunker-surface-2 border border-bunker-border-subtle cursor-pointer transition-colors shrink-0 hover:bg-bunker-surface-hover"
                 aria-label="Yopish"
               >
                 <X className="w-4 h-4" />

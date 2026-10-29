@@ -17,7 +17,8 @@ import {
   BarChart3,
   HardHat,
   MapPin,
-  ShieldCheck
+  ShieldCheck,
+  X
 } from 'lucide-react';
 
 export type AdminTab =
@@ -137,13 +138,13 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         }`}
       >
         {/* Brand Header with Industrial Rivets & Hazard Stripe Accent */}
-        <div className="p-4 border-b-2 border-[#1E3A6D] bg-[#071326] relative overflow-hidden">
-          <div className="flex items-center gap-3">
+        <div className="p-4 border-b-2 border-[#1E3A6D] bg-[#071326] relative overflow-hidden flex items-center justify-between">
+          <div className="flex items-center gap-3 min-w-0">
             <div className="w-11 h-11 rounded-xl bg-[#FFB800] text-[#071326] flex items-center justify-center font-black tracking-widest shadow-md shadow-[#FFB800]/25 shrink-0 border border-[#E5A600]">
               <Terminal className="w-6 h-6 stroke-[3]" />
             </div>
 
-            <div>
+            <div className="min-w-0">
               <div className="text-base font-black tracking-wider text-white font-mono uppercase flex items-center gap-1">
                 BUNKER<span className="text-[#FFB800]">STROY</span>
               </div>
@@ -153,6 +154,15 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
               </div>
             </div>
           </div>
+
+          {/* Close button on mobile */}
+          <button
+            onClick={onClose}
+            aria-label="Menyuni yopish"
+            className="lg:hidden p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl bg-[#0F2547] text-sky-200 hover:text-white border border-[#1E3A6D] cursor-pointer transition-colors shrink-0"
+          >
+            <X className="w-5 h-5" />
+          </button>
 
           <div className="absolute top-0 right-0 left-0 h-[2px] hazard-stripe-sm" />
         </div>
@@ -178,7 +188,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                     setActiveTab(item.id);
                     onClose();
                   }}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-mono text-xs transition-all duration-150 cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-mono text-xs transition-all duration-150 cursor-pointer min-h-[44px] ${
                     isActive
                       ? 'bg-[#FFB800] text-[#071326] font-black shadow-lg shadow-[#FFB800]/30 border border-[#E5A600]'
                       : 'text-sky-100 hover:text-white hover:bg-[#0F2547] border border-transparent hover:border-[#1E3A6D]'
@@ -225,7 +235,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                     setActiveTab(item.id);
                     onClose();
                   }}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-mono text-xs transition-all duration-150 cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-mono text-xs transition-all duration-150 cursor-pointer min-h-[44px] ${
                     isActive
                       ? 'bg-[#FFB800] text-[#071326] font-black shadow-lg shadow-[#FFB800]/30 border border-[#E5A600]'
                       : 'text-sky-100 hover:text-white hover:bg-[#0F2547] border border-transparent hover:border-[#1E3A6D]'
@@ -272,7 +282,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                     setActiveTab(item.id);
                     onClose();
                   }}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-mono text-xs transition-all duration-150 cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-mono text-xs transition-all duration-150 cursor-pointer min-h-[44px] ${
                     isActive
                       ? 'bg-[#FFB800] text-[#071326] font-black shadow-lg shadow-[#FFB800]/30 border border-[#E5A600]'
                       : 'text-sky-100 hover:text-white hover:bg-[#0F2547] border border-transparent hover:border-[#1E3A6D]'

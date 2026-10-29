@@ -102,6 +102,7 @@ export const AuditLogsViewer: React.FC = () => {
     {
       key: 'timestamp',
       header: 'Vaqti & Daraja',
+      className: 'whitespace-nowrap',
       render: (row) => (
         <div>
           <StatusBadge status={row.level} />
@@ -115,6 +116,7 @@ export const AuditLogsViewer: React.FC = () => {
     {
       key: 'action',
       header: 'Hodisa & Kategoriya',
+      className: 'whitespace-nowrap',
       render: (row) => (
         <div>
           <div className="font-bold text-xs text-[var(--color-text-primary)]">
@@ -129,6 +131,7 @@ export const AuditLogsViewer: React.FC = () => {
     {
       key: 'actor',
       header: 'Ijrochi Ma’mur / Rol',
+      className: 'whitespace-nowrap',
       render: (row) => {
         const displayInn = row.actorInn
           ? maskPii
@@ -152,6 +155,7 @@ export const AuditLogsViewer: React.FC = () => {
     {
       key: 'ip',
       header: 'Manba IP Manzil',
+      className: 'whitespace-nowrap',
       render: (row) => (
         <div>
           <div className="font-mono text-xs font-semibold text-[var(--color-text-primary)] flex items-center gap-1">
@@ -176,6 +180,7 @@ export const AuditLogsViewer: React.FC = () => {
     {
       key: 'actions',
       header: 'Amallar',
+      className: 'whitespace-nowrap',
       render: (row) => (
         <Button
           variant="secondary"
@@ -229,18 +234,19 @@ export const AuditLogsViewer: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
           <Button
             variant="secondary"
             size="md"
             onClick={handleExportCsv}
             leftIcon={<Download className="w-4 h-4" />}
+            className="flex-1 sm:flex-none"
           >
             CSV Eksport
           </Button>
 
           {/* PII Masking Toggle */}
-          <div className="p-2.5 rounded-xl bg-[var(--color-surface-card)] border border-[var(--color-border-subtle)] flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-[var(--color-surface-card)] border border-[var(--color-border-subtle)] flex items-center justify-between gap-3 flex-1 sm:flex-none min-h-[44px]">
             <div className="flex items-center gap-2">
               <Lock className="w-4 h-4 text-[var(--color-accent-blue)]" />
               <div>
@@ -295,15 +301,15 @@ export const AuditLogsViewer: React.FC = () => {
           emptyTitle="Hech qanday audit qaydi topilmadi"
           emptyDescription="Filtr parametrlarini o‘zgartiring yoki qidiruv so‘rovini tekshiring."
           actionsSlot={
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="w-56">
+            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+              <div className="w-full sm:w-56">
                 <Select
                   value={levelFilter}
                   onChange={(e) => setLevelFilter(e.target.value)}
                   options={levelOptions}
                 />
               </div>
-              <div className="w-56">
+              <div className="w-full sm:w-56">
                 <Select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}

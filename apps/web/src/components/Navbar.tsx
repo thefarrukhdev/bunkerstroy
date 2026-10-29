@@ -21,7 +21,10 @@ import {
   ShieldCheck,
   Store,
   SlidersHorizontal,
-  ExternalLink
+  ExternalLink,
+  Mic,
+  Calculator,
+  FileSpreadsheet
 } from 'lucide-react';
 import { cn } from '@bunkerstroy/ui';
 import { useLanguage } from '../context/LanguageContext';
@@ -46,6 +49,7 @@ export interface NavbarProps {
   onOpenAuth: () => void;
   currentUser: CurrentUser | null;
   onLogout: () => void;
+  onOpenVoiceAssistant?: () => void;
 }
 
 export interface CabinetOption {
@@ -192,7 +196,7 @@ export const LanguageToggle: React.FC<{ variant?: 'desktop' | 'mobile' }> = ({ v
 
   return (
     <div
-      className="inline-flex items-center h-8 sm:h-9 p-0.5 rounded-lg bg-[#071326] border border-[#1E3A6D] font-mono text-[11px] font-bold select-none shrink-0"
+      className="inline-flex items-center h-9 sm:h-9 p-0.5 rounded-xl bg-[#071326] border border-[#1E3A6D] font-mono text-[11px] font-bold select-none shrink-0"
       role="group"
       aria-label="Til tanlash"
     >
@@ -201,7 +205,7 @@ export const LanguageToggle: React.FC<{ variant?: 'desktop' | 'mobile' }> = ({ v
         onClick={() => setLanguage('uz')}
         title="O‘zbek tili"
         className={cn(
-          'h-7 px-2 sm:px-2.5 rounded-md transition-all cursor-pointer flex items-center justify-center font-bold',
+          'h-7.5 px-2.5 rounded-lg transition-all cursor-pointer flex items-center justify-center font-bold min-w-[32px]',
           language === 'uz'
             ? 'bg-[#FFB800] text-[#071326] font-black shadow-xs'
             : 'text-sky-300 hover:text-white'
@@ -214,7 +218,7 @@ export const LanguageToggle: React.FC<{ variant?: 'desktop' | 'mobile' }> = ({ v
         onClick={() => setLanguage('ru')}
         title="Русский язык"
         className={cn(
-          'h-7 px-2 sm:px-2.5 rounded-md transition-all cursor-pointer flex items-center justify-center font-bold',
+          'h-7.5 px-2.5 rounded-lg transition-all cursor-pointer flex items-center justify-center font-bold min-w-[32px]',
           language === 'ru'
             ? 'bg-[#FFB800] text-[#071326] font-black shadow-xs'
             : 'text-sky-300 hover:text-white'
@@ -318,7 +322,7 @@ export const RegionSelector: React.FC<RegionSelectorProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1.5 h-8 sm:h-9 px-2.5 sm:px-3 rounded-lg bg-[#071326] hover:bg-[#0F2547] border border-[#1E3A6D] hover:border-[#FFB800]/70 text-sky-100 text-xs font-mono font-medium transition-all cursor-pointer shadow-xs select-none"
+        className="flex items-center gap-1.5 h-9 sm:h-9 min-h-[38px] px-2.5 sm:px-3 rounded-xl bg-[#071326] hover:bg-[#0F2547] border border-[#1E3A6D] hover:border-[#FFB800]/70 text-sky-100 text-xs font-mono font-medium transition-all cursor-pointer shadow-xs select-none"
         title="Viloyat bo‘yicha filtr"
       >
         <MapPin className="w-3.5 h-3.5 text-[#FFB800] shrink-0" />
@@ -399,7 +403,7 @@ export const NavbarSearch: React.FC<{ className?: string; onSearchComplete?: () 
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Material, sement, armatura, g‘isht..."
         aria-label="Qurilish mollari qidiruvi"
-        className="w-full h-8 sm:h-9 pl-8 pr-7 rounded-lg bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] focus:ring-1 focus:ring-[#FFB800]/40 text-xs font-sans text-white placeholder-sky-300/50 outline-none transition-colors"
+        className="w-full h-9 sm:h-9 pl-8 pr-7 rounded-lg bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] focus:ring-1 focus:ring-[#FFB800]/40 text-base sm:text-xs font-sans text-white placeholder-sky-300/50 outline-none transition-colors"
       />
       {searchTerm && (
         <button
@@ -469,7 +473,7 @@ export const CabinetSwitcherDropdown: React.FC<CabinetSwitcherProps> = ({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'flex items-center gap-2 h-8 sm:h-9 px-2.5 sm:px-3 rounded-lg border transition-all text-xs font-semibold cursor-pointer shadow-xs select-none',
+          'flex items-center gap-2 h-9 sm:h-9 min-h-[40px] sm:min-h-[36px] px-2.5 sm:px-3 rounded-xl border transition-all text-xs font-semibold cursor-pointer shadow-xs select-none',
           isOpen
             ? 'bg-[#132C54] border-[#FFB800] text-white ring-1 ring-[#FFB800]/50'
             : 'bg-[#0F2547] hover:bg-[#132C54] border-[#1E3A6D] hover:border-[#2E5A9C] text-sky-100'
@@ -637,7 +641,7 @@ export const CartButton: React.FC<CartButtonProps> = ({ count, onClick, classNam
       title={hasItems ? `${count} ta mahsulot xarid savatida` : "Xarid savati bo'sh"}
       aria-label={hasItems ? `Xarid savati, ${count} ta mahsulot` : 'Xarid savati'}
       className={cn(
-        'group relative flex items-center gap-2 h-8 sm:h-9 px-2.5 sm:px-3 rounded-lg border transition-all text-xs font-semibold cursor-pointer shadow-xs select-none shrink-0',
+        'group relative flex items-center gap-2 h-9 sm:h-9 min-h-[40px] sm:min-h-[36px] px-2.5 sm:px-3 rounded-xl border transition-all text-xs font-semibold cursor-pointer shadow-xs select-none shrink-0',
         hasItems
           ? 'bg-emerald-950/80 hover:bg-emerald-900 border-emerald-400 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.35)] ring-1 ring-emerald-500/40'
           : 'bg-[#0F2547] hover:bg-[#132C54] border-[#1E3A6D] hover:border-[#FFB800] text-sky-100',
@@ -672,6 +676,7 @@ interface MobileMenuDrawerProps {
   currentUser: CurrentUser | null;
   onOpenAuth: () => void;
   onLogout: () => void;
+  onOpenVoiceAssistant?: () => void;
 }
 
 export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
@@ -681,7 +686,8 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
   onOpenCart,
   currentUser,
   onOpenAuth,
-  onLogout
+  onLogout,
+  onOpenVoiceAssistant
 }) => {
   const navigate = useNavigate();
 
@@ -724,7 +730,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-sky-200 hover:text-white bg-[#0F2547] border border-[#1E3A6D] transition-colors cursor-pointer"
+            className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-sky-200 hover:text-white bg-[#0F2547] border border-[#1E3A6D] transition-colors cursor-pointer touch-target-44"
             aria-label="Menyuni yopish"
           >
             <X className="w-5 h-5" />
@@ -753,9 +759,9 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               onOpenCart();
             }}
             className={cn(
-              'w-full flex items-center justify-between p-3 rounded-xl border text-xs font-medium transition-all cursor-pointer select-none',
+              'w-full flex items-center justify-between p-3 rounded-xl border text-xs font-medium transition-all cursor-pointer select-none min-h-[48px] touch-target-44',
               cartCount > 0
-                ? 'bg-emerald-950/80 border-emerald-500/50 text-white'
+                ? 'bg-emerald-950/80 border-emerald-500/50 text-white shadow-[0_0_12px_rgba(16,185,129,0.25)]'
                 : 'bg-[#0F2547] border-[#1E3A6D] text-sky-100 hover:bg-[#132C54]'
             )}
           >
@@ -773,8 +779,112 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
             </div>
           </button>
 
+          {/* Asosiy Sahifalar Ro'yxati */}
+          <div className="space-y-1.5 pt-1">
+            <div className="text-[10px] font-mono font-bold tracking-wider text-[#FFB800] uppercase px-1">
+              Asosiy Bo‘limlar:
+            </div>
+            <NavLink
+              to="/"
+              end
+              onClick={onClose}
+              className={({ isActive }) =>
+                cn(
+                  'w-full flex items-center gap-3 p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer min-h-[44px] touch-target-44',
+                  isActive
+                    ? 'bg-[#132C54] border-[#FFB800] text-[#FFB800] font-bold'
+                    : 'bg-[#0F2547] border-[#1E3A6D] text-sky-100 hover:bg-[#132C54]'
+                )
+              }
+            >
+              <Package className="w-4.5 h-4.5 text-[#FFB800]" />
+              <span>Katalog &amp; Vitrina</span>
+            </NavLink>
+
+            <NavLink
+              to="/suppliers"
+              onClick={onClose}
+              className={({ isActive }) =>
+                cn(
+                  'w-full flex items-center gap-3 p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer min-h-[44px] touch-target-44',
+                  isActive
+                    ? 'bg-[#132C54] border-[#FFB800] text-[#FFB800] font-bold'
+                    : 'bg-[#0F2547] border-[#1E3A6D] text-sky-100 hover:bg-[#132C54]'
+                )
+              }
+            >
+              <Factory className="w-4.5 h-4.5 text-[#FFB800]" />
+              <span>Hamkor Zavodlar</span>
+            </NavLink>
+
+            <NavLink
+              to="/calculators"
+              onClick={onClose}
+              className={({ isActive }) =>
+                cn(
+                  'w-full flex items-center gap-3 p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer min-h-[44px] touch-target-44',
+                  isActive
+                    ? 'bg-[#132C54] border-[#FFB800] text-[#FFB800] font-bold'
+                    : 'bg-[#0F2547] border-[#1E3A6D] text-sky-100 hover:bg-[#132C54]'
+                )
+              }
+            >
+              <Calculator className="w-4.5 h-4.5 text-[#FFB800]" />
+              <span>Qurilish &amp; ESCO Kalkulyatori</span>
+            </NavLink>
+
+            <NavLink
+              to="/tenders"
+              onClick={onClose}
+              className={({ isActive }) =>
+                cn(
+                  'w-full flex items-center gap-3 p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer min-h-[44px] touch-target-44',
+                  isActive
+                    ? 'bg-[#132C54] border-[#FFB800] text-[#FFB800] font-bold'
+                    : 'bg-[#0F2547] border-[#1E3A6D] text-sky-100 hover:bg-[#132C54]'
+                )
+              }
+            >
+              <FileSpreadsheet className="w-4.5 h-4.5 text-[#FFB800]" />
+              <span>B2B Tenderlar &amp; Auksion</span>
+            </NavLink>
+
+            <NavLink
+              to="/logistics"
+              onClick={onClose}
+              className={({ isActive }) =>
+                cn(
+                  'w-full flex items-center gap-3 p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer min-h-[44px] touch-target-44',
+                  isActive
+                    ? 'bg-[#132C54] border-[#FFB800] text-[#FFB800] font-bold'
+                    : 'bg-[#0F2547] border-[#1E3A6D] text-sky-100 hover:bg-[#132C54]'
+                )
+              }
+            >
+              <Truck className="w-4.5 h-4.5 text-[#FFB800]" />
+              <span>Logistika &amp; Dispetcherlik</span>
+            </NavLink>
+
+            {onOpenVoiceAssistant && (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenVoiceAssistant();
+                }}
+                className="w-full flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-amber-500/10 via-amber-500/20 to-amber-500/10 border border-[#FFB800]/60 text-white font-semibold text-sm cursor-pointer min-h-[44px] touch-target-44"
+              >
+                <div className="flex items-center gap-2.5">
+                  <Mic className="w-4.5 h-4.5 text-[#FFB800] animate-pulse" />
+                  <span className="text-[#FFB800] font-bold">Bunker AI Ovozli Yordamchi</span>
+                </div>
+                <ChevronRight className="w-4 h-4 text-[#FFB800]" />
+              </button>
+            )}
+          </div>
+
           {/* 5 ta Kabinetlar ro'yxati */}
-          <div className="space-y-2 pt-2">
+          <div className="space-y-2 pt-2 border-t border-[#1E3A6D]">
             <div className="text-[10px] font-mono font-bold tracking-wider text-[#FFB800] uppercase px-1">
               5 ta Boshqaruv Kabineti:
             </div>
@@ -793,7 +903,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                       navigate(item.path);
                     }
                   }}
-                  className="w-full flex items-center justify-between p-3 rounded-xl bg-[#0F2547] hover:bg-[#132C54] border border-[#1E3A6D] hover:border-[#FFB800]/50 transition-all cursor-pointer text-left"
+                  className="w-full flex items-center justify-between p-3 rounded-xl bg-[#0F2547] hover:bg-[#132C54] border border-[#1E3A6D] hover:border-[#FFB800]/50 transition-all cursor-pointer text-left min-h-[44px] touch-target-44"
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-9 h-9 rounded-lg bg-[#071326] border border-[#254B85] flex items-center justify-center shrink-0 text-[#FFB800]">
@@ -892,7 +1002,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenCart,
   onOpenAuth,
   currentUser,
-  onLogout
+  onLogout,
+  onOpenVoiceAssistant
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -919,7 +1030,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <NavbarSearch className="w-full" />
             </div>
 
-            {/* 3. Primary Catalog Link & Suppliers Quick Access */}
+            {/* 3. Primary Catalog Link & Quick Navigation Links */}
             <nav className="hidden lg:flex items-center gap-1 xl:gap-2 text-xs font-mono font-bold">
               <NavLink
                 to="/"
@@ -951,6 +1062,48 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <Factory className="w-3.5 h-3.5 text-[#FFB800]" />
                 <span>Zavodlar</span>
               </NavLink>
+
+              <NavLink
+                to="/calculators"
+                className={({ isActive }) =>
+                  cn(
+                    'px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5',
+                    isActive
+                      ? 'bg-[#132C54] text-[#FFB800] border border-[#FFB800]/50'
+                      : 'text-sky-200 hover:text-white hover:bg-[#0F2547]'
+                  )
+                }
+              >
+                <Calculator className="w-3.5 h-3.5 text-[#FFB800]" />
+                <span>Kalkulyator</span>
+              </NavLink>
+
+              <NavLink
+                to="/tenders"
+                className={({ isActive }) =>
+                  cn(
+                    'px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5',
+                    isActive
+                      ? 'bg-[#132C54] text-[#FFB800] border border-[#FFB800]/50'
+                      : 'text-sky-200 hover:text-white hover:bg-[#0F2547]'
+                  )
+                }
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5 text-[#FFB800]" />
+                <span>Tenderlar</span>
+              </NavLink>
+
+              {onOpenVoiceAssistant && (
+                <button
+                  type="button"
+                  onClick={onOpenVoiceAssistant}
+                  className="px-2.5 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 bg-[#0F2547] hover:bg-[#132C54] border border-[#1E3A6D] text-[#FFB800] hover:border-[#FFB800]/60 shadow-xs"
+                  title="Bunker AI Ovozli Yordamchi"
+                >
+                  <Mic className="w-3.5 h-3.5 text-[#FFB800] animate-pulse" />
+                  <span className="hidden xl:inline">AI Ovoz</span>
+                </button>
+              )}
             </nav>
 
             {/* 4. Action Controls: Viloyat, Til, Savat, 5 ta Kabinet Switcher */}
@@ -974,18 +1127,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onLogout={onLogout}
               />
 
-              {/* Mobile Hamburger Button */}
+              {/* Mobile Hamburger Button (44px min touch target compliant) */}
               <button
                 type="button"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-lg border border-[#1E3A6D] bg-[#0F2547] hover:bg-[#132C54] text-sky-200 hover:text-white transition-colors cursor-pointer shadow-xs"
+                className="lg:hidden flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl border border-[#1E3A6D] bg-[#0F2547] hover:bg-[#132C54] text-sky-200 hover:text-white transition-colors cursor-pointer shadow-xs touch-target-44"
                 aria-label={isMobileMenuOpen ? 'Menyuni yopish' : 'Menyuni ochish'}
                 aria-expanded={isMobileMenuOpen}
               >
                 {isMobileMenuOpen ? (
-                  <X className="w-4 h-4 text-sky-200" />
+                  <X className="w-5 h-5 text-sky-200" />
                 ) : (
-                  <Menu className="w-4 h-4 text-sky-200" />
+                  <Menu className="w-5 h-5 text-sky-200" />
                 )}
               </button>
             </div>
@@ -1002,6 +1155,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         currentUser={currentUser}
         onOpenAuth={onOpenAuth}
         onLogout={onLogout}
+        onOpenVoiceAssistant={onOpenVoiceAssistant}
       />
     </>
   );

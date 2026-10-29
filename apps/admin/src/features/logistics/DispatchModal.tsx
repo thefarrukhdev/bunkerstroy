@@ -103,24 +103,25 @@ export const DispatchModal: React.FC<DispatchModalProps> = ({
       />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-xl bg-[var(--color-surface-card)] border border-[var(--color-border-subtle)] rounded-2xl shadow-2xl p-6 z-10 text-[var(--color-text-primary)] space-y-4 animate-in fade-in zoom-in-95 duration-150">
+      <div className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto bg-[var(--color-surface-card)] border border-[var(--color-border-subtle)] rounded-2xl shadow-2xl p-4 sm:p-6 z-10 text-[var(--color-text-primary)] space-y-4 animate-in fade-in zoom-in-95 duration-150 flex flex-col">
         <div className="flex items-center justify-between pb-3 border-b border-[var(--color-border-subtle)]">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2.5 rounded-xl bg-[var(--color-accent-blue)]/15 text-[var(--color-accent-blue)]">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="p-2.5 rounded-xl bg-[var(--color-accent-blue)]/15 text-[var(--color-accent-blue)] shrink-0">
               <Truck className="w-5 h-5" />
             </div>
-            <div>
-              <h3 className="text-base font-bold text-[var(--color-text-primary)]">
+            <div className="min-w-0">
+              <h3 className="text-base font-bold text-[var(--color-text-primary)] truncate">
                 Buyurtmaga Og‘ir Texnika Biriktirish
               </h3>
-              <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+              <p className="text-xs text-[var(--color-text-secondary)] mt-0.5 truncate">
                 HOWO / Shacman avtoparkidan reysga chiqarish va masofa stavkasini hisoblash
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
+            aria-label="Yopish"
+            className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
@@ -134,7 +135,7 @@ export const DispatchModal: React.FC<DispatchModalProps> = ({
         )}
 
         {/* Form Controls */}
-        <div className="space-y-3.5">
+        <div className="space-y-3.5 flex-1">
           {/* Order selection */}
           <Select
             label="Yetkazib beriladigan buyurtma *"
@@ -199,8 +200,8 @@ export const DispatchModal: React.FC<DispatchModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[var(--color-border-subtle)]">
-          <Button variant="outline" size="md" onClick={onClose}>
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 sm:gap-3 pt-3 border-t border-[var(--color-border-subtle)]">
+          <Button variant="outline" size="md" onClick={onClose} className="w-full sm:w-auto">
             Bekor qilish
           </Button>
           <Button
@@ -209,6 +210,7 @@ export const DispatchModal: React.FC<DispatchModalProps> = ({
             onClick={handleDispatch}
             disabled={!currentOrder || !currentVehicle}
             leftIcon={<CheckCircle2 className="w-4 h-4" />}
+            className="w-full sm:w-auto"
           >
             Reysga Biriktirish va Yuborish
           </Button>

@@ -183,6 +183,7 @@ export const SuppliersTable: React.FC = () => {
     {
       key: 'company',
       header: 'Korxona Nomi & STIR',
+      className: 'whitespace-nowrap',
       render: (row) => (
         <div>
           <div className="font-bold text-sm text-[var(--color-text-primary)] flex items-center gap-1.5">
@@ -205,6 +206,7 @@ export const SuppliersTable: React.FC = () => {
     {
       key: 'director',
       header: 'Rahbar & Aloqa',
+      className: 'whitespace-nowrap',
       render: (row) => (
         <div>
           <div className="text-xs font-semibold text-[var(--color-text-primary)]">
@@ -220,6 +222,7 @@ export const SuppliersTable: React.FC = () => {
     {
       key: 'region',
       header: 'Hudud & Manzil',
+      className: 'whitespace-nowrap',
       render: (row) => (
         <div>
           <div className="text-xs font-medium text-[var(--color-text-primary)] flex items-center gap-1">
@@ -235,6 +238,7 @@ export const SuppliersTable: React.FC = () => {
     {
       key: 'supplierType',
       header: 'Turi (TZ-5)',
+      className: 'whitespace-nowrap',
       render: (row) => (
         <span
           className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold uppercase border ${
@@ -250,6 +254,7 @@ export const SuppliersTable: React.FC = () => {
     {
       key: 'turnover',
       header: 'Tovarlar & Aylanma',
+      className: 'whitespace-nowrap',
       render: (row) => (
         <div>
           <div className="text-xs font-bold font-mono text-[var(--color-text-primary)] flex items-center gap-1">
@@ -265,17 +270,20 @@ export const SuppliersTable: React.FC = () => {
     {
       key: 'status',
       header: 'Holati',
+      className: 'whitespace-nowrap',
       render: (row) => <StatusBadge status={row.status} />
     },
     {
       key: 'actions',
       header: 'Amallar',
+      className: 'whitespace-nowrap',
       render: (row) => (
         <div className="flex items-center gap-1">
           <button
             onClick={() => setSelectedForDetails(row)}
             title="STIR Yuridik Pasporti & E-IMZO"
-            className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:text-[var(--color-accent-blue)] hover:bg-[var(--color-surface-hover)] transition-colors cursor-pointer"
+            aria-label="STIR Yuridik Pasporti & E-IMZO"
+            className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg text-[var(--color-text-muted)] hover:text-[var(--color-accent-blue)] hover:bg-[var(--color-surface-hover)] transition-colors cursor-pointer"
           >
             <Eye className="w-4 h-4" />
           </button>
@@ -286,7 +294,8 @@ export const SuppliersTable: React.FC = () => {
               setIsFormDrawerOpen(true);
             }}
             title="Tahrirlash"
-            className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)] transition-colors cursor-pointer"
+            aria-label="Tahrirlash"
+            className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)] transition-colors cursor-pointer"
           >
             <Edit3 className="w-4 h-4" />
           </button>
@@ -294,7 +303,8 @@ export const SuppliersTable: React.FC = () => {
           <button
             onClick={() => setSuspendModalTarget(row)}
             title={row.status === 'VERIFIED' ? 'Faoliyatni to‘xtatish' : 'Faollashtirish'}
-            className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:text-[var(--color-accent-yellow)] hover:bg-[var(--color-surface-hover)] transition-colors cursor-pointer"
+            aria-label={row.status === 'VERIFIED' ? 'Faoliyatni to‘xtatish' : 'Faollashtirish'}
+            className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg text-[var(--color-text-muted)] hover:text-[var(--color-accent-yellow)] hover:bg-[var(--color-surface-hover)] transition-colors cursor-pointer"
           >
             {row.status === 'VERIFIED' ? (
               <AlertTriangle className="w-4 h-4 text-[var(--color-accent-yellow)]" />
@@ -374,22 +384,22 @@ export const SuppliersTable: React.FC = () => {
           emptyTitle="Hech qanday ta’minotchi korxona topilmadi"
           emptyDescription="Filtr parametrlarini o‘zgartiring yoki yangi korxona qo‘shing."
           actionsSlot={
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="w-44">
+            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+              <div className="w-full sm:w-44">
                 <Select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                   options={statusOptions}
                 />
               </div>
-              <div className="w-52">
+              <div className="w-full sm:w-52">
                 <Select
                   value={typeFilter}
                   onChange={(e) => setTypeFilter(e.target.value)}
                   options={typeOptions}
                 />
               </div>
-              <div className="w-44">
+              <div className="w-full sm:w-44">
                 <Select
                   value={regionFilter}
                   onChange={(e) => setRegionFilter(e.target.value)}

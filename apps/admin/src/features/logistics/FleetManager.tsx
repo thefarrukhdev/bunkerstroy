@@ -526,12 +526,13 @@ export const FleetManager: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           <Button
             variant="secondary"
             size="md"
             onClick={() => setIsDispatchModalOpen(true)}
             leftIcon={<Navigation className="w-4 h-4" />}
+            className="flex-1 sm:flex-none"
           >
             Reysga Biriktirish
           </Button>
@@ -543,6 +544,7 @@ export const FleetManager: React.FC = () => {
               setIsVehicleDrawerOpen(true);
             }}
             leftIcon={<Plus className="w-4 h-4" />}
+            className="flex-1 sm:flex-none"
           >
             Yangi Texnika Qo‘shish
           </Button>
@@ -582,10 +584,10 @@ export const FleetManager: React.FC = () => {
       </div>
 
       {/* Tab Switcher */}
-      <div className="flex border-b border-[var(--color-border-subtle)] space-x-1">
+      <div className="flex border-b border-[var(--color-border-subtle)] space-x-1 overflow-x-auto pb-px">
         <button
           onClick={() => setActiveTab('queue')}
-          className={`flex items-center gap-2 py-3 px-4 text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+          className={`flex items-center gap-2 py-3 px-4 text-sm font-semibold border-b-2 transition-all cursor-pointer shrink-0 whitespace-nowrap ${
             activeTab === 'queue'
               ? 'border-[var(--color-accent-blue)] text-[var(--color-accent-blue)] bg-[var(--color-surface-hover)]/40 rounded-t-lg font-bold'
               : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
@@ -597,7 +599,7 @@ export const FleetManager: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('dispatches')}
-          className={`flex items-center gap-2 py-3 px-4 text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+          className={`flex items-center gap-2 py-3 px-4 text-sm font-semibold border-b-2 transition-all cursor-pointer shrink-0 whitespace-nowrap ${
             activeTab === 'dispatches'
               ? 'border-[var(--color-accent-blue)] text-[var(--color-accent-blue)] bg-[var(--color-surface-hover)]/40 rounded-t-lg font-bold'
               : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
@@ -609,7 +611,7 @@ export const FleetManager: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('fleet')}
-          className={`flex items-center gap-2 py-3 px-4 text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+          className={`flex items-center gap-2 py-3 px-4 text-sm font-semibold border-b-2 transition-all cursor-pointer shrink-0 whitespace-nowrap ${
             activeTab === 'fleet'
               ? 'border-[var(--color-accent-blue)] text-[var(--color-accent-blue)] bg-[var(--color-surface-hover)]/40 rounded-t-lg font-bold'
               : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
@@ -651,15 +653,15 @@ export const FleetManager: React.FC = () => {
           emptyTitle="Hech qanday maxsus texnika topilmadi"
           emptyDescription="Filtr parametrlarini o‘zgartiring yoki yangi texnika ro‘yxatga oling."
           actionsSlot={
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="w-56">
+            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+              <div className="w-full sm:w-56">
                 <Select
                   value={typeFilter}
                   onChange={(e) => setTypeFilter(e.target.value)}
                   options={typeOptions}
                 />
               </div>
-              <div className="w-48">
+              <div className="w-full sm:w-48">
                 <Select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}

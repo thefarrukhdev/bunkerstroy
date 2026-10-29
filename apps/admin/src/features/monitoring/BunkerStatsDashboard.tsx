@@ -671,7 +671,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
         {/* Custom Date Range Modal */}
         {isRangeModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-            <div className="bg-[#0A1931] border-2 border-[#FFB800] rounded-xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
+            <div className="bg-[#0A1931] border-2 border-[#FFB800] rounded-2xl max-w-sm w-full max-h-[90vh] overflow-y-auto p-4 sm:p-5 space-y-4 shadow-2xl flex flex-col">
               <div className="flex items-center justify-between pb-2 border-b border-[#1E3A6D]">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-[#FFB800]" />
@@ -680,13 +680,14 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsRangeModalOpen(false)}
-                  className="p-1 rounded bg-[#071326] text-sky-200 hover:text-white cursor-pointer"
+                  aria-label="Yopish"
+                  className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl bg-[#071326] text-sky-200 hover:text-white cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="space-y-3 text-xs font-mono">
+              <div className="space-y-3 text-xs font-mono flex-1">
                 <div className="space-y-1">
                   <label htmlFor="bunker-stats-start-date" className="text-sky-200 font-bold block">Boshlang‘ich sana:</label>
                   <input
@@ -695,7 +696,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#071326] border border-[#1E3A6D] rounded-lg text-white focus:outline-none focus:border-[#FFB800] font-mono"
+                    className="w-full px-3 py-2 text-base sm:text-xs min-h-[44px] sm:min-h-0 bg-[#071326] border border-[#1E3A6D] rounded-xl text-white focus:outline-none focus:border-[#FFB800] font-mono"
                   />
                 </div>
                 <div className="space-y-1">
@@ -706,27 +707,27 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#071326] border border-[#1E3A6D] rounded-lg text-white focus:outline-none focus:border-[#FFB800] font-mono"
+                    className="w-full px-3 py-2 text-base sm:text-xs min-h-[44px] sm:min-h-0 bg-[#071326] border border-[#1E3A6D] rounded-xl text-white focus:outline-none focus:border-[#FFB800] font-mono"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-between gap-2 pt-2 border-t border-[#1E3A6D]">
+              <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2 pt-2 border-t border-[#1E3A6D]">
                 <button
                   type="button"
                   onClick={() => {
                     setSelectedPeriod(null);
                     setIsRangeModalOpen(false);
                   }}
-                  className="px-3 py-1.5 rounded-lg bg-[#071326] text-xs font-bold text-sky-200 hover:text-white cursor-pointer"
+                  className="w-full sm:w-auto min-h-[44px] px-3.5 py-2 rounded-xl bg-[#071326] text-xs font-bold text-sky-200 hover:text-white cursor-pointer text-center"
                 >
                   Umumiy
                 </button>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 w-full sm:w-auto">
                   <button
                     type="button"
                     onClick={() => setIsRangeModalOpen(false)}
-                    className="px-3 py-1.5 rounded-lg bg-[#071326] text-xs font-bold text-sky-200 hover:text-white cursor-pointer"
+                    className="flex-1 sm:flex-none min-h-[44px] px-3.5 py-2 rounded-xl bg-[#071326] text-xs font-bold text-sky-200 hover:text-white cursor-pointer text-center"
                   >
                     Yopish
                   </button>
@@ -736,7 +737,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
                       setSelectedPeriod('range');
                       setIsRangeModalOpen(false);
                     }}
-                    className="px-4 py-1.5 rounded-lg bg-[#FFB800] hover:bg-[#FFC928] text-[#071326] text-xs font-black shadow-md cursor-pointer"
+                    className="flex-1 sm:flex-none min-h-[44px] px-4 py-2 rounded-xl bg-[#FFB800] hover:bg-[#FFC928] text-[#071326] text-xs font-black shadow-md cursor-pointer text-center"
                   >
                     Belgilash
                   </button>

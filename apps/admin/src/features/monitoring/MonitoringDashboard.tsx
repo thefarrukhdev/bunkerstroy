@@ -194,6 +194,7 @@ export const MonitoringDashboard: React.FC<{
     {
       key: 'orderNumber',
       header: 'Buyurtma',
+      className: 'whitespace-nowrap',
       render: (row) => (
         <div>
           <span className="font-mono font-bold text-white block">
@@ -208,6 +209,7 @@ export const MonitoringDashboard: React.FC<{
     {
       key: 'companyName',
       header: 'Xaridor & Korxona',
+      className: 'whitespace-nowrap',
       render: (row) => (
         <div>
           <span className="font-bold text-white text-xs block">
@@ -223,6 +225,7 @@ export const MonitoringDashboard: React.FC<{
     {
       key: 'deliveryAddress',
       header: 'Manzil & Texnika',
+      className: 'whitespace-nowrap',
       render: (row) => (
         <div>
           <span className="text-xs text-white block max-w-xs truncate">
@@ -237,6 +240,7 @@ export const MonitoringDashboard: React.FC<{
     {
       key: 'finalAmount',
       header: 'Summa (Escrow)',
+      className: 'whitespace-nowrap',
       render: (row) => (
         <div className="font-mono">
           <span className="font-bold text-xs text-emerald-400 block font-mono-numbers">
@@ -251,11 +255,13 @@ export const MonitoringDashboard: React.FC<{
     {
       key: 'status',
       header: 'Holati',
+      className: 'whitespace-nowrap',
       render: (row) => <StatusBadge status={row.status} />
     },
     {
       key: 'actions',
       header: 'Amallar',
+      className: 'whitespace-nowrap',
       render: (row) => (
         <Button
           variant="secondary"
@@ -520,9 +526,9 @@ export const MonitoringDashboard: React.FC<{
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
-                <div className="relative">
-                  <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-sky-300" />
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+                <div className="relative w-full sm:w-auto">
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-sky-300 pointer-events-none" />
                   <input
                     id="monitoring-orders-search"
                     name="monitoringSearch"
@@ -531,7 +537,7 @@ export const MonitoringDashboard: React.FC<{
                     aria-label="Raqam yoki xaridor bo‘yicha qidirish"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-8 pr-3 py-1.5 text-xs rounded-xl bg-[#071326] border border-[#1E3A6D] text-white placeholder:text-sky-300/50 focus:outline-none focus:border-[#FFB800]"
+                    className="w-full sm:w-56 pl-8 pr-3 py-2 sm:py-1.5 text-base sm:text-xs min-h-[44px] sm:min-h-0 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white placeholder:text-sky-300/50 focus:outline-none focus:border-[#FFB800]"
                   />
                 </div>
 
@@ -541,7 +547,7 @@ export const MonitoringDashboard: React.FC<{
                   aria-label="Buyurtma holati bo‘yicha filter"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="text-xs bg-[#071326] border border-[#1E3A6D] rounded-xl px-2.5 py-1.5 text-white focus:outline-none focus:border-[#FFB800]"
+                  className="w-full sm:w-auto text-base sm:text-xs min-h-[44px] sm:min-h-0 bg-[#071326] border border-[#1E3A6D] rounded-xl px-2.5 py-2 sm:py-1.5 text-white focus:outline-none focus:border-[#FFB800] cursor-pointer"
                 >
                   <option value="ALL">Barcha holatlar</option>
                   <option value="PENDING">Kutilmoqda</option>

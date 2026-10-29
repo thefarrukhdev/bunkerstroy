@@ -77,7 +77,7 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in"
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
@@ -85,7 +85,7 @@ export const Modal: React.FC<ModalProps> = ({
     >
       <div
         className={cn(
-          'relative w-full bg-bunker-surface-1 border border-bunker-border-strong rounded-2xl p-4 sm:p-6 space-y-4 sm:space-y-5 shadow-xl overflow-y-auto max-h-[90vh] text-bunker-text-primary',
+          'relative w-full bg-bunker-surface-1 border border-bunker-border-strong rounded-2xl p-3.5 sm:p-6 space-y-4 sm:space-y-5 shadow-xl overflow-y-auto max-h-[90vh] text-bunker-text-primary',
           sizeClasses[size],
           className
         )}
@@ -129,7 +129,7 @@ export const Modal: React.FC<ModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="text-bunker-text-secondary hover:text-bunker-text-primary p-2 rounded-xl bg-bunker-surface-2 border border-bunker-border-subtle cursor-pointer transition-colors shrink-0 hover:bg-bunker-surface-hover"
+                className="text-bunker-text-secondary hover:text-bunker-text-primary p-2 min-w-[40px] min-h-[40px] flex items-center justify-center rounded-xl bg-bunker-surface-2 border border-bunker-border-subtle cursor-pointer transition-colors shrink-0 hover:bg-bunker-surface-hover"
                 aria-label="Yopish"
               >
                 <X className="w-4 h-4" />

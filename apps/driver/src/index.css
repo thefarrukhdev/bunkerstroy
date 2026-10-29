@@ -229,3 +229,35 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Mobile PWA & Safe Area Insets */
+.pt-safe {
+  padding-top: max(0.875rem, env(safe-area-inset-top));
+}
+.pb-safe {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+.pl-safe {
+  padding-left: max(1rem, env(safe-area-inset-left));
+}
+.pr-safe {
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+.h-screen-safe {
+  height: 100vh;
+  height: 100dvh;
+}
+.min-h-screen-safe {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* One-handed driver touch target */
+.touch-target-min {
+  min-height: 48px;
+  min-width: 48px;
+}
+.touch-target-lg {
+  min-height: 56px;
+  min-width: 56px;
+}

@@ -109,10 +109,10 @@ export function DataTable<T extends Record<string, any>>({
   return (
     <div className="w-full flex flex-col rounded-lg border border-theme bg-theme-card overflow-hidden text-theme-main transition-colors">
       {/* Table Toolbar */}
-      <div className="p-4 border-b border-theme flex flex-col sm:flex-row items-center justify-between gap-3 bg-theme-header">
+      <div className="p-3 sm:p-4 border-b border-theme flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-theme-header">
         {/* Search Input */}
         <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-theme-subtle" />
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-theme-subtle pointer-events-none" />
           <input
             id="admin-datatable-search"
             name="search"
@@ -125,7 +125,7 @@ export function DataTable<T extends Record<string, any>>({
             }}
             placeholder={searchPlaceholder}
             aria-label={searchPlaceholder}
-            className="w-full pl-9 pr-8 py-2 text-xs font-mono bg-theme-main text-theme-main border border-theme rounded-md focus:outline-none focus:ring-1 focus:ring-neutral-400 transition-all placeholder:text-theme-subtle"
+            className="w-full pl-9 pr-9 py-2.5 sm:py-2 text-base sm:text-xs min-h-[44px] sm:min-h-0 font-mono bg-theme-main text-theme-main border border-theme rounded-xl focus:outline-none focus:ring-1 focus:ring-neutral-400 transition-all placeholder:text-theme-subtle"
           />
           {searchTerm && (
             <button
@@ -133,27 +133,32 @@ export function DataTable<T extends Record<string, any>>({
                 setSearchTerm('');
                 setCurrentPage(1);
               }}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-theme-subtle hover:text-theme-main cursor-pointer"
+              aria-label="Qidiruvni tozalash"
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 min-w-[36px] min-h-[36px] flex items-center justify-center text-theme-subtle hover:text-theme-main cursor-pointer"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-4 h-4" />
             </button>
           )}
         </div>
 
         {/* Optional Actions Slot */}
-        {actionsSlot && <div className="w-full sm:w-auto flex items-center gap-2">{actionsSlot}</div>}
+        {actionsSlot && (
+          <div className="w-full sm:w-auto flex flex-wrap items-center gap-2">
+            {actionsSlot}
+          </div>
+        )}
       </div>
 
       {/* Table Content */}
       <div className="w-full overflow-x-auto">
         <table className="w-full text-left border-collapse text-xs">
           <thead>
-            <tr className="border-b border-theme bg-theme-card-subtle text-theme-muted font-mono uppercase tracking-wider text-[11px]">
+            <tr className="border-b border-theme bg-theme-card-subtle text-theme-muted font-mono uppercase tracking-wider text-[11px] whitespace-nowrap">
               {columns.map((col) => (
                 <th
                   key={col.key}
                   onClick={() => handleSort(col.key, col.sortable)}
-                  className={`py-3 px-4 select-none ${col.sortable ? 'cursor-pointer hover:text-theme-main' : ''} ${
+                  className={`py-3 px-4 select-none whitespace-nowrap ${col.sortable ? 'cursor-pointer hover:text-theme-main' : ''} ${
                     col.className || ''
                   }`}
                 >
@@ -232,22 +237,24 @@ export function DataTable<T extends Record<string, any>>({
           )}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <span>
             Sahifa <strong className="text-theme-main">{currentPage}</strong> / {totalPages}
           </span>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="p-1.5 rounded border border-theme bg-theme-card text-theme-main hover:border-theme-subtle disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              aria-label="Oldingi sahifa"
+              className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border border-theme bg-theme-card text-theme-main hover:border-theme-subtle disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="p-1.5 rounded border border-theme bg-theme-card text-theme-main hover:border-theme-subtle disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              aria-label="Keyingi sahifa"
+              className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border border-theme bg-theme-card text-theme-main hover:border-theme-subtle disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

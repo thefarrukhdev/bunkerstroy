@@ -426,18 +426,227 @@ export const INITIAL_ESCROW_LEDGER: PayoutLedgerItem[] = [
   }
 ];
 
+export const INITIAL_SELLER_ORDERS: any[] = [
+  {
+    id: 'ord-bunker-9041',
+    orderNumber: 'ORD-2026-9041',
+    buyerId: 'buyer-001',
+    buyerName: 'Farrux Rahimov (Toshkent Invest)',
+    buyerPhone: '+998 (90) 123-45-67',
+    totalAmount: 137825000,
+    deliveryFee: 850000,
+    discountAmount: 0,
+    finalAmount: 138675000,
+    status: 'ASSIGNED',
+    createdAt: '2026-10-27T10:15:00.000Z',
+    deliveryAddress: {
+      region: 'Toshkent sh.',
+      district: 'Mirzo Ulug‘bek tumani',
+      street: 'Yangi O‘zbekiston ko‘chasi 18-uy',
+      landmark: 'Yangi bog‘ ro‘parasida'
+    },
+    items: [
+      {
+        id: 'it-1',
+        orderId: 'ord-bunker-9041',
+        productId: 'prod-arm-14',
+        productTitle: 'Armatura A500C D14 (Bekobod Metall)',
+        quantity: 18.5,
+        unit: 'TON',
+        unitPrice: 7450000,
+        totalPrice: 137825000
+      }
+    ],
+    subOrders: [
+      {
+        id: 'sub-9041',
+        orderId: 'ord-bunker-9041',
+        supplierId: 'sup-bekobod-01',
+        supplierName: 'BEKOBOD METALL INVEST MCHJ',
+        status: 'ASSIGNED',
+        subTotal: 137825000,
+        deliveryFee: 850000,
+        driverId: 'drv-01',
+        driverName: 'Rustam Qodirov',
+        driverPhone: '+998 (90) 844-32-10',
+        vehicleModel: 'HOWO Sinotruk 25t (01 | 742 VAA)',
+        acceptanceCode: '7492'
+      }
+    ]
+  },
+  {
+    id: 'ord-bunker-9042',
+    orderNumber: 'ORD-2026-9042',
+    buyerId: 'buyer-002',
+    buyerName: 'Akmal Zokirov (Samarqand City Build)',
+    buyerPhone: '+998 (93) 441-20-11',
+    totalAmount: 26000000,
+    deliveryFee: 1200000,
+    discountAmount: 0,
+    finalAmount: 27200000,
+    status: 'PAID',
+    createdAt: '2026-10-28T08:30:00.000Z',
+    deliveryAddress: {
+      region: 'Samarqand vil.',
+      district: 'Samarqand sh.',
+      street: 'Registon ko‘chasi 45',
+      landmark: 'Mehmonxona qurilishi'
+    },
+    items: [
+      {
+        id: 'it-2',
+        orderId: 'ord-bunker-9042',
+        productId: 'prod-sem-500',
+        productTitle: 'Portlendsement M500 D0 (Qizilqum)',
+        quantity: 400,
+        unit: 'BAG_50KG',
+        unitPrice: 65000,
+        totalPrice: 26000000
+      }
+    ],
+    subOrders: [
+      {
+        id: 'sub-9042',
+        orderId: 'ord-bunker-9042',
+        supplierId: 'sup-bekobod-01',
+        supplierName: 'BEKOBOD METALL INVEST MCHJ',
+        status: 'PAID',
+        subTotal: 26000000,
+        deliveryFee: 1200000,
+        driverId: null,
+        driverName: null,
+        driverPhone: null,
+        acceptanceCode: '3189'
+      }
+    ]
+  },
+  {
+    id: 'ord-bunker-9043',
+    orderNumber: 'ORD-2026-9043',
+    buyerId: 'buyer-003',
+    buyerName: 'Dilshod Karimov (Chirchiq Sanoat Stroy)',
+    buyerPhone: '+998 (91) 980-12-34',
+    totalAmount: 19500000,
+    deliveryFee: 600000,
+    discountAmount: 500000,
+    finalAmount: 19600000,
+    status: 'IN_TRANSIT',
+    createdAt: '2026-10-28T14:10:00.000Z',
+    deliveryAddress: {
+      region: 'Toshkent vil.',
+      district: 'Chirchiq sh.',
+      street: 'Navoiy shoh ko‘chasi 112',
+      landmark: 'Yangi turar-joy majmuasi'
+    },
+    items: [
+      {
+        id: 'it-3',
+        orderId: 'ord-bunker-9043',
+        productId: 'prod-gisht-150',
+        productTitle: 'Pishiq Qizil G‘isht M-150',
+        quantity: 15000,
+        unit: 'PIECE',
+        unitPrice: 1300,
+        totalPrice: 19500000
+      }
+    ],
+    subOrders: [
+      {
+        id: 'sub-9043',
+        orderId: 'ord-bunker-9043',
+        supplierId: 'sup-bekobod-01',
+        supplierName: 'BEKOBOD METALL INVEST MCHJ',
+        status: 'IN_TRANSIT',
+        subTotal: 19500000,
+        deliveryFee: 600000,
+        driverId: 'drv-02',
+        driverName: 'Sherzod Aliyev',
+        driverPhone: '+998 (91) 550-44-22',
+        vehicleModel: 'ISUZU 8t (01 | 310 SBA)',
+        acceptanceCode: '9021'
+      }
+    ]
+  },
+  {
+    id: 'ord-bunker-9044',
+    orderNumber: 'ORD-2026-9044',
+    buyerId: 'buyer-004',
+    buyerName: 'Jamshid Fayzullayev (Yakkasaroy Comfort)',
+    buyerPhone: '+998 (97) 777-65-43',
+    totalAmount: 4400000,
+    deliveryFee: 200000,
+    discountAmount: 0,
+    finalAmount: 4600000,
+    status: 'DELIVERED',
+    createdAt: '2026-10-26T09:00:00.000Z',
+    deliveryAddress: {
+      region: 'Toshkent sh.',
+      district: 'Yakkasaroy tumani',
+      street: 'Bobur ko‘chasi 24-bino',
+      landmark: 'Aeroport ko‘prigi yonida'
+    },
+    items: [
+      {
+        id: 'it-4',
+        orderId: 'ord-bunker-9044',
+        productId: 'prod-yelim-25',
+        productTitle: 'Plitka Yelimi Standart M-100 (25kg)',
+        quantity: 80,
+        unit: 'BAG_50KG',
+        unitPrice: 55000,
+        totalPrice: 4400000
+      }
+    ],
+    subOrders: [
+      {
+        id: 'sub-9044',
+        orderId: 'ord-bunker-9044',
+        supplierId: 'sup-bekobod-01',
+        supplierName: 'BEKOBOD METALL INVEST MCHJ',
+        status: 'DELIVERED',
+        subTotal: 4400000,
+        deliveryFee: 200000,
+        driverId: 'drv-03',
+        driverName: 'Jasur Bekov',
+        driverPhone: '+998 (93) 112-77-88',
+        vehicleModel: 'KamAZ 20t (10 | 998 AAA)',
+        acceptanceCode: '4482'
+      }
+    ]
+  }
+];
+
+export type SellerTab =
+  | 'inventory'
+  | 'create'
+  | 'crm_pos'
+  | 'b2b'
+  | 'reports'
+  | 'orders'
+  | 'escrow';
+
+export interface SellerPanelViewProps {
+  activeTab?: SellerTab;
+  onTabChange?: (tab: SellerTab) => void;
+}
+
 /* ==========================================================================
    Main Component: SellerPanelView
    ========================================================================== */
 
-export const SellerPanelView: React.FC = () => {
+export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
+  activeTab: propActiveTab,
+  onTabChange
+}) => {
   const { t } = useLanguage();
 
-  // Active Main Tab:
-  // 'inventory' | 'create' | 'crm_pos' | 'b2b' | 'reports' | 'orders' | 'escrow'
-  const [activeTab, setActiveTab] = useState<
-    'inventory' | 'create' | 'crm_pos' | 'b2b' | 'reports' | 'orders' | 'escrow'
-  >('inventory');
+  // Active Main Tab (internal fallback or controlled via prop):
+  const [internalActiveTab, setInternalActiveTab] = useState<SellerTab>('inventory');
+  const activeTab = propActiveTab ?? internalActiveTab;
+  const setActiveTab = (tab: SellerTab) => {
+    setInternalActiveTab(tab);
+    onTabChange?.(tab);
+  };
 
   // a) Online vs Offline inventory sub-tab filter:
   const [inventorySubTab, setInventorySubTab] = useState<'all' | 'online' | 'offline'>('all');
@@ -448,9 +657,31 @@ export const SellerPanelView: React.FC = () => {
   const [loadingProducts, setLoadingProducts] = useState(true);
 
   // State: Orders & Escrow Ledger
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<Order[]>(() => {
+    try {
+      const saved = localStorage.getItem('bunkerstroy_seller_orders');
+      return saved ? JSON.parse(saved) : INITIAL_SELLER_ORDERS;
+    } catch {
+      return INITIAL_SELLER_ORDERS;
+    }
+  });
   const [loadingOrders, setLoadingOrders] = useState(false);
+  const [orderFilterTab, setOrderFilterTab] = useState<'all' | 'pending' | 'in_transit' | 'delivered'>('all');
   const [escrowLedger, setEscrowLedger] = useState<PayoutLedgerItem[]>(INITIAL_ESCROW_LEDGER);
+
+  // Logistics & Driver Assignment Modal State
+  const [isDispatchModalOpen, setIsDispatchModalOpen] = useState(false);
+  const [selectedOrderForDispatch, setSelectedOrderForDispatch] = useState<Order | null>(null);
+  const [dispatchDriverName, setDispatchDriverName] = useState('Rustam Qodirov');
+  const [dispatchDriverPhone, setDispatchDriverPhone] = useState('+998 (90) 844-32-10');
+  const [dispatchVehicleModel, setDispatchVehicleModel] = useState('HOWO Sinotruk 25t (01 | 742 VAA)');
+  const [dispatchNotes, setDispatchNotes] = useState('');
+
+  // Status Change Modal State
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [selectedOrderForStatus, setSelectedOrderForStatus] = useState<Order | null>(null);
+  const [newOrderStatus, setNewOrderStatus] = useState<OrderStatus>('PROCESSING');
+  const [statusUpdateNote, setStatusUpdateNote] = useState('');
 
   // State: B2B Wholesale
   const [b2bOrders, setB2bOrders] = useState<B2bWholesaleOrder[]>(() => {
@@ -609,14 +840,134 @@ export const SellerPanelView: React.FC = () => {
         headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
       const json = await res.json();
-      if (json.success && Array.isArray(json.data)) {
+      if (json.success && Array.isArray(json.data) && json.data.length > 0) {
         setOrders(json.data);
       }
     } catch (err) {
-      console.warn('Orders fetch error:', err);
+      console.warn('Orders fetch error, keeping cached orders:', err);
     } finally {
       setLoadingOrders(false);
     }
+  };
+
+  // Filtered Orders memo
+  const filteredOrders = useMemo(() => {
+    if (orderFilterTab === 'pending') {
+      return orders.filter((o) => ['PENDING', 'PENDING_PAYMENT', 'PAID', 'ACCEPTED', 'PACKING'].includes(o.status));
+    }
+    if (orderFilterTab === 'in_transit') {
+      return orders.filter((o) => ['ASSIGNED', 'IN_TRANSIT', 'ARRIVED'].includes(o.status));
+    }
+    if (orderFilterTab === 'delivered') {
+      return orders.filter((o) => ['DELIVERED', 'RECEIVED', 'COMPLETED'].includes(o.status));
+    }
+    return orders;
+  }, [orders, orderFilterTab]);
+
+  // Dispatch Logistics Handlers
+  const handleOpenDispatchModal = (order: Order) => {
+    setSelectedOrderForDispatch(order);
+    const existingSub = (order as any).subOrders?.[0];
+    if (existingSub?.driverName) {
+      setDispatchDriverName(existingSub.driverName);
+      setDispatchDriverPhone(existingSub.driverPhone || '+998 (90) 844-32-10');
+      setDispatchVehicleModel(existingSub.vehicleModel || 'HOWO Sinotruk 25t (01 | 742 VAA)');
+    } else {
+      setDispatchDriverName('Rustam Qodirov');
+      setDispatchDriverPhone('+998 (90) 844-32-10');
+      setDispatchVehicleModel('HOWO Sinotruk 25t (01 | 742 VAA)');
+    }
+    setDispatchNotes('');
+    setIsDispatchModalOpen(true);
+  };
+
+  const handleConfirmDispatch = () => {
+    if (!selectedOrderForDispatch) return;
+    setOrders((prev) => {
+      const updated = prev.map((ord) => {
+        if (ord.id === selectedOrderForDispatch.id) {
+          const subOrders = (ord as any).subOrders || [];
+          const updatedSubs =
+            subOrders.length > 0
+              ? subOrders.map((s: any, idx: number) =>
+                  idx === 0
+                    ? {
+                        ...s,
+                        driverName: dispatchDriverName,
+                        driverPhone: dispatchDriverPhone,
+                        vehicleModel: dispatchVehicleModel,
+                        status: 'ASSIGNED' as OrderStatus
+                      }
+                    : s
+                )
+              : [
+                  {
+                    id: `sub-${Date.now()}`,
+                    orderId: ord.id,
+                    supplierId: 'sup-bekobod-01',
+                    supplierName: 'BEKOBOD METALL INVEST MCHJ',
+                    status: 'ASSIGNED' as OrderStatus,
+                    subTotal: ord.totalAmount,
+                    deliveryFee: ord.deliveryFee || 850000,
+                    driverName: dispatchDriverName,
+                    driverPhone: dispatchDriverPhone,
+                    vehicleModel: dispatchVehicleModel,
+                    acceptanceCode: '7492'
+                  }
+                ];
+          return {
+            ...ord,
+            status: 'ASSIGNED' as OrderStatus,
+            subOrders: updatedSubs
+          };
+        }
+        return ord;
+      });
+      try {
+        localStorage.setItem('bunkerstroy_seller_orders', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+    setIsDispatchModalOpen(false);
+    showFeedback(
+      'success',
+      `Buyurtma #${selectedOrderForDispatch.orderNumber} ga ${dispatchDriverName} (${dispatchVehicleModel}) biriktirildi!`
+    );
+  };
+
+  // Status Change Handlers
+  const handleOpenStatusModal = (order: Order) => {
+    setSelectedOrderForStatus(order);
+    setNewOrderStatus(order.status);
+    setStatusUpdateNote('');
+    setIsStatusModalOpen(true);
+  };
+
+  const handleConfirmStatusChange = () => {
+    if (!selectedOrderForStatus) return;
+    setOrders((prev) => {
+      const updated = prev.map((ord) => {
+        if (ord.id === selectedOrderForStatus.id) {
+          const subOrders = (ord as any).subOrders || [];
+          const updatedSubs = subOrders.map((s: any) => ({ ...s, status: newOrderStatus }));
+          return {
+            ...ord,
+            status: newOrderStatus,
+            subOrders: updatedSubs
+          };
+        }
+        return ord;
+      });
+      try {
+        localStorage.setItem('bunkerstroy_seller_orders', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+    setIsStatusModalOpen(false);
+    showFeedback(
+      'success',
+      `Buyurtma #${selectedOrderForStatus.orderNumber} statusi "${newOrderStatus}" ga o‘zgartirildi.`
+    );
   };
 
   // Show Feedback Notification
@@ -1220,14 +1571,14 @@ export const SellerPanelView: React.FC = () => {
         <div className="space-y-4">
           {/* Sub-tabs: All vs Online vs Offline */}
           <div className="industrial-card rounded-2xl p-4 bg-[#0A1931] border border-[#1E3A6D] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-2 font-mono text-xs">
+            <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
               <span className="text-sky-400 font-bold uppercase text-[11px] mr-1">
                 Kanal bo‘yicha filtr:
               </span>
               <button
                 type="button"
                 onClick={() => setInventorySubTab('all')}
-                className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer min-h-[36px] flex items-center gap-1 ${
                   inventorySubTab === 'all'
                     ? 'bg-[#132C54] text-[#FFB800] border-[#FFB800] font-bold'
                     : 'bg-[#071326] text-sky-300 border-[#1E3A6D] hover:border-[#2E5A9C]'
@@ -1238,42 +1589,127 @@ export const SellerPanelView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setInventorySubTab('online')}
-                className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer min-h-[36px] flex items-center gap-1.5 ${
                   inventorySubTab === 'online'
                     ? 'bg-[#132C54] text-emerald-400 border-emerald-500 font-bold'
                     : 'bg-[#071326] text-sky-300 border-[#1E3A6D] hover:border-[#2E5A9C]'
                 }`}
               >
                 <Globe className="w-3.5 h-3.5 text-emerald-400" />
-                <span>🌐 Online Vitrina ({products.filter((p) => (p as any).isOnline !== false).length})</span>
+                <span>🌐 Online ({products.filter((p) => (p as any).isOnline !== false).length})</span>
               </button>
               <button
                 type="button"
                 onClick={() => setInventorySubTab('offline')}
-                className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer min-h-[36px] flex items-center gap-1.5 ${
                   inventorySubTab === 'offline'
                     ? 'bg-[#132C54] text-[#FFB800] border-[#FFB800] font-bold'
                     : 'bg-[#071326] text-sky-300 border-[#1E3A6D] hover:border-[#2E5A9C]'
                 }`}
               >
                 <Store className="w-3.5 h-3.5 text-[#FFB800]" />
-                <span>🏪 Do‘kon Kassa / POS ({products.filter((p) => (p as any).isOffline !== false).length})</span>
+                <span>🏪 Do‘kon Kassa ({products.filter((p) => (p as any).isOffline !== false).length})</span>
               </button>
             </div>
 
             <button
               type="button"
               onClick={() => setActiveTab('create')}
-              className="btn-industrial-yellow px-3.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+              className="btn-industrial-yellow px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer min-h-[40px] shrink-0"
             >
               <Plus className="w-4 h-4" />
-              <span>Yangi Tovar</span>
+              <span>+ Yangi Tovar</span>
             </button>
           </div>
 
-          {/* Products Table */}
-          <div className="industrial-card rounded-2xl overflow-hidden bg-[#0A1931] border border-[#1E3A6D]">
-            <div className="overflow-x-auto">
+          {/* Products Mobile Card View (<sm screens) */}
+          <div className="sm:hidden space-y-3">
+            {filteredProducts.map((p) => {
+              const isOnline = (p as any).isOnline !== false;
+              const isOffline = (p as any).isOffline !== false;
+
+              return (
+                <div
+                  key={p.id}
+                  className="industrial-card rounded-2xl p-4 bg-[#0A1931] border border-[#1E3A6D] space-y-3 font-mono text-xs shadow-md"
+                >
+                  <div className="flex items-start gap-3">
+                    <img
+                      src={p.images?.[0] || SAMPLE_IMAGE_PRESETS[0].url}
+                      alt=""
+                      className="w-16 h-16 rounded-xl object-cover bg-[#071326] border border-[#1E3A6D] shrink-0"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <h4 className="font-bold text-white text-sm line-clamp-2 leading-tight">
+                        {p.title}
+                      </h4>
+                      <p className="text-[11px] text-sky-400 mt-0.5">
+                        {p.region || 'Toshkent'} • {p.unit || 'dona'}
+                      </p>
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <span className="font-black text-[#FFB800] text-sm font-mono-numbers">
+                          {Number(p.price).toLocaleString()} so‘m
+                        </span>
+                        <span
+                          className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                            p.stock > 10
+                              ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-500/40'
+                              : 'bg-amber-950/80 text-amber-400 border border-amber-500/40'
+                          }`}
+                        >
+                          {p.stock} {p.unit || 'dona'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Channel Toggles & Add to POS button */}
+                  <div className="pt-2 border-t border-[#1E3A6D] flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => handleToggleProductChannel(p.id, 'online')}
+                        className={`px-2 py-1 rounded-lg text-[10px] font-bold border transition-all cursor-pointer flex items-center gap-1 min-h-[36px] ${
+                          isOnline
+                            ? 'bg-emerald-950/80 text-emerald-400 border-emerald-500/50'
+                            : 'bg-[#071326] text-sky-400/50 border-[#1E3A6D] line-through'
+                        }`}
+                      >
+                        <Globe className="w-3 h-3" />
+                        <span>Online</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleToggleProductChannel(p.id, 'offline')}
+                        className={`px-2 py-1 rounded-lg text-[10px] font-bold border transition-all cursor-pointer flex items-center gap-1 min-h-[36px] ${
+                          isOffline
+                            ? 'bg-[#132C54] text-[#FFB800] border-[#FFB800]/50'
+                            : 'bg-[#071326] text-sky-400/50 border-[#1E3A6D] line-through'
+                        }`}
+                      >
+                        <Store className="w-3 h-3" />
+                        <span>POS Kassa</span>
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleAddItemToBasket(p)}
+                      className="btn-industrial-yellow px-3 py-1.5 rounded-xl text-xs font-black cursor-pointer inline-flex items-center gap-1 shadow-sm min-h-[40px]"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Kassaga</span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Products Desktop / Tablet Table (>=sm screens) */}
+          <div className="hidden sm:block industrial-card rounded-2xl overflow-hidden bg-[#0A1931] border border-[#1E3A6D]">
+            <div className="overflow-x-auto min-w-full">
               <table className="w-full text-left font-mono text-xs">
                 <thead className="bg-[#071326] text-sky-300 border-b border-[#1E3A6D] uppercase text-[10px]">
                   <tr>
@@ -1360,7 +1796,7 @@ export const SellerPanelView: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => handleAddItemToBasket(p)}
-                            className="btn-industrial-yellow px-2.5 py-1 rounded-lg text-[11px] font-black cursor-pointer inline-flex items-center gap-1 shadow-xs"
+                            className="btn-industrial-yellow px-3 py-1.5 rounded-lg text-xs font-black cursor-pointer inline-flex items-center gap-1 shadow-xs min-h-[36px]"
                             title="Kassa savatiga qo‘shish"
                           >
                             <Plus className="w-3.5 h-3.5" />
@@ -2147,15 +2583,15 @@ export const SellerPanelView: React.FC = () => {
           ===================================================================== */}
       {activeTab === 'reports' && (
         <div className="space-y-6">
-          {/* Top KPI Cards */}
+          {/* Top KPI Cards (Responsive grid-cols-1 sm:grid-cols-2 lg:grid-cols-4) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* 1. Jami Tushum / Kirim */}
-            <div className="brushed-steel rounded-2xl p-5 border border-[#1E3A6D] space-y-2">
+            <div className="brushed-steel rounded-2xl p-5 border border-[#1E3A6D] space-y-2 shadow-md">
               <div className="flex items-center justify-between text-xs font-mono text-sky-400">
-                <span>Jami Kirim (Tushum)</span>
+                <span className="font-bold">Jami Kirim (Tushum)</span>
                 <TrendingUp className="w-4 h-4 text-emerald-400" />
               </div>
-              <div className="text-2xl font-black text-emerald-400 font-mono-numbers">
+              <div className="text-xl sm:text-2xl font-black text-emerald-400 font-mono-numbers break-words">
                 +{totalIncome.toLocaleString()} so‘m
               </div>
               <div className="text-[10px] font-mono text-sky-300">
@@ -2164,12 +2600,12 @@ export const SellerPanelView: React.FC = () => {
             </div>
 
             {/* 2. Jami Chiqim / Xarajatlar */}
-            <div className="brushed-steel rounded-2xl p-5 border border-[#1E3A6D] space-y-2">
+            <div className="brushed-steel rounded-2xl p-5 border border-[#1E3A6D] space-y-2 shadow-md">
               <div className="flex items-center justify-between text-xs font-mono text-sky-400">
-                <span>Jami Chiqim (Xarajatlar)</span>
+                <span className="font-bold">Jami Chiqim (Xarajatlar)</span>
                 <ArrowDownRight className="w-4 h-4 text-red-400" />
               </div>
-              <div className="text-2xl font-black text-red-400 font-mono-numbers">
+              <div className="text-xl sm:text-2xl font-black text-red-400 font-mono-numbers break-words">
                 -{totalExpense.toLocaleString()} so‘m
               </div>
               <div className="text-[10px] font-mono text-sky-300">
@@ -2183,7 +2619,7 @@ export const SellerPanelView: React.FC = () => {
                 <span>Sof Foyda (Net Profit)</span>
                 <Coins className="w-4 h-4 text-[#FFB800]" />
               </div>
-              <div className="text-2xl font-black text-[#FFB800] font-mono-numbers">
+              <div className="text-xl sm:text-2xl font-black text-[#FFB800] font-mono-numbers break-words">
                 {netProfit.toLocaleString()} so‘m
               </div>
               <div className="text-[10px] font-mono text-emerald-400 font-bold">
@@ -2192,9 +2628,9 @@ export const SellerPanelView: React.FC = () => {
             </div>
 
             {/* 4. Savdo Ulushi */}
-            <div className="brushed-steel rounded-2xl p-5 border border-[#1E3A6D] space-y-2">
+            <div className="brushed-steel rounded-2xl p-5 border border-[#1E3A6D] space-y-2 shadow-md">
               <div className="flex items-center justify-between text-xs font-mono text-sky-400">
-                <span>Kanal Ulushi (Online / POS)</span>
+                <span className="font-bold">Kanal Ulushi (Online / POS)</span>
                 <Percent className="w-4 h-4 text-cyan-400" />
               </div>
               <div className="text-xl font-black text-white font-mono-numbers">
@@ -2207,8 +2643,148 @@ export const SellerPanelView: React.FC = () => {
             </div>
           </div>
 
+          {/* Responsive Visual Charts Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            {/* Chart 1: Haftalik Savdo Dinamikasi */}
+            <div className="industrial-card rounded-2xl p-5 bg-[#0A1931] border border-[#1E3A6D] space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-[#1E3A6D]">
+                <div>
+                  <h4 className="font-heading font-black text-white text-sm sm:text-base flex items-center gap-2">
+                    <BarChart3 className="w-4 h-4 text-[#FFB800]" />
+                    <span>Haftalik Savdo va Tushumlar Dinamikasi</span>
+                  </h4>
+                  <p className="text-[11px] font-mono text-sky-400">
+                    Oxirgi 7 kunlik Kirim (+) va Chiqim (-) taqqoslovi
+                  </p>
+                </div>
+                <div className="flex items-center gap-3 text-[10px] font-mono">
+                  <span className="flex items-center gap-1 text-emerald-400 font-bold">
+                    <span className="w-2.5 h-2.5 rounded-sm bg-emerald-400" />
+                    Kirim
+                  </span>
+                  <span className="flex items-center gap-1 text-red-400 font-bold">
+                    <span className="w-2.5 h-2.5 rounded-sm bg-red-400" />
+                    Chiqim
+                  </span>
+                </div>
+              </div>
+
+              {/* Responsive Bar Chart Visualizer */}
+              <div className="pt-4 pb-2">
+                <div className="h-44 sm:h-52 flex items-end justify-between gap-1.5 sm:gap-3 px-1 border-b border-[#1E3A6D]">
+                  {[
+                    { day: 'Dush', income: 18.5, expense: 4.2 },
+                    { day: 'Sesh', income: 24.0, expense: 6.8 },
+                    { day: 'Chor', income: 32.4, expense: 9.1 },
+                    { day: 'Pay', income: 29.0, expense: 5.5 },
+                    { day: 'Juma', income: 45.2, expense: 12.0 },
+                    { day: 'Shan', income: 52.8, expense: 14.5 },
+                    { day: 'Yak', income: 21.0, expense: 3.5 }
+                  ].map((bar, i) => (
+                    <div key={i} className="flex-1 flex flex-col items-center h-full justify-end group">
+                      <div className="w-full flex items-end justify-center gap-1 h-[85%]">
+                        {/* Income bar */}
+                        <div
+                          style={{ height: `${Math.min(100, (bar.income / 55) * 100)}%` }}
+                          className="w-1/2 max-w-[18px] bg-gradient-to-t from-emerald-600 to-emerald-400 rounded-t-sm transition-all group-hover:brightness-125 relative cursor-pointer"
+                          title={`${bar.day} Kirim: ${bar.income} mln`}
+                        />
+                        {/* Expense bar */}
+                        <div
+                          style={{ height: `${Math.min(100, (bar.expense / 55) * 100)}%` }}
+                          className="w-1/2 max-w-[18px] bg-gradient-to-t from-red-600 to-red-400 rounded-t-sm transition-all group-hover:brightness-125 relative cursor-pointer"
+                          title={`${bar.day} Chiqim: ${bar.expense} mln`}
+                        />
+                      </div>
+                      <span className="text-[10px] font-mono text-sky-300 mt-2 font-bold">
+                        {bar.day}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 pt-2 px-1">
+                  <span>Min: 0 mln</span>
+                  <span className="text-[#FFB800] font-bold">Eng faol kun: Shanba (52.8 mln so‘m)</span>
+                  <span>Max: 55 mln</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Chart 2: Xarajatlar Strukturasi & Kanallar Taqsimoti */}
+            <div className="industrial-card rounded-2xl p-5 bg-[#0A1931] border border-[#1E3A6D] space-y-4">
+              <div className="pb-2 border-b border-[#1E3A6D]">
+                <h4 className="font-heading font-black text-white text-sm sm:text-base flex items-center gap-2">
+                  <Percent className="w-4 h-4 text-[#FFB800]" />
+                  <span>Xarajatlar Strukturasi &amp; Savdo Kanallari</span>
+                </h4>
+                <p className="text-[11px] font-mono text-sky-400">
+                  Operatsion chiqimlar taqsimoti va sotuv kanallari balansi
+                </p>
+              </div>
+
+              {/* Expense Breakdown Categories */}
+              <div className="space-y-3 font-mono text-xs">
+                <div>
+                  <div className="flex justify-between text-slate-300 text-[11px] mb-1">
+                    <span>Ombor va Do‘kon Ijarasi</span>
+                    <span className="text-[#FFB800] font-bold">35% (7.5 mln so‘m)</span>
+                  </div>
+                  <div className="h-2 w-full bg-[#071326] rounded-full overflow-hidden border border-[#1E3A6D]">
+                    <div className="h-full bg-[#FFB800] rounded-full" style={{ width: '35%' }} />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-slate-300 text-[11px] mb-1">
+                    <span>Ishchilar va Haydovchilar Maoshi</span>
+                    <span className="text-cyan-400 font-bold">38% (8.2 mln so‘m)</span>
+                  </div>
+                  <div className="h-2 w-full bg-[#071326] rounded-full overflow-hidden border border-[#1E3A6D]">
+                    <div className="h-full bg-cyan-400 rounded-full" style={{ width: '38%' }} />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-slate-300 text-[11px] mb-1">
+                    <span>Logistika, Yoqilg‘i va Transport</span>
+                    <span className="text-emerald-400 font-bold">15% (3.2 mln so‘m)</span>
+                  </div>
+                  <div className="h-2 w-full bg-[#071326] rounded-full overflow-hidden border border-[#1E3A6D]">
+                    <div className="h-full bg-emerald-400 rounded-full" style={{ width: '15%' }} />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-slate-300 text-[11px] mb-1">
+                    <span>Soliqlar, Kommunal va Boshqa</span>
+                    <span className="text-purple-400 font-bold">12% (2.6 mln so‘m)</span>
+                  </div>
+                  <div className="h-2 w-full bg-[#071326] rounded-full overflow-hidden border border-[#1E3A6D]">
+                    <div className="h-full bg-purple-400 rounded-full" style={{ width: '12%' }} />
+                  </div>
+                </div>
+
+                {/* Sales Channels Ratio Bar */}
+                <div className="pt-3 border-t border-[#1E3A6D] space-y-1.5">
+                  <div className="flex justify-between text-[11px]">
+                    <span className="text-sky-300">
+                      🌐 Online Vitrina: <strong className="text-white">42%</strong>
+                    </span>
+                    <span className="text-emerald-400">
+                      🏪 Do‘kon Kassa (POS): <strong className="text-white">58%</strong>
+                    </span>
+                  </div>
+                  <div className="h-3 w-full bg-[#071326] rounded-full overflow-hidden flex border border-[#1E3A6D]">
+                    <div className="h-full bg-sky-500" style={{ width: '42%' }} />
+                    <div className="h-full bg-[#FFB800]" style={{ width: '58%' }} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Operations Ledger & Add Expense Button */}
-          <div className="industrial-card rounded-2xl p-5 bg-[#0A1931] border border-[#1E3A6D] space-y-4">
+          <div className="industrial-card rounded-2xl p-4 sm:p-5 bg-[#0A1931] border border-[#1E3A6D] space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h3 className="font-heading font-black text-white text-base">
@@ -2222,15 +2798,15 @@ export const SellerPanelView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsExpenseModalOpen(true)}
-                className="btn-industrial-dark px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md"
+                className="btn-industrial-dark px-4 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-md min-h-[44px]"
               >
                 <Plus className="w-4 h-4 text-[#FFB800]" />
                 <span>+ Yangi Chiqim / Xarajat Kiritish</span>
               </button>
             </div>
 
-            {/* Transactions Table */}
-            <div className="overflow-x-auto">
+            {/* Transactions Table with overflow-x-auto */}
+            <div className="overflow-x-auto min-w-full">
               <table className="w-full text-left font-mono text-xs">
                 <thead className="bg-[#071326] text-sky-300 border-b border-[#1E3A6D] uppercase text-[10px]">
                   <tr>
@@ -2245,8 +2821,8 @@ export const SellerPanelView: React.FC = () => {
                 <tbody className="divide-y divide-[#1E3A6D]">
                   {financialOperations.map((op) => (
                     <tr key={op.id} className="hover:bg-[#0F2547]/50">
-                      <td className="p-3 text-sky-300">{op.date}</td>
-                      <td className="p-3">
+                      <td className="p-3 text-sky-300 whitespace-nowrap">{op.date}</td>
+                      <td className="p-3 whitespace-nowrap">
                         <span
                           className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                             op.type === 'INCOME'
@@ -2259,9 +2835,9 @@ export const SellerPanelView: React.FC = () => {
                       </td>
                       <td className="p-3 text-white font-bold">{op.category}</td>
                       <td className="p-3 text-sky-200">{op.paymentMethod}</td>
-                      <td className="p-3 text-sky-400 text-[11px]">{op.notes}</td>
+                      <td className="p-3 text-sky-400 text-[11px] max-w-[200px] truncate">{op.notes}</td>
                       <td
-                        className={`p-3 text-right font-black text-sm ${
+                        className={`p-3 text-right font-black text-sm whitespace-nowrap ${
                           op.type === 'INCOME' ? 'text-emerald-400' : 'text-red-400'
                         }`}
                       >
@@ -2278,49 +2854,354 @@ export const SellerPanelView: React.FC = () => {
       )}
 
       {/* =====================================================================
-          TAB 6: MARKETPLACE BUYURTMALARI
+          TAB 6: MARKETPLACE BUYURTMALARI VA LOGISTIKA BIRIKTIRISH
           ===================================================================== */}
       {activeTab === 'orders' && (
-        <div className="industrial-card rounded-2xl p-5 bg-[#0A1931] border border-[#1E3A6D] space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-[#1E3A6D]">
-            <h3 className="font-heading font-black text-white text-base">
-              Marketplace Xaridlari va Yetkazib Berish
-            </h3>
-            <span className="text-xs font-mono text-sky-400">
-              {orders.length} ta faol buyurtma
-            </span>
+        <div className="space-y-4">
+          {/* Orders Header & Sub-filters */}
+          <div className="industrial-card rounded-2xl p-4 bg-[#0A1931] border border-[#1E3A6D] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
+              <span className="text-sky-400 font-bold uppercase text-[11px] mr-1">
+                Filtr:
+              </span>
+              <button
+                type="button"
+                onClick={() => setOrderFilterTab('all')}
+                className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer min-h-[36px] flex items-center gap-1 ${
+                  orderFilterTab === 'all'
+                    ? 'bg-[#132C54] text-[#FFB800] border-[#FFB800] font-bold'
+                    : 'bg-[#071326] text-sky-300 border-[#1E3A6D] hover:border-[#2E5A9C]'
+                }`}
+              >
+                Barchasi ({orders.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setOrderFilterTab('pending')}
+                className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer min-h-[36px] flex items-center gap-1 ${
+                  orderFilterTab === 'pending'
+                    ? 'bg-[#132C54] text-amber-400 border-amber-500 font-bold'
+                    : 'bg-[#071326] text-sky-300 border-[#1E3A6D] hover:border-[#2E5A9C]'
+                }`}
+              >
+                Kutilmoqda (
+                {
+                  orders.filter((o) =>
+                    ['PENDING', 'PENDING_PAYMENT', 'PAID', 'ACCEPTED', 'PACKING'].includes(o.status)
+                  ).length
+                }
+                )
+              </button>
+              <button
+                type="button"
+                onClick={() => setOrderFilterTab('in_transit')}
+                className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer min-h-[36px] flex items-center gap-1 ${
+                  orderFilterTab === 'in_transit'
+                    ? 'bg-[#132C54] text-sky-400 border-sky-500 font-bold'
+                    : 'bg-[#071326] text-sky-300 border-[#1E3A6D] hover:border-[#2E5A9C]'
+                }`}
+              >
+                <Truck className="w-3.5 h-3.5 text-sky-400" />
+                <span>
+                  Yo‘lda / Logistika (
+                  {
+                    orders.filter((o) =>
+                      ['ASSIGNED', 'IN_TRANSIT', 'ARRIVED'].includes(o.status)
+                    ).length
+                  }
+                  )
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setOrderFilterTab('delivered')}
+                className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer min-h-[36px] flex items-center gap-1 ${
+                  orderFilterTab === 'delivered'
+                    ? 'bg-[#132C54] text-emerald-400 border-emerald-500 font-bold'
+                    : 'bg-[#071326] text-sky-300 border-[#1E3A6D] hover:border-[#2E5A9C]'
+                }`}
+              >
+                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                <span>
+                  Yetkazilgan (
+                  {
+                    orders.filter((o) =>
+                      ['DELIVERED', 'RECEIVED', 'COMPLETED'].includes(o.status)
+                    ).length
+                  }
+                  )
+                </span>
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={fetchOrders}
+              className="p-2 rounded-xl bg-[#071326] hover:bg-[#132C54] border border-[#1E3A6D] hover:border-[#FFB800] text-sky-300 hover:text-white cursor-pointer min-h-[40px] flex items-center gap-1.5 text-xs font-mono font-bold shrink-0"
+              title="Buyurtmalar ro‘yxatini yangilash"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${loadingOrders ? 'animate-spin text-[#FFB800]' : ''}`} />
+              <span className="hidden sm:inline">Yangilash</span>
+            </button>
           </div>
 
-          {loadingOrders ? (
-            <div className="py-12 text-center text-sky-400 text-xs font-mono">
-              Buyurtmalar yuklanmoqda...
-            </div>
-          ) : orders.length === 0 ? (
-            <div className="py-12 text-center text-sky-400/70 text-xs font-mono">
-              Hozircha yangi buyurtmalar mavjud emas.
-            </div>
-          ) : (
-            <div className="divide-y divide-[#1E3A6D]">
-              {orders.map((ord) => (
-                <div key={ord.id} className="py-3 flex items-center justify-between font-mono text-xs">
-                  <div>
-                    <span className="text-[#FFB800] font-bold">#{ord.orderNumber}</span>
-                    <p className="text-white font-bold text-sm mt-0.5">
-                      {(ord as any).customerName || (ord as any).buyerCompanyName || 'Mijoz'} • {Number(ord.totalAmount).toLocaleString()} so‘m
-                    </p>
-                    <span className="text-[10px] text-sky-400">
-                      {typeof ord.deliveryAddress === 'string'
-                        ? ord.deliveryAddress
-                        : `${ord.deliveryAddress?.region || ''}, ${ord.deliveryAddress?.district || ''}`}
-                    </span>
+          {/* Orders Mobile Card View (<md screens) */}
+          <div className="md:hidden space-y-3">
+            {filteredOrders.length === 0 ? (
+              <div className="industrial-card rounded-2xl p-8 text-center text-sky-400/70 font-mono text-xs">
+                Bu toifada buyurtmalar mavjud emas.
+              </div>
+            ) : (
+              filteredOrders.map((ord) => {
+                const sub = (ord as any).subOrders?.[0];
+                const hasDriver = Boolean(sub?.driverName);
+                const addressText =
+                  typeof ord.deliveryAddress === 'string'
+                    ? ord.deliveryAddress
+                    : `${ord.deliveryAddress?.region || ''}, ${ord.deliveryAddress?.district || ''} ${ord.deliveryAddress?.street || ''}`;
+
+                return (
+                  <div
+                    key={ord.id}
+                    className="industrial-card rounded-2xl p-4 bg-[#0A1931] border border-[#1E3A6D] space-y-3 font-mono text-xs shadow-md"
+                  >
+                    {/* Top Order Row */}
+                    <div className="flex items-center justify-between pb-2 border-b border-[#1E3A6D]">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[#FFB800] font-black text-sm">#{ord.orderNumber}</span>
+                        <span className="text-[10px] text-slate-400">
+                          {ord.createdAt ? new Date(ord.createdAt).toLocaleDateString('uz-UZ') : 'Bugun'}
+                        </span>
+                      </div>
+                      <span
+                        className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          ord.status === 'DELIVERED' || ord.status === 'COMPLETED'
+                            ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-500/40'
+                            : ord.status === 'IN_TRANSIT' || ord.status === 'ASSIGNED'
+                            ? 'bg-sky-950/80 text-sky-300 border border-sky-500/40'
+                            : 'bg-amber-950/80 text-amber-400 border border-amber-500/40'
+                        }`}
+                      >
+                        {ord.status}
+                      </span>
+                    </div>
+
+                    {/* Buyer & Address */}
+                    <div className="space-y-1">
+                      <p className="font-bold text-white text-sm">
+                        {(ord as any).buyerName || (ord as any).customerName || 'Mijoz'}
+                      </p>
+                      <div className="flex items-center gap-1.5 text-slate-300 text-[11px]">
+                        <Phone className="w-3 h-3 text-[#FFB800]" />
+                        <span>{(ord as any).buyerPhone || '+998 (90) 123-45-67'}</span>
+                      </div>
+                      <div className="flex items-start gap-1.5 text-slate-400 text-[11px]">
+                        <MapPin className="w-3 h-3 text-sky-400 shrink-0 mt-0.5" />
+                        <span className="line-clamp-2">{addressText}</span>
+                      </div>
+                    </div>
+
+                    {/* Items & Amount */}
+                    <div className="p-2.5 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-1">
+                      <div className="text-[11px] text-slate-300">
+                        {ord.items && ord.items.length > 0
+                          ? ord.items.map((it: any) => `${it.productTitle} (${it.quantity} ${it.unit})`).join(', ')
+                          : 'Sanoat tovarlari'}
+                      </div>
+                      <div className="flex items-center justify-between pt-1 border-t border-[#1E3A6D]/60">
+                        <span className="text-[10px] text-slate-400">Jami (Escrow):</span>
+                        <span className="font-black text-[#FFB800] text-sm font-mono-numbers">
+                          {Number(ord.totalAmount).toLocaleString()} so‘m
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Driver Status Pill */}
+                    <div
+                      className={`p-2 rounded-xl text-[11px] flex items-center justify-between border ${
+                        hasDriver
+                          ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300'
+                          : 'bg-amber-950/40 border-amber-500/40 text-amber-300'
+                      }`}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <Truck className="w-3.5 h-3.5 shrink-0" />
+                        <span>
+                          {hasDriver ? `${sub.driverName} • ${sub.vehicleModel || 'Fura'}` : 'Haydovchi biriktirilmagan'}
+                        </span>
+                      </div>
+                      {hasDriver && sub.driverPhone && (
+                        <a
+                          href={`tel:${sub.driverPhone}`}
+                          className="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded font-bold"
+                        >
+                          Qo‘ng‘iroq
+                        </a>
+                      )}
+                    </div>
+
+                    {/* Mobile Action Buttons (touch target >= 44px) */}
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenDispatchModal(ord)}
+                        className="btn-industrial-yellow py-2.5 px-3 rounded-xl font-black text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md min-h-[44px]"
+                      >
+                        <Truck className="w-4 h-4" />
+                        <span>Logistika</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleOpenStatusModal(ord)}
+                        className="btn-industrial-dark py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md min-h-[44px]"
+                      >
+                        <RotateCw className="w-3.5 h-3.5 text-[#FFB800]" />
+                        <span>Status</span>
+                      </button>
+                    </div>
                   </div>
-                  <span className="px-2.5 py-1 rounded bg-[#132C54] text-[#FFB800] border border-[#254B85] text-xs font-bold">
-                    {ord.status}
-                  </span>
-                </div>
-              ))}
+                );
+              })
+            )}
+          </div>
+
+          {/* Orders Desktop / Tablet Table (>=md screens) */}
+          <div className="hidden md:block industrial-card rounded-2xl overflow-hidden bg-[#0A1931] border border-[#1E3A6D]">
+            <div className="overflow-x-auto min-w-full">
+              <table className="w-full text-left font-mono text-xs">
+                <thead className="bg-[#071326] text-sky-300 border-b border-[#1E3A6D] uppercase text-[10px]">
+                  <tr>
+                    <th className="p-3.5">#Buyurtma &amp; Sana</th>
+                    <th className="p-3.5">Mijoz / Telefon</th>
+                    <th className="p-3.5">Manzil</th>
+                    <th className="p-3.5">Mahsulot &amp; Miqdor</th>
+                    <th className="p-3.5">Summa &amp; Escrow</th>
+                    <th className="p-3.5">Status</th>
+                    <th className="p-3.5">Logistika / Haydovchi</th>
+                    <th className="p-3.5 text-right">Amallar</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#1E3A6D]">
+                  {filteredOrders.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} className="p-8 text-center text-sky-400/70">
+                        Bu toifada buyurtmalar mavjud emas.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredOrders.map((ord) => {
+                      const sub = (ord as any).subOrders?.[0];
+                      const hasDriver = Boolean(sub?.driverName);
+                      const addressText =
+                        typeof ord.deliveryAddress === 'string'
+                          ? ord.deliveryAddress
+                          : `${ord.deliveryAddress?.region || ''}, ${ord.deliveryAddress?.district || ''}`;
+
+                      return (
+                        <tr key={ord.id} className="hover:bg-[#0F2547]/60 transition-colors">
+                          <td className="p-3.5">
+                            <span className="font-bold text-[#FFB800] block">#{ord.orderNumber}</span>
+                            <span className="text-[10px] text-slate-400">
+                              {ord.createdAt ? new Date(ord.createdAt).toLocaleDateString('uz-UZ') : 'Bugun'}
+                            </span>
+                          </td>
+
+                          <td className="p-3.5">
+                            <div className="font-bold text-white">
+                              {(ord as any).buyerName || (ord as any).customerName || 'Mijoz'}
+                            </div>
+                            <span className="text-[10px] text-sky-400">
+                              {(ord as any).buyerPhone || '+998 (90) 123-45-67'}
+                            </span>
+                          </td>
+
+                          <td className="p-3.5 max-w-[160px]">
+                            <span className="text-slate-300 text-[11px] line-clamp-2" title={addressText}>
+                              {addressText}
+                            </span>
+                          </td>
+
+                          <td className="p-3.5 max-w-[200px]">
+                            <span className="text-white text-xs line-clamp-2">
+                              {ord.items && ord.items.length > 0
+                                ? ord.items.map((it: any) => `${it.productTitle} (${it.quantity} ${it.unit})`).join(', ')
+                                : 'Sanoat tovarlari'}
+                            </span>
+                          </td>
+
+                          <td className="p-3.5 whitespace-nowrap">
+                            <span className="font-bold text-[#FFB800] text-sm font-mono-numbers block">
+                              {Number(ord.totalAmount).toLocaleString()} so‘m
+                            </span>
+                            <span className="text-[9px] text-emerald-400 font-bold bg-emerald-950/80 px-1.5 py-0.2 rounded border border-emerald-500/30">
+                              50/50 Escrow
+                            </span>
+                          </td>
+
+                          <td className="p-3.5 whitespace-nowrap">
+                            <span
+                              className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                ord.status === 'DELIVERED' || ord.status === 'COMPLETED'
+                                  ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-500/40'
+                                  : ord.status === 'IN_TRANSIT' || ord.status === 'ASSIGNED'
+                                  ? 'bg-sky-950/80 text-sky-300 border border-sky-500/40'
+                                  : 'bg-amber-950/80 text-amber-400 border border-amber-500/40'
+                              }`}
+                            >
+                              {ord.status}
+                            </span>
+                          </td>
+
+                          <td className="p-3.5">
+                            {hasDriver ? (
+                              <div className="flex flex-col text-[11px]">
+                                <span className="text-white font-bold">{sub.driverName}</span>
+                                <span className="text-[10px] text-sky-400">{sub.vehicleModel || 'Fura'}</span>
+                                {sub.driverPhone && (
+                                  <a href={`tel:${sub.driverPhone}`} className="text-[10px] text-emerald-400 hover:underline">
+                                    {sub.driverPhone}
+                                  </a>
+                                )}
+                              </div>
+                            ) : (
+                              <span className="text-[10px] text-amber-400 font-bold bg-amber-950/80 px-2 py-0.5 rounded border border-amber-500/30">
+                                Biriktirilmagan
+                              </span>
+                            )}
+                          </td>
+
+                          <td className="p-3.5 text-right whitespace-nowrap">
+                            <div className="inline-flex items-center gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => handleOpenDispatchModal(ord)}
+                                className="btn-industrial-yellow px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer inline-flex items-center gap-1 min-h-[36px]"
+                                title="Haydovchi va mashina biriktirish"
+                              >
+                                <Truck className="w-3.5 h-3.5" />
+                                <span>Logistika</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => handleOpenStatusModal(ord)}
+                                className="btn-industrial-dark px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer inline-flex items-center gap-1 min-h-[36px]"
+                                title="Statusni o‘zgartirish"
+                              >
+                                <RotateCw className="w-3.5 h-3.5 text-[#FFB800]" />
+                                <span>Status</span>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
             </div>
-          )}
+          </div>
         </div>
       )}
 

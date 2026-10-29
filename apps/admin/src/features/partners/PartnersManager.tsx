@@ -147,7 +147,7 @@ export const PartnersManager: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <Button
             variant="secondary"
             size="sm"
@@ -155,7 +155,7 @@ export const PartnersManager: React.FC = () => {
               partners.forEach((p) => handleSyncPartner(p.id));
             }}
             disabled={!!syncingId}
-            className="font-mono text-xs"
+            className="font-mono text-xs w-full sm:w-auto"
           >
             <RotateCw className={`w-3.5 h-3.5 mr-1.5 ${syncingId ? 'animate-spin' : ''}`} />
             Barchasini sinxronlash
@@ -164,7 +164,7 @@ export const PartnersManager: React.FC = () => {
       </div>
 
       {/* KPI Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="bg-theme-card p-4 rounded-2xl border border-theme shadow-xs">
           <span className="text-xs font-mono font-bold uppercase text-theme-muted tracking-wider block">
             Jami Integratsiyalar
@@ -299,12 +299,13 @@ export const PartnersManager: React.FC = () => {
           title={selectedPartner.name}
           subtitle={`Provayder: ${selectedPartner.provider}`}
           footer={
-            <div className="flex items-center justify-between w-full">
+            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2.5 w-full">
               <Button
                 variant="outline"
                 size="md"
                 onClick={() => handleSyncPartner(selectedPartner.id)}
                 disabled={syncingId === selectedPartner.id}
+                className="w-full sm:w-auto"
               >
                 <RefreshCw className={`w-4 h-4 mr-2 ${syncingId === selectedPartner.id ? 'animate-spin' : ''}`} />
                 Qayta sinxronlash
@@ -313,6 +314,7 @@ export const PartnersManager: React.FC = () => {
                 variant="primary"
                 size="md"
                 onClick={() => setSelectedPartner(null)}
+                className="w-full sm:w-auto"
               >
                 Yopish
               </Button>

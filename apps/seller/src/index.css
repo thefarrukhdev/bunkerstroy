@@ -119,3 +119,29 @@
 .text-theme-main { color: var(--text-main); }
 .text-theme-muted { color: var(--text-muted); }
 .text-theme-subtle { color: var(--text-subtle); }
+
+/* Mobile PWA & Touch Ergonomics */
+.pt-safe {
+  padding-top: max(0.875rem, env(safe-area-inset-top));
+}
+.pb-safe {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+.pl-safe {
+  padding-left: max(1rem, env(safe-area-inset-left));
+}
+.pr-safe {
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.touch-manipulation {
+  touch-action: manipulation;
+}

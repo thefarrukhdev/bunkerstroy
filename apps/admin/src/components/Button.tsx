@@ -41,11 +41,11 @@ export const Button: React.FC<ButtonProps> = ({
   const getSizeStyles = () => {
     switch (size) {
       case 'sm':
-        return 'px-2.5 py-1 text-xs gap-1.5 rounded-lg';
+        return 'px-3 py-1.5 text-xs gap-1.5 rounded-lg min-h-[36px] sm:min-h-0';
       case 'md':
-        return 'px-3.5 py-2 text-xs gap-2 rounded-xl';
+        return 'px-4 py-2.5 sm:py-2 text-xs gap-2 rounded-xl min-h-[44px]';
       case 'lg':
-        return 'px-5 py-2.5 text-sm gap-2.5 rounded-xl';
+        return 'px-5 py-3 sm:py-2.5 text-sm gap-2.5 rounded-xl min-h-[48px]';
     }
   };
 
