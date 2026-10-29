@@ -34,17 +34,29 @@ jobs:
           pnpm --filter @bunkerstroy/types build
 
       - name: Deploy Vitrina & Marketplace (bunkerstroy-web)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
         run: |
-          pnpm dlx vercel --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.VERCEL_ORG_ID }} --project bunkerstroy-web --prod --yes
+          pnpm dlx vercel --token "$VERCEL_TOKEN" --scope "$VERCEL_ORG_ID" --project bunkerstroy-web --prod --yes --non-interactive
 
       - name: Deploy Merchant & Factory POS/CRM (bunkerstroy-seller)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
         run: |
-          pnpm dlx vercel --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.VERCEL_ORG_ID }} --project bunkerstroy-seller --prod --yes
+          pnpm dlx vercel --token "$VERCEL_TOKEN" --scope "$VERCEL_ORG_ID" --project bunkerstroy-seller --prod --yes --non-interactive
 
       - name: Deploy Industrial Admin Dashboard (bunkerstroy-admin)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
         run: |
-          pnpm dlx vercel --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.VERCEL_ORG_ID }} --project bunkerstroy-admin --prod --yes
+          pnpm dlx vercel --token "$VERCEL_TOKEN" --scope "$VERCEL_ORG_ID" --project bunkerstroy-admin --prod --yes --non-interactive
 
       - name: Deploy Heavy Fleet Driver PWA (bunkerstroy-driver)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
         run: |
-          pnpm dlx vercel --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.VERCEL_ORG_ID }} --project bunkerstroy-driver --prod --yes
+          pnpm dlx vercel --token "$VERCEL_TOKEN" --scope "$VERCEL_ORG_ID" --project bunkerstroy-driver --prod --yes --non-interactive
