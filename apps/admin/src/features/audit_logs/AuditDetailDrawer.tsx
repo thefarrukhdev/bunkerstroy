@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AuditLogRecord } from '../../mocks/auditLogsMock';
 import { SlideOverDrawer } from '../../components/SlideOverDrawer';
 import { StatusBadge } from '../../components/StatusBadge';
@@ -31,6 +31,8 @@ export const AuditDetailDrawer: React.FC<AuditDetailDrawerProps> = ({
 }) => {
   if (!log) return null;
 
+  const [copiedPayload, setCopiedPayload] = useState(false);
+
   const displayPhone = log.actorPhone
     ? maskPii
       ? maskPhone(log.actorPhone)
@@ -45,8 +47,23 @@ export const AuditDetailDrawer: React.FC<AuditDetailDrawerProps> = ({
 
   const handleCopyPayload = () => {
     if (log.payloadJson) {
-      navigator.clipboard.writeText(JSON.stringify(log.payloadJson, null, 2));
-      alert('Kiberxavfsizlik payload ma’lumotlari clipboardga nusxalandi.');
+      const text = JSON.stringify(log.payloadJson, null, 2);
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(text).catch(() => {
+          try {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+          } catch {
+            // ignore
+          }
+        });
+      }
+      setCopiedPayload(true);
+      setTimeout(() => setCopiedPayload(false), 3000);
     }
   };
 
@@ -62,17 +79,23 @@ export const AuditDetailDrawer: React.FC<AuditDetailDrawerProps> = ({
             <StatusBadge status={log.level} />
           </div>
           <Button
-            variant="secondary"
+            variant={copiedPayload ? "primary" : "secondary"}
             size="md"
-            leftIcon={<Copy className="w-4 h-4" />}
+            leftIcon={copiedPayload ? <CheckCircle2 className="w-4 h-4 text-emerald-300" /> : <Copy className="w-4 h-4" />}
             onClick={handleCopyPayload}
           >
-            Payloadni Nusxalash
+            {copiedPayload ? "Nusxalandi!" : "Payloadni Nusxalash"}
           </Button>
         </div>
       }
     >
       <div className="space-y-6">
+        {copiedPayload && (
+          <div className="p-3 bg-emerald-500/15 border border-emerald-500/40 rounded-xl flex items-center gap-2 text-xs font-mono text-emerald-400 animate-in fade-in">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>Kiberxavfsizlik payload ma’lumotlari buferga muvaffaqiyatli nusxalandi!</span>
+          </div>
+        )}
         {/* Hodisa Sarlavhasi Kartochkasi */}
         <div className="p-4 rounded-xl bg-[var(--color-surface-hover)] border border-[var(--color-border-subtle)] space-y-2">
           <div className="flex items-center justify-between">

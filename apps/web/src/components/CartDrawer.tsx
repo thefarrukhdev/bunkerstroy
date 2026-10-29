@@ -249,34 +249,34 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       footer={
         step !== 'success' && items.length > 0 ? (
           <div className="w-full space-y-3 font-mono">
-            {/* Price Summary bar */}
-            <div className="bg-slate-50 border border-bunker-border-strong rounded-xl p-3 space-y-1.5 text-xs">
-              <div className="flex justify-between text-bunker-text-secondary">
+            {/* Price Summary bar (High contrast WCAG AAA on bg-[#0F2547]) */}
+            <div className="bg-[#0F2547] border border-[#1E3A6D] rounded-xl p-3.5 space-y-2 text-xs shadow-md">
+              <div className="flex justify-between text-slate-200 font-medium">
                 <span>Mahsulotlar summasi:</span>
-                <span>{totalItemsSum.toLocaleString()} so‘m</span>
+                <span className="text-white font-bold">{totalItemsSum.toLocaleString()} so‘m</span>
               </div>
-              <div className="flex justify-between text-bunker-text-secondary">
+              <div className="flex justify-between text-slate-200 font-medium">
                 <span>Yetkazib berish to‘lovi:</span>
-                <span className={deliveryFee === 0 ? 'text-emerald-700 font-bold' : ''}>
+                <span className={deliveryFee === 0 ? 'text-emerald-400 font-bold' : 'text-white font-bold'}>
                   {deliveryFee === 0 ? 'BEPUL (O‘zi olib ketish)' : `${deliveryFee.toLocaleString()} so‘m`}
                 </span>
               </div>
-              <div className="pt-1.5 border-t border-bunker-border-subtle flex justify-between text-sm font-bold text-bunker-text-primary">
+              <div className="pt-2 border-t border-[#1E3A6D] flex justify-between text-sm font-bold text-white items-baseline">
                 <span>Jami to‘lov:</span>
-                <span className="text-bunker-amber-500">{grandTotal.toLocaleString()} so‘m</span>
+                <span className="text-[#FFB800] font-black text-base">{grandTotal.toLocaleString()} so‘m</span>
               </div>
 
               {paymentMode === 'SPLIT_50_50' && (
-                <div className="bg-amber-50 border border-amber-300 rounded-lg p-2.5 text-[11px] space-y-1 text-amber-950">
-                  <div className="flex justify-between font-bold">
+                <div className="bg-[#071326] border border-[#1E3A6D] rounded-lg p-2.5 text-[11px] space-y-1 text-slate-200">
+                  <div className="flex justify-between font-bold text-white">
                     <span>Avans to‘lovi (50%):</span>
-                    <span className="text-bunker-amber-600">{Math.round(grandTotal / 2).toLocaleString()} so‘m</span>
+                    <span className="text-[#FFB800]">{Math.round(grandTotal / 2).toLocaleString()} so‘m</span>
                   </div>
-                  <div className="flex justify-between text-slate-700">
+                  <div className="flex justify-between text-slate-300">
                     <span>Qoldiq to‘lov (50%):</span>
-                    <span>{(grandTotal - Math.round(grandTotal / 2)).toLocaleString()} so‘m (yetib kelgach)</span>
+                    <span className="text-slate-100 font-semibold">{(grandTotal - Math.round(grandTotal / 2)).toLocaleString()} so‘m (yetib kelgach)</span>
                   </div>
-                  <p className="text-[10px] text-amber-800 pt-0.5 font-sans">
+                  <p className="text-[10px] text-amber-300/90 pt-0.5 font-sans">
                     * Qabul kodi yuk yetib kelib, 2-to‘lov tasdiqlangach ochiladi.
                   </p>
                 </div>

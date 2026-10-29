@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { apiFetch, resolveApiUrl } from './services/apiClient';
 import { offlineStorage } from './services/offlineStorage';
+import { TouchPinKeypad } from './components/TouchPinKeypad';
 
 /* ==========================================================================
    Types & Enums
@@ -1172,67 +1173,39 @@ export const App: React.FC = () => {
                 </a>
               </div>
 
-              {/* PIN Code Verification input (LG-09) */}
-              <div className="bg-[#0A1931] p-4 rounded-xl border border-[#1E3A6D] space-y-3">
+              {/* PIN Code Verification Touch Numpad (LG-09) */}
+              <div className="bg-[#0A1931] p-4 rounded-xl border border-[#1E3A6D] space-y-4">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-mono font-bold text-slate-200 flex items-center gap-1.5">
                     <KeyRound className="w-4 h-4 text-[#FFB800]" />
                     <span>Mijozning 4 xonali PIN-kodini kiriting:</span>
                   </label>
-                  <span className="text-[10px] font-mono text-slate-500">
-                    (Demo PIN: <strong>{task.correctPin}</strong>)
-                  </span>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <label htmlFor="driver-acceptance-pin" className="sr-only">
-                    Qabul qilish PIN kodi
-                  </label>
-                  <input
-                    id="driver-acceptance-pin"
-                    name="pin"
-                    type="text"
-                    maxLength={4}
-                    inputMode="numeric"
-                    aria-label="Qabul qilish PIN kodi"
-                    value={pinInput}
-                    onChange={(e) => {
-                      const val = e.target.value.replace(/\D/g, '');
-                      setPinInput(val);
-                      if (pinError) setPinError(null);
-                    }}
-                    placeholder="Masalan: 7492"
-                    className="w-full text-center text-xl font-mono font-black tracking-widest py-2.5 px-4 rounded-xl bg-[#071326] border-2 border-[#1E3A6D] focus:border-[#FFB800] focus:outline-hidden text-amber-300 placeholder:text-slate-600"
-                  />
-                  <button
-                    onClick={handlePinSubmit}
-                    disabled={pinInput.length !== 4}
-                    className="py-3 px-5 rounded-xl bg-[#FFB800] hover:bg-amber-400 disabled:opacity-50 disabled:cursor-not-allowed text-black font-mono text-xs font-black transition active:scale-95 shrink-0 cursor-pointer"
-                  >
-                    Tasdiqlash
-                  </button>
-                </div>
-
-                {pinError && (
-                  <p className="text-xs font-mono text-red-400 flex items-center gap-1">
-                    <XCircle className="w-3.5 h-3.5" />
-                    <span>{pinError}</span>
-                  </p>
-                )}
-
-                {isPinVerified && (
-                  <div className="p-3 bg-emerald-500/20 border border-emerald-500/40 rounded-xl space-y-2">
-                    <p className="text-xs font-mono text-emerald-300 font-bold flex items-center gap-1.5">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                {isPinVerified ? (
+                  <div className="p-4 bg-emerald-500/20 border border-emerald-500/40 rounded-xl space-y-3">
+                    <p className="text-sm font-mono text-emerald-300 font-bold flex items-center gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
                       <span>PIN-kod to‘g‘ri! 50/50 to‘lov to‘liq yopildi.</span>
                     </p>
                     <button
                       onClick={() => setStage('DELIVERED')}
-                      className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-mono text-xs font-black transition active:scale-95 cursor-pointer"
+                      className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-mono text-xs font-black transition active:scale-95 cursor-pointer shadow-lg"
                     >
                       Topshirish &amp; Foto-dalolatnoma sahifasiga o‘tish
                     </button>
                   </div>
+                ) : (
+                    <TouchPinKeypad
+                      pin={pinInput}
+                      onChange={(newPin) => {
+                        setPinInput(newPin);
+                        if (pinError) setPinError(null);
+                      }}
+                      onSubmit={handlePinSubmit}
+                      error={pinError}
+                      triggerHaptic={triggerHaptic}
+                    />
                 )}
               </div>
             </div>

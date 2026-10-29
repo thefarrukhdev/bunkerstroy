@@ -1743,7 +1743,7 @@ export const SellerPanelView: React.FC = () => {
                 aria-label="Mahsulot nomi yoki shtrixkodi bo‘yicha tezkor qidiruv"
                 value={posSearchTerm}
                 onChange={(e) => setPosSearchTerm(e.target.value)}
-                className="w-full h-11 pl-10 pr-4 rounded-xl bg-[#0A1931] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-white placeholder-sky-300/50 outline-none font-mono"
+                className="w-full h-11 pl-10 pr-4 rounded-xl bg-[#0A1931] border border-[#1E3A6D] focus:border-[#FFB800] text-base text-white placeholder-sky-300/50 outline-none font-mono"
               />
             </div>
 
@@ -1830,30 +1830,33 @@ export const SellerPanelView: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-1.5 shrink-0">
+                      <div className="flex items-center gap-2 shrink-0">
                         <button
                           type="button"
                           onClick={() => handleUpdateBasketQty(item.id, -1)}
-                          className="w-6 h-6 rounded bg-[#0F2547] text-white flex items-center justify-center font-bold hover:bg-[#132C54]"
+                          className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg bg-[#0F2547] border border-[#1E3A6D] text-white flex items-center justify-center font-bold hover:bg-[#132C54] hover:border-[#FFB800] active:scale-95 transition-all touch-manipulation cursor-pointer"
+                          aria-label="Miqdorni bittaga kamaytirish"
                         >
-                          <Minus className="w-3 h-3" />
+                          <Minus className="w-4 h-4" />
                         </button>
-                        <span className="font-black text-white w-6 text-center">
+                        <span className="font-black text-white min-w-[32px] text-center font-mono text-sm">
                           {item.quantity}
                         </span>
                         <button
                           type="button"
                           onClick={() => handleUpdateBasketQty(item.id, 1)}
-                          className="w-6 h-6 rounded bg-[#0F2547] text-white flex items-center justify-center font-bold hover:bg-[#132C54]"
+                          className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg bg-[#0F2547] border border-[#1E3A6D] text-white flex items-center justify-center font-bold hover:bg-[#132C54] hover:border-[#FFB800] active:scale-95 transition-all touch-manipulation cursor-pointer"
+                          aria-label="Miqdorni bittaga oshirish"
                         >
-                          <Plus className="w-3 h-3" />
+                          <Plus className="w-4 h-4" />
                         </button>
                         <button
                           type="button"
                           onClick={() => handleRemoveBasketItem(item.id)}
-                          className="p-1 text-sky-400 hover:text-red-400 ml-1"
+                          className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg flex items-center justify-center text-sky-400 hover:text-red-400 hover:bg-red-500/10 transition-colors ml-1 touch-manipulation cursor-pointer"
+                          aria-label="Mahsulotni savatdan o‘chirish"
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </div>

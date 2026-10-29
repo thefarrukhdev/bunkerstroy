@@ -28,9 +28,10 @@ import { apiFetch } from '../../services/apiClient';
 
 interface ProductDetailViewProps {
   onAddToCart: (product: Product, quantity: number) => void;
+  onOpenCart?: () => void;
 }
 
-export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCart }) => {
+export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCart, onOpenCart }) => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -137,10 +138,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
   const handleBuyNow = () => {
     if (!product) return;
     onAddToCart(product, quantity);
-    const cartButton = document.querySelector('[data-cart-button="true"]') as HTMLElement | null;
-    if (cartButton) {
-      cartButton.click();
-    }
+    onOpenCart?.();
   };
 
   if (loading) {

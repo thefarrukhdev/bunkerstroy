@@ -3,15 +3,19 @@ import { Routes, Route, Navigate, useNavigate, Link } from 'react-router-dom';
 import { Product } from '@bunkerstroy/types';
 import { LanguageProvider } from './context/LanguageContext';
 import { Navbar } from './components/Navbar';
+import { MobileBottomNav } from './components/MobileBottomNav';
 import { CartDrawer, CartItem } from './components/CartDrawer';
 import { MarketplaceView } from './features/marketplace/MarketplaceView';
 import { ProductDetailView } from './features/marketplace/ProductDetailView';
 import { SuppliersView } from './features/suppliers/SuppliersView';
+import { CalculatorsView } from './features/calculators/CalculatorsView';
+import { TendersView } from './features/tenders/TendersView';
 import { LogisticsView } from './features/logistics/LogisticsView';
 import { DriverMobileView } from './features/driver/DriverMobileView';
 import { OrdersView } from './features/orders/OrdersView';
 import { SellerPanelView } from './features/seller/SellerPanelView';
 import { AuthModal } from './features/auth/AuthModal';
+import { VoiceAssistantModal } from './features/ai/VoiceAssistantModal';
 import {
   HardHat,
   PhoneCall,
@@ -29,18 +33,25 @@ export const AppContent: React.FC = () => {
   // Modals state
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isVoiceAssistantOpen, setIsVoiceAssistantOpen] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
 
   // References for native back button handling
   const isCartOpenRef = React.useRef(isCartOpen);
   const isAuthOpenRef = React.useRef(isAuthOpen);
+  const isVoiceAssistantOpenRef = React.useRef(isVoiceAssistantOpen);
   isCartOpenRef.current = isCartOpen;
   isAuthOpenRef.current = isAuthOpen;
+  isVoiceAssistantOpenRef.current = isVoiceAssistantOpen;
 
   // Initialize native mobile features (StatusBar, Splash, Network, BackButton)
   useEffect(() => {
     const cleanupPromise = initializeMobilePlatform({
       onBackPress: () => {
+        if (isVoiceAssistantOpenRef.current) {
+          setIsVoiceAssistantOpen(false);
+          return true;
+        }
         if (isCartOpenRef.current) {
           setIsCartOpen(false);
           return true;
@@ -180,21 +191,31 @@ export const AppContent: React.FC = () => {
         onOpenAuth={() => setIsAuthOpen(true)}
         currentUser={currentUser}
         onLogout={handleLogout}
+        onOpenVoiceAssistant={() => setIsVoiceAssistantOpen(true)}
       />
 
       {/* 2. Main Page Content (Real URL Routes) */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 transition-all">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 pb-20 lg:pb-6 transition-all">
         <Routes>
           <Route path="/" element={<MarketplaceView onAddToCart={handleAddToCart} />} />
-          <Route path="/products/:id" element={<ProductDetailView onAddToCart={handleAddToCart} />} />
+          <Route
+            path="/products/:id"
+            element={
+              <ProductDetailView
+                onAddToCart={handleAddToCart}
+                onOpenCart={() => setIsCartOpen(true)}
+              />
+            }
+          />
           <Route path="/suppliers" element={<SuppliersView onNavigateToCatalog={() => navigate('/')} />} />
+          <Route path="/calculators" element={<CalculatorsView />} />
+          <Route path="/tenders" element={<TendersView />} />
           <Route path="/orders" element={<OrdersView />} />
           <Route path="/seller-panel" element={<SellerPanelView />} />
           <Route path="/logistics" element={<LogisticsView />} />
           <Route path="/driver" element={<DriverMobileView />} />
           {/* Legacy redirects */}
-          <Route path="/tenders" element={<Navigate to="/" replace />} />
-          <Route path="/esco" element={<Navigate to="/" replace />} />
+          <Route path="/esco" element={<Navigate to="/calculators" replace />} />
           <Route path="/global-bunker" element={<Navigate to="/" replace />} />
           <Route path="/certifications" element={<Navigate to="/" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
@@ -349,6 +370,19 @@ export const AppContent: React.FC = () => {
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
         onSuccess={handleAuthSuccess}
+      />
+
+      <VoiceAssistantModal
+        isOpen={isVoiceAssistantOpen}
+        onClose={() => setIsVoiceAssistantOpen(false)}
+        onNavigate={(path) => navigate(path)}
+      />
+
+      {/* 5. Mobile Bottom Navigation */}
+      <MobileBottomNav
+        cartCount={cartCount}
+        onOpenCart={() => setIsCartOpen(true)}
+        onOpenVoiceAssistant={() => setIsVoiceAssistantOpen(true)}
       />
     </div>
   );
