@@ -549,15 +549,31 @@ export class OrdersService {
       }
     }
 
-    const updated = await this.prisma.order.update({
-      where: { id: order.id },
-      data: {
-        status: newStatus,
-        isAcceptanceCodeRevealed:
-          newStatus === OrderStatus.FULLY_PAID ||
-          (newStatus === OrderStatus.ARRIVED && order.paymentMode === PaymentMode.FULL_100),
-      },
-      include: ORDER_FULL_INCLUDE,
+    const updated = await this.prisma.$transaction(async (tx) => {
+      if (newStatus === OrderStatus.CANCELLED && prevStatus !== OrderStatus.CANCELLED) {
+        const orderItems = await tx.orderItem.findMany({ where: { orderId: order.id } });
+        for (const item of orderItems) {
+          await tx.product.update({
+            where: { id: item.productId },
+            data: { stock: { increment: item.quantity } },
+          });
+        }
+        await tx.subOrder.updateMany({
+          where: { orderId: order.id },
+          data: { status: OrderStatus.CANCELLED },
+        });
+      }
+
+      return tx.order.update({
+        where: { id: order.id },
+        data: {
+          status: newStatus,
+          isAcceptanceCodeRevealed:
+            newStatus === OrderStatus.FULLY_PAID ||
+            (newStatus === OrderStatus.ARRIVED && order.paymentMode === PaymentMode.FULL_100),
+        },
+        include: ORDER_FULL_INCLUDE,
+      });
     });
 
     await this.auditLogService.logAction({

@@ -17,15 +17,50 @@ export class ApiError extends Error {
   }
 }
 
-class ApiClient {
-  private baseUrl = '/api';
+/**
+ * Returns configured API base URL (from VITE_API_URL or defaults to '/api')
+ */
+export function getApiBaseUrl(): string {
+  const metaEnv = typeof import.meta !== 'undefined' ? (import.meta as any).env : undefined;
+  const envUrl = (
+    metaEnv && metaEnv.VITE_API_URL
+      ? String(metaEnv.VITE_API_URL).trim()
+      : ''
+  ).replace(/\/+$/, '');
 
+  return envUrl || '/api';
+}
+
+/**
+ * Resolves full API URL with environment variable support and slash normalization
+ */
+export function resolveApiUrl(endpoint: string): string {
+  const base = getApiBaseUrl();
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+
+  if (base === '/api') {
+    return cleanEndpoint.startsWith('/api') ? cleanEndpoint : `/api${cleanEndpoint}`;
+  }
+
+  if (base.endsWith('/api') && cleanEndpoint.startsWith('/api')) {
+    return `${base}${cleanEndpoint.substring(4)}`;
+  }
+
+  if (!base.endsWith('/api') && !cleanEndpoint.startsWith('/api')) {
+    return `${base}/api${cleanEndpoint}`;
+  }
+
+  return `${base}${cleanEndpoint}`;
+}
+
+class ApiClient {
   private async ensureToken(): Promise<string | null> {
     if (typeof window === 'undefined') return null;
     let token = localStorage.getItem('bunker_admin_token') || localStorage.getItem('bunkerstroy_token');
     if (!token) {
       try {
-        const res = await fetch('/api/auth/login', {
+        const loginUrl = resolveApiUrl('/auth/login');
+        const res = await fetch(loginUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ login: 'admin@bunkerstroy.uz', password: 'bunker2026' })
@@ -42,13 +77,14 @@ class ApiClient {
     return token;
   }
 
-  private async getAuthHeaders(): Promise<Record<string, string>> {
+  private async getAuthHeaders(customHeaders?: Record<string, string>): Promise<Record<string, string>> {
     const token = await this.ensureToken();
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      Accept: 'application/json'
+      Accept: 'application/json',
+      ...customHeaders,
     };
-    if (token) {
+    if (token && !headers['Authorization']) {
       headers['Authorization'] = `Bearer ${token}`;
     }
     return headers;
@@ -68,10 +104,10 @@ class ApiClient {
     return data as T;
   }
 
-  async get<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
+  async get<T>(endpoint: string, params?: Record<string, any>, customHeaders?: Record<string, string>): Promise<T> {
     try {
-      const headers = await this.getAuthHeaders();
-      let url = `${this.baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+      const headers = await this.getAuthHeaders(customHeaders);
+      let url = resolveApiUrl(endpoint);
       if (params) {
         const query = new URLSearchParams(
           Object.entries(params).reduce((acc, [k, v]) => {
@@ -94,17 +130,17 @@ class ApiClient {
       if (err instanceof ApiError) throw err;
       throw new ApiError(
         err.message === 'Failed to fetch'
-          ? "Tarmoq bilan aloqa uzildi. Server (port 4050) faolligini tekshiring."
+          ? "Tarmoq bilan aloqa uzildi. Server faolligini tekshiring."
           : err.message,
         0
       );
     }
   }
 
-  async post<T>(endpoint: string, body?: any): Promise<T> {
+  async post<T>(endpoint: string, body?: any, customHeaders?: Record<string, string>): Promise<T> {
     try {
-      const headers = await this.getAuthHeaders();
-      const url = `${this.baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+      const headers = await this.getAuthHeaders(customHeaders);
+      const url = resolveApiUrl(endpoint);
       const response = await fetch(url, {
         method: 'POST',
         headers,
@@ -116,17 +152,17 @@ class ApiClient {
       if (err instanceof ApiError) throw err;
       throw new ApiError(
         err.message === 'Failed to fetch'
-          ? "Tarmoq bilan aloqa uzildi. Server (port 4050) faolligini tekshiring."
+          ? "Tarmoq bilan aloqa uzildi. Server faolligini tekshiring."
           : err.message,
         0
       );
     }
   }
 
-  async patch<T>(endpoint: string, body?: any): Promise<T> {
+  async patch<T>(endpoint: string, body?: any, customHeaders?: Record<string, string>): Promise<T> {
     try {
-      const headers = await this.getAuthHeaders();
-      const url = `${this.baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+      const headers = await this.getAuthHeaders(customHeaders);
+      const url = resolveApiUrl(endpoint);
       const response = await fetch(url, {
         method: 'PATCH',
         headers,
@@ -140,10 +176,10 @@ class ApiClient {
     }
   }
 
-  async delete<T>(endpoint: string): Promise<T> {
+  async delete<T>(endpoint: string, customHeaders?: Record<string, string>): Promise<T> {
     try {
-      const headers = await this.getAuthHeaders();
-      const url = `${this.baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+      const headers = await this.getAuthHeaders(customHeaders);
+      const url = resolveApiUrl(endpoint);
       const response = await fetch(url, {
         method: 'DELETE',
         headers

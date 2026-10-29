@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { B2bDocumentsModal } from './B2bDocumentsModal';
 import { Order, OrderStatus } from '@bunkerstroy/types';
+import { apiFetch, resolveApiUrl } from '../../services/apiClient';
 import {
   Badge,
   Button,
@@ -96,7 +97,7 @@ export const OrdersView: React.FC = () => {
     }
 
     try {
-      const res = await fetch('/api/orders', { headers });
+      const res = await apiFetch('/orders');
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
         setOrders(json.data);
@@ -173,7 +174,7 @@ export const OrdersView: React.FC = () => {
         };
       }
 
-      const res = await fetch(endpoint, {
+      const res = await apiFetch(endpoint, {
         method: 'POST',
         headers,
         body: JSON.stringify(body)
@@ -198,14 +199,9 @@ export const OrdersView: React.FC = () => {
 
   // Pay second 50% for arrived orders
   const handlePaySecondHalf = async (orderId: string) => {
-    const token = getToken();
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-
     try {
-      const res = await fetch(`/api/orders/${orderId}/pay-second-half`, {
-        method: 'POST',
-        headers
+      const res = await apiFetch(`/orders/${orderId}/pay-second-half`, {
+        method: 'POST'
       });
       const json = await res.json();
       if (res.ok && json.success) {
@@ -227,14 +223,10 @@ export const OrdersView: React.FC = () => {
     }
 
     setDisputeLoading(true);
-    const token = getToken();
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
 
     try {
-      const res = await fetch(`/api/orders/${disputeModal.orderId}/dispute`, {
+      const res = await apiFetch(`/orders/${disputeModal.orderId}/dispute`, {
         method: 'POST',
-        headers,
         body: JSON.stringify({
           reason: disputeModal.reason.trim(),
           evidenceUrls: disputeModal.evidenceUrl ? [disputeModal.evidenceUrl.trim()] : []

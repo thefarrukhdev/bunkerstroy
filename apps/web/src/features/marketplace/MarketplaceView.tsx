@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Product } from '@bunkerstroy/types';
 import { Skeleton } from '@bunkerstroy/ui';
+import { apiFetch } from '../../services/apiClient';
 
 /* ==========================================================================
    Types & Color Options Palette (BunkerStroy Industrial Standard)
@@ -73,7 +74,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
 
   // Fetch categories on mount
   useEffect(() => {
-    fetch('/api/catalog/categories')
+    apiFetch('/catalog/categories')
       .then((res) => res.json())
       .then((json) => {
         if (json.success && Array.isArray(json.data)) {
@@ -96,7 +97,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
       if (selectedRegion !== 'all') params.append('region', selectedRegion);
       if (searchQuery.trim()) params.append('query', searchQuery.trim());
 
-      const res = await fetch(`/api/catalog/products?${params.toString()}`);
+      const res = await apiFetch(`/catalog/products?${params.toString()}`);
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
         setProducts(json.data);

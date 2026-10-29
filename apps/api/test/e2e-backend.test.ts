@@ -673,9 +673,103 @@ async function runAllBackendVerificationTests() {
     );
     assert(verifyRes.verificationStatus === VerificationStatus.VERIFIED, 'Admin verifySupplier validates supplier account');
 
+    console.log('\n--- 10. Testing FinTech Idempotency & Transaction Stock Rollback ---');
+    const { Reflector } = await import('@nestjs/core');
+    const { IdempotencyInterceptor } = await import('../src/common/interceptors/idempotency.interceptor');
+    const { firstValueFrom, of } = await import('rxjs');
+
+    const idempotencyInterceptor = new IdempotencyInterceptor(redis, new Reflector());
+
+    // 1. First request with Idempotency-Key caches response
+    const mockHeaders: Record<string, string> = { 'x-idempotency-key': 'fintech-test-key-2026' };
+    const idemReq = { method: 'POST', path: '/api/orders', baseUrl: '', headers: mockHeaders, user: { id: verifyOtpRes.user.id } };
+    const mockResHeaders: Record<string, string> = {};
+    const idemRes = {
+      statusCode: 200,
+      setHeader: (k: string, v: string) => { mockResHeaders[k.toLowerCase()] = v; },
+      status: (c: number) => { idemRes.statusCode = c; }
+    };
+    const mockContext: any = {
+      switchToHttp: () => ({
+        getRequest: () => idemReq,
+        getResponse: () => idemRes,
+      }),
+      getHandler: () => ({}),
+      getClass: () => ({}),
+    };
+
+    const handlerData = { success: true, orderId: 'BS-TEST-IDEM-001' };
+    const callHandler: any = { handle: () => of(handlerData) };
+
+    const firstResult$ = await idempotencyInterceptor.intercept(mockContext, callHandler);
+    const firstResult = await firstValueFrom(firstResult$);
+    assert(firstResult.orderId === 'BS-TEST-IDEM-001', 'IdempotencyInterceptor returns initial response');
+    assert(mockResHeaders['x-idempotency-key'] === 'fintech-test-key-2026', 'X-Idempotency-Key header populated in response');
+
+    // 2. Second request with same key replays cached response
+    const replayResHeaders: Record<string, string> = {};
+    const mockReplayRes = {
+      statusCode: 200,
+      setHeader: (k: string, v: string) => { replayResHeaders[k.toLowerCase()] = v; },
+      status: (c: number) => { mockReplayRes.statusCode = c; }
+    };
+    const mockReplayContext: any = {
+      switchToHttp: () => ({
+        getRequest: () => idemReq,
+        getResponse: () => mockReplayRes,
+      }),
+      getHandler: () => ({}),
+      getClass: () => ({}),
+    };
+    let secondHandlerCalled = false;
+    const replayCallHandler: any = {
+      handle: () => {
+        secondHandlerCalled = true;
+        return of({ success: false, duplicate: true });
+      }
+    };
+    const secondResult$ = await idempotencyInterceptor.intercept(mockReplayContext, replayCallHandler);
+    const secondResult = await firstValueFrom(secondResult$);
+    assert(!secondHandlerCalled, 'Idempotent request skips handler execution (Cached replay)');
+    assert(secondResult.orderId === 'BS-TEST-IDEM-001', 'Cached result correctly replayed');
+    assert(replayResHeaders['x-idempotent-replayed'] === 'true', 'X-Idempotent-Replayed header returned on duplicate call');
+
+    // 3. Short key validation fails with 400 Bad Request
+    let shortKeyRejected = false;
+    try {
+      const invalidReq = { method: 'POST', path: '/api/orders', baseUrl: '', headers: { 'x-idempotency-key': 'ab' }, user: { id: verifyOtpRes.user.id } };
+      const invalidCtx: any = {
+        switchToHttp: () => ({ getRequest: () => invalidReq, getResponse: () => idemRes }),
+        getHandler: () => ({}),
+        getClass: () => ({}),
+      };
+      await idempotencyInterceptor.intercept(invalidCtx, callHandler);
+    } catch (e: any) {
+      if (e.status === 400) shortKeyRejected = true;
+    }
+    assert(shortKeyRejected, 'Invalid short idempotency key rejected with 400 Bad Request');
+    await redis.del(`idempotency:${verifyOtpRes.user.id}:/api/orders:fintech-test-key-2026`);
+
+    // 4. Test ACID stock rollback on order cancellation
+    const stockBeforeCancel = (await prisma.product.findUnique({ where: { id: newProd.id } }))?.stock || 0;
+    const cancelOrder = await ordersService.createOrder(
+      {
+        items: [{ productId: newProd.id, quantity: 2 }],
+        deliveryAddress: { region: 'Toshkent shahri', district: 'Chilonzor tumani' },
+        buyerName: 'Stock Rollback Tester',
+      },
+      { id: verifyOtpRes.user.id, role: Role.CLIENT }
+    );
+    const stockAfterCreate = (await prisma.product.findUnique({ where: { id: newProd.id } }))?.stock || 0;
+    assert(stockAfterCreate === stockBeforeCancel - 2, 'Stock successfully decremented on test order creation');
+
+    await ordersService.updateStatus(cancelOrder.id, { status: OrderStatus.CANCELLED, reason: 'Mijoz bekor qildi' }, { id: 'ADMIN', role: Role.ADMIN });
+    const stockAfterCancel = (await prisma.product.findUnique({ where: { id: newProd.id } }))?.stock || 0;
+    assert(stockAfterCancel === stockBeforeCancel, 'Prisma interactive transaction successfully restores product stock on CANCELLED order');
+
     // Clean up created test data
     const userOrders = await prisma.order.findMany({ where: { buyerId: verifyOtpRes.user.id } });
-    const allTestOrderIds = Array.from(new Set([...userOrders.map(o => o.id), createdOrder.id, splitOrder.id, disputeOrder.id]));
+    const allTestOrderIds = Array.from(new Set([...userOrders.map(o => o.id), createdOrder.id, splitOrder.id, disputeOrder.id, cancelOrder.id]));
 
     await prisma.dispute.deleteMany({ where: { orderId: { in: allTestOrderIds } } });
     await prisma.subOrder.deleteMany({ where: { orderId: { in: allTestOrderIds } } });

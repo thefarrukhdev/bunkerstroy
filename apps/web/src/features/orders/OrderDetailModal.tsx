@@ -297,7 +297,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
               <div className="flex justify-between text-sky-300">
                 <span>Yetkazish narxi:</span>
                 <span>
-                  {Number(order.shippingCost || 0) === 0 ? 'BEPUL' : `${Number(order.shippingCost).toLocaleString()} so‘m`}
+                  {Number(order.deliveryFee || 0) === 0 ? 'BEPUL' : `${Number(order.deliveryFee).toLocaleString()} so‘m`}
                 </span>
               </div>
               {order.paymentMode === 'SPLIT_50_50' && (

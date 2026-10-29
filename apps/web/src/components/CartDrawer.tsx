@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { Product } from '@bunkerstroy/types';
 import { Button, Badge, Drawer, Input, Select, Alert } from '@bunkerstroy/ui';
+import { apiFetch, resolveApiUrl } from '../services/apiClient';
 
 export interface ConstructionSite {
   id: string;
@@ -178,13 +179,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     setErrorMsg(null);
 
     try {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('bunkerstroy_token') : null;
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-      if (token) headers['Authorization'] = `Bearer ${token}`;
-
-      const res = await fetch('/api/orders', {
+      const res = await apiFetch('/orders', {
         method: 'POST',
-        headers,
         body: JSON.stringify({
           buyerName: buyerName.trim(),
           buyerPhone: buyerPhone.trim(),

@@ -1,9 +1,11 @@
-import { Controller, Post, Body, Headers, ForbiddenException } from '@nestjs/common';
+import { Controller, Post, Body, Headers, ForbiddenException, UseInterceptors } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { PaymentsService } from './payments.service';
 import { env } from '../../config/env';
+import { IdempotencyInterceptor } from '../../common';
 
 @ApiTags('Payment Gateways (Payme & Click)')
+@UseInterceptors(IdempotencyInterceptor)
 @Controller('api/payments')
 export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}

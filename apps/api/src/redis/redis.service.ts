@@ -134,6 +134,39 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     return val !== null;
   }
 
+  async setNx(key: string, value: string, ttlSeconds: number): Promise<boolean> {
+    if (this.isConnected && this.client) {
+      try {
+        const result = await this.client.set(key, value, 'EX', ttlSeconds, 'NX');
+        return result === 'OK';
+      } catch (err: any) {
+        this.logger.warn(`Redis setNx error for key ${key}: ${err.message}`);
+      }
+    }
+
+    // Memory fallback atomic setNx
+    const now = Date.now();
+    const existing = this.memoryFallback.get(key);
+    if (existing && now <= existing.expiresAt) {
+      return false;
+    }
+    const expiresAt = ttlSeconds > 0 ? now + ttlSeconds * 1000 : Infinity;
+    this.memoryFallback.set(key, { value, expiresAt });
+    return true;
+  }
+
+  async ping(): Promise<boolean> {
+    if (this.isConnected && this.client) {
+      try {
+        const res = await this.client.ping();
+        return res === 'PONG';
+      } catch {
+        return false;
+      }
+    }
+    return true;
+  }
+
   async incr(key: string, ttlSeconds?: number): Promise<number> {
     if (this.isConnected && this.client) {
       try {

@@ -55,6 +55,7 @@ import {
 } from 'lucide-react';
 import { Product, Order, OrderStatus, COLOR_OPTIONS, ColorOption } from '@bunkerstroy/types';
 import { useLanguage } from './context/LanguageContext';
+import { apiFetch, resolveApiUrl } from './services/apiClient';
 
 /* ==========================================================================
    Types & Interfaces
@@ -804,7 +805,7 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch('/api/catalog/categories');
+      const res = await apiFetch('/catalog/categories');
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
         setCategories(json.data);
@@ -820,7 +821,7 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
   const fetchProducts = async () => {
     setLoadingProducts(true);
     try {
-      const res = await fetch('/api/catalog/products');
+      const res = await apiFetch('/catalog/products');
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
         setProducts(json.data);
@@ -835,10 +836,7 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
   const fetchOrders = async () => {
     setLoadingOrders(true);
     try {
-      const token = localStorage.getItem('bunkerstroy_token');
-      const res = await fetch('/api/orders/supplier/all', {
-        headers: token ? { Authorization: `Bearer ${token}` } : {}
-      });
+      const res = await apiFetch('/orders/supplier/all');
       const json = await res.json();
       if (json.success && Array.isArray(json.data) && json.data.length > 0) {
         setOrders(json.data);
@@ -1084,9 +1082,8 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
     };
 
     try {
-      const res = await fetch('/api/catalog/products', {
+      const res = await apiFetch('/catalog/products', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newProduct)
       });
       if (res.ok) {

@@ -9,6 +9,7 @@ import {
   UserCheck
 } from 'lucide-react';
 import { Button, Badge, Modal, Input, Alert, Tabs, TabsList, TabTrigger } from '@bunkerstroy/ui';
+import { apiFetch } from '../../services/apiClient';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -93,9 +94,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     setInfoMessage(null);
 
     try {
-      const res = await fetch('/api/auth/send-otp', {
+      const res = await apiFetch('/auth/send-otp', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: cleanPhone }),
       });
 
@@ -128,9 +128,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     setError(null);
 
     try {
-      const res = await fetch('/api/auth/verify-otp', {
+      const res = await apiFetch('/auth/verify-otp', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: cleanPhone, code: cleanCode }),
       });
 
@@ -174,9 +173,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
         phonePayload = '+998971112233';
       }
 
-      const res = await fetch('/api/auth/login', {
+      const res = await apiFetch('/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           phone: phonePayload,
           password,

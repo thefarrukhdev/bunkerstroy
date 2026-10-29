@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { Badge } from '@bunkerstroy/ui';
 import { initializeMobilePlatform, triggerHaptic } from './services/mobileBridge';
+import { apiFetch, resolveApiUrl } from './services/apiClient';
 
 export const AppContent: React.FC = () => {
   const navigate = useNavigate();
@@ -87,11 +88,7 @@ export const AppContent: React.FC = () => {
     const token = localStorage.getItem('bunkerstroy_token');
     if (!token) return;
 
-    fetch('/api/auth/me', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
+    apiFetch('/auth/me')
       .then(async (res) => {
         if (res.status === 401 || res.status === 403) {
           localStorage.removeItem('bunkerstroy_token');

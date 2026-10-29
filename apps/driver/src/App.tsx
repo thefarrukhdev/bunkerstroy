@@ -23,8 +23,11 @@ import {
   Layers,
   ArrowUpRight,
   Wifi,
+  WifiOff,
   Sparkles
 } from 'lucide-react';
+import { apiFetch, resolveApiUrl } from './services/apiClient';
+import { offlineStorage } from './services/offlineStorage';
 
 /* ==========================================================================
    Types & Enums
@@ -152,10 +155,15 @@ function playIndustrialBeep(type: 'success' | 'alert' | 'click' = 'click') {
 }
 
 export const App: React.FC = () => {
-  const [task, setTask] = useState<DriverTask>(DEFAULT_TASK);
-  const [stage, setStage] = useState<DriverTaskStage>('PENDING_ACCEPTANCE');
+  const [task, setTask] = useState<DriverTask>(() => offlineStorage.getCachedTask<DriverTask>() || DEFAULT_TASK);
+  const [stage, setStage] = useState<DriverTaskStage>(() => (offlineStorage.getCachedStage() as DriverTaskStage) || 'PENDING_ACCEPTANCE');
   const [isShiftActive, setIsShiftActive] = useState<boolean>(true);
   const [isPortalMenuOpen, setIsPortalMenuOpen] = useState<boolean>(false);
+
+  // Offline Resilience & Sync States
+  const [isOnline, setIsOnline] = useState<boolean>(typeof navigator !== 'undefined' ? navigator.onLine : true);
+  const [pendingSyncCount, setPendingSyncCount] = useState<number>(() => offlineStorage.getSyncQueue().length);
+  const [syncSuccessMsg, setSyncSuccessMsg] = useState<string | null>(null);
 
   // External Portal URLs
   const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
@@ -205,16 +213,43 @@ export const App: React.FC = () => {
     }
   };
 
-  // Fetch active driver dispatch from backend
+  // Online / Offline Network Listeners & Auto-Sync
+  useEffect(() => {
+    const handleOnline = async () => {
+      setIsOnline(true);
+      triggerHaptic('success');
+      const { synced } = await offlineStorage.drainSyncQueue();
+      setPendingSyncCount(offlineStorage.getSyncQueue().length);
+      if (synced > 0) {
+        setSyncSuccessMsg(`${synced} ta oflayn amal server bilan muvaffaqiyatli sinxronlandi!`);
+        setTimeout(() => setSyncSuccessMsg(null), 4000);
+      }
+    };
+
+    const handleOffline = () => {
+      setIsOnline(false);
+      triggerHaptic('alert');
+      setPendingSyncCount(offlineStorage.getSyncQueue().length);
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  // Fetch active driver dispatch from backend (with offline caching)
   useEffect(() => {
     const fetchActiveTask = async () => {
       try {
         let token = localStorage.getItem('bunkerstroy_token');
         if (!token) {
           // Attempt automatic demo login as driver if not yet authenticated
-          const loginRes = await fetch('/api/auth/login', {
+          const loginRes = await apiFetch('/auth/login', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ login: 'driver.sherzod@bunkerstroy.uz', password: 'bunker2026' })
           });
           const loginData = await loginRes.json();
@@ -225,41 +260,63 @@ export const App: React.FC = () => {
         }
 
         if (token) {
-          const res = await fetch('/api/logistics/dispatches', {
-            headers: { Authorization: `Bearer ${token}` }
-          });
+          const res = await apiFetch('/logistics/dispatches');
           if (res.ok) {
             const result = await res.json();
             const list = result.data || [];
             if (list.length > 0) {
               const active = list[0];
-              setTask((prev) => ({
-                ...prev,
+              const updatedTask: DriverTask = {
                 id: active.id,
-                orderNumber: active.order?.orderNumber || prev.orderNumber,
-                originAddress: active.origin || prev.originAddress,
-                destinationAddress: active.destination || prev.destinationAddress,
-                distanceKm: active.distanceKm || prev.distanceKm,
-                totalFreightFee: Number(active.totalCost) || prev.totalFreightFee,
-                driverShareFee: Math.round((Number(active.totalCost) || prev.totalFreightFee) * 0.9),
-                correctPin: active.acceptanceCode || '7492',
-                plateNumber: active.vehicle?.plateNumber || prev.plateNumber,
-                vehicleModel: active.vehicle?.name || prev.vehicleModel
-              }));
+                orderNumber: active.order?.orderNumber || DEFAULT_TASK.orderNumber,
+                driverName: active.driver?.displayName || DEFAULT_TASK.driverName,
+                driverPhone: active.driver?.phone || DEFAULT_TASK.driverPhone,
+                plateNumber: active.vehicle?.plateNumber || DEFAULT_TASK.plateNumber,
+                vehicleModel: active.vehicle?.name || DEFAULT_TASK.vehicleModel,
+                cargoTitle: DEFAULT_TASK.cargoTitle,
+                cargoWeightTons: DEFAULT_TASK.cargoWeightTons,
+                cargoVolumeM3: DEFAULT_TASK.cargoVolumeM3,
+                cargoQuantity: DEFAULT_TASK.cargoQuantity,
+                originName: DEFAULT_TASK.originName,
+                originAddress: active.origin || DEFAULT_TASK.originAddress,
+                destinationName: DEFAULT_TASK.destinationName,
+                destinationAddress: active.destination || DEFAULT_TASK.destinationAddress,
+                clientName: active.order?.buyer?.displayName || DEFAULT_TASK.clientName,
+                clientPhone: active.order?.buyer?.phone || DEFAULT_TASK.clientPhone,
+                paymentMode: active.order?.paymentMode === 'SPLIT_50_50' ? '50_50' : 'FULL_ESCROW',
+                totalFreightFee: Number(active.totalCost) || DEFAULT_TASK.totalFreightFee,
+                driverShareFee: Math.round((Number(active.totalCost) || DEFAULT_TASK.totalFreightFee) * 0.9),
+                distanceKm: active.distanceKm || DEFAULT_TASK.distanceKm,
+                estimatedMinutes: DEFAULT_TASK.estimatedMinutes,
+                correctPin: active.acceptanceCode || DEFAULT_TASK.correctPin,
+              };
 
-              if (active.status === 'ASSIGNED') setStage('PENDING_ACCEPTANCE');
-              else if (active.status === 'LOADED' || active.status === 'IN_TRANSIT') setStage('IN_TRANSIT');
+              setTask(updatedTask);
+              offlineStorage.setCachedTask(updatedTask);
+              if (active.acceptanceCode) {
+                await offlineStorage.cachePinHash(updatedTask.orderNumber, active.acceptanceCode);
+              }
+
+              let newStage: DriverTaskStage = 'PENDING_ACCEPTANCE';
+              if (active.status === 'ASSIGNED') newStage = 'PENDING_ACCEPTANCE';
+              else if (active.status === 'LOADED' || active.status === 'IN_TRANSIT') newStage = 'IN_TRANSIT';
               else if (active.status === 'ARRIVED') {
-                setStage('ARRIVED');
+                newStage = 'ARRIVED';
                 setIsTimerRunning(true);
               } else if (active.status === 'DELIVERED') {
-                setStage('COMPLETED');
+                newStage = 'COMPLETED';
               }
+              setStage(newStage);
+              offlineStorage.setCachedStage(newStage);
             }
           }
         }
       } catch (err) {
-        console.warn('Haydovchi dispetcherligini yuklashda xatolik:', err);
+        console.warn('Haydovchi dispetcherligini yuklashda xatolik (oflayn kesh ishlatilmoqda):', err);
+        const cached = offlineStorage.getCachedTask<DriverTask>();
+        if (cached) {
+          setTask(cached);
+        }
       }
     };
     fetchActiveTask();
@@ -329,58 +386,70 @@ export const App: React.FC = () => {
     }
     triggerHaptic('success');
     setStage('IN_TRANSIT');
+    offlineStorage.setCachedStage('IN_TRANSIT');
 
-    // Sync to backend
-    const token = localStorage.getItem('bunkerstroy_token');
-    if (token && task.id && !task.id.startsWith('TASK-')) {
+    // Sync to backend or enqueue offline
+    let synced = false;
+    if (task.id && !task.id.startsWith('TASK-') && isOnline) {
       try {
-        await fetch(`/api/logistics/dispatches/${task.id}/driver-loaded`, {
+        const res = await apiFetch(`/logistics/dispatches/${task.id}/driver-loaded`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
           body: JSON.stringify({ photoUrl: photoToUse })
         });
+        if (res.ok) synced = true;
       } catch (e) {
-        console.warn('API driver-loaded sync error:', e);
+        console.warn('API driver-loaded sync error, queuing offline:', e);
       }
+    }
+    if (!synced && task.id && !task.id.startsWith('TASK-')) {
+      offlineStorage.enqueueAction({
+        type: 'DRIVER_LOADED',
+        dispatchId: task.id,
+        payload: { photoUrl: photoToUse }
+      });
+      setPendingSyncCount(offlineStorage.getSyncQueue().length);
     }
   };
 
   const handleMarkArrived = async () => {
     triggerHaptic('success');
     setStage('ARRIVED');
+    offlineStorage.setCachedStage('ARRIVED');
     setIsTimerRunning(true);
     setTimerSecondsRemaining(30 * 60);
     setArrivedNotified(true);
     console.log('[LOGISTICS SMS] Mijozga xabar yuborildi: Haydovchi manzilga yetib keldi.');
 
-    // Sync to backend
-    const token = localStorage.getItem('bunkerstroy_token');
-    if (token && task.id && !task.id.startsWith('TASK-')) {
+    let synced = false;
+    if (task.id && !task.id.startsWith('TASK-') && isOnline) {
       try {
-        await fetch(`/api/logistics/dispatches/${task.id}/driver-arrived`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          }
+        const res = await apiFetch(`/logistics/dispatches/${task.id}/driver-arrived`, {
+          method: 'POST'
         });
+        if (res.ok) synced = true;
       } catch (e) {
-        console.warn('API driver-arrived sync error:', e);
+        console.warn('API driver-arrived sync error, queuing offline:', e);
       }
+    }
+    if (!synced && task.id && !task.id.startsWith('TASK-')) {
+      offlineStorage.enqueueAction({
+        type: 'DRIVER_ARRIVED',
+        dispatchId: task.id,
+        payload: {}
+      });
+      setPendingSyncCount(offlineStorage.getSyncQueue().length);
     }
   };
 
-  const handlePinSubmit = () => {
-    if (pinInput.trim() === task.correctPin) {
+  const handlePinSubmit = async () => {
+    const isPinValid = await offlineStorage.verifyPinOffline(task.orderNumber, pinInput, task.correctPin);
+    if (isPinValid) {
       triggerHaptic('success');
       setIsPinVerified(true);
       setPinError(null);
     } else {
       triggerHaptic('alert');
-      setPinError(`Noto‘g‘ri PIN-kod! (Demo sinov kodi: ${task.correctPin})`);
+      setPinError(`Noto‘g‘ri PIN-kod! Iltimos, mijozdan 4 xonali qabul kodini oling.`);
     }
   };
 
@@ -393,29 +462,35 @@ export const App: React.FC = () => {
     }
     triggerHaptic('success');
     setStage('COMPLETED');
+    offlineStorage.setCachedStage('COMPLETED');
     setIsTimerRunning(false);
 
-    // Sync to backend
-    const token = localStorage.getItem('bunkerstroy_token');
-    if (token && task.id && !task.id.startsWith('TASK-')) {
+    let synced = false;
+    if (task.id && !task.id.startsWith('TASK-') && isOnline) {
       try {
-        await fetch(`/api/logistics/dispatches/${task.id}/driver-verify-code`, {
+        const res = await apiFetch(`/logistics/dispatches/${task.id}/driver-verify-code`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
           body: JSON.stringify({ code: pinInput || task.correctPin, photoUrl: photoToUse })
         });
+        if (res.ok) synced = true;
       } catch (e) {
-        console.warn('API driver-verify-code sync error:', e);
+        console.warn('API driver-verify-code sync error, queuing offline:', e);
       }
+    }
+    if (!synced && task.id && !task.id.startsWith('TASK-')) {
+      offlineStorage.enqueueAction({
+        type: 'DRIVER_VERIFY_CODE',
+        dispatchId: task.id,
+        payload: { code: pinInput || task.correctPin, photoUrl: photoToUse }
+      });
+      setPendingSyncCount(offlineStorage.getSyncQueue().length);
     }
   };
 
   const handleResetDemo = () => {
     triggerHaptic('click');
     setStage('PENDING_ACCEPTANCE');
+    offlineStorage.setCachedStage('PENDING_ACCEPTANCE');
     setLoadingPhoto(null);
     setDeliveryPhoto(null);
     setPinInput('');
@@ -452,24 +527,31 @@ export const App: React.FC = () => {
     setIsProblemModalOpen(false);
     setShowIssueAlert(true);
 
-    // Sync to backend
-    const token = localStorage.getItem('bunkerstroy_token');
-    if (token && task.id && !task.id.startsWith('TASK-')) {
+    let synced = false;
+    if (task.id && !task.id.startsWith('TASK-') && isOnline) {
       try {
-        await fetch(`/api/logistics/dispatches/${task.id}/driver-report-issue`, {
+        const res = await apiFetch(`/logistics/dispatches/${task.id}/driver-report-issue`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
           body: JSON.stringify({
             reason: `${typeLabels[problemType]}: ${problemNotes || 'Tafsilotlar yo‘q'}`,
             photoUrl: problemPhoto || undefined
           })
         });
+        if (res.ok) synced = true;
       } catch (err) {
-        console.warn('API driver-report-issue sync error:', err);
+        console.warn('API driver-report-issue sync error, queuing offline:', err);
       }
+    }
+    if (!synced && task.id && !task.id.startsWith('TASK-')) {
+      offlineStorage.enqueueAction({
+        type: 'DRIVER_REPORT_ISSUE',
+        dispatchId: task.id,
+        payload: {
+          reason: `${typeLabels[problemType]}: ${problemNotes || 'Tafsilotlar yo‘q'}`,
+          photoUrl: problemPhoto || undefined
+        }
+      });
+      setPendingSyncCount(offlineStorage.getSyncQueue().length);
     }
 
     setProblemNotes('');
@@ -643,6 +725,25 @@ export const App: React.FC = () => {
             </button>
           </div>
         </header>
+
+        {/* Offline Status & Sync Alert Bar */}
+        {!isOnline && (
+          <div className="bg-amber-500/20 border-b border-amber-500/40 px-4 py-2 flex items-center justify-between text-xs text-amber-300 font-mono">
+            <div className="flex items-center gap-2">
+              <WifiOff className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+              <span className="font-bold">Oflayn rejim (Internet yo‘q)</span>
+            </div>
+            <span className="text-[11px] bg-amber-500/30 px-2 py-0.5 rounded text-amber-200">
+              {pendingSyncCount > 0 ? `${pendingSyncCount} ta amal navbatda` : 'Kesh faol'}
+            </span>
+          </div>
+        )}
+        {syncSuccessMsg && (
+          <div className="bg-emerald-500/20 border-b border-emerald-500/40 px-4 py-2 flex items-center gap-2 text-xs text-emerald-300 font-mono animate-in fade-in">
+            <Check className="w-3.5 h-3.5 text-emerald-400" />
+            <span>{syncSuccessMsg}</span>
+          </div>
+        )}
 
         {/* ==================================================================
             ALERT NOTIFICATIONS (Issue submitted / Arrived notice)

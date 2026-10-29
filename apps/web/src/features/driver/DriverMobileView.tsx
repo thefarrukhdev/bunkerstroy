@@ -30,7 +30,7 @@ import {
   Layers,
   Volume2
 } from 'lucide-react';
-import { isNative, takeMobilePhoto, triggerHaptic } from '../../services/mobileBridge';
+import { isNative, takeMobilePhoto, triggerHaptic as mobileTriggerHaptic } from '../../services/mobileBridge';
 
 /* ==========================================================================
    Types & Enums
@@ -193,7 +193,8 @@ export const DriverMobileView: React.FC = () => {
   const [arrivedNotified, setArrivedNotified] = useState<boolean>(false);
 
   // Sound effect / Haptic simulation
-  const triggerHaptic = () => {
+  const triggerHaptic = (type: 'light' | 'medium' | 'heavy' | 'success' | 'warning' = 'light') => {
+    mobileTriggerHaptic(type);
     if (typeof window !== 'undefined' && 'vibrate' in navigator) {
       try {
         navigator.vibrate([40, 60, 40]);

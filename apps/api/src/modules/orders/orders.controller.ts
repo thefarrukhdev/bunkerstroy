@@ -7,8 +7,9 @@ import {
   Param,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
 import { Role } from '@bunkerstroy/db';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto, UpdateOrderStatusDto, VerifyAcceptanceCodeDto, OpenDisputeDto } from './dto/order.dto';
@@ -17,8 +18,10 @@ import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { Public } from '../../common/decorators/public.decorator';
 import { CurrentUser, CurrentUserPayload } from '../../common/decorators/current-user.decorator';
+import { IdempotencyInterceptor, Idempotent } from '../../common';
 
 @ApiTags('Orders & Checkout')
+@UseInterceptors(IdempotencyInterceptor)
 @Controller('api/orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}

@@ -656,21 +656,40 @@ export class PaymentsService {
 
     const txId = `${provider.toLowerCase()}_tx_${Date.now()}`;
     const pProvider = provider === 'CLICK' ? PaymentProvider.CLICK : PaymentProvider.PAYME;
+    const { expectedAmount, paymentType } = this.getExpectedAmountForOrder(order);
 
-    const payment = await this.prisma.paymentTransaction.create({
-      data: {
-        orderId: order.id,
-        provider: pProvider,
-        transactionId: txId,
-        amount: order.finalAmount,
-        status: PaymentStatus.PAID,
-        rawWebhookData: { simulated: true, time: new Date().toISOString() },
-      },
-    });
+    const payment = await this.prisma.$transaction(async (tx) => {
+      const createdTx = await tx.paymentTransaction.create({
+        data: {
+          orderId: order.id,
+          provider: pProvider,
+          transactionId: txId,
+          paymentType,
+          amount: expectedAmount,
+          status: PaymentStatus.PAID,
+          rawWebhookData: { simulated: true, time: new Date().toISOString() },
+        },
+      });
 
-    await this.prisma.order.update({
-      where: { id: order.id },
-      data: { status: OrderStatus.CONFIRMED },
+      const orderDataToUpdate: any = {};
+      if (paymentType === 'SECOND_50') {
+        orderDataToUpdate.isSecondPaid = true;
+        orderDataToUpdate.status = OrderStatus.FULLY_PAID;
+        orderDataToUpdate.isAcceptanceCodeRevealed = true;
+      } else if (paymentType === 'FIRST_50') {
+        orderDataToUpdate.isFirstPaid = true;
+        orderDataToUpdate.status = OrderStatus.CONFIRMED;
+      } else {
+        orderDataToUpdate.isFirstPaid = true;
+        orderDataToUpdate.status = OrderStatus.CONFIRMED;
+      }
+
+      await tx.order.update({
+        where: { id: order.id },
+        data: orderDataToUpdate,
+      });
+
+      return createdTx;
     });
 
     await this.auditLogService.logAction({

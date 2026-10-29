@@ -433,22 +433,26 @@ export class AdminService {
     });
     if (!dispute) throw new NotFoundException('Nizo topilmadi');
 
-    const updated = await this.prisma.dispute.update({
-      where: { id: disputeId },
-      data: {
-        status: resolution,
-        resolutionNote,
-        refundAmount: refundAmount || null,
-        resolvedAt: new Date(),
-      },
-    });
-
-    if (resolution === 'RESOLVED_REFUND') {
-      await this.prisma.order.update({
-        where: { id: dispute.orderId },
-        data: { status: OrderStatus.RETURNED },
+    const updated = await this.prisma.$transaction(async (tx) => {
+      const d = await tx.dispute.update({
+        where: { id: disputeId },
+        data: {
+          status: resolution,
+          resolutionNote,
+          refundAmount: refundAmount || null,
+          resolvedAt: new Date(),
+        },
       });
-    }
+
+      if (resolution === 'RESOLVED_REFUND') {
+        await tx.order.update({
+          where: { id: dispute.orderId },
+          data: { status: OrderStatus.RETURNED },
+        });
+      }
+
+      return d;
+    });
 
     await this.auditLogService.logAction({
       actorId: actorId || 'ADMIN',

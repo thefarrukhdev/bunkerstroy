@@ -24,6 +24,7 @@ import {
 import { Product } from '@bunkerstroy/types';
 import { Skeleton } from '@bunkerstroy/ui';
 import { COLOR_OPTIONS, ColorOption } from './MarketplaceView';
+import { apiFetch } from '../../services/apiClient';
 
 interface ProductDetailViewProps {
   onAddToCart: (product: Product, quantity: number) => void;
@@ -54,7 +55,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/catalog/products/${productId}`);
+      const res = await apiFetch(`/catalog/products/${productId}`);
       const json = await res.json();
       if (res.ok && json.success && json.data) {
         setProduct(json.data);
