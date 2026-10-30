@@ -15,9 +15,8 @@ interface LandingViewProps {
 }
 
 /**
- * BunkerStroy B2B/B2C Landing Page Container
- * Architecturally decomposed into atomic, single-responsibility slide sections
- * mapped directly to the partner presentation (admin.pdf).
+ * BunkerStroy B2B & B2C Marketplace Landing Page
+ * Production-ready modular architecture decomposed into single-responsibility sections.
  */
 export const LandingView: React.FC<LandingViewProps> = ({
   onNavigateToCatalog
@@ -29,35 +28,35 @@ export const LandingView: React.FC<LandingViewProps> = ({
   };
 
   return (
-    <div className="space-y-16 sm:space-y-24 py-2 sm:py-6 text-slate-100 font-sans">
-      {/* Slide 1: Bosh Slayd & Hero Platforma */}
+    <div className="space-y-16 sm:space-y-24 py-4 sm:py-8 text-slate-100 font-sans max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* 1. Asosiy Hero & Platforma Taqdimoti */}
       <HeroSection
         onNavigateToCatalog={onNavigateToCatalog}
         onNavigateToSellerPanel={handleNavigateToSellerPanel}
       />
 
-      {/* Slide 2: Platformada Nimalar Sotiladi */}
+      {/* 2. Assortiment & 4 Asosiy Qurilish Yo'nalishi */}
       <CategoriesSection onNavigateToCatalog={onNavigateToCatalog} />
 
-      {/* Slide 3: Platformadan Kimlar Foydalanadi */}
+      {/* 3. B2B & B2C Ekotizim Ishtirokchilari */}
       <AudienceSection
         onNavigateToCatalog={onNavigateToCatalog}
         onNavigateToSellerPanel={handleNavigateToSellerPanel}
       />
 
-      {/* Slide 4: Savdo Modeli */}
+      {/* 4. Kafolatlangan Savdo Modeli & 50/50 Escrow */}
       <TradeModelSection />
 
-      {/* Slide 5: Onlayn va Oflayn Savdo Uchun CRM Tizimi */}
+      {/* 5. Onlayn va Oflayn Savdo Uchun Zamonaviy CRM */}
       <CrmSection onNavigateToSellerPanel={handleNavigateToSellerPanel} />
 
-      {/* Slide 6: Yetkazib Berish Shartlari */}
+      {/* 6. Respublika Bo'ylab Yetkazib Berish & Logistika */}
       <DeliverySection />
 
-      {/* Interaktiv Poydevor & Beton Kalkulyatori Vidjeti */}
+      {/* 7. Ustalar Uchun Poydevor & Beton Smeta Kalkulyatori */}
       <ConcreteCalculatorSection onNavigateToCatalog={onNavigateToCatalog} />
 
-      {/* Slide 7: Platformada Birinchilardan Bo‘ling & Start 07.11.2026 */}
+      {/* 8. Hamkorlikka Taklif & Interaktiv Ariza Topshirish */}
       <PartnerCallToActionSection onNavigateToCatalog={onNavigateToCatalog} />
     </div>
   );

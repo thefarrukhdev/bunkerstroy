@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test tests/landing.test.mjs",
     "cap:sync": "cap sync",
     "cap:build": "vite build && cap sync",
     "cap:android": "cap open android",
