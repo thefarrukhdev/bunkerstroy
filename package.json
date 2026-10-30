@@ -2,7 +2,7 @@
   "name": "bunkerstroy-monorepo",
   "version": "1.0.0",
   "private": true,
-  "description": "BunkerStroy — B2B Building Materials Marketplace, Heavy Logistics, ESCO Energy Audit & Gemini AI Platform",
+  "description": "BunkerStroy — B2B Building Materials Marketplace, Heavy Logistics, ESCO Energy Audit",
   "packageManager": "pnpm@10.12.2",
   "scripts": {
     "dev": "turbo run dev",

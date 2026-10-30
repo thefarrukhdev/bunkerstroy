@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { Role, EscoAudit } from '@bunkerstroy/db';
 import { EscoCalculationResult } from '@bunkerstroy/types';
-import { GoogleGenAI } from '@google/genai';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AuditLogService } from '../admin/audit-log.service';
 import { CurrentUserPayload } from '../../common/decorators/current-user.decorator';
@@ -15,74 +14,14 @@ import { CalculateEscoDto, SaveEscoAuditDto } from './dto/esco.dto';
 @Injectable()
 export class EscoService {
   private readonly logger = new Logger(EscoService.name);
-  private ai: GoogleGenAI | null = null;
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly auditLogService: AuditLogService,
-  ) {
-    if (process.env.GEMINI_API_KEY) {
-      this.ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    }
-  }
+  ) {}
 
   async calculateEnergyAudit(dto: CalculateEscoDto): Promise<EscoCalculationResult> {
-    const wallMaterial = dto.wallMaterial || "Pishiq g'isht";
-    const windowType = dto.windowType || 'Oddiy ikki kamerali plastik';
-
-    if (this.ai) {
-      try {
-        const prompt = `Siz BunkerStroy ESCO bosh energetik muhandisisiz.
-Bino parametrlari:
-- Bino turi: ${dto.buildingType}
-- Maydon: ${dto.areaM2} m²
-- Yillik energiya sarfi: ${dto.currentEnergyUsageKwh} kVt/soat
-- Devor: ${wallMaterial}
-- Deraza: ${windowType}
-
-Qat'iy JSON formatida javob bering:
-{
-  "energySavingsPercent": son (masalan 36),
-  "paybackYears": son (masalan 2.3),
-  "annualSavingsSum": son (so'mda),
-  "co2ReductionTons": son,
-  "recommendedMaterials": ["tavsiya 1", "tavsiya 2", "tavsiya 3"],
-  "insulationAdvice": "Tavsiya",
-  "auditScore": "A+"
-}`;
-
-        const resp = await Promise.race([
-          this.ai.models.generateContent({
-            model: 'gemini-3.8-flash',
-            contents: prompt,
-            config: { responseMimeType: 'application/json' },
-          }),
-          new Promise<any>((_, reject) =>
-            setTimeout(() => reject(new Error('Gemini API call timed out after 3.5s')), 3500)
-          ),
-        ]);
-
-        const parsed = JSON.parse(resp.text || '{}');
-        return {
-          energySavingsPercent: parsed.energySavingsPercent || 36,
-          paybackYears: parsed.paybackYears || 2.3,
-          annualSavingsSum: parsed.annualSavingsSum || Math.round(dto.areaM2 * 65000),
-          co2ReductionTons: parsed.co2ReductionTons || Math.round(dto.areaM2 * 0.045 * 10) / 10,
-          recommendedMaterials: parsed.recommendedMaterials || [
-            '100mm Bazalt mineral plitalari',
-            '3 kamerali Low-E energiya tejamkor oynalar',
-          ],
-          insulationAdvice:
-            parsed.insulationAdvice ||
-            'Devor va tomni kompleks izolyatsiyalash orqali xarajatlarni 35-40% gacha kamaytirish mumkin.',
-          auditScore: parsed.auditScore || 'A+',
-        };
-      } catch (err: any) {
-        this.logger.warn(`Gemini ESCO API fallback: ${err?.message}`);
-      }
-    }
-
-    // Thermodynamic & empirical formula fallback for Uzbekistan climatic conditions
+    // Thermodynamic & empirical formula for Uzbekistan climatic conditions
     const area = dto.areaM2;
     const annualSavingsSum = Math.round(area * 65000);
     return {

@@ -9,7 +9,6 @@ import { OrdersModule } from './modules/orders/orders.module';
 import { LogisticsModule } from './modules/logistics/logistics.module';
 import { EscoModule } from './modules/esco/esco.module';
 import { PaymentsModule } from './modules/payments/payments.module';
-import { AiModule } from './modules/ai/ai.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { HealthModule } from './modules/health/health.module';
 
@@ -28,7 +27,6 @@ import { HealthModule } from './modules/health/health.module';
     LogisticsModule,
     EscoModule,
     PaymentsModule,
-    AiModule,
     AdminModule,
   ],
   providers: [

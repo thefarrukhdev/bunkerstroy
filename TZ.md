@@ -17,7 +17,7 @@ Backendning asosiy maqsadi:
 2. **Aqlli Og‘ir Logistika:** HOWO samosvallari, beton mikserlari va kran-manipulyatorlar marshrutini PostGIS orqali aniq hisoblash va haydovchilar bilan buyurtmalarni bog‘lash.
 3. **Davlat va Huquqiy Integratsiyalar:** O‘zbekiston Davlat Soliq Qo‘mitasi (STIR/INN) ochiq bazasi, E-IMZO (PKCS#7) elektron raqamli imzosi va Eskiz.uz SMS shlyuzi orqali 100% verifikatsiyalangan yuridik bitimlar tuzish.
 4. **Fintech Xavfsizligi:** Payme (JSON-RPC 2.0 Basic Auth), Click (MD5 hash signature) va B2B to‘lov shartnomalarini avtomatlashtirish.
-5. **AI Muhandislik Maslahatchisi:** Google Gemini 3.8 Live API yordamida real-vaqt rejimida WebSockets orqali audio maslahat berish va Google Maps Grounding orqali eng yaqin omborlarni topish.
+5. **ESCO Energiya Auditi:** O‘zbekiston iqlim zonasi (SNiP / QMQ talablari) bo‘yicha binolarning issiqlik yo‘qotilishini termodinamik hisoblash va energiya tejamkorlik auditini shakllantirish.
 
 ---
 
@@ -30,7 +30,6 @@ Backendning asosiy maqsadi:
 | **Ma'lumotlar Bazasi** | **PostgreSQL + PostGIS** | `16-3.4` | Relyatsion ma'lumotlar, geofazoviy koordinatalar, masofa va radius qidiruvi |
 | **ORM** | **Prisma ORM** | `6.5.x` | Tip-xavfsiz migratsiyalar, tranzaksiyalar va ma'lumotlar modellash |
 | **In-Memory & Kesh** | **Redis** | `7.x` | Sessiyalar, OTP cheklovlari (Rate limit), tokenlar qora ro‘yxati (Blacklist) |
-| **Sun'iy Intellekt** | **Google GenAI SDK** | `@google/genai` | Gemini 3.8 Live (audio PCM streaming), Gemini 3.5 Flash (Maps Grounding) |
 | **Raqamli Imzo** | **E-IMZO (PKCS#7)** | `v2 API` | Yuridik shaxslar uchun elektron raqamli imzo tekshiruvi |
 | **SMS Provayder** | **Eskiz.uz** | REST API | Tranzaksiyaviy OTP va buyurtma holati xabarnomalari |
 | **Hujjatlashtirish** | **Swagger / OpenAPI 3** | `@nestjs/swagger` | Barcha endpointlar, DTO lar va Bearer Auth hujjatlari (`/api/docs`) |
@@ -56,9 +55,8 @@ apps/api/src/
     ├── catalog/               # Tovarlar, Zaxiralar, Kategoriyalar, MOQ, Filtrlash
     ├── orders/                # Buyurtmalar, Savat, Server-side Narx tekshiruvi (CWE-472)
     ├── logistics/             # HOWO/Shacman parki, PostGIS masofa & narx kalkulyatori
-    ├── esco/                  # Bino issiqlik fizikasi va Gemini AI energiya auditi
+    ├── esco/                  # Bino issiqlik fizikasi va termodinamik energiya auditi
     ├── payments/              # Payme (JSON-RPC 2.0), Click (MD5 Webhook), Uzum
-    ├── ai/                    # Live Voice WebSocket (/api/live), Google Maps Grounding
     └── admin/                 # Boshqaruv metrikalari, Ta'minotchilar, AuditLog jurnali
 ```
 
@@ -105,12 +103,12 @@ apps/api/src/
   - Formula: `totalCost = vehicle.basePrice + (distanceKm * vehicle.pricePerKm)`.
   - PostGIS koordinatalari (`ST_DistanceSphere` / `ST_MakePoint`) orqali eng yaqin karyer yoki bazadan mijoz manziliga masofani aniqlash.
 
-### 4.5. `EscoModule` (AI Binolar Energiya Auditi)
+### 4.5. `EscoModule` (Binolar Energiya Auditi)
 - **Auditorlik kiritish parametrlari:**
   - Bino maydoni (`areaM2`), yillik energiya sarfi (`currentEnergyUsageKwh`), devor materiali, deraza profili.
-- **Gemini AI integratsiyasi:**
-  - `gemini-3.8-flash` modeli orqali O‘zbekiston iqlim zonasi (SNiP / QMQ talablari) asosida tahlil qilish.
-  - Structured Output (JSON Schema) orqali: `energySavingsPercent`, `paybackYears`, `annualSavingsSum`, `co2ReductionTons`, `recommendedMaterials` qaytarish.
+- **Termodinamik modellashtirish:**
+  - O‘zbekiston iqlim zonasi (SNiP / QMQ talablari) asosida tahlil qilish.
+  - Metrikalar: `energySavingsPercent`, `paybackYears`, `annualSavingsSum`, `co2ReductionTons`, `recommendedMaterials` qaytarish.
 
 ### 4.6. `PaymentsModule` (Fintech To‘lov Shlyuzlari)
 - **Payme Webhook (`POST /api/payments/payme`):**
@@ -123,14 +121,7 @@ apps/api/src/
   - Harakatlar: `Prepare` (action = 0) va `Complete` (action = 1).
   - To‘lov tasdiqlanganda bazadagi `Order.status = 'PAID'` holatiga o‘tadi.
 
-### 4.7. `AiModule` (Gemini Live Ovoz va Xaritalar)
-- **Live Voice Gateway (`ws://localhost:4000/api/live`):**
-  - Google GenAI SDK orqali `gemini-3.8-live` modeliga WebSocket ikki tomonlama (bidirectional) oqimini ulash.
-  - Mijozdan kelgan 16kHz PCM audio baytlarini to‘g‘ridan-to‘g‘ri Gemini Live sessiyasiga yo‘naltirish va model qaytargan audio javobni mijoz brauzeriga uzatish.
-- **Google Maps Grounding (`POST /api/maps/search`):**
-  - `gemini-3.5-flash` modeli va Google Maps vositasi yordamida O‘zbekistondagi eng yaqin sement omborlari va karerlarni topish.
-
-### 4.8. `AdminModule` (Boshqaruv, Moliyaviy Tahlil va Audit)
+### 4.7. `AdminModule` (Boshqaruv, Moliyaviy Tahlil va Audit)
 - **Kirish huquqi:** Faqat `ADMIN` roli uchun (`@UseGuards(JwtAuthGuard, RolesGuard)`).
 - **AuditLog:** Tizimdagi har bir nozik amal (katalog narxini o‘zgartirish, buyurtmani bekor qilish, E-IMZO tekshiruvi) `AuditLog` jadvaliga yozib boriladi (Actor, IP, Category, Level, Details).
 - **PII Himoyasi:** `/api/admin/orders` da mijozlarning shaxsiy ma'lumotlari faqat vakolatli xodimlarga ko‘rinadi.
@@ -179,9 +170,9 @@ Quyidagi modellar PostgreSQL bazasida to‘liq migratsiya qilinishi shart:
 - **Sprint 3 (Fintech & Davlat Xizmatlari Integratsiyasi):**
   - Payme (Basic Auth) va Click (MD5) webhooklarini to‘liq imzolash.
   - E-IMZO va Eskiz SMS xizmatlarini jonli API ga tayyorlash.
-- **Sprint 4 (Og‘ir Logistika & AI Voice Gateway):**
+- **Sprint 4 (Og‘ir Logistika & ESCO Energiya Auditi):**
   - PostGIS masofa hisob-kitobini ulash.
-  - Gemini 3.8 Live WebSocket shlyuzini to‘liq audio oqimga ulash va yuklama testlarini o‘tkazish.
+  - ESCO termodinamik hisob-kitoblari va audit jurnallashini to‘liq yakunlash.
 
 ---
 *Ushbu Texnik Vazifa BunkerStroy platformasining barqaror, xavfsiz va kengayuvchan (scalable) arxitekturasini ta'minlash uchun qat'iy dasturilamal hisoblanadi.*

@@ -13,7 +13,6 @@
   "dependencies": {
     "@bunkerstroy/db": "workspace:*",
     "@bunkerstroy/types": "workspace:*",
-    "@google/genai": "^2.4.0",
     "@nestjs/common": "^11.0.11",
     "@nestjs/core": "^11.0.11",
     "@nestjs/jwt": "^11.0.0",

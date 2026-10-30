@@ -16,7 +16,6 @@ import { DriverMobileView } from './features/driver/DriverMobileView';
 import { OrdersView } from './features/orders/OrdersView';
 import { SellerPanelView } from './features/seller/SellerPanelView';
 import { AuthModal } from './features/auth/AuthModal';
-import { VoiceAssistantModal } from './features/ai/VoiceAssistantModal';
 import {
   HardHat,
   PhoneCall,
@@ -34,25 +33,18 @@ export const AppContent: React.FC = () => {
   // Modals state
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [isVoiceAssistantOpen, setIsVoiceAssistantOpen] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
 
   // References for native back button handling
   const isCartOpenRef = React.useRef(isCartOpen);
   const isAuthOpenRef = React.useRef(isAuthOpen);
-  const isVoiceAssistantOpenRef = React.useRef(isVoiceAssistantOpen);
   isCartOpenRef.current = isCartOpen;
   isAuthOpenRef.current = isAuthOpen;
-  isVoiceAssistantOpenRef.current = isVoiceAssistantOpen;
 
   // Initialize native mobile features (StatusBar, Splash, Network, BackButton)
   useEffect(() => {
     const cleanupPromise = initializeMobilePlatform({
       onBackPress: () => {
-        if (isVoiceAssistantOpenRef.current) {
-          setIsVoiceAssistantOpen(false);
-          return true;
-        }
         if (isCartOpenRef.current) {
           setIsCartOpen(false);
           return true;
@@ -192,7 +184,6 @@ export const AppContent: React.FC = () => {
         onOpenAuth={() => setIsAuthOpen(true)}
         currentUser={currentUser}
         onLogout={handleLogout}
-        onOpenVoiceAssistant={() => setIsVoiceAssistantOpen(true)}
       />
 
       {/* 2. Main Page Content (Real URL Routes) */}
@@ -388,17 +379,10 @@ export const AppContent: React.FC = () => {
         onSuccess={handleAuthSuccess}
       />
 
-      <VoiceAssistantModal
-        isOpen={isVoiceAssistantOpen}
-        onClose={() => setIsVoiceAssistantOpen(false)}
-        onNavigate={(path) => navigate(path)}
-      />
-
       {/* 5. Mobile Bottom Navigation */}
       <MobileBottomNav
         cartCount={cartCount}
         onOpenCart={() => setIsCartOpen(true)}
-        onOpenVoiceAssistant={() => setIsVoiceAssistantOpen(true)}
       />
     </div>
   );

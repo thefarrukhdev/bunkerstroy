@@ -3,7 +3,6 @@ import {
   Settings,
   MessageSquare,
   KeyRound,
-  Cpu,
   ShieldCheck,
   CheckCircle2,
   RefreshCw,
@@ -11,9 +10,7 @@ import {
   Save,
   Sliders,
   AlertCircle,
-  Zap,
-  Globe,
-  Lock
+  Globe
 } from 'lucide-react';
 import { Card, Badge, Button } from '@bunkerstroy/ui';
 
@@ -29,12 +26,6 @@ export const PlatformSettings: React.FC = () => {
   const [eimzoPort, setEimzoPort] = useState('64443');
   const [soliqApiUrl, setSoliqApiUrl] = useState('https://soliq.uz/api/v1/inn');
   const [eimzoTimeout, setEimzoTimeout] = useState(300);
-
-  // Gemini AI state
-  const [geminiModel, setGeminiModel] = useState('gemini-2.5-flash');
-  const [geminiApiKey, setGeminiApiKey] = useState('AIzaSyD98aK2_BunkerStroySecuredKey94');
-  const [isPingingAi, setIsPingingAi] = useState(false);
-  const [aiPingResult, setAiPingResult] = useState<string | null>(null);
 
   // General settings state
   const [platformCommission, setPlatformCommission] = useState(1.5);
@@ -64,16 +55,6 @@ export const PlatformSettings: React.FC = () => {
     }, 800);
   };
 
-  const handlePingAi = () => {
-    setIsPingingAi(true);
-    setAiPingResult(null);
-    setTimeout(() => {
-      setIsPingingAi(false);
-      setAiPingResult("Gemini 2.5 javob berdi: Latency 210ms. Tizim to'liq barqaror!");
-      setTimeout(() => setAiPingResult(null), 4000);
-    }, 700);
-  };
-
   const handleSaveSettings = () => {
     setSavedNotification(true);
     setTimeout(() => setSavedNotification(false), 3000);
@@ -91,7 +72,7 @@ export const PlatformSettings: React.FC = () => {
             </h1>
           </div>
           <p className="text-xs text-[#BAE6FD] font-mono mt-0.5">
-            Eskiz SMS shlyuz, E-IMZO/Soliq GNK moduli, Google Gemini AI va boshqaruv parametrlari
+            Eskiz SMS shlyuz, E-IMZO/Soliq GNK moduli va boshqaruv parametrlari
           </p>
         </div>
 
@@ -255,77 +236,7 @@ export const PlatformSettings: React.FC = () => {
           </div>
         </Card>
 
-        {/* 3. Google Gemini AI Engine */}
-        <Card rivetAccents className="bg-[#0A1931] border-[#1E3A6D] space-y-4">
-          <div className="flex items-center justify-between border-b border-[#1E3A6D] pb-3">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center">
-                <Cpu className="w-4 h-4" />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-[#F5F5F2]">Google Gemini AI Dvigateli</h3>
-                <p className="text-[11px] text-[#6C7086] font-mono">B2B Ovozli yordamchi va ESCO hisob-kitoblari</p>
-              </div>
-            </div>
-            <Badge variant="success">Faol (Active)</Badge>
-          </div>
-
-          <div className="space-y-3 text-xs">
-            <div>
-              <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
-                AI Modeli (Model Tier)
-              </label>
-              <select
-                value={geminiModel}
-                onChange={(e) => setGeminiModel(e.target.value)}
-                className="w-full bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-2 text-[#F5F5F2] font-mono focus:outline-none focus:border-[#FFB800]"
-              >
-                <option value="gemini-2.5-flash">Gemini 2.5 Flash (Tezkor tahlil va Ovozli rejim)</option>
-                <option value="gemini-2.5-pro">Gemini 2.5 Pro (Murakkab ESCO energiya auditi)</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
-                Gemini API Key
-              </label>
-              <div className="relative">
-                <input
-                  type="password"
-                  value={geminiApiKey}
-                  onChange={(e) => setGeminiApiKey(e.target.value)}
-                  className="w-full bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-2 text-[#F5F5F2] font-mono focus:outline-none focus:border-[#FFB800]"
-                />
-                <Lock className="w-3.5 h-3.5 text-[#6C7086] absolute right-3 top-1/2 -translate-y-1/2" />
-              </div>
-            </div>
-
-            <div className="pt-2 border-t border-[#1E3A6D] flex items-center justify-between">
-              <div>
-                <div className="text-[11px] text-[#6C7086] font-mono">
-                  Ovozli asistent &amp; Tahlil: 100% integratsiyalangan
-                </div>
-                {aiPingResult && (
-                  <div className="text-[11px] text-emerald-400 font-mono mt-0.5">
-                    {aiPingResult}
-                  </div>
-                )}
-              </div>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={handlePingAi}
-                isLoading={isPingingAi}
-                className="text-xs"
-              >
-                <Zap className="w-3.5 h-3.5 mr-1 text-[#FFB800]" />
-                Ping AI
-              </Button>
-            </div>
-          </div>
-        </Card>
-
-        {/* 4. Platform Parameters */}
+        {/* 3. Platform Parameters */}
         <Card rivetAccents className="bg-[#0A1931] border-[#1E3A6D] space-y-4">
           <div className="flex items-center justify-between border-b border-[#1E3A6D] pb-3">
             <div className="flex items-center gap-2.5">

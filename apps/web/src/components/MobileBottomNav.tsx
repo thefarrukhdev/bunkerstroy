@@ -15,13 +15,11 @@ import { triggerHaptic } from '../services/mobileBridge';
 interface MobileBottomNavProps {
   cartCount: number;
   onOpenCart: () => void;
-  onOpenVoiceAssistant?: () => void;
 }
 
 export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   cartCount,
-  onOpenCart,
-  onOpenVoiceAssistant
+  onOpenCart
 }) => {
   const location = useLocation();
 

@@ -22,7 +22,6 @@ import {
   Store,
   SlidersHorizontal,
   ExternalLink,
-  Mic,
   Calculator,
   FileSpreadsheet,
   Home
@@ -50,7 +49,6 @@ export interface NavbarProps {
   onOpenAuth: () => void;
   currentUser: CurrentUser | null;
   onLogout: () => void;
-  onOpenVoiceAssistant?: () => void;
 }
 
 export interface CabinetOption {
@@ -677,7 +675,6 @@ interface MobileMenuDrawerProps {
   currentUser: CurrentUser | null;
   onOpenAuth: () => void;
   onLogout: () => void;
-  onOpenVoiceAssistant?: () => void;
 }
 
 export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
@@ -687,8 +684,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
   onOpenCart,
   currentUser,
   onOpenAuth,
-  onLogout,
-  onOpenVoiceAssistant
+  onLogout
 }) => {
   const navigate = useNavigate();
 
@@ -881,23 +877,6 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               <Truck className="w-4.5 h-4.5 text-[#FFB800]" />
               <span>Logistika &amp; Dispetcherlik</span>
             </NavLink>
-
-            {onOpenVoiceAssistant && (
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  onOpenVoiceAssistant();
-                }}
-                className="w-full flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-amber-500/10 via-amber-500/20 to-amber-500/10 border border-[#FFB800]/60 text-white font-semibold text-sm cursor-pointer min-h-[44px] touch-target-44"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Mic className="w-4.5 h-4.5 text-[#FFB800] animate-pulse" />
-                  <span className="text-[#FFB800] font-bold">Bunker AI Ovozli Yordamchi</span>
-                </div>
-                <ChevronRight className="w-4 h-4 text-[#FFB800]" />
-              </button>
-            )}
           </div>
 
           {/* 5 ta Kabinetlar ro'yxati */}
@@ -1019,8 +998,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenCart,
   onOpenAuth,
   currentUser,
-  onLogout,
-  onOpenVoiceAssistant
+  onLogout
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -1124,18 +1102,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <FileSpreadsheet className="w-3.5 h-3.5 text-[#FFB800]" />
                 <span>Tenderlar</span>
               </NavLink>
-
-              {onOpenVoiceAssistant && (
-                <button
-                  type="button"
-                  onClick={onOpenVoiceAssistant}
-                  className="px-2.5 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 bg-[#0F2547] hover:bg-[#132C54] border border-[#1E3A6D] text-[#FFB800] hover:border-[#FFB800]/60 shadow-xs"
-                  title="Bunker AI Ovozli Yordamchi"
-                >
-                  <Mic className="w-3.5 h-3.5 text-[#FFB800] animate-pulse" />
-                  <span className="hidden xl:inline">AI Ovoz</span>
-                </button>
-              )}
             </nav>
 
             {/* 4. Action Controls: Viloyat, Til, Savat, 5 ta Kabinet Switcher */}
@@ -1187,7 +1153,6 @@ export const Navbar: React.FC<NavbarProps> = ({
         currentUser={currentUser}
         onOpenAuth={onOpenAuth}
         onLogout={onLogout}
-        onOpenVoiceAssistant={onOpenVoiceAssistant}
       />
     </>
   );

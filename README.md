@@ -8,7 +8,6 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16%20%2B%20PostGIS-4169E1?logo=postgresql)](https://www.postgresql.org/)
 [![Prisma](https://img.shields.io/badge/Prisma-6.5-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Google Gemini](https://img.shields.io/badge/Google_Gemini-3.8_Live-8E75C2?logo=google)](https://deepmind.google/technologies/gemini/)
 
 > **BunkerStroy** — O‘zbekiston Respublikasi qurilish sanoati va yirik infratuzilma loyihalari uchun mo‘ljallangan milliy B2B raqamli ekotizim. Platforma qurilish materiallarini ulgurji xarid qilish, ixtisoslashtirilgan og‘ir yuk logistikasi, binolar energiya samaradorligi (ESCO) auditi, Davlat soliq qo‘mitasi (STIR) va E-IMZO raqamli identifikatsiyasini yagona korporativ interfeysda birlashtiradi.
 
@@ -35,9 +34,8 @@ Zamonaviy qurilish loyihalarida ta'minot zanjirining uzilishi, transport narxlar
 **BunkerStroy** ushbu muammolarni sanoat darajasidagi yechimlar bilan bartaraf etadi:
 - **Kafolatlangan B2B Ulgurji Xarid**: Sement, armatura, g‘isht va devor materiallarini to‘g‘ridan-to‘g‘ri ishlab chiqaruvchi zavodlardan zaxira kafolati bilan olish.
 - **Aqlli Og‘ir Logistika**: Samosvallar (HOWO, Shacman), avtokranlar va beton mikserlarini marshrut masofasi (km) va og‘irligi bo‘yicha aniq tariflar asosida chaqirish.
-- **ESCO AI Energiya Auditi**: Gemini AI issiqlik fizikasini modellashtirib, binoning energiya yo‘qotishini kamaytirish, yillik iqtisodiy tejash summasi va investitsiyaning o‘zini oqlash muddatini (Payback Period) avtomatik hisoblab beradi.
+- **ESCO Energiya Auditi**: O‘zbekiston iqlim zonasi (SNiP / QMQ talablari) asosida termodinamik modellashtirib, binoning energiya yo‘qotishini kamaytirish, yillik iqtisodiy tejash summasi va investitsiyaning o‘zini oqlash muddatini (Payback Period) avtomatik hisoblab beradi.
 - **E-IMZO va STIR Integratsiyasi**: Yuridik shaxslarni O‘zbekiston Davlat Soliq Qo‘mitasi bazasidan STIR (INN) orqali avtomatik verifikatsiyalash va E-IMZO elektron raqamli imzosi bilan shartnomalarni tasdiqlash.
-- **Jonli Ovozli Maslahatchi**: Google Gemini 3.8 Live API yordamida WebSockets orqali ovozli rejimda tezkor muhandislik va xarid maslahatlarini taqdim etish.
 - **Eskiz.uz SMS Gateway**: Tranzaksiyalar va buyurtma holatlari bo‘yicha tezkor SMS xabarnomalar.
 
 ---
@@ -52,7 +50,6 @@ Zamonaviy qurilish loyihalarida ta'minot zanjirining uzilishi, transport narxlar
 | **Global Bunker Hub** | Germaniya (Heidelberg Materials), Koreya (POSCO Steel), Fransiya (Saint-Gobain) kabi global brendlar bilan temir yo‘l va multimodal ta'minot. |
 | **Orders & Tracking** | Buyurtma yaratish, manzil kiritish, to‘lov usullarini tanlash (CASH, PAYME, CLICK, BANK) va holat monitoringi. |
 | **B2B Identity & E-IMZO** | STIR Lookup (Davlat Soliq ochiq ma'lumotlari), E-IMZO PKCS#7 sessiyasi va JWT rolli xavfsizlik (ADMIN, SUPPLIER, CONTRACTOR, CLIENT). |
-| **Voice AI Maslahatchi** | O‘zbek tilidagi tabiiy muloqotga asoslangan Gemini 3.8 Live agenti va Google Maps orqali yaqin beton zavodlari hamda bozorlarni topish. |
 
 ---
 
@@ -78,8 +75,7 @@ flowchart TD
         CatalogMod["/api/catalog\n(Tovarlar, Zaxiralar)"]
         OrdersMod["/api/orders\n(Buyurtmalar, Savat)"]
         LogisticsMod["/api/logistics\n(Kalkulyator, HOWO Park)"]
-        EscoMod["/api/esco\n(AI Energiya Auditi)"]
-        MapsMod["/api/maps\n(Gemini Maps Grounding)"]
+        EscoMod["/api/esco\n(Energiya Auditi)"]
         AdminMod["/api/admin\n(Metrikalar, Audit Log)"]
         PayMod["/api/payments\n(Payme, Click Webhook)"]
     end
@@ -100,12 +96,10 @@ flowchart TD
         SoliqAPI["Davlat Soliq Qo'mitasi\n(STIR / INN Verifikatsiya)"]
         EIMZOService["E-IMZO Davlat Xizmati\n(PKCS#7 Raqamli Imzo)"]
         EskizSMS["Eskiz.uz SMS Gateway\n(Tranzaksiyaviy OTP)"]
-        GeminiAI["Google Gemini 3.8 Live & 3.5\n(AI Maslahatchi & Maps)"]
         PayGateways["Payme / Click / Bank\n(To'lov tizimlari)"]
     end
 
-    WebPortal -->|HTTP REST / WebSocket| ExpressCore
-    WebPortal -.->|WS Audio Streaming| WSServer
+    WebPortal -->|HTTP REST| ExpressCore
     AdminPortal -->|HTTP REST| ExpressCore
 
     ExpressCore --> AuthMiddleware
@@ -119,9 +113,6 @@ flowchart TD
     AuthMod --> SoliqAPI
     AuthMod --> EIMZOService
     AuthMod --> EskizSMS
-    EscoMod --> GeminiAI
-    MapsMod --> GeminiAI
-    WSServer --> GeminiAI
     PayMod --> PayGateways
 ```
 
@@ -137,11 +128,10 @@ flowchart TD
 | **Frontend Freymvork** | **React** | `^19.0.0` | Reaktiv interfeys, zamonaviy React 19 hooklari va komponentlar |
 | **CSS & Dizayn Tizimi** | **Tailwind CSS** | `^4.0.9` | Sanoat/industrial dizayn tizimi, Brushed Steel va Hazard accents |
 | **Backend API** | **Express.js / Node.js** | `v22.14.0` | RESTful API arxitekturasi va marshrutlash |
-| **Real-time Gateway** | **WebSocket (ws)** | `^8.18.0` | Gemini Live audio oqimi va real-vaqt xabarnomalari |
+| **Real-time Gateway** | **WebSocket (ws)** | `^8.18.0` | Real-vaqt xabarnomalari va yangilanishlar |
 | **Ma'lumotlar bazasi** | **PostgreSQL + PostGIS** | `16-3.4` | Relyatsion ma'lumotlar va geofazoviy koordinatalar |
 | **ORM** | **Prisma ORM** | `^6.5.0` | Tip-xavfsiz SQL so‘rovlar, migratsiyalar va sxema boshqaruvi |
 | **Kesh & Xotira** | **Redis** | `7-alpine` | Sessiyalar keshi, token blacklist va rate-limiting |
-| **Sun'iy Intellekt (AI)** | **Google Gemini** | `@google/genai` | Gemini 3.8 Live (jonli ovoz) va Gemini 3.5 Flash (Maps Grounding) |
 | **SMS Provayder** | **Eskiz.uz** | REST API | SMS OTP va buyurtma holati bo‘yicha bildirishnomalar |
 | **Raqamli Imzo** | **E-IMZO** | PKCS#7 / X.509 | O‘zbekiston davlat standartiga mos elektron raqamli imzo |
 | **To‘lov Integratsiyalari** | **Payme & Click** | Webhook API | B2B to‘lovlar, onlayn tranzaksiyalar va schyot-fakturalar |
@@ -160,7 +150,6 @@ bunkerstroy/
 │   │   ├── src/
 │   │   │   ├── components/      # Navbar, CartDrawer, Header/Footer
 │   │   │   ├── features/
-│   │   │   │   ├── ai/          # Gemini VoiceAssistantModal
 │   │   │   │   ├── auth/        # AuthModal (Login, Soliq STIR, E-IMZO)
 │   │   │   │   ├── esco/        # EscoCalculatorView (Binolar energiya auditi)
 │   │   │   │   ├── global_bunker/# Global Bunker Hub (Xalqaro import ta'minoti)
@@ -187,7 +176,6 @@ bunkerstroy/
 │       │   ├── config/          # Zod asosidagi Type-safe Env konfiguratsiyasi
 │       │   ├── modules/
 │       │   │   ├── admin/       # Boshqaruv metrikalari va audit jurnallari
-│       │   │   ├── ai/          # Gemini Live Voice Gateway & Maps Grounding
 │       │   │   ├── auth/        # Login, STIR Lookup, E-IMZO, Eskiz SMS
 │       │   │   ├── catalog/     # Mahsulotlar katalogi va kategoriyalar
 │       │   │   ├── esco/        # ESCO hisoblash xizmati va modeli
@@ -240,7 +228,7 @@ pnpm install
 ```bash
 cp .env.example .env
 ```
-`.env` faylida PostgreSQL, Redis, JWT_SECRET va zarur bo‘lsa `GEMINI_API_KEY` qiymatlarini ko‘rsating.
+`.env` faylida PostgreSQL, Redis, JWT_SECRET va boshqa konfiguratsiya qiymatlarini ko‘rsating.
 
 ### 4. Ma'lumotlar bazasi va Redis konteynerlarini ishga tushirish
 ```bash
@@ -331,16 +319,7 @@ Barcha API so‘rovlari `http://localhost:4000` manziliga yuboriladi. Himoyalang
 
 ---
 
-### 6. Google Gemini AI & Maps (`/api/maps` va `/api/live`)
-
-| Metod / Protokol | Marshrut | Tavsif | Parametrlar |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/maps/search` | O‘zbekistondagi bozorlar va beton zavodlarini qidirish | `{ query: "Yunusobod sement bozorlari", latitude, longitude }` |
-| `WebSocket` | `ws://localhost:4000/api/live` | Gemini 3.8 Live ikki tomonlama jonli audio/matn maslahatchi | Oqimli PCM 16kHz audio yoki JSON matn |
-
----
-
-### 7. To‘lov Webhooklari (`/api/payments`)
+### 6. To‘lov Webhooklari (`/api/payments`)
 
 | Metod | Marshrut | Tavsif |
 | :--- | :--- | :--- |
@@ -349,7 +328,7 @@ Barcha API so‘rovlari `http://localhost:4000` manziliga yuboriladi. Himoyalang
 
 ---
 
-### 8. Boshqaruv & Admin Paneli (`/api/admin`)
+### 7. Boshqaruv & Admin Paneli (`/api/admin`)
 
 | Metod | Marshrut | Kirish Huquqi | Tavsif |
 | :--- | :--- | :--- | :--- |

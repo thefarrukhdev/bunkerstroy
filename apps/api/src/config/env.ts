@@ -17,7 +17,6 @@ const envSchema = z.object({
   CLICK_SECRET_KEY: z.string().default('bunker_click_test_secret_key_2026'),
   CLICK_SERVICE_ID: z.string().default('38491'),
   CLICK_MERCHANT_ID: z.string().default('29182'),
-  GEMINI_API_KEY: z.string().optional(),
   ESKIZ_EMAIL: z.string().optional(),
   ESKIZ_PASSWORD: z.string().optional(),
   ESKIZ_FROM: z.string().default('4546')
