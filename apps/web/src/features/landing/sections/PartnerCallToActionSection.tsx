@@ -154,8 +154,8 @@ export const PartnerCallToActionSection: React.FC<PartnerCallToActionSectionProp
                 <span className="text-sky-300 font-bold">12 Viloyat + Qoraqalpog‘iston</span>
               </div>
               <div className="flex justify-between py-1">
-                <span className="text-slate-400">Escrow Kafolati:</span>
-                <span className="text-emerald-400 font-bold">50% Onlayn + 50% Naqd</span>
+                <span className="text-slate-400">To‘lov Tizimi:</span>
+                <span className="text-emerald-400 font-bold">100% Onlayn yoki 50/50 Yetganda</span>
               </div>
             </div>
           </div>

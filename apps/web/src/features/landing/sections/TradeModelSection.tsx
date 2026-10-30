@@ -103,18 +103,18 @@ export const TradeModelSection: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 text-emerald-400 font-mono font-bold text-sm">
             <Lock className="w-4 h-4" />
-            <span>50/50 XAVFSIZ ESCROW BITIMINING ISHLASH KETMA-KETLIGI:</span>
+            <span>MOSLASHUVCHAN TO‘LOV TIZIMI (MIJOZ XOHISHIGA KO‘RA):</span>
           </div>
           <span className="text-xs font-mono text-slate-400 bg-[#0A1931] px-3 py-1 rounded-full border border-[#1E3A6D]">
-            Sotuvchi va xaridor 100% himoyalangan
+            100% Onlayn yoki 50/50 yetib borganda
           </span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-center">
           <div className="p-3.5 rounded-xl bg-[#0A1931] border border-[#1E3A6D] space-y-1">
             <div className="text-[11px] font-mono text-amber-400 font-bold">1-BOSQICH</div>
-            <div className="text-xs font-bold text-white">50% Onlayn To‘lov</div>
-            <p className="text-[10px] text-slate-400">Buyurtma rasmiylashtiriladi va depozitga olinadi</p>
+            <div className="text-xs font-bold text-white">To‘lov Usulini Tanlash</div>
+            <p className="text-[10px] text-slate-400">100% to‘liq onlayn yoki 50% depozit to‘lash imkoniyati</p>
           </div>
 
           <div className="p-3.5 rounded-xl bg-[#0A1931] border border-[#1E3A6D] space-y-1">
@@ -131,8 +131,8 @@ export const TradeModelSection: React.FC = () => {
 
           <div className="p-3.5 rounded-xl bg-[#0A1931] border border-emerald-500/50 space-y-1">
             <div className="text-[11px] font-mono text-emerald-400 font-bold">4-BOSQICH</div>
-            <div className="text-xs font-bold text-white">50% Yakuniy To‘lov</div>
-            <p className="text-[10px] text-slate-400">Naqd yoki karta orqali bitim to‘liq yopiladi</p>
+            <div className="text-xs font-bold text-white">Yakuniy Hisob-Kitob</div>
+            <p className="text-[10px] text-slate-400">Qolgan 50% mahsulot yetib borgach to‘lanadi (yoki 100% to‘langan bo‘lsa qabul qilinadi)</p>
           </div>
         </div>
       </div>

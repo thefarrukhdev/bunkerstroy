@@ -34,15 +34,16 @@ describe('BunkerStroy Landing Page Architecture & Constants', () => {
     });
   });
 
-  test('Savdo modeli (3 ta asosiy qoida va 50/50 escrow)', () => {
+  test('Savdo modeli (3 ta asosiy qoida: 100% onlayn yoki 50/50 yetganda to‘lov)', () => {
     assert.strictEqual(TRADE_MODEL_ITEMS.length, 3);
     assert.strictEqual(TRADE_MODEL_ITEMS[0].number, 1);
     assert.strictEqual(TRADE_MODEL_ITEMS[1].number, 2);
     assert.strictEqual(TRADE_MODEL_ITEMS[2].number, 3);
 
-    // Rule 3 must be the 50/50 safe trade model
-    assert.ok(TRADE_MODEL_ITEMS[2].title.includes('50%'));
+    // Rule 3 must be the flexible payment model (100% online or 50/50 on delivery)
+    assert.ok(TRADE_MODEL_ITEMS[2].title.includes('100%') || TRADE_MODEL_ITEMS[2].title.includes('50/50'));
     assert.ok(TRADE_MODEL_ITEMS[2].badgeText.includes('50/50'));
+    assert.ok(TRADE_MODEL_ITEMS[2].description.includes('yetib borgandan so‘ng'));
   });
 
   test('Onlayn va oflayn CRM tizimi (3 ta ustun)', () => {

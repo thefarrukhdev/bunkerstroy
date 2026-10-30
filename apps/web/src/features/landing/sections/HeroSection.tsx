@@ -126,8 +126,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span>Xavfsiz Savdo</span>
             </div>
-            <div className="text-xl sm:text-2xl font-black text-white mt-1">50/50 Escrow</div>
-            <p className="text-[11px] text-slate-400 mt-0.5">50% onlayn, 50% yetkazilganda</p>
+            <div className="text-xl sm:text-2xl font-black text-white mt-1">100% yoki 50/50</div>
+            <p className="text-[11px] text-slate-400 mt-0.5">100% onlayn yoki yetib borganda</p>
           </div>
 
           <div className="p-3.5 rounded-2xl bg-[#0A1931]/80 border border-[#1E3A6D] text-left">

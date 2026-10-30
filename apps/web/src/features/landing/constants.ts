@@ -114,7 +114,7 @@ export const USER_SEGMENTS: UserSegmentItem[] = [
     keyPoints: [
       'Katta hajmli ulgurji savdo va yirik qurilish obyektlari bilan bevosita shartnomalar',
       'O‘z narxini va minimal buyurtma partiyasini (MOQ) 100% mustaqil belgilash erkinligi',
-      '50% onlayn kafolatlangan depozit + 50% obyektda yakuniy hisob-kitob (Escrow)',
+      'Moslashuvchan to‘lov: 100% onlayn yoki mijoz xohishiga ko‘ra 50% onlayn + 50% mahsulot yetib borganda',
       '12 ta viloyat bo‘ylab doimiy yangi xaridorlar va pudratchilar oqimi'
     ],
     icon: Factory,
@@ -146,7 +146,7 @@ export const USER_SEGMENTS: UserSegmentItem[] = [
     keyPoints: [
       'Bozorlarda vaqt yo‘qotmasdan, barcha qurilish materiallarini bitta platformada xarid qilish',
       'Ishlab chiqaruvchi zavodlarning eng arzon rasmiy narxlarida to‘g‘ridan-to‘g‘ri tejash',
-      'Ob‘ektgacha ishonchli yetkazib berish va 50/50 xavfsiz to‘lov kafolati',
+      'Ob‘ektgacha ishonchli yetkazib berish, 100% onlayn yoki mahsulot yetib borganda to‘lash erkinligi',
       'Maxsus poydevor va beton kalkulyatori orqali material xarajatlarini aniq rejalashtirish'
     ],
     icon: Users,
@@ -190,15 +190,15 @@ export const TRADE_MODEL_ITEMS: TradeModelItem[] = [
   },
   {
     number: 3,
-    stepLabel: '03-QOIDA: XAVFSIZ ESCROW',
-    title: '50% Onlayn + 50% Yetkazilganda',
-    description: 'Umumiy summadan foiz asosida ishlaydigan adolatli tizim. Buyurtma berilganda 50% onlayn to‘lanadi, yuk obyektga yetib borgach qolgan 50% to‘lanadi.',
-    highlightText: '50% onlayn va yetkazib berilganda 50% naqd/karta',
-    badgeText: '50/50 Xavfsiz Escrow Modeli',
+    stepLabel: '03-QOIDA: MOSLASHUVCHAN TO‘LOV',
+    title: '100% Onlayn yoki 50/50 Yetib Borganda',
+    description: 'Mijoz o‘z xohishiga ko‘ra to‘lovni 100% onlayn amalga oshirishi mumkin, yoki 50% oldindan onlayn to‘lab, qolgan 50% qismini mahsulot obyektga yetib borgandan so‘ng to‘laydi.',
+    highlightText: '100% onlayn yoki 50% mahsulot yetib borganda',
+    badgeText: '100% Onlayn yoki 50/50 Kafolat',
     details: [
-      '50% oldindan to‘lov — mijozning buyurtmasi jiddiy ekanligini kafolatlaydi',
-      'Yetkazib berilgach 50% to‘lov — mijozga tovar sifatini ko‘rib olish ishonchini beradi',
-      'Sotuvchi va xaridor o‘rtasidagi eng ishonchli moliyaviy himoya zanjiri'
+      '100% to‘liq onlayn to‘lov — tezkor va bir martalik qulay to‘lovni tanlaganlar uchun',
+      '50% + 50% varianti — mijoz xohlasa 50% to‘laydi, qolgan 50% mahsulot yetib borgach beriladi',
+      'Sotuvchiga buyurtma jiddiyligi kafolati, xaridorga esa yukni ko‘rib olish erkinligi'
     ],
     icon: ShieldCheck,
     accentColor: '#10B981'
