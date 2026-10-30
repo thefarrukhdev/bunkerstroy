@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
+  Home,
   Package,
   Factory,
   Calculator,
@@ -37,6 +38,11 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
     {
       to: '/',
       end: true,
+      label: 'Asosiy',
+      icon: Home
+    },
+    {
+      to: '/catalog',
       label: 'Katalog',
       icon: Package
     },
@@ -49,11 +55,6 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
       to: '/calculators',
       label: 'Kalkulyator',
       icon: Calculator
-    },
-    {
-      to: '/orders',
-      label: 'Buyurtmalar',
-      icon: ClipboardList
     }
   ];
 

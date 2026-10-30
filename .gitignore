@@ -43,6 +43,7 @@ prisma/*.db
 # Scratch and temp
 tmp/
 temp/
+*.pdf
 
 # Vercel
 .vercel

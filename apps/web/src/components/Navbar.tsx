@@ -24,7 +24,8 @@ import {
   ExternalLink,
   Mic,
   Calculator,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Home
 } from 'lucide-react';
 import { cn } from '@bunkerstroy/ui';
 import { useLanguage } from '../context/LanguageContext';
@@ -797,6 +798,22 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                 )
               }
             >
+              <Home className="w-4.5 h-4.5 text-[#FFB800]" />
+              <span>Bosh Sahifa</span>
+            </NavLink>
+
+            <NavLink
+              to="/catalog"
+              onClick={onClose}
+              className={({ isActive }) =>
+                cn(
+                  'w-full flex items-center gap-3 p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer min-h-[44px] touch-target-44',
+                  isActive
+                    ? 'bg-[#132C54] border-[#FFB800] text-[#FFB800] font-bold'
+                    : 'bg-[#0F2547] border-[#1E3A6D] text-sky-100 hover:bg-[#132C54]'
+                )
+              }
+            >
               <Package className="w-4.5 h-4.5 text-[#FFB800]" />
               <span>Katalog &amp; Vitrina</span>
             </NavLink>
@@ -1035,6 +1052,21 @@ export const Navbar: React.FC<NavbarProps> = ({
               <NavLink
                 to="/"
                 end
+                className={({ isActive }) =>
+                  cn(
+                    'px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5',
+                    isActive
+                      ? 'bg-[#132C54] text-[#FFB800] border border-[#FFB800]/50'
+                      : 'text-sky-200 hover:text-white hover:bg-[#0F2547]'
+                  )
+                }
+              >
+                <Home className="w-3.5 h-3.5 text-[#FFB800]" />
+                <span>Asosiy</span>
+              </NavLink>
+
+              <NavLink
+                to="/catalog"
                 className={({ isActive }) =>
                   cn(
                     'px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5',

@@ -178,7 +178,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
           Iltimos, katalog ro‘yxatiga qaytib boshqa materialni tanlang.
         </p>
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/catalog')}
           className="btn-industrial-yellow px-5 py-2.5 rounded-xl font-bold text-xs inline-flex items-center gap-2 cursor-pointer shadow-md"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -193,7 +193,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
       {/* 1. Breadcrumbs */}
       <nav className="flex flex-wrap items-center justify-between gap-2.5 text-xs font-mono text-sky-300/80">
         <div className="flex items-center gap-2 min-w-0">
-          <Link to="/" className="hover:text-[#FFB800] transition-colors shrink-0">
+          <Link to="/catalog" className="hover:text-[#FFB800] transition-colors shrink-0">
             Katalog
           </Link>
           <span className="shrink-0 text-sky-500">/</span>
@@ -207,7 +207,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
         </div>
 
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/catalog')}
           className="flex items-center gap-1.5 text-sky-200 hover:text-[#FFB800] transition-colors cursor-pointer shrink-0 font-bold"
         >
           <ArrowLeft className="w-4 h-4" />

@@ -6,6 +6,7 @@ import { Navbar } from './components/Navbar';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { CartDrawer, CartItem } from './components/CartDrawer';
 import { MarketplaceView } from './features/marketplace/MarketplaceView';
+import { LandingView } from './features/landing/LandingView';
 import { ProductDetailView } from './features/marketplace/ProductDetailView';
 import { SuppliersView } from './features/suppliers/SuppliersView';
 import { CalculatorsView } from './features/calculators/CalculatorsView';
@@ -197,7 +198,17 @@ export const AppContent: React.FC = () => {
       {/* 2. Main Page Content (Real URL Routes) */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 pb-20 lg:pb-6 transition-all">
         <Routes>
-          <Route path="/" element={<MarketplaceView onAddToCart={handleAddToCart} />} />
+          <Route
+            path="/"
+            element={
+              <LandingView
+                onNavigateToCatalog={() => navigate('/catalog')}
+                onOpenAuth={() => setIsAuthOpen(true)}
+              />
+            }
+          />
+          <Route path="/catalog" element={<MarketplaceView onAddToCart={handleAddToCart} />} />
+          <Route path="/marketplace" element={<Navigate to="/catalog" replace />} />
           <Route
             path="/products/:id"
             element={
@@ -207,7 +218,7 @@ export const AppContent: React.FC = () => {
               />
             }
           />
-          <Route path="/suppliers" element={<SuppliersView onNavigateToCatalog={() => navigate('/')} />} />
+          <Route path="/suppliers" element={<SuppliersView onNavigateToCatalog={() => navigate('/catalog')} />} />
           <Route path="/calculators" element={<CalculatorsView />} />
           <Route path="/tenders" element={<TendersView />} />
           <Route path="/orders" element={<OrdersView />} />
@@ -263,6 +274,11 @@ export const AppContent: React.FC = () => {
               <ul className="space-y-1.5 text-xs font-mono text-sky-100">
                 <li>
                   <Link to="/" className="hover:text-[#FFB800] transition-colors">
+                    Bosh Sahifa
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/catalog" className="hover:text-[#FFB800] transition-colors">
                     Katalog &amp; Vitrina
                   </Link>
                 </li>
