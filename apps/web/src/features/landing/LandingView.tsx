@@ -6,6 +6,8 @@ import {
   Calculator,
   Truck,
   Factory,
+  Store,
+  Users,
   ShieldCheck,
   CheckCircle2,
   ArrowRight,
@@ -17,12 +19,16 @@ import {
   PhoneCall,
   Sparkles,
   ChevronRight,
-  ExternalLink,
-  Lock,
-  Zap,
-  Users,
-  Award,
-  BarChart3
+  DollarSign,
+  MonitorCheck,
+  BarChart3,
+  Calendar,
+  Globe,
+  Wrench,
+  Home as HomeIcon,
+  Paintbrush,
+  Hammer,
+  BadgeCheck
 } from 'lucide-react';
 import { cn, Button, Badge } from '@bunkerstroy/ui';
 import { triggerHaptic } from '../../services/mobileBridge';
@@ -33,165 +39,109 @@ interface LandingViewProps {
 }
 
 /* ==========================================================================
-   Target Audiences Data
+   Slide 2: Platformada Nimalar Sotiladi (4 Asosiy Yo'nalish)
    ========================================================================== */
-interface AudienceProfile {
+interface ProductCategoryCategory {
   id: string;
-  badge: string;
   title: string;
-  roleDescription: string;
-  painPoints: string[];
-  solutions: string[];
-  ctaLabel: string;
-  ctaRoute: string;
+  items: string;
+  badge: string;
   icon: React.ElementType;
-  accentColor: string;
+  color: string;
+  bgLight: string;
 }
 
-const AUDIENCE_PROFILES: AudienceProfile[] = [
+const PRODUCTS_SOLD: ProductCategoryCategory[] = [
   {
-    id: 'contractors',
-    badge: 'B2B Pudratchilar & Developerlar',
-    title: 'Bosh Pudratchi va Qurilish Kompaniyalari',
-    roleDescription: 'Ko‘p qavatli turar-joylar, sanoat majmualari va infratuzilma obyektlarini barpo etuvchi bosh pudratchilar va smetachilar.',
-    painPoints: [
-      'Material kechikishi sababli kran va ishchilar to‘xtab qolishi (prostoy)',
-      'Vositachilarning 15–25% asossiz ustamalari va soxta sement/armatura',
-      'Rasmiy QQS (NDS) schyot-fakturalar va laboratoriya GOST sertifikatlaridagi muammolar'
-    ],
-    solutions: [
-      'To‘g‘ridan-to‘g‘ri ishlab chiqaruvchi zavodlar bilan shartnoma va ulgurji narxlar',
-      'Har bir partiya uchun 100% rasmiy GOST laboratoriya pasporti',
-      '50/50 Escrow tizimi: pul faqat yuk obyektda qabul qilingach zavodga o‘tkaziladi',
-      'B2B Tender auksionlari orqali yirik partiyalarga eng past narxni yutib olish'
-    ],
-    ctaLabel: 'Ulgurji Katalogga O‘tish',
-    ctaRoute: '/catalog',
+    id: 'tashqi',
+    title: 'Tashqi Qurilish',
+    items: 'Blok, Tom, Taxta, Temir, Sement',
+    badge: 'Asosiy Qurilish',
     icon: HardHat,
-    accentColor: '#FFB800'
+    color: '#FFB800',
+    bgLight: 'from-amber-500/20 to-transparent'
   },
   {
-    id: 'foremen',
-    badge: 'Usta, Prorab & Xususiy Quruvchilar',
-    title: 'Usta Brigadalari va Xususiy Uy Quruvchilar',
-    roleDescription: 'Hovli, dala hovli (dacha), savdo do‘koni yoki xususiy bino qurayotgan usta brigadalari va prorablar.',
-    painPoints: [
-      'Aniq smetani hisoblay olmaslik (material yetmay qolishi yoki ortib uvol bo‘lishi)',
-      'Og‘ir materiallarni tashish uchun bozorlarda yuk mashinasi (HOWO, ZIL) qidirish',
-      'Bozorga borib vaqt yo‘qotish va narxlarning kunlik o‘zgarib turishi'
-    ],
-    solutions: [
-      'Aqlli smeta kalkulyatorlari: poydevor, devor va stajka uchun sement va qumni aniq hisoblash',
-      '1 marta bosishda yuk mashinasi (HOWO, Isuzu) bilan to‘g‘ridan-to‘g‘ri obyekt eshigigacha yetkazish',
-      'Shaffof, qayd etilgan narxlar va navbatsiz tezkor yetkazib berish'
-    ],
-    ctaLabel: 'Smeta Kalkulyatorini Ochish',
-    ctaRoute: '/calculators',
-    icon: Calculator,
-    accentColor: '#38BDF8'
+    id: 'ichki',
+    title: 'Ichki Qurilish',
+    items: 'Kafel, Dekor, Aboy',
+    badge: 'Pardozlash & Bezak',
+    icon: Paintbrush,
+    color: '#38BDF8',
+    bgLight: 'from-sky-500/20 to-transparent'
   },
   {
-    id: 'manufacturers',
-    badge: 'Ishlab Chiqaruvchi Zavodlar',
-    title: 'Sanoat Zavodlari va Rasmiy Dilerlar',
-    roleDescription: 'Sement, metalloprokat, pishgan g‘isht, gazoblok, beton va quruq qorishmalar ishlab chiqaruvchi korxonalar.',
-    painPoints: [
-      'Doimiy yirik xaridorlar oqimi yetishmasligi va marketing xarajatlari',
-      'Qarzga sotish va xaridorlardan oylab pulni undira olmaslik (debitorka fojeasi)',
-      'Ombor qoldiqlari va kassa jarayonlarini boshqarishda raqamli tizim yo‘qligi'
-    ],
-    solutions: [
-      'BunkerStroy Seller POS/CRM ekotizimiga bepul ulanish va avtomatik qoldiqlar nazorati',
-      '100% kafolatlangan bank depoziti: xaridor puli oldindan muzlatiladi, zavod xavfsiz yuklaydi',
-      'O‘zbekiston bo‘ylab minglab faol qurilish obyektlariga to‘g‘ridan-to‘g‘ri chiqish'
-    ],
-    ctaLabel: 'Zavod / Sotuvchi Paneli',
-    ctaRoute: '/seller-panel',
-    icon: Factory,
-    accentColor: '#10B981'
+    id: 'tamirlash',
+    title: 'Uy Ta‘mirlash',
+    items: 'Mebel, Bezaklar, Chiroqlar',
+    badge: 'Interyer & Dizayn',
+    icon: HomeIcon,
+    color: '#A855F7',
+    bgLight: 'from-purple-500/20 to-transparent'
   },
   {
-    id: 'drivers',
-    badge: 'Og‘ir Park & Haydovchilar',
-    title: 'HOWO, Shacman va Maxsus Texnika Haydovchilari',
-    roleDescription: 'Samosval, sementovoz, mikser va bortli og‘ir yuk mashinalari egalari hamda logistika kompaniyalari.',
-    painPoints: [
-      'Mashinaning bekor turib qolishi (prostoy) va doimiy buyurtma yo‘qligi',
-      'Bir tomonga yuk eltib, orqaga bo‘sh qaytish (pustoy probeg va yoqilg‘i yo‘qotish)',
-      'Yuk tushirilgandan so‘ng xaridorlar pulni cho‘zishi yoki to‘lamay aldashi'
-    ],
-    solutions: [
-      'BunkerStroy Driver PWA ilovasi orqali og‘ir yuk buyurtmalarining jonli oqimi',
-      'Avtomatik marshrutlash va qulay oraliq yuklarni qabul qilish (bo‘sh qaytishga chek)',
-      'Kafolatlangan to‘lov: mijoz aytgan 4 xonali PIN kiritilishi bilanoq yo‘l haqi haydovchi hisobiga tushadi'
-    ],
-    ctaLabel: 'Haydovchi Ilovasini Ko‘rish',
-    ctaRoute: '/driver',
-    icon: Truck,
-    accentColor: '#F59E0B'
+    id: 'uskunalar',
+    title: 'Texnik Uskunalar',
+    items: 'Qurilish uchun va ustalar uchun kerakli mahsulotlar',
+    badge: 'Usta Asboblari',
+    icon: Wrench,
+    color: '#10B981',
+    bgLight: 'from-emerald-500/20 to-transparent'
   }
 ];
 
 /* ==========================================================================
-   Popular Categories Data
+   Slide 3: Platformadan Kimlar Foydalanadi (3 ta Segment)
    ========================================================================== */
-interface PopularCategory {
+interface UserSegment {
   id: string;
-  name: string;
-  spec: string;
-  volumeInfo: string;
-  icon: string;
   badge: string;
+  title: string;
+  description: string;
+  keyPoints: string[];
+  icon: React.ElementType;
+  accent: string;
 }
 
-const POPULAR_CATEGORIES: PopularCategory[] = [
+const USER_SEGMENTS: UserSegment[] = [
   {
-    id: 'sement',
-    name: 'Sement & Quruq Qorishmalar',
-    spec: 'M400, M500 D0/D20, Shuvoq, Kley',
-    volumeInfo: '50 kg qoplar va 40t sementovozlar',
-    icon: '🏗️',
-    badge: 'Zavod narxida'
+    id: 'zavodlar',
+    badge: 'Ishlab Chiqaruvchilar',
+    title: 'Ta‘minotchi Zavodlar',
+    description: 'Mahsulotini onlayn bozorga olib chiqmoqchi bo‘lgan ishlab chiqaruvchilar.',
+    keyPoints: [
+      'To‘g‘ridan-to‘g‘ri onlayn savdo va yirik B2B xaridorlar oqimi',
+      'O‘z narxini va minimal buyurtma partiyasini mustaqil belgilash',
+      '50% onlayn va 50% naqd/karta kafolatlangan to‘lov tizimi'
+    ],
+    icon: Factory,
+    accent: '#FFB800'
   },
   {
-    id: 'armatura',
-    name: 'Metalloprokat & Armatura',
-    spec: 'A500C, A400, Katanka, Shveller, Truba',
-    volumeInfo: 'O‘lchamlari 10–32mm, GOST 34028',
-    icon: '⛓️',
-    badge: 'O‘zmetkombinat'
+    id: 'marketlar',
+    badge: 'B2B Sotuvchilar',
+    title: 'Qurilish Marketlari',
+    description: 'Mahsulotni zavoddan va Eksportdan to‘g‘ridan-to‘g‘ri o‘z marketiga olib kelib sotuvchilar.',
+    keyPoints: [
+      'Zavod va eksportchilardan eng arzon ulgurji ta‘minot narxlari',
+      'Onlayn + oflayn savdo uchun qulay yagona CRM tizimi',
+      'Do‘kon ombor qoldiqlari va savdo tahlilini real vaqtda yuritish'
+    ],
+    icon: Store,
+    accent: '#38BDF8'
   },
   {
-    id: 'gisht',
-    name: 'G‘isht & Gazoblok',
-    spec: 'M125 pishgan g‘isht, D500/D600 avtoklav blok',
-    volumeInfo: 'Paletada yetkazish va kran bilan tushirish',
-    icon: '🧱',
-    badge: 'Sertifikatlangan'
-  },
-  {
-    id: 'qum-shaghal',
-    name: 'Qum, Shag‘al & Chaqiq Tosh',
-    spec: 'Karyer qumi, yuvilgan qum, 5–20mm shag‘al',
-    volumeInfo: '25–35 tonnalik HOWO samosvallar',
-    icon: '⛰️',
-    badge: 'Tezkor yetkazish'
-  },
-  {
-    id: 'yoghoch',
-    name: 'Yog‘och & Taxta Materiallari',
-    spec: 'Rossiya qarag‘ay taxtalari, Brus, Fanera',
-    volumeInfo: 'Qurilish va qolip (opalubka) uchun',
-    icon: '🌲',
-    badge: '1-nav'
-  },
-  {
-    id: 'izolyatsiya',
-    name: 'Tom Yopish & Issiqlik Izolyatsiyasi',
-    spec: 'Penoplast, Bazalt paxta, Profnastil',
-    volumeInfo: 'Energotejamkor ESCO standartlari',
-    icon: '🏠',
-    badge: 'ESCO tejamkor'
+    id: 'mijozlar',
+    badge: 'Xaridorlar & Ustalar',
+    title: 'Mijozlar',
+    description: 'Onlayn va oflayn xaridorlar, ustalar, quruvchilar, uy egalari.',
+    keyPoints: [
+      'Keng assortiment: tashqi va ichki qurilish materiallari bitta platformada',
+      'Bozorga borib vaqt yo‘qotmasdan qulay onlayn buyurtma',
+      'O‘zbekistonning 12 ta viloyati bo‘ylab to‘g‘ridan-to‘g‘ri obyektgacha yetkazib berish'
+    ],
+    icon: Users,
+    accent: '#10B981'
   }
 ];
 
@@ -200,21 +150,15 @@ export const LandingView: React.FC<LandingViewProps> = ({
   onOpenAuth
 }) => {
   const navigate = useNavigate();
-  const [selectedAudience, setSelectedAudience] = useState<string>('contractors');
 
-  // Mini Cement/Concrete Calculator State
+  // Mini Concrete/Cement Calculator State (Ustalar va quruvchilar uchun qulay vosita)
   const [calcLength, setCalcLength] = useState<number>(10);
   const [calcWidth, setCalcWidth] = useState<number>(8);
-  const [calcHeight, setCalcHeight] = useState<number>(0.3); // 30cm thickness
+  const [calcHeight, setCalcHeight] = useState<number>(0.3);
   const [calcGrade, setCalcGrade] = useState<'M400' | 'M500'>('M400');
 
-  // Live Concrete Calculation
   const calcResults = useMemo(() => {
     const volume = Math.max(0.1, Number((calcLength * calcWidth * calcHeight).toFixed(2)));
-    
-    // Concrete mix formula per 1 m3:
-    // M400: ~350 kg cement (7 bags of 50kg), 0.45 m3 sand, 0.8 m3 crushed stone
-    // M500: ~420 kg cement (8.4 bags of 50kg), 0.42 m3 sand, 0.82 m3 crushed stone
     const cementBagsPerM3 = calcGrade === 'M400' ? 7 : 8.5;
     const sandPerM3 = calcGrade === 'M400' ? 0.45 : 0.42;
     const gravelPerM3 = calcGrade === 'M400' ? 0.8 : 0.82;
@@ -224,12 +168,14 @@ export const LandingView: React.FC<LandingViewProps> = ({
     const totalSandM3 = Number((volume * sandPerM3).toFixed(1));
     const totalGravelM3 = Number((volume * gravelPerM3).toFixed(1));
 
-    // Approximate cost: 1 bag M400 ~ 58,000 UZS, M500 ~ 68,000 UZS
     const bagPrice = calcGrade === 'M400' ? 58000 : 68000;
     const sandPricePerM3 = 120000;
     const gravelPricePerM3 = 145000;
 
-    const approxTotalUzs = (totalCementBags * bagPrice) + (totalSandM3 * sandPricePerM3) + (totalGravelM3 * gravelPricePerM3);
+    const approxTotalUzs =
+      totalCementBags * bagPrice +
+      totalSandM3 * sandPricePerM3 +
+      totalGravelM3 * gravelPricePerM3;
 
     return {
       volume,
@@ -241,23 +187,16 @@ export const LandingView: React.FC<LandingViewProps> = ({
     };
   }, [calcLength, calcWidth, calcHeight, calcGrade]);
 
-  const activeAudience = AUDIENCE_PROFILES.find((a) => a.id === selectedAudience) || AUDIENCE_PROFILES[0];
-
-  const handleAudienceChange = (id: string) => {
-    triggerHaptic('light');
-    setSelectedAudience(id);
-  };
-
   return (
-    <div className="space-y-16 sm:space-y-24 py-2 sm:py-6 text-slate-100">
-      
+    <div className="space-y-16 sm:space-y-24 py-2 sm:py-6 text-slate-100 font-sans">
+
       {/* ====================================================================
-          1. HERO SECTION: Industrial Visual Aesthetics & High-Impact Copy
+          1. HERO SECTION (Taqdimot 1-Slayd asosida)
           ==================================================================== */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#0A1931] via-[#0F2547] to-[#0A1931] border-2 border-[#1E3A6D] shadow-[0_20px_60px_rgba(7,19,38,0.8)] p-6 sm:p-10 lg:p-14">
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#0A1931] via-[#0F2547] to-[#0A1931] border-2 border-[#1E3A6D] shadow-[0_20px_60px_rgba(7,19,38,0.8)] p-6 sm:p-10 lg:p-14 text-center">
         {/* Subtle Industrial Background Grid & Hazard Top Accent */}
         <div className="absolute top-0 left-0 right-0 h-1.5 hazard-stripe-sm opacity-90" />
-        <div 
+        <div
           className="absolute inset-0 opacity-10 pointer-events-none"
           style={{
             backgroundImage: `radial-gradient(#38BDF8 1px, transparent 1px)`,
@@ -265,26 +204,28 @@ export const LandingView: React.FC<LandingViewProps> = ({
           }}
         />
 
-        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
-          {/* Live Industrial Ecosystem Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#132C54] border border-[#FFB800]/60 text-sky-200 text-xs sm:text-sm font-mono shadow-xs">
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6">
+          {/* Start Date & Presentation Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#132C54] border border-[#FFB800]/60 text-sky-200 text-xs sm:text-sm font-mono shadow-xs">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            <span className="text-[#FFB800] font-bold">BUNKERSTROY B2B</span>
+            <span className="text-[#FFB800] font-black">BUNKERSTROY.UZ</span>
             <span className="text-slate-400">|</span>
-            <span>O‘zbekiston Sanoat &amp; Qurilish Materiallari Ekotizimi</span>
+            <span className="flex items-center gap-1 text-emerald-400 font-bold">
+              <Calendar className="w-3.5 h-3.5" /> Start: 07.11.2026
+            </span>
           </div>
 
-          {/* Main H1 Headline */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.15] font-sans">
-            Zavod Narxlarida To‘g‘ridan-to‘g‘ri Yetkazib Berish.{' '}
+          {/* Exact Headline from Slide 1 */}
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.15]">
+            Tashqi va Ichki Qurilish Mahsulotlarining{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFB800] via-amber-300 to-[#FF9000]">
-              100% Escrow Kafolati Bilan.
+              Onlayn Marketpleysi
             </span>
           </h1>
 
           {/* Subtitle */}
           <p className="text-base sm:text-xl text-sky-200/90 max-w-3xl mx-auto leading-relaxed">
-            Yirik bosh pudratchilar, qurilish ob‘ektlari, ishlab chiqaruvchi zavodlar va og‘ir HOWO/Shacman logistika parkini yagona xavfsiz raqamli platformada birlashtiramiz.
+            Ta‘minotchi zavodlar, qurilish marketlari, ustalar va xaridorlarni yagona onlayn ekotizim va integratsiyalashgan CRM tizimida birlashtiramiz.
           </p>
 
           {/* Call to Actions */}
@@ -298,576 +239,559 @@ export const LandingView: React.FC<LandingViewProps> = ({
               className="bg-[#FFB800] hover:bg-amber-400 text-[#071326] font-black text-base px-7 py-3.5 rounded-xl shadow-[0_0_25px_rgba(255,184,0,0.4)] border-2 border-[#FFD000] cursor-pointer flex items-center gap-2.5 transition-all min-h-[48px] touch-target-44 hover:scale-[1.02]"
             >
               <Package className="w-5 h-5 text-[#071326]" />
-              <span>Katalog &amp; Ulgurji Narxlar</span>
+              <span>Katalog &amp; Mahsulotlar</span>
               <ArrowRight className="w-4 h-4" />
             </Button>
 
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => {
-                triggerHaptic('light');
-                navigate('/calculators');
-              }}
-              className="bg-[#0F2547] hover:bg-[#132C54] text-white border-2 border-[#38BDF8]/60 font-bold text-base px-6 py-3.5 rounded-xl cursor-pointer flex items-center gap-2 transition-all min-h-[48px] touch-target-44"
+            <a
+              href="tel:+998950821336"
+              onClick={() => triggerHaptic('light')}
+              className="bg-[#0F2547] hover:bg-[#132C54] text-white border-2 border-[#38BDF8]/60 font-bold text-base px-6 py-3.5 rounded-xl cursor-pointer inline-flex items-center gap-2 transition-all min-h-[48px] touch-target-44"
             >
-              <Calculator className="w-5 h-5 text-[#38BDF8]" />
-              <span>Smeta Kalkulyatori</span>
-            </Button>
+              <PhoneCall className="w-5 h-5 text-[#38BDF8]" />
+              <span>Admin: +998 95 082 1336</span>
+            </a>
 
             <Button
               variant="outline"
               size="lg"
               onClick={() => {
                 triggerHaptic('light');
-                navigate('/tenders');
+                navigate('/seller-panel');
               }}
               className="bg-[#0A1931] hover:bg-[#0F2547] text-sky-200 border-2 border-[#1E3A6D] font-bold text-base px-6 py-3.5 rounded-xl cursor-pointer flex items-center gap-2 transition-all min-h-[48px] touch-target-44"
             >
-              <FileSpreadsheet className="w-5 h-5 text-[#FFB800]" />
-              <span>B2B Tender E‘lon Qilish</span>
+              <Store className="w-5 h-5 text-[#FFB800]" />
+              <span>Sotuvchi &amp; CRM Paneli</span>
             </Button>
           </div>
 
-          {/* Escrow Trust Micro-Badge */}
-          <div className="pt-4 flex items-center justify-center gap-6 text-xs sm:text-sm font-mono text-sky-300/80">
+          {/* Quick Pillars info */}
+          <div className="pt-4 flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-xs sm:text-sm font-mono text-sky-300/80">
             <span className="flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>50/50 Bank Escrow Himoyasi</span>
+              <span>50% Onlayn + 50% Naqd</span>
             </span>
             <span className="flex items-center gap-1.5">
-              <Award className="w-4 h-4 text-[#FFB800]" />
-              <span>GOST Laboratoriya Sertifikatlari</span>
-            </span>
-            <span className="hidden sm:flex items-center gap-1.5">
               <Truck className="w-4 h-4 text-[#38BDF8]" />
-              <span>Jonli GPS Telemetriya</span>
+              <span>O‘zbekiston Bo‘ylab (12 Viloyat)</span>
             </span>
-          </div>
-        </div>
-
-        {/* ==================================================================
-            Live Metrics Strip
-            ================================================================== */}
-        <div className="mt-12 pt-8 border-t border-[#1E3A6D] grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <div className="p-4 rounded-2xl bg-[#0A1931]/80 border border-[#1E3A6D] text-center">
-            <div className="text-2xl sm:text-4xl font-black font-mono text-[#FFB800]">120+</div>
-            <div className="text-xs sm:text-sm text-sky-200/80 font-medium mt-1">Hamkor Ishlab Chiqaruvchi Zavodlar</div>
-          </div>
-          <div className="p-4 rounded-2xl bg-[#0A1931]/80 border border-[#1E3A6D] text-center">
-            <div className="text-2xl sm:text-4xl font-black font-mono text-sky-400">500,000+</div>
-            <div className="text-xs sm:text-sm text-sky-200/80 font-medium mt-1">Tonna Yetkazilgan Og‘ir Material</div>
-          </div>
-          <div className="p-4 rounded-2xl bg-[#0A1931]/80 border border-[#1E3A6D] text-center">
-            <div className="text-2xl sm:text-4xl font-black font-mono text-emerald-400">100%</div>
-            <div className="text-xs sm:text-sm text-sky-200/80 font-medium mt-1">50/50 Xavfsiz Escrow Bitimlari</div>
-          </div>
-          <div className="p-4 rounded-2xl bg-[#0A1931]/80 border border-[#1E3A6D] text-center">
-            <div className="text-2xl sm:text-4xl font-black font-mono text-amber-400">24/7</div>
-            <div className="text-xs sm:text-sm text-sky-200/80 font-medium mt-1">HOWO &amp; Shacman GPS Tarmog‘i</div>
+            <span className="flex items-center gap-1.5">
+              <MonitorCheck className="w-4 h-4 text-[#FFB800]" />
+              <span>Onlayn + Oflayn CRM Tizimi</span>
+            </span>
           </div>
         </div>
       </section>
 
       {/* ====================================================================
-          2. TARGET AUDIENCES: Kimlarga Mos? (4 ICP Profiles)
+          2. PLATFORMADA NIMALAR SOTILADI (Taqdimot 2-Slayd asosida)
           ==================================================================== */}
       <section className="space-y-8">
         <div className="text-center max-w-3xl mx-auto space-y-3">
           <Badge className="bg-[#132C54] text-[#FFB800] border-[#FFB800]/40 font-mono text-xs px-3 py-1">
-            MAQSADLI AUDITORIYA &amp; EKOTIZIM
+            2-SLAYD: ASSORTIMENT
           </Badge>
           <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-            BunkerStroy Kimlar Uchun Maxsus Yaratilgan?
+            Platformada Nimalar Sotiladi?
           </h2>
           <p className="text-sm sm:text-base text-sky-200/80">
-            Biz qurilish bozoridagi 4 ta asosiy ishtirokchining eng og‘riqli muammolarini yagona texnologik zanjirda hal qilamiz.
+            Tashqi qurilish poydevoridan tortib xonadon bezaklari va usta asboblarigacha bo‘lgan to‘liq zanjir.
           </p>
         </div>
 
-        {/* Audience Selector Tabs */}
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 p-1.5 rounded-2xl bg-[#0A1931] border border-[#1E3A6D] max-w-4xl mx-auto">
-          {AUDIENCE_PROFILES.map((profile) => {
-            const Icon = profile.icon;
-            const isSelected = profile.id === selectedAudience;
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {PRODUCTS_SOLD.map((cat) => {
+            const Icon = cat.icon;
             return (
-              <button
-                key={profile.id}
-                type="button"
-                onClick={() => handleAudienceChange(profile.id)}
-                className={cn(
-                  'flex items-center gap-2.5 px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer min-h-[44px] touch-target-44',
-                  isSelected
-                    ? 'bg-[#132C54] text-[#FFB800] border-2 border-[#FFB800] shadow-md scale-[1.02]'
-                    : 'text-sky-200/70 hover:text-white hover:bg-[#0F2547] border border-transparent'
-                )}
+              <div
+                key={cat.id}
+                onClick={() => {
+                  triggerHaptic('light');
+                  onNavigateToCatalog();
+                }}
+                className="rounded-3xl bg-[#0F2547] border-2 border-[#1E3A6D] hover:border-[#FFB800] p-6 sm:p-7 space-y-4 cursor-pointer transition-all hover:scale-[1.02] shadow-xl group relative overflow-hidden"
               >
-                <Icon className={cn('w-4 h-4', isSelected ? 'text-[#FFB800]' : 'text-sky-300')} />
-                <span>{profile.badge}</span>
-              </button>
+                <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl ${cat.bgLight} rounded-bl-full pointer-events-none`} />
+
+                <div className="w-12 h-12 rounded-2xl bg-[#132C54] border border-[#1E3A6D] flex items-center justify-center group-hover:border-[#FFB800] transition-colors shadow-inner">
+                  <Icon className="w-6 h-6" style={{ color: cat.color }} />
+                </div>
+
+                <div>
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
+                    {cat.badge}
+                  </span>
+                  <h3 className="text-xl font-bold text-white group-hover:text-[#FFB800] transition-colors mt-0.5">
+                    {cat.title}
+                  </h3>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-[#0A1931] border border-[#1E3A6D]/80">
+                  <div className="text-xs font-mono font-bold text-sky-200">
+                    {cat.items}
+                  </div>
+                </div>
+
+                <div className="pt-2 text-xs font-mono text-[#FFB800] flex items-center justify-between font-bold">
+                  <span>Katalogda ko‘rish</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
             );
           })}
         </div>
-
-        {/* Selected Audience Detailed Card */}
-        <div className="rounded-3xl bg-[#0F2547] border-2 border-[#1E3A6D] p-6 sm:p-10 shadow-xl transition-all">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            {/* Left: Audience Header & Role */}
-            <div className="lg:col-span-5 space-y-5">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#132C54] border border-[#38BDF8]/40 text-[#38BDF8] text-xs font-mono">
-                <activeAudience.icon className="w-4 h-4 text-[#FFB800]" />
-                <span>{activeAudience.badge}</span>
-              </div>
-
-              <h3 className="text-2xl sm:text-3xl font-black text-white leading-tight">
-                {activeAudience.title}
-              </h3>
-
-              <p className="text-sm sm:text-base text-sky-200 leading-relaxed">
-                {activeAudience.roleDescription}
-              </p>
-
-              <div className="pt-2">
-                <Button
-                  onClick={() => {
-                    triggerHaptic('medium');
-                    navigate(activeAudience.ctaRoute);
-                  }}
-                  className="bg-[#FFB800] hover:bg-amber-400 text-[#071326] font-black text-sm px-6 py-3 rounded-xl cursor-pointer flex items-center gap-2 min-h-[44px] touch-target-44 shadow-md"
-                >
-                  <span>{activeAudience.ctaLabel}</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-
-            {/* Right: Pain Points vs BunkerStroy Solutions */}
-            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
-              
-              {/* Pain Points Box */}
-              <div className="p-5 rounded-2xl bg-[#0A1931]/90 border border-red-500/30 space-y-4">
-                <div className="flex items-center gap-2 text-red-400 font-bold text-sm font-mono">
-                  <span className="w-2 h-2 rounded-full bg-red-500" />
-                  <span>BOZORDAGI DARD &amp; TO‘SIQLAR</span>
-                </div>
-                <ul className="space-y-3">
-                  {activeAudience.painPoints.map((pain, idx) => (
-                    <li key={idx} className="flex items-start gap-2 text-xs sm:text-sm text-slate-300">
-                      <span className="text-red-400 font-bold mt-0.5">✕</span>
-                      <span>{pain}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* BunkerStroy Solution Box */}
-              <div className="p-5 rounded-2xl bg-[#132C54]/90 border border-emerald-500/40 space-y-4 shadow-sm">
-                <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm font-mono">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span>BUNKERSTROY YECHIMI</span>
-                </div>
-                <ul className="space-y-3">
-                  {activeAudience.solutions.map((sol, idx) => (
-                    <li key={idx} className="flex items-start gap-2 text-xs sm:text-sm text-sky-100 font-medium">
-                      <span className="text-[#FFB800] font-black mt-0.5">✓</span>
-                      <span>{sol}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-            </div>
-
-          </div>
-        </div>
       </section>
 
       {/* ====================================================================
-          3. INTERACTIVE CONCRETE & CEMENT CALCULATOR WIDGET
-          ==================================================================== */}
-      <section className="rounded-3xl bg-gradient-to-br from-[#0F2547] to-[#0A1931] border-2 border-[#38BDF8]/40 p-6 sm:p-10 shadow-2xl relative overflow-hidden">
-        <div className="max-w-4xl mx-auto space-y-8">
-          
-          <div className="text-center space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#132C54] text-[#38BDF8] text-xs font-mono border border-[#38BDF8]/40">
-              <Calculator className="w-3.5 h-3.5 text-[#FFB800]" />
-              <span>INTERAKTIV SMETA WIDGETI</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-white">
-              Poydevor &amp; Beton Hajmini Darhol Hisoblang
-            </h2>
-            <p className="text-xs sm:text-sm text-sky-200/80">
-              O‘lchamlarni kiriting — tizim bir zumda kerakli sement qoplari soni va taxminiy narxni ko‘rsatadi.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            
-            {/* Inputs Panel */}
-            <div className="lg:col-span-7 bg-[#0A1931] p-5 sm:p-6 rounded-2xl border border-[#1E3A6D] space-y-4">
-              <div className="grid grid-cols-3 gap-3">
-                <div>
-                  <label className="block text-[11px] font-mono text-sky-300 font-bold mb-1">
-                    UZUNLIK (M)
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="100"
-                    step="0.5"
-                    value={calcLength}
-                    onChange={(e) => setCalcLength(Number(e.target.value) || 1)}
-                    className="w-full bg-[#0F2547] border border-[#1E3A6D] rounded-xl px-3 py-2 text-white font-mono text-sm sm:text-base focus:border-[#FFB800] focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-mono text-sky-300 font-bold mb-1">
-                    KENGLIK (M)
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="100"
-                    step="0.5"
-                    value={calcWidth}
-                    onChange={(e) => setCalcWidth(Number(e.target.value) || 1)}
-                    className="w-full bg-[#0F2547] border border-[#1E3A6D] rounded-xl px-3 py-2 text-white font-mono text-sm sm:text-base focus:border-[#FFB800] focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-mono text-sky-300 font-bold mb-1">
-                    BALANDLIK (M)
-                  </label>
-                  <input
-                    type="number"
-                    min="0.1"
-                    max="5"
-                    step="0.1"
-                    value={calcHeight}
-                    onChange={(e) => setCalcHeight(Number(e.target.value) || 0.1)}
-                    className="w-full bg-[#0F2547] border border-[#1E3A6D] rounded-xl px-3 py-2 text-white font-mono text-sm sm:text-base focus:border-[#FFB800] focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              {/* Sement Markasi Selector */}
-              <div>
-                <label className="block text-[11px] font-mono text-sky-300 font-bold mb-1.5">
-                  SEMENT MARKASI
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setCalcGrade('M400')}
-                    className={cn(
-                      'py-2 px-3 rounded-xl border text-xs sm:text-sm font-bold font-mono transition-all cursor-pointer min-h-[40px]',
-                      calcGrade === 'M400'
-                        ? 'bg-[#132C54] border-[#FFB800] text-[#FFB800]'
-                        : 'bg-[#0F2547] border-[#1E3A6D] text-slate-300'
-                    )}
-                  >
-                    M400 (Standart Bino)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setCalcGrade('M500')}
-                    className={cn(
-                      'py-2 px-3 rounded-xl border text-xs sm:text-sm font-bold font-mono transition-all cursor-pointer min-h-[40px]',
-                      calcGrade === 'M500'
-                        ? 'bg-[#132C54] border-[#FFB800] text-[#FFB800]'
-                        : 'bg-[#0F2547] border-[#1E3A6D] text-slate-300'
-                    )}
-                  >
-                    M500 (Mustahkam / Og‘ir)
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Results Live Output Box */}
-            <div className="lg:col-span-5 bg-[#132C54] p-5 sm:p-6 rounded-2xl border-2 border-[#FFB800]/50 space-y-4 shadow-lg">
-              <div className="flex items-center justify-between border-b border-[#1E3A6D] pb-3">
-                <span className="text-xs font-mono text-sky-200">Umumiy Beton Hajmi:</span>
-                <span className="text-xl font-black font-mono text-white">{calcResults.volume} m³</span>
-              </div>
-
-              <div className="space-y-2 text-xs sm:text-sm font-mono">
-                <div className="flex justify-between text-slate-200">
-                  <span>Kerakli Sement:</span>
-                  <span className="font-bold text-[#FFB800]">{calcResults.totalCementBags} qop ({calcResults.totalCementTons} t)</span>
-                </div>
-                <div className="flex justify-between text-slate-200">
-                  <span>Qum (Yuvilgan):</span>
-                  <span className="font-bold text-sky-300">{calcResults.totalSandM3} m³</span>
-                </div>
-                <div className="flex justify-between text-slate-200">
-                  <span>Shag‘al (5–20mm):</span>
-                  <span className="font-bold text-sky-300">{calcResults.totalGravelM3} m³</span>
-                </div>
-              </div>
-
-              <div className="pt-2 border-t border-[#1E3A6D]">
-                <div className="text-[11px] font-mono text-sky-300">Taxminiy Material Xarajati:</div>
-                <div className="text-xl sm:text-2xl font-black font-mono text-emerald-400">
-                  ~ {calcResults.approxTotalUzs.toLocaleString('uz-UZ')} UZS
-                </div>
-              </div>
-
-              <div className="pt-1 flex gap-2">
-                <Button
-                  onClick={() => {
-                    triggerHaptic('medium');
-                    onNavigateToCatalog();
-                  }}
-                  className="w-full bg-[#FFB800] hover:bg-amber-400 text-[#071326] font-bold text-xs py-2.5 rounded-xl cursor-pointer min-h-[40px]"
-                >
-                  Katalogda Sement Buyurtma Qilish
-                </Button>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ====================================================================
-          4. 50/50 ESCROW FINTECH MECHANISM (Xavfsiz Bitim Sxemasi)
+          3. PLATFORMADAN KIMLAR FOYDALANADI (Taqdimot 3-Slayd asosida)
           ==================================================================== */}
       <section className="space-y-8">
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <Badge className="bg-[#132C54] text-emerald-400 border-emerald-400/40 font-mono text-xs px-3 py-1">
-            XAVFSIZLIK STANDARTI
+          <Badge className="bg-[#132C54] text-[#38BDF8] border-[#38BDF8]/40 font-mono text-xs px-3 py-1">
+            3-SLAYD: ISHTIROKCHILAR
           </Badge>
           <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-            50/50 Escrow To‘lov Mexanizmi Qanday Ishlaydi?
+            Platformadan Kimlar Foydalanadi?
           </h2>
           <p className="text-sm sm:text-base text-sky-200/80">
-            Nafaqat xaridorni, balki zavod va haydovchini ham qarz yoki soxta to‘lovlardan 100% himoya qiluvchi bank kafolati.
+            Ishlab chiqaruvchi zavodlar, qurilish do‘konlari va iste‘molchilar o‘rtasidagi eng qisqa raqamli ko‘prik.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
-          {/* Step 1 */}
-          <div className="rounded-2xl bg-[#0F2547] border border-[#1E3A6D] p-6 space-y-4 relative">
-            <div className="w-10 h-10 rounded-xl bg-[#132C54] text-[#FFB800] font-mono font-black text-lg flex items-center justify-center border border-[#FFB800]/40">
-              01
+          {USER_SEGMENTS.map((seg) => {
+            const Icon = seg.icon;
+            return (
+              <div
+                key={seg.id}
+                className="rounded-3xl bg-[#0F2547] border-2 border-[#1E3A6D] p-6 sm:p-8 space-y-5 shadow-xl flex flex-col justify-between"
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="w-12 h-12 rounded-2xl bg-[#132C54] border border-[#1E3A6D] flex items-center justify-center">
+                      <Icon className="w-6 h-6" style={{ color: seg.accent }} />
+                    </div>
+                    <Badge className="bg-[#132C54] text-sky-300 border-[#1E3A6D] font-mono text-[10px]">
+                      {seg.badge}
+                    </Badge>
+                  </div>
+
+                  <div>
+                    <h3 className="text-xl sm:text-2xl font-bold text-white">
+                      {seg.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-sky-200/90 font-medium mt-1 leading-relaxed">
+                      {seg.description}
+                    </p>
+                  </div>
+
+                  <div className="pt-2 border-t border-[#1E3A6D]/80">
+                    <ul className="space-y-2.5">
+                      {seg.keyPoints.map((point, idx) => (
+                        <li key={idx} className="flex items-start gap-2 text-xs text-slate-300">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="pt-4">
+                  {seg.id === 'zavodlar' || seg.id === 'marketlar' ? (
+                    <Button
+                      onClick={() => {
+                        triggerHaptic('medium');
+                        navigate('/seller-panel');
+                      }}
+                      className="w-full bg-[#132C54] hover:bg-[#1A386B] text-white border border-[#FFB800]/50 font-bold text-xs py-3 rounded-xl cursor-pointer flex items-center justify-center gap-1.5 min-h-[44px]"
+                    >
+                      <span>Hamkor Bo‘lib Qo‘shilish</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-[#FFB800]" />
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => {
+                        triggerHaptic('medium');
+                        onNavigateToCatalog();
+                      }}
+                      className="w-full bg-[#FFB800] hover:bg-amber-400 text-[#071326] font-bold text-xs py-3 rounded-xl cursor-pointer flex items-center justify-center gap-1.5 min-h-[44px]"
+                    >
+                      <span>Katalogda Xarid Qilish</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ====================================================================
+          4. SAVDO MODELI (Taqdimot 4-Slayd asosida: 3 Ta Asosiy Qoida)
+          ==================================================================== */}
+      <section className="rounded-3xl bg-gradient-to-br from-[#0F2547] via-[#0A1931] to-[#0F2547] border-2 border-[#1E3A6D] p-6 sm:p-10 shadow-2xl space-y-8">
+        <div className="text-center max-w-3xl mx-auto space-y-3">
+          <Badge className="bg-[#132C54] text-emerald-400 border-emerald-400/40 font-mono text-xs px-3 py-1">
+            4-SLAYD: MONETIZATSIYA &amp; SAVDO
+          </Badge>
+          <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
+            BunkerStroy Savdo Modeli
+          </h2>
+          <p className="text-sm sm:text-base text-sky-200/80">
+            Sotuvchilar va xaridorlar uchun to‘liq shaffof, adolatli va kafolatlangan savdo mexanizmi.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Qoida 1 */}
+          <div className="rounded-2xl bg-[#0A1931] border-2 border-[#1E3A6D] p-6 space-y-4">
+            <div className="w-12 h-12 rounded-xl bg-[#132C54] text-[#FFB800] font-mono font-black text-xl flex items-center justify-center border border-[#FFB800]/40">
+              1
             </div>
-            <h3 className="text-lg font-bold text-white">Buyurtma &amp; 50% Depozit</h3>
-            <p className="text-xs sm:text-sm text-sky-200/80 leading-relaxed">
-              Xaridor buyurtma beradi. To‘lovning 50% qismi BunkerStroy xavfsiz bank Escrow hisobida muzlatiladi. Pul zavodga darhol berilmaydi, xavfsiz turadi.
+            <h3 className="text-xl font-black text-white">
+              Narxni O‘zingiz Qo‘yasiz
+            </h3>
+            <p className="text-xs sm:text-sm text-sky-200/90 leading-relaxed font-mono">
+              Mahsulotlar sizning narxingizda sotiladi. Minimal buyurtma miqdorini ta‘minotchi o‘zi mustaqil belgilaydi.
             </p>
-            <div className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald-400">
-              <Lock className="w-3.5 h-3.5" />
-              <span>Mablag‘ Muzlatildi</span>
+            <div className="inline-flex items-center gap-1.5 text-xs font-mono text-[#FFB800]">
+              <DollarSign className="w-4 h-4" />
+              <span>Mustaqil Narx Siyosati</span>
             </div>
           </div>
 
-          {/* Step 2 */}
-          <div className="rounded-2xl bg-[#0F2547] border border-[#1E3A6D] p-6 space-y-4 relative">
-            <div className="w-10 h-10 rounded-xl bg-[#132C54] text-[#38BDF8] font-mono font-black text-lg flex items-center justify-center border border-[#38BDF8]/40">
-              02
+          {/* Qoida 2 */}
+          <div className="rounded-2xl bg-[#0A1931] border-2 border-[#1E3A6D] p-6 space-y-4">
+            <div className="w-12 h-12 rounded-xl bg-[#132C54] text-[#38BDF8] font-mono font-black text-xl flex items-center justify-center border border-[#38BDF8]/40">
+              2
             </div>
-            <h3 className="text-lg font-bold text-white">Yuklash &amp; Jonli GPS Reys</h3>
-            <p className="text-xs sm:text-sm text-sky-200/80 leading-relaxed">
-              Depozitni ko‘rgan zavod yukni mashinaga ortadi. HOWO yoki Shacman haydovchisi obyektga yo‘l oladi. Xaridor xaritada mashinani real vaqtda kuzatadi.
+            <h3 className="text-xl font-black text-white">
+              Onlayn Savdo Bor
+            </h3>
+            <p className="text-xs sm:text-sm text-sky-200/90 leading-relaxed font-mono">
+              Mijozlar platforma orqali buyurtma beradi. Mahsulotlaringiz 24/7 rejimida onlayn vitrinada sotuvda turadi.
             </p>
             <div className="inline-flex items-center gap-1.5 text-xs font-mono text-[#38BDF8]">
-              <Truck className="w-3.5 h-3.5" />
-              <span>Jonli Telemetriya Faol</span>
+              <Globe className="w-4 h-4" />
+              <span>24/7 Onlayn Oqim</span>
             </div>
           </div>
 
-          {/* Step 3 */}
-          <div className="rounded-2xl bg-[#0F2547] border-2 border-emerald-500/50 p-6 space-y-4 relative shadow-lg">
-            <div className="w-10 h-10 rounded-xl bg-emerald-950 text-emerald-400 font-mono font-black text-lg flex items-center justify-center border border-emerald-400">
-              03
+          {/* Qoida 3 */}
+          <div className="rounded-2xl bg-[#0A1931] border-2 border-emerald-500/50 p-6 space-y-4 shadow-lg">
+            <div className="w-12 h-12 rounded-xl bg-emerald-950 text-emerald-400 font-mono font-black text-xl flex items-center justify-center border border-emerald-400">
+              3
             </div>
-            <h3 className="text-lg font-bold text-white">4 Xonali PIN &amp; Yakuniy To‘lov</h3>
-            <p className="text-xs sm:text-sm text-sky-200/80 leading-relaxed">
-              Yuk ob‘ektga yetib kelgach, qabul qiluvchi yuk sifatini tekshiradi va 4 xonali PIN kodni haydovchiga aytadi. PIN kiritilishi bilanoq mablag‘ zavod va haydovchiga o‘tadi.
+            <h3 className="text-xl font-black text-white">
+              Umumiy Summadan Foiz
+            </h3>
+            <p className="text-xs sm:text-sm text-sky-200/90 leading-relaxed font-mono">
+              <strong className="text-emerald-400">50% onlayn</strong> va yetkazib berilganda <strong className="text-[#FFB800]">50% naqd/karta</strong> to‘lovi. Sotuvchi uchun 100% xavfsiz.
             </p>
             <div className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald-400 font-bold">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>Bitim 100% Bajarildi</span>
+              <ShieldCheck className="w-4 h-4" />
+              <span>50/50 Xavfsiz Escrow Modeli</span>
             </div>
           </div>
-
         </div>
       </section>
 
       {/* ====================================================================
-          5. POPULAR CATEGORIES GRID
+          5. ONLAYN VA OFLAYN SAVDO UCHUN CRM (Taqdimot 5-Slayd asosida)
           ==================================================================== */}
-      <section className="space-y-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-          <div>
-            <Badge className="bg-[#132C54] text-[#FFB800] border-[#FFB800]/40 font-mono text-xs px-3 py-1 mb-2">
-              MAHSULOTLAR RO‘YXATI
-            </Badge>
-            <h2 className="text-2xl sm:text-3xl font-black text-white">
-              Ommabop Qurilish Materiallari
-            </h2>
+      <section className="rounded-3xl bg-[#0F2547] border-2 border-[#1E3A6D] p-6 sm:p-10 shadow-xl space-y-8">
+        <div className="text-center max-w-3xl mx-auto space-y-3">
+          <Badge className="bg-[#132C54] text-[#A855F7] border-[#A855F7]/40 font-mono text-xs px-3 py-1">
+            5-SLAYD: CRM &amp; HISOBOT
+          </Badge>
+          <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
+            Onlayn va Oflayn Savdo Uchun CRM Tizimi
+          </h2>
+          <p className="text-sm sm:text-base text-sky-200/80">
+            BunkerStroy har bir do‘kon va zavodga alohida zamonaviy hisob-kitob dasturini taqdim etadi.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="p-6 rounded-2xl bg-[#0A1931] border border-[#1E3A6D] space-y-3 text-center">
+            <div className="w-12 h-12 mx-auto rounded-xl bg-[#132C54] flex items-center justify-center text-[#FFB800]">
+              <Store className="w-6 h-6" />
+            </div>
+            <h3 className="text-lg font-bold text-white">Alohida Hisob</h3>
+            <p className="text-xs text-sky-200/80 font-mono">
+              Onlayn + oflayn CRM tizimi orqali do‘kondagi savdo hamda internetdagi buyurtmalar bitta joyda jamlanadi.
+            </p>
           </div>
+
+          <div className="p-6 rounded-2xl bg-[#0A1931] border border-[#1E3A6D] space-y-3 text-center">
+            <div className="w-12 h-12 mx-auto rounded-xl bg-[#132C54] flex items-center justify-center text-[#38BDF8]">
+              <BarChart3 className="w-6 h-6" />
+            </div>
+            <h3 className="text-lg font-bold text-white">Umumiy Hisob-Kitob</h3>
+            <p className="text-xs text-sky-200/80 font-mono">
+              Ikkala yo‘nalish bo‘yicha yagona umumiy hisobot, kassa qoldiqlari va moliyaviy tahlil.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl bg-[#0A1931] border border-[#1E3A6D] space-y-3 text-center">
+            <div className="w-12 h-12 mx-auto rounded-xl bg-[#132C54] flex items-center justify-center text-emerald-400">
+              <MonitorCheck className="w-6 h-6" />
+            </div>
+            <h3 className="text-lg font-bold text-white">Savdo Monitoringi</h3>
+            <p className="text-xs text-sky-200/80 font-mono">
+              Savdoni real vaqtda kuzatib borish, ombor zaxirasini nazorat qilish va avtomatlashtirish.
+            </p>
+          </div>
+        </div>
+
+        <div className="text-center pt-2">
           <Button
-            variant="outline"
             onClick={() => {
-              triggerHaptic('light');
-              onNavigateToCatalog();
+              triggerHaptic('medium');
+              navigate('/seller-panel');
             }}
-            className="self-start sm:self-auto bg-[#0F2547] hover:bg-[#132C54] text-[#FFB800] border-[#1E3A6D] text-xs font-bold px-4 py-2 rounded-xl cursor-pointer flex items-center gap-1.5 min-h-[40px] touch-target-44"
+            className="bg-[#FFB800] hover:bg-amber-400 text-[#071326] font-bold text-sm px-8 py-3.5 rounded-xl cursor-pointer min-h-[44px] touch-target-44 shadow-lg inline-flex items-center gap-2"
           >
-            <span>Barcha Mahsulotlarni Ko‘rish</span>
-            <ChevronRight className="w-4 h-4" />
+            <Store className="w-4 h-4 text-[#071326]" />
+            <span>Sotuvchi CRM Panelini Ko‘rish</span>
+            <ArrowRight className="w-4 h-4" />
           </Button>
         </div>
+      </section>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {POPULAR_CATEGORIES.map((cat) => (
-            <div
-              key={cat.id}
-              onClick={() => {
-                triggerHaptic('light');
-                onNavigateToCatalog();
-              }}
-              className="rounded-2xl bg-[#0F2547] border border-[#1E3A6D] hover:border-[#FFB800]/70 p-6 space-y-3 cursor-pointer transition-all hover:scale-[1.02] shadow-md group"
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-3xl">{cat.icon}</span>
-                <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-md bg-[#132C54] text-[#FFB800] border border-[#FFB800]/30">
-                  {cat.badge}
-                </span>
-              </div>
-              <h3 className="text-lg font-bold text-white group-hover:text-[#FFB800] transition-colors">
-                {cat.name}
-              </h3>
-              <p className="text-xs text-sky-200/80 font-mono">
-                {cat.spec}
-              </p>
-              <div className="pt-2 border-t border-[#1E3A6D] text-[11px] text-slate-400 flex items-center justify-between">
-                <span>{cat.volumeInfo}</span>
-                <ArrowRight className="w-3.5 h-3.5 text-[#FFB800] group-hover:translate-x-1 transition-transform" />
-              </div>
-            </div>
-          ))}
+      {/* ====================================================================
+          6. YETKAZIB BERISH (Taqdimot 6-Slayd asosida)
+          ==================================================================== */}
+      <section className="space-y-8">
+        <div className="text-center max-w-3xl mx-auto space-y-3">
+          <Badge className="bg-[#132C54] text-[#FFB800] border-[#FFB800]/40 font-mono text-xs px-3 py-1">
+            6-SLAYD: LOGISTIKA
+          </Badge>
+          <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
+            Yetkazib Berish Shartlari
+          </h2>
+          <p className="text-sm sm:text-base text-sky-200/80">
+            Logistika erkinligi va 12 ta viloyat bo‘ylab keng ko‘lamli reklama qamrovi.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="p-6 rounded-2xl bg-[#0F2547] border border-[#1E3A6D] space-y-3">
+            <Truck className="w-8 h-8 text-[#FFB800]" />
+            <h3 className="text-lg font-bold text-white">Ta‘minotchi Yetkazadi</h3>
+            <p className="text-xs sm:text-sm text-sky-200/80 font-mono">
+              Buyurtmani ta‘minotchining o‘zi mijozga yetkazib beradi (o‘z transporti yoki hamkor yuk tashuvchilar orqali).
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl bg-[#0F2547] border border-[#1E3A6D] space-y-3">
+            <DollarSign className="w-8 h-8 text-emerald-400" />
+            <h3 className="text-lg font-bold text-white">Yetkazib Berish Narxi</h3>
+            <p className="text-xs sm:text-sm text-sky-200/80 font-mono">
+              Yetkazib berish narxini ta‘minotchi o‘zi mustaqil belgilaydi (masofa, og‘irlik yoki tekin yetkazish aktsiyalari).
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl bg-[#0F2547] border border-[#1E3A6D] space-y-3">
+            <MapPin className="w-8 h-8 text-[#38BDF8]" />
+            <h3 className="text-lg font-bold text-white">O‘zbekiston Bo‘ylab (12 Viloyat)</h3>
+            <p className="text-xs sm:text-sm text-sky-200/80 font-mono">
+              Reklama va faol foydalanuvchilar qamrovi butun O‘zbekiston bo‘ylab barcha 12 viloyatni qamrab oladi.
+            </p>
+          </div>
         </div>
       </section>
 
       {/* ====================================================================
-          6. TRUST & VERIFIED PARTNER PLANTS (Hamkor Zavodlar)
+          INTERAKTIV POYDEVOR & BETON KALKULYATORI (Ustalar & Xaridorlar uchun)
           ==================================================================== */}
-      <section className="rounded-3xl bg-[#0A1931] border border-[#1E3A6D] p-6 sm:p-10 space-y-6 text-center">
-        <div className="max-w-2xl mx-auto space-y-2">
-          <Badge className="bg-[#132C54] text-sky-300 border-sky-400/30 font-mono text-xs px-3 py-1">
-            LABORATORIYA VA KAFOLAT
-          </Badge>
-          <h2 className="text-xl sm:text-3xl font-black text-white">
-            O‘zbekistonning Yirik Ishlab Chiqaruvchilari Bilan Bevosita Integratsiya
+      <section className="rounded-3xl bg-gradient-to-br from-[#0F2547] to-[#0A1931] border-2 border-[#38BDF8]/40 p-6 sm:p-10 shadow-2xl space-y-6">
+        <div className="text-center space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#132C54] text-[#38BDF8] text-xs font-mono border border-[#38BDF8]/40">
+            <Calculator className="w-3.5 h-3.5 text-[#FFB800]" />
+            <span>USTALAR &amp; QURUVCHILAR UCHUN SMETA VOSITASI</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-white">
+            Poydevor &amp; Beton Hajmini Darhol Hisoblang
           </h2>
           <p className="text-xs sm:text-sm text-sky-200/80">
-            Har bir partiya mahsulot rasmiy zavod laboratoriyasi pasporti va O‘zstandart GOST muvofiqlik sertifikati bilan yuboriladi.
+            O‘lchamlarni kiriting — tizim bir zumda kerakli sement qoplari soni va taxminiy narxni hisoblaydi.
           </p>
         </div>
 
-        {/* Industrial Partners Badges */}
-        <div className="pt-4 flex flex-wrap items-center justify-center gap-3 sm:gap-4 font-mono text-xs sm:text-sm">
-          <div className="px-5 py-3 rounded-xl bg-[#0F2547] border border-[#1E3A6D] text-slate-200 font-bold">
-            🏢 QIZILQUMSEMENT AJ
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <div className="lg:col-span-7 bg-[#0A1931] p-5 sm:p-6 rounded-2xl border border-[#1E3A6D] space-y-4">
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <label className="block text-[11px] font-mono text-sky-300 font-bold mb-1">
+                  UZUNLIK (M)
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  max="100"
+                  step="0.5"
+                  value={calcLength}
+                  onChange={(e) => setCalcLength(Number(e.target.value) || 1)}
+                  className="w-full bg-[#0F2547] border border-[#1E3A6D] rounded-xl px-3 py-2 text-white font-mono text-sm sm:text-base focus:border-[#FFB800] focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-mono text-sky-300 font-bold mb-1">
+                  KENGLIK (M)
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  max="100"
+                  step="0.5"
+                  value={calcWidth}
+                  onChange={(e) => setCalcWidth(Number(e.target.value) || 1)}
+                  className="w-full bg-[#0F2547] border border-[#1E3A6D] rounded-xl px-3 py-2 text-white font-mono text-sm sm:text-base focus:border-[#FFB800] focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-mono text-sky-300 font-bold mb-1">
+                  BALANDLIK (M)
+                </label>
+                <input
+                  type="number"
+                  min="0.1"
+                  max="5"
+                  step="0.1"
+                  value={calcHeight}
+                  onChange={(e) => setCalcHeight(Number(e.target.value) || 0.1)}
+                  className="w-full bg-[#0F2547] border border-[#1E3A6D] rounded-xl px-3 py-2 text-white font-mono text-sm sm:text-base focus:border-[#FFB800] focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-mono text-sky-300 font-bold mb-1.5">
+                SEMENT MARKASI
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setCalcGrade('M400')}
+                  className={cn(
+                    'py-2 px-3 rounded-xl border text-xs sm:text-sm font-bold font-mono transition-all cursor-pointer min-h-[40px]',
+                    calcGrade === 'M400'
+                      ? 'bg-[#132C54] border-[#FFB800] text-[#FFB800]'
+                      : 'bg-[#0F2547] border-[#1E3A6D] text-slate-300'
+                  )}
+                >
+                  M400 (Standart Bino)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCalcGrade('M500')}
+                  className={cn(
+                    'py-2 px-3 rounded-xl border text-xs sm:text-sm font-bold font-mono transition-all cursor-pointer min-h-[40px]',
+                    calcGrade === 'M500'
+                      ? 'bg-[#132C54] border-[#FFB800] text-[#FFB800]'
+                      : 'bg-[#0F2547] border-[#1E3A6D] text-slate-300'
+                  )}
+                >
+                  M500 (Mustahkam / Og‘ir)
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="px-5 py-3 rounded-xl bg-[#0F2547] border border-[#1E3A6D] text-slate-200 font-bold">
-            ⚙️ O‘ZMETKOMBINAT (BEKOBOD)
-          </div>
-          <div className="px-5 py-3 rounded-xl bg-[#0F2547] border border-[#1E3A6D] text-slate-200 font-bold">
-            🏭 OHANGARONSEMENT
-          </div>
-          <div className="px-5 py-3 rounded-xl bg-[#0F2547] border border-[#1E3A6D] text-slate-200 font-bold">
-            🧱 QUVASOYSEMENT &amp; SHIFER
-          </div>
-          <div className="px-5 py-3 rounded-xl bg-[#0F2547] border border-[#1E3A6D] text-slate-200 font-bold">
-            🏗️ KNAUF GIPS BUXORO
+
+          <div className="lg:col-span-5 bg-[#132C54] p-5 sm:p-6 rounded-2xl border-2 border-[#FFB800]/50 space-y-4 shadow-lg">
+            <div className="flex items-center justify-between border-b border-[#1E3A6D] pb-3">
+              <span className="text-xs font-mono text-sky-200">Umumiy Beton Hajmi:</span>
+              <span className="text-xl font-black font-mono text-white">{calcResults.volume} m³</span>
+            </div>
+
+            <div className="space-y-2 text-xs sm:text-sm font-mono">
+              <div className="flex justify-between text-slate-200">
+                <span>Kerakli Sement:</span>
+                <span className="font-bold text-[#FFB800]">{calcResults.totalCementBags} qop ({calcResults.totalCementTons} t)</span>
+              </div>
+              <div className="flex justify-between text-slate-200">
+                <span>Qum (Yuvilgan):</span>
+                <span className="font-bold text-sky-300">{calcResults.totalSandM3} m³</span>
+              </div>
+              <div className="flex justify-between text-slate-200">
+                <span>Shag‘al (5–20mm):</span>
+                <span className="font-bold text-sky-300">{calcResults.totalGravelM3} m³</span>
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-[#1E3A6D]">
+              <div className="text-[11px] font-mono text-sky-300">Taxminiy Material Xarajati:</div>
+              <div className="text-xl sm:text-2xl font-black font-mono text-emerald-400">
+                ~ {calcResults.approxTotalUzs.toLocaleString('uz-UZ')} UZS
+              </div>
+            </div>
+
+            <Button
+              onClick={() => {
+                triggerHaptic('medium');
+                onNavigateToCatalog();
+              }}
+              className="w-full bg-[#FFB800] hover:bg-amber-400 text-[#071326] font-bold text-xs py-2.5 rounded-xl cursor-pointer min-h-[40px]"
+            >
+              Katalogda Sement Buyurtma Qilish
+            </Button>
           </div>
         </div>
       </section>
 
       {/* ====================================================================
-          7. ECOSYSTEM APPS SHOWCASE (4 Panellar Tizimi)
+          7. PLATFORMADA BIRINCHILARDAN BO‘LING! (Taqdimot 7-Slayd asosida)
           ==================================================================== */}
-      <section className="space-y-6">
-        <div className="text-center max-w-2xl mx-auto space-y-2">
-          <Badge className="bg-[#132C54] text-[#FFB800] border-[#FFB800]/40 font-mono text-xs px-3 py-1">
-            EKOTIZIM DASTURLARI
+      <section className="rounded-3xl bg-gradient-to-r from-[#FFB800] via-amber-400 to-[#FF9000] p-8 sm:p-12 text-[#071326] space-y-6 shadow-2xl relative overflow-hidden border-2 border-amber-300">
+        <div className="max-w-3xl mx-auto text-center space-y-5">
+          <Badge className="bg-[#071326] text-[#FFB800] border-none font-mono text-xs px-3.5 py-1">
+            7-SLAYD: HAMKORLIKKA TAKLIF
           </Badge>
-          <h2 className="text-2xl sm:text-3xl font-black text-white">
-            BunkerStroy 4 Ta Ixtisoslashgan Panelni Taqdim Etadi
+
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+            Platformada Birinchilardan Bo‘ling!
           </h2>
-        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-5 rounded-2xl bg-[#0F2547] border border-[#1E3A6D] space-y-3">
-            <Package className="w-6 h-6 text-[#FFB800]" />
-            <h3 className="font-bold text-white text-base">Xaridorlar Vitrinasi</h3>
-            <p className="text-xs text-sky-200/80">Katalog, savat, laboratoriya sertifikatlari va tenderlar moduli.</p>
-            <span className="inline-block text-[10px] font-mono text-emerald-400 font-bold">web.bunkerstroy.uz</span>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-[#0F2547] border border-[#1E3A6D] space-y-3">
-            <Factory className="w-6 h-6 text-emerald-400" />
-            <h3 className="font-bold text-white text-base">Zavod &amp; POS/CRM</h3>
-            <p className="text-xs text-sky-200/80">Zavod ombor qoldiqlari, tarozi hisobi va kassa operatsiyalari.</p>
-            <span className="inline-block text-[10px] font-mono text-emerald-400 font-bold">seller.bunkerstroy.uz</span>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-[#0F2547] border border-[#1E3A6D] space-y-3">
-            <Truck className="w-6 h-6 text-[#38BDF8]" />
-            <h3 className="font-bold text-white text-base">Haydovchilar PWA</h3>
-            <p className="text-xs text-sky-200/80">Sensor 60x60px Numpad, GPS telemetriya va PIN-kodli to‘lov.</p>
-            <span className="inline-block text-[10px] font-mono text-emerald-400 font-bold">driver.bunkerstroy.uz</span>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-[#0F2547] border border-[#1E3A6D] space-y-3">
-            <ShieldCheck className="w-6 h-6 text-purple-400" />
-            <h3 className="font-bold text-white text-base">Admin Dashboard</h3>
-            <p className="text-xs text-sky-200/80">Audit loglari, Escrow nazorati va Excel UTF-8 BOM eksporti.</p>
-            <span className="inline-block text-[10px] font-mono text-emerald-400 font-bold">admin.bunkerstroy.uz</span>
-          </div>
-        </div>
-      </section>
-
-      {/* ====================================================================
-          8. FINAL CALL TO ACTION BANNER
-          ==================================================================== */}
-      <section className="rounded-3xl bg-gradient-to-r from-[#132C54] via-[#0F2547] to-[#132C54] border-2 border-[#FFB800] p-8 sm:p-12 text-center space-y-6 shadow-2xl relative overflow-hidden">
-        <div className="max-w-3xl mx-auto space-y-4">
-          <h2 className="text-2xl sm:text-4xl font-black text-white">
-            Qurilish Ob‘ektingiz Ta‘minotini Bugunoq Avtomatlashtiring
-          </h2>
-          <p className="text-sm sm:text-base text-sky-200">
-            Vositachilarsiz zavod narxlarida xarid qiling, 50/50 xavfsiz Escrow bilan mablag‘ingizni asrang va o‘z vaqtida yetkazib oling.
+          <p className="text-base sm:text-lg font-bold text-[#0A1931]/90 max-w-2xl mx-auto">
+            O‘zbekistondagi ta‘minotchi zavodlar va qurilish marketlarini BunkerStroy platformasida hamkorlikka chorlaymiz.
           </p>
+
+          <div className="p-4 rounded-2xl bg-[#071326]/90 text-white font-mono text-sm sm:text-base max-w-lg mx-auto border border-white/20 shadow-xl space-y-2">
+            <div className="flex items-center justify-center gap-2 text-[#FFB800] font-black text-lg">
+              <PhoneCall className="w-5 h-5" />
+              <span>Aloqa uchun: Admin +998 95 082 1336</span>
+            </div>
+            <div className="flex items-center justify-around text-xs text-sky-200 border-t border-white/10 pt-2">
+              <span className="font-bold">🌐 BunkerStroy.uz</span>
+              <span>•</span>
+              <span className="text-emerald-400 font-bold">Start: 07.11.2026</span>
+            </div>
+          </div>
+
           <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
+            <a
+              href="tel:+998950821336"
+              onClick={() => triggerHaptic('medium')}
+              className="bg-[#071326] hover:bg-[#0A1931] text-[#FFB800] font-black text-base px-8 py-3.5 rounded-xl cursor-pointer min-h-[48px] touch-target-44 shadow-lg inline-flex items-center gap-2 transition-all hover:scale-[1.02]"
+            >
+              <PhoneCall className="w-5 h-5 text-[#FFB800]" />
+              <span>Hoziroq Qo‘ng‘iroq Qilish</span>
+            </a>
+
             <Button
               size="lg"
               onClick={() => {
                 triggerHaptic('medium');
                 onNavigateToCatalog();
               }}
-              className="bg-[#FFB800] hover:bg-amber-400 text-[#071326] font-black text-base px-8 py-3.5 rounded-xl cursor-pointer min-h-[48px] touch-target-44 shadow-lg hover:scale-[1.02] transition-all"
+              className="bg-white hover:bg-slate-100 text-[#071326] font-black text-base px-8 py-3.5 rounded-xl cursor-pointer min-h-[48px] touch-target-44 shadow-md transition-all"
             >
-              <span>Katalogga O‘tish</span>
-              <ArrowRight className="w-4 h-4 ml-1.5" />
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => {
-                triggerHaptic('light');
-                navigate('/suppliers');
-              }}
-              className="bg-[#0A1931] hover:bg-[#0F2547] text-white border-2 border-[#38BDF8] font-bold text-base px-7 py-3.5 rounded-xl cursor-pointer min-h-[48px] touch-target-44"
-            >
-              <Factory className="w-4 h-4 text-[#38BDF8] mr-2" />
-              <span>Hamkor Zavodlar Ro‘yxati</span>
+              <Package className="w-5 h-5 text-[#071326]" />
+              <span>Katalogni Ochish</span>
             </Button>
           </div>
         </div>
