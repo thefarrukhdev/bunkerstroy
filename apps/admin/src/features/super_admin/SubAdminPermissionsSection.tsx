@@ -301,7 +301,7 @@ export const SubAdminPermissionsSection: React.FC = () => {
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <Shield className="w-5 h-5 text-[#D95D1E]" />
-            <h2 className="text-lg font-black text-white uppercase tracking-tight">
+            <h2 className="text-lg font-black text-slate-900 uppercase tracking-tight">
               Sub-Adminlar &amp; Bo‘limlar Ruxsatlar Matritsasi
             </h2>
           </div>
@@ -341,7 +341,7 @@ export const SubAdminPermissionsSection: React.FC = () => {
               </span>
               <span className="w-2 h-2 rounded-full bg-[#D95D1E]" />
             </div>
-            <div className="text-xs font-black text-white">{meta.label}</div>
+            <div className="text-xs font-black text-slate-900">{meta.label}</div>
             <p className="text-[10px] text-slate-600 line-clamp-2 leading-relaxed font-sans">
               {meta.description}
             </p>
@@ -354,7 +354,7 @@ export const SubAdminPermissionsSection: React.FC = () => {
         <div className="flex items-center justify-between border-b border-slate-200 pb-3">
           <div className="flex items-center gap-2">
             <Terminal className="w-4 h-4 text-[#D95D1E]" />
-            <h3 className="text-sm font-black text-white uppercase tracking-wider">
+            <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider">
               Mavjud Sub-Adminlar Ro‘yxati &amp; Huquqlar Jadvali
             </h3>
           </div>
@@ -498,7 +498,7 @@ export const SubAdminPermissionsSection: React.FC = () => {
             <div className="flex items-center justify-between pb-3 border-b border-slate-200">
               <div className="flex items-center gap-2">
                 <UserPlus className="w-5 h-5 text-[#D95D1E]" />
-                <h3 className="text-base font-black text-white uppercase">
+                <h3 className="text-base font-black text-slate-900 uppercase">
                   Yangi Sub-Admin Kabinet Yaratish
                 </h3>
               </div>
@@ -526,7 +526,7 @@ export const SubAdminPermissionsSection: React.FC = () => {
                   placeholder="Masalan: Farg‘ona Logistika Nazorati"
                   value={newCabinetName}
                   onChange={(e) => setNewCabinetName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-white focus:outline-none focus:border-[#D95D1E]"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-[#D95D1E]"
                   required
                 />
               </div>
@@ -539,7 +539,7 @@ export const SubAdminPermissionsSection: React.FC = () => {
                     placeholder="ADMIN.FARGONA"
                     value={newLogin}
                     onChange={(e) => setNewLogin(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-white uppercase focus:outline-none focus:border-[#D95D1E]"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 uppercase focus:outline-none focus:border-[#D95D1E]"
                     required
                   />
                 </div>
@@ -552,7 +552,7 @@ export const SubAdminPermissionsSection: React.FC = () => {
                       placeholder="Parol kiriting"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="w-full pl-3.5 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-white focus:outline-none focus:border-[#D95D1E]"
+                      className="w-full pl-3.5 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-[#D95D1E]"
                       required
                     />
                     <button
@@ -584,7 +584,7 @@ export const SubAdminPermissionsSection: React.FC = () => {
                         }}
                         className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
                           isChecked
-                            ? 'bg-slate-100 border-[#D95D1E] text-white'
+                            ? 'bg-orange-50 border-[#D95D1E] text-slate-900 font-bold'
                             : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-500'
                         }`}
                       >
@@ -630,8 +630,8 @@ export const SubAdminPermissionsSection: React.FC = () => {
           <div className="bg-white border border-slate-200 rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl">
             <div className="flex items-center justify-between pb-3 border-b border-slate-200">
               <div className="flex items-center gap-2">
-                <Edit3 className="w-5 h-5 text-[#D95D1E]" />
-                <h3 className="text-base font-black text-white uppercase">
+                 <Edit3 className="w-5 h-5 text-[#D95D1E]" />
+                <h3 className="text-base font-black text-slate-900 uppercase">
                   Sub-Adminni Tahrirlash
                 </h3>
               </div>
@@ -658,7 +658,7 @@ export const SubAdminPermissionsSection: React.FC = () => {
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-white focus:outline-none focus:border-[#D95D1E]"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-[#D95D1E]"
                   required
                 />
               </div>
@@ -670,7 +670,7 @@ export const SubAdminPermissionsSection: React.FC = () => {
                     type="text"
                     value={editLogin}
                     onChange={(e) => setEditLogin(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-white uppercase focus:outline-none focus:border-[#D95D1E]"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 uppercase focus:outline-none focus:border-[#D95D1E]"
                     required
                   />
                 </div>
@@ -681,7 +681,7 @@ export const SubAdminPermissionsSection: React.FC = () => {
                     type="text"
                     value={editPassword}
                     onChange={(e) => setEditPassword(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-white focus:outline-none focus:border-[#D95D1E]"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-[#D95D1E]"
                     required
                   />
                 </div>
@@ -704,7 +704,7 @@ export const SubAdminPermissionsSection: React.FC = () => {
                         }}
                         className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
                           isChecked
-                            ? 'bg-slate-100 border-[#D95D1E] text-white'
+                            ? 'bg-orange-50 border-[#D95D1E] text-slate-900 font-bold'
                             : 'bg-slate-50 border-slate-200 text-slate-600'
                         }`}
                       >

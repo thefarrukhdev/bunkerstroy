@@ -52,7 +52,7 @@ export const PRODUCTS_SOLD: ProductCategoryItem[] = [
     itemsSummary: 'Kafel, Granit, Dekorativ suvoq, Aboy, Bo‘yoq va gruntlar',
     itemTags: [
       'Kafel & Kafel yelimlari',
-      'Kafel & Kafel yelimlari',
+      'Granit & Marmar Plitalari',
       'Dekorativ Suvoq (Travertin)',
       'Sifatli Gulqog‘oz (Aboy)',
       'Emulsiya & Moybo‘yoq',

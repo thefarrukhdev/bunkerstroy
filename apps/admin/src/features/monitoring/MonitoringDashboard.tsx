@@ -228,7 +228,7 @@ export const MonitoringDashboard: React.FC<{
       className: 'whitespace-nowrap',
       render: (row) => (
         <div>
-          <span className="text-xs text-white block max-w-xs truncate">
+          <span className="text-xs text-slate-900 block max-w-xs truncate">
             {row.deliveryAddress}
           </span>
           <span className="text-[10px] font-mono text-[#D95D1E] font-bold">
@@ -350,7 +350,7 @@ export const MonitoringDashboard: React.FC<{
                 </div>
               </div>
               <div className="mt-3 flex items-baseline gap-2">
-                <span className="text-2xl font-black font-mono text-white font-mono-numbers">
+                <span className="text-2xl font-black font-mono text-slate-900 font-mono-numbers">
                   {todayOrdersCount} ta
                 </span>
                 <span className="text-xs font-mono font-bold text-emerald-600 flex items-center">
@@ -440,7 +440,7 @@ export const MonitoringDashboard: React.FC<{
                   <BellRing className="w-4 h-4 animate-bounce" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-black text-white font-mono uppercase tracking-wide">
+                  <h3 className="text-sm font-black text-slate-900 font-mono uppercase tracking-wide">
                     E‘tibor Ro‘yxati (Attention List)
                   </h3>
                   <p className="text-[11px] text-slate-600 font-mono">
@@ -482,7 +482,7 @@ export const MonitoringDashboard: React.FC<{
                         {item.timestamp}
                       </span>
                     </div>
-                    <h4 className="text-xs font-black text-white">
+                    <h4 className="text-xs font-black text-slate-900">
                       {item.title}
                     </h4>
                     <p className="text-[11px] text-slate-600 leading-relaxed font-sans">
@@ -500,7 +500,7 @@ export const MonitoringDashboard: React.FC<{
                           if (found) setSelectedOrder(found);
                         }
                       }}
-                      className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-orange-50 text-white hover:text-[#D95D1E] border border-slate-200 text-xs font-mono font-bold flex items-center gap-1 cursor-pointer transition active:scale-95"
+                      className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-orange-50 text-slate-700 hover:text-[#D95D1E] border border-slate-200 text-xs font-mono font-bold flex items-center gap-1 cursor-pointer transition active:scale-95"
                     >
                       <span>{item.actionLabel}</span>
                       <ChevronRight className="w-3.5 h-3.5 text-[#D95D1E]" />
@@ -517,7 +517,7 @@ export const MonitoringDashboard: React.FC<{
           <div className="bg-white rounded-2xl border border-slate-200 p-4 space-y-4 shadow-xl">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 pb-3">
               <div>
-                <h3 className="text-sm font-black text-white font-mono uppercase tracking-wide">
+                <h3 className="text-sm font-black text-slate-900 font-mono uppercase tracking-wide">
                   Buyurtmalar Nazorati (Orders Table)
                 </h3>
                 <p className="text-[11px] text-slate-600 font-mono">
@@ -536,7 +536,7 @@ export const MonitoringDashboard: React.FC<{
                     aria-label="Raqam yoki xaridor bo‘yicha qidirish"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full sm:w-56 pl-8 pr-3 py-2 sm:py-1.5 text-base sm:text-xs min-h-[44px] sm:min-h-0 rounded-xl bg-slate-50 border border-slate-200 text-white placeholder:text-slate-400 focus:outline-none focus:border-[#D95D1E]"
+                    className="w-full sm:w-56 pl-8 pr-3 py-2 sm:py-1.5 text-base sm:text-xs min-h-[44px] sm:min-h-0 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#D95D1E]"
                   />
                 </div>
 
@@ -546,7 +546,7 @@ export const MonitoringDashboard: React.FC<{
                   aria-label="Buyurtma holati bo‘yicha filter"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="w-full sm:w-auto text-base sm:text-xs min-h-[44px] sm:min-h-0 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 sm:py-1.5 text-white focus:outline-none focus:border-[#D95D1E] cursor-pointer"
+                  className="w-full sm:w-auto text-base sm:text-xs min-h-[44px] sm:min-h-0 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 sm:py-1.5 text-slate-900 focus:outline-none focus:border-[#D95D1E] cursor-pointer"
                 >
                   <option value="ALL">Barcha holatlar</option>
                   <option value="PENDING">Kutilmoqda</option>

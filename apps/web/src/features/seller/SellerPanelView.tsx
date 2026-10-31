@@ -1096,7 +1096,7 @@ export const SellerPanelView: React.FC = () => {
             }`}
           >
             <span>{feedback.message}</span>
-            <button type="button" onClick={() => setFeedback(null)} className="cursor-pointer text-white">
+            <button type="button" onClick={() => setFeedback(null)} className="cursor-pointer text-slate-500 hover:text-slate-800">
               <X className="w-4 h-4" />
             </button>
           </div>
@@ -1523,7 +1523,7 @@ export const SellerPanelView: React.FC = () => {
                     onChange={(e) => setIsOnlinePublish(e.target.checked)}
                     className="w-4 h-4 rounded text-[#D95D1E] focus:ring-[#D95D1E] bg-white border-slate-200"
                   />
-                  <span className="text-xs font-mono text-white">
+                  <span className="text-xs font-mono text-slate-900 font-medium">
                     🌐 Online Vitrinada ko‘rinsin (Marketplace xaridorlari uchun)
                   </span>
                 </label>
@@ -1537,7 +1537,7 @@ export const SellerPanelView: React.FC = () => {
                     onChange={(e) => setIsOfflineStore(e.target.checked)}
                     className="w-4 h-4 rounded text-[#D95D1E] focus:ring-[#D95D1E] bg-white border-slate-200"
                   />
-                  <span className="text-xs font-mono text-white">
+                  <span className="text-xs font-mono text-slate-900 font-medium">
                     🏪 Offline Do‘kon Kassa / POS da sotilsin
                   </span>
                 </label>
@@ -1565,7 +1565,7 @@ export const SellerPanelView: React.FC = () => {
                       onClick={() => handleToggleFormColor(c.id)}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-mono font-bold cursor-pointer transition-all ${
                         isChecked
-                          ? 'bg-orange-50 border-[#D95D1E] text-white shadow-xs'
+                          ? 'bg-orange-50 border-[#D95D1E] text-[#D95D1E] shadow-xs'
                           : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
                       }`}
                     >
@@ -1607,7 +1607,7 @@ export const SellerPanelView: React.FC = () => {
                 {selectedFormSizes.map((sz) => (
                   <span
                     key={sz}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-orange-50 border border-slate-300 text-white font-mono text-xs font-bold"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-orange-50 border border-[#D95D1E]/30 text-orange-950 font-mono text-xs font-bold"
                   >
                     <span>{sz}</span>
                     <button
@@ -1743,7 +1743,7 @@ export const SellerPanelView: React.FC = () => {
                 aria-label="Mahsulot nomi yoki shtrixkodi bo‘yicha tezkor qidiruv"
                 value={posSearchTerm}
                 onChange={(e) => setPosSearchTerm(e.target.value)}
-                className="w-full h-11 pl-10 pr-4 rounded-xl bg-white border border-slate-200 focus:border-[#D95D1E] text-base text-white placeholder-slate-400 outline-none font-mono"
+                className="w-full h-11 pl-10 pr-4 rounded-xl bg-white border border-slate-200 focus:border-[#D95D1E] text-base text-slate-900 placeholder-slate-400 outline-none font-mono"
               />
             </div>
 
@@ -1834,18 +1834,18 @@ export const SellerPanelView: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => handleUpdateBasketQty(item.id, -1)}
-                          className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg bg-slate-100 border border-slate-200 text-white flex items-center justify-center font-bold hover:bg-orange-50 hover:border-[#D95D1E] active:scale-95 transition-all touch-manipulation cursor-pointer"
+                          className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center font-bold hover:bg-orange-50 hover:border-[#D95D1E] active:scale-95 transition-all touch-manipulation cursor-pointer"
                           aria-label="Miqdorni bittaga kamaytirish"
                         >
                           <Minus className="w-4 h-4" />
                         </button>
-                        <span className="font-black text-white min-w-[32px] text-center font-mono text-sm">
+                        <span className="font-black text-slate-900 min-w-[32px] text-center font-mono text-sm">
                           {item.quantity}
                         </span>
                         <button
                           type="button"
                           onClick={() => handleUpdateBasketQty(item.id, 1)}
-                          className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg bg-slate-100 border border-slate-200 text-white flex items-center justify-center font-bold hover:bg-orange-50 hover:border-[#D95D1E] active:scale-95 transition-all touch-manipulation cursor-pointer"
+                          className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center font-bold hover:bg-orange-50 hover:border-[#D95D1E] active:scale-95 transition-all touch-manipulation cursor-pointer"
                           aria-label="Miqdorni bittaga oshirish"
                         >
                           <Plus className="w-4 h-4" />
@@ -1922,7 +1922,7 @@ export const SellerPanelView: React.FC = () => {
                     onClick={() => setPosPaymentMethod('PAYME_CLICK')}
                     className={`p-2 rounded-xl border flex items-center gap-1.5 cursor-pointer font-bold ${
                       posPaymentMethod === 'PAYME_CLICK'
-                        ? 'bg-orange-50 border-cyan-400 text-cyan-300'
+                        ? 'bg-cyan-50 border-cyan-400 text-cyan-800'
                         : 'bg-slate-50 border-slate-200 text-slate-600'
                     }`}
                   >
@@ -1935,7 +1935,7 @@ export const SellerPanelView: React.FC = () => {
                     onClick={() => setPosPaymentMethod('B2B')}
                     className={`p-2 rounded-xl border flex items-center gap-1.5 cursor-pointer font-bold ${
                       posPaymentMethod === 'B2B'
-                        ? 'bg-orange-50 border-purple-400 text-purple-300'
+                        ? 'bg-purple-50 border-purple-400 text-purple-800'
                         : 'bg-slate-50 border-slate-200 text-slate-600'
                     }`}
                   >
@@ -1959,7 +1959,7 @@ export const SellerPanelView: React.FC = () => {
                       aria-label="Qabul qilingan naqd summa"
                       value={cashGiven}
                       onChange={(e) => setCashGiven(e.target.value ? Math.max(0, Number(e.target.value)) : '')}
-                      className="w-32 h-8 px-2 rounded-lg bg-white border border-slate-200 text-right font-black text-white"
+                      className="w-32 h-8 px-2 rounded-lg bg-white border border-slate-200 text-right font-black text-slate-900"
                     />
                   </div>
                   {typeof cashGiven === 'number' && cashGiven >= posGrandTotal && (
@@ -1987,7 +1987,7 @@ export const SellerPanelView: React.FC = () => {
                   <span>Shu jumladan 12% QQS:</span>
                   <span>{posTaxAmount.toLocaleString()} so‘m</span>
                 </div>
-                <div className="flex justify-between text-white font-black text-base pt-2 border-t border-slate-200">
+                <div className="flex justify-between text-slate-900 font-black text-base pt-2 border-t border-slate-200">
                   <span>To‘lov summasi:</span>
                   <span className="text-[#D95D1E]">{posGrandTotal.toLocaleString()} so‘m</span>
                 </div>
@@ -2031,6 +2031,12 @@ export const SellerPanelView: React.FC = () => {
                 O‘zmetkombinat, Qizilqumsement, Knauf va boshqa yirik zavodlardan to‘g‘ridan-to‘g‘ri
                 vagon va fura partiyalarida xarid qiling. Bank to‘lov topshiriqnomasi va shartnoma bilan.
               </p>
+              <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-mono">
+                <Truck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span>
+                  <strong>«Kim sotsa — o‘sha yetkazadi»</strong> qoidasi: Zavod do‘konga ulgurji sotganda yetkazib berish to‘liq <strong>ZAVODNING bo‘ynida</strong>.
+                </span>
+              </div>
             </div>
 
             <div className="text-right font-mono text-xs shrink-0">
@@ -2067,7 +2073,7 @@ export const SellerPanelView: React.FC = () => {
                   <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5 font-mono text-xs">
                     <div className="flex justify-between">
                       <span className="text-slate-500">Asosiy tovar:</span>
-                      <span className="text-white font-bold truncate max-w-[150px]">
+                      <span className="text-slate-900 font-bold truncate max-w-[150px]">
                         {mfg.featuredProduct}
                       </span>
                     </div>
@@ -2120,7 +2126,7 @@ export const SellerPanelView: React.FC = () => {
                   {b2bOrders.map((ord) => (
                     <tr key={ord.id} className="hover:bg-slate-100/50">
                       <td className="p-3 font-bold text-[#D95D1E]">{ord.orderNumber}</td>
-                      <td className="p-3 text-white font-bold">{ord.manufacturerName}</td>
+                      <td className="p-3 text-slate-900 font-bold">{ord.manufacturerName}</td>
                       <td className="p-3 text-slate-600">{ord.productName}</td>
                       <td className="p-3 font-black text-[#D95D1E]">
                         {ord.totalAmount.toLocaleString()} so‘m
@@ -2201,9 +2207,9 @@ export const SellerPanelView: React.FC = () => {
             <div className="brushed-steel rounded-2xl p-5 border border-slate-200 space-y-2">
               <div className="flex items-center justify-between text-xs font-mono text-slate-500">
                 <span>Kanal Ulushi (Online / POS)</span>
-                <Percent className="w-4 h-4 text-cyan-400" />
+                <Percent className="w-4 h-4 text-sky-600" />
               </div>
-              <div className="text-xl font-black text-white font-mono-numbers">
+              <div className="text-xl font-black text-slate-900 font-mono-numbers">
                 {totalIncome > 0 ? Math.round((onlineIncome / totalIncome) * 100) : 0}% /{' '}
                 {totalIncome > 0 ? Math.round((offlineIncome / totalIncome) * 100) : 0}%
               </div>
@@ -2263,7 +2269,7 @@ export const SellerPanelView: React.FC = () => {
                           {op.type === 'INCOME' ? 'KIRIM (+)' : 'CHIQIM (-)'}
                         </span>
                       </td>
-                      <td className="p-3 text-white font-bold">{op.category}</td>
+                      <td className="p-3 text-slate-900 font-bold">{op.category}</td>
                       <td className="p-3 text-slate-600">{op.paymentMethod}</td>
                       <td className="p-3 text-slate-500 text-[11px]">{op.notes}</td>
                       <td
@@ -2311,7 +2317,7 @@ export const SellerPanelView: React.FC = () => {
                 <div key={ord.id} className="py-3 flex items-center justify-between font-mono text-xs">
                   <div>
                     <span className="text-[#D95D1E] font-bold">#{ord.orderNumber}</span>
-                    <p className="text-white font-bold text-sm mt-0.5">
+                    <p className="text-slate-900 font-bold text-sm mt-0.5">
                       {(ord as any).customerName || (ord as any).buyerCompanyName || 'Mijoz'} • {Number(ord.totalAmount).toLocaleString()} so‘m
                     </p>
                     <span className="text-[10px] text-slate-500">
@@ -2364,12 +2370,12 @@ export const SellerPanelView: React.FC = () => {
                 {escrowLedger.map((row) => (
                   <tr key={row.id} className="hover:bg-slate-100/50">
                     <td className="p-3 font-bold text-[#D95D1E]">{row.actNumber}</td>
-                    <td className="p-3 text-white">
+                    <td className="p-3 text-slate-900">
                       <div>{row.buyerName}</div>
                       <div className="text-[10px] text-slate-500">STIR: {row.buyerStir}</div>
                     </td>
                     <td className="p-3 text-slate-600">{row.itemSummary}</td>
-                    <td className="p-3 text-white font-bold">
+                    <td className="p-3 text-slate-900 font-bold">
                       {row.grossAmount.toLocaleString()} so‘m
                     </td>
                     <td className="p-3 text-red-400 font-bold">
@@ -2509,7 +2515,7 @@ export const SellerPanelView: React.FC = () => {
           ===================================================================== */}
       {isB2bModalOpen && selectedManufacturer && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-50/80 backdrop-blur-sm p-4">
-          <div className="w-full max-w-lg rounded-2xl bg-white text-white p-6 shadow-2xl border border-slate-200 space-y-5 font-mono text-xs">
+          <div className="w-full max-w-lg rounded-2xl bg-white text-slate-900 p-6 shadow-2xl border border-slate-200 space-y-5 font-mono text-xs">
             <div className="flex items-center justify-between pb-3 border-b border-slate-200">
               <div className="flex items-center gap-2">
                 <Factory className="w-5 h-5 text-[#D95D1E]" />
@@ -2529,7 +2535,7 @@ export const SellerPanelView: React.FC = () => {
             <div className="space-y-3">
               <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
                 <span className="text-[10px] text-slate-500 uppercase font-bold">Ishlab chiqaruvchi:</span>
-                <p className="font-black text-white text-sm">{selectedManufacturer.name}</p>
+                <p className="font-black text-slate-900 text-sm">{selectedManufacturer.name}</p>
                 <p className="text-[11px] text-slate-600">{selectedManufacturer.featuredProduct}</p>
               </div>
 
@@ -2545,7 +2551,7 @@ export const SellerPanelView: React.FC = () => {
                   min={selectedManufacturer.minOrderTons}
                   value={b2bQuantity}
                   onChange={(e) => setB2bQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-white font-bold"
+                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold"
                 />
                 <span className="text-[10px] text-slate-500">
                   Minimal partiya: {selectedManufacturer.minOrderTons} {selectedManufacturer.unit}
@@ -2559,20 +2565,20 @@ export const SellerPanelView: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setB2bIncoterm('DAP')}
-                    className={`p-2 rounded-xl border text-center font-bold cursor-pointer ${
+                    className={`p-2.5 rounded-xl border text-center font-bold cursor-pointer transition-all ${
                       b2bIncoterm === 'DAP'
-                        ? 'bg-orange-50 border-[#D95D1E] text-white'
+                        ? 'bg-orange-50 border-[#D95D1E] text-[#D95D1E]'
                         : 'bg-slate-50 border-slate-200 text-slate-600'
                     }`}
                   >
-                    DAP (Manzilga fura/vagon)
+                    DAP (Yetkazib berish zavodning bo‘ynida)
                   </button>
                   <button
                     type="button"
                     onClick={() => setB2bIncoterm('EXW')}
-                    className={`p-2 rounded-xl border text-center font-bold cursor-pointer ${
+                    className={`p-2.5 rounded-xl border text-center font-bold cursor-pointer transition-all ${
                       b2bIncoterm === 'EXW'
-                        ? 'bg-orange-50 border-[#D95D1E] text-white'
+                        ? 'bg-orange-50 border-[#D95D1E] text-[#D95D1E]'
                         : 'bg-slate-50 border-slate-200 text-slate-600'
                     }`}
                   >
@@ -2588,19 +2594,19 @@ export const SellerPanelView: React.FC = () => {
                 </span>
                 <div className="flex justify-between text-slate-600">
                   <span>H/R (Hisob raqam):</span>
-                  <span className="text-white font-bold">{selectedManufacturer.accountNumber}</span>
+                  <span className="text-slate-900 font-bold">{selectedManufacturer.accountNumber}</span>
                 </div>
                 <div className="flex justify-between text-slate-600">
                   <span>MFO:</span>
-                  <span className="text-white font-bold">{selectedManufacturer.mfo}</span>
+                  <span className="text-slate-900 font-bold">{selectedManufacturer.mfo}</span>
                 </div>
                 <div className="flex justify-between text-slate-600">
                   <span>STIR:</span>
-                  <span className="text-white font-bold">{selectedManufacturer.stir}</span>
+                  <span className="text-slate-900 font-bold">{selectedManufacturer.stir}</span>
                 </div>
                 <div className="flex justify-between text-slate-600">
                   <span>Bank:</span>
-                  <span className="text-white font-bold">{selectedManufacturer.bankName}</span>
+                  <span className="text-slate-900 font-bold">{selectedManufacturer.bankName}</span>
                 </div>
               </div>
 
@@ -2641,7 +2647,7 @@ export const SellerPanelView: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-50/80 backdrop-blur-sm p-4">
           <form
             onSubmit={handleAddExpense}
-            className="w-full max-w-md rounded-2xl bg-white text-white p-6 shadow-2xl border border-slate-200 space-y-4 font-mono text-xs"
+            className="w-full max-w-md rounded-2xl bg-white text-slate-900 p-6 shadow-2xl border border-slate-200 space-y-4 font-mono text-xs"
           >
             <div className="flex items-center justify-between pb-3 border-b border-slate-200">
               <h3 className="font-heading font-black text-slate-900 text-base">
@@ -2665,7 +2671,7 @@ export const SellerPanelView: React.FC = () => {
                   aria-label="Xarajat kategoriyasi"
                   value={expenseCategory}
                   onChange={(e) => setExpenseCategory(e.target.value)}
-                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-white"
+                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900"
                 >
                   <option value="Ombor Arendasi">Ombor / Do‘kon Ijarasi</option>
                   <option value="Ishchilar Maoshi">Ishchilar va Haydovchilar Maoshi</option>
@@ -2700,7 +2706,7 @@ export const SellerPanelView: React.FC = () => {
                   aria-label="To‘lov vositasi"
                   value={expensePaymentMethod}
                   onChange={(e) => setExpensePaymentMethod(e.target.value)}
-                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-white"
+                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900"
                 >
                   <option value="Bank o‘tkazmasi">Bank o‘tkazmasi (H/R)</option>
                   <option value="Korporativ Karta">Korporativ Karta</option>
@@ -2717,7 +2723,7 @@ export const SellerPanelView: React.FC = () => {
                   placeholder="Xarajat bo‘yicha qo‘shimcha izoh..."
                   value={expenseNotes}
                   onChange={(e) => setExpenseNotes(e.target.value)}
-                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-white"
+                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900"
                 />
               </div>
             </div>

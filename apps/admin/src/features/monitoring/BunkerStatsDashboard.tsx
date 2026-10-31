@@ -582,7 +582,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight uppercase flex items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight uppercase flex items-center gap-2">
                 <span>BunkerStats: Respublika 14 Hududi Monitoringi</span>
               </h1>
             </div>
@@ -674,7 +674,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
               <div className="flex items-center justify-between pb-2 border-b border-slate-200">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-[#D95D1E]" />
-                  <h3 className="text-sm font-black text-white">Vaqt oralig'ini belgilash</h3>
+                  <h3 className="text-sm font-black text-slate-900">Vaqt oralig'ini belgilash</h3>
                 </div>
                 <button
                   type="button"
@@ -695,7 +695,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full px-3 py-2 text-base sm:text-xs min-h-[44px] sm:min-h-0 bg-slate-50 border border-slate-200 rounded-xl text-white focus:outline-none focus:border-[#D95D1E] font-mono"
+                    className="w-full px-3 py-2 text-base sm:text-xs min-h-[44px] sm:min-h-0 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-[#D95D1E] font-mono"
                   />
                 </div>
                 <div className="space-y-1">
@@ -706,7 +706,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full px-3 py-2 text-base sm:text-xs min-h-[44px] sm:min-h-0 bg-slate-50 border border-slate-200 rounded-xl text-white focus:outline-none focus:border-[#D95D1E] font-mono"
+                    className="w-full px-3 py-2 text-base sm:text-xs min-h-[44px] sm:min-h-0 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-[#D95D1E] font-mono"
                   />
                 </div>
               </div>
@@ -736,7 +736,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
                       setSelectedPeriod('range');
                       setIsRangeModalOpen(false);
                     }}
-                    className="flex-1 sm:flex-none min-h-[44px] px-4 py-2 rounded-xl bg-[#D95D1E] hover:bg-[#FFC928] text-white text-xs font-black shadow-md cursor-pointer text-center"
+                    className="flex-1 sm:flex-none min-h-[44px] px-4 py-2 rounded-xl bg-[#D95D1E] hover:bg-[#B43B06] text-white text-xs font-black shadow-md cursor-pointer text-center"
                   >
                     Belgilash
                   </button>
@@ -759,7 +759,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
                 <Building2 className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-sm sm:text-base font-black text-white">B2B Kabinetlar Soni</h3>
+                <h3 className="text-sm sm:text-base font-black text-slate-900">B2B Kabinetlar Soni</h3>
                 <p className="text-[11px] text-slate-600">Ishlab chiqaruvchi yirik zavodlar</p>
               </div>
             </div>
@@ -777,7 +777,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
             </div>
             <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-slate-200/70">
               <span className="text-slate-600">Ta’minotchi Ulushi (95%):</span>
-              <span className="font-black text-white">
+              <span className="font-black text-slate-900">
                 {formatSum(supplierSalesStats.b2bSupplierNetUzs)}
               </span>
             </div>
@@ -798,7 +798,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
                 <Store className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-sm sm:text-base font-black text-white">B2C Kabinetlar Soni</h3>
+                <h3 className="text-sm sm:text-base font-black text-slate-900">B2C Kabinetlar Soni</h3>
                 <p className="text-[11px] text-slate-600">Hamkor distribyutorlar & do‘konlar</p>
               </div>
             </div>
@@ -816,7 +816,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
             </div>
             <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-slate-200/70">
               <span className="text-slate-600">Ta’minotchi Ulushi (95%):</span>
-              <span className="font-black text-white">
+              <span className="font-black text-slate-900">
                 {formatSum(supplierSalesStats.b2cSupplierNetUzs)}
               </span>
             </div>
@@ -837,7 +837,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
                 <Users className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-sm sm:text-base font-black text-white">Foydalanuvchi Kabinetlari</h3>
+                <h3 className="text-sm sm:text-base font-black text-slate-900">Foydalanuvchi Kabinetlari</h3>
                 <p className="text-[11px] text-slate-600">Xaridorlar & pudrat tashkilotlari</p>
               </div>
             </div>
@@ -855,7 +855,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
             </div>
             <div className="text-[11px] text-slate-500 pt-1 border-t border-slate-200/70 flex items-center justify-between">
               <span>Onlayn buyurtmalar soni:</span>
-              <strong className="text-white">{supplierSalesStats.validOrdersCount} ta</strong>
+              <strong className="text-slate-900">{supplierSalesStats.validOrdersCount} ta</strong>
             </div>
           </div>
         </div>
@@ -871,7 +871,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
               <Wallet className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base sm:text-lg font-black text-white">
+              <h2 className="text-base sm:text-lg font-black text-slate-900">
                 Umumiy Savdo Mablag‘i & Ulushlar Balansi (B2B + B2C)
               </h2>
               <p className="text-xs text-slate-600">
@@ -936,7 +936,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-2">
-                    <span className="text-xs sm:text-sm font-black text-white font-mono leading-tight">
+                    <span className="text-xs sm:text-sm font-black text-slate-900 font-mono leading-tight">
                       100%
                     </span>
                     <span className="text-[10px] font-mono text-[#D95D1E] font-bold mt-0.5">
@@ -998,7 +998,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
       <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-2xl space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
           <div>
-            <h2 className="text-lg sm:text-xl font-black text-white flex items-center gap-2">
+            <h2 className="text-lg sm:text-xl font-black text-slate-900 flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-[#D95D1E]" />
               <span>Bunker Oylik Savdo Hajmi & Talab Dinamikasi (12 Oy)</span>
             </h2>
@@ -1020,7 +1020,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
         {/* Legend */}
         <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-mono px-2">
           <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1.5 text-white font-bold">
+            <span className="flex items-center gap-1.5 text-slate-900 font-bold">
               <span className="w-3 h-3 rounded-xs bg-[#D95D1E] inline-block" />
               Savdo hajmi (so‘m)
             </span>
@@ -1065,7 +1065,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
 
                   <span
                     className={`text-[10px] sm:text-[11px] font-mono font-black mb-1.5 transition-colors ${
-                      isHovered ? 'text-[#D95D1E]' : 'text-white'
+                      isHovered ? 'text-[#D95D1E]' : 'text-slate-900'
                     }`}
                   >
                     {item.displayUzs}
@@ -1075,7 +1075,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
                   <div className="w-full max-w-[44px] bg-slate-50 rounded-t-lg border border-slate-200 overflow-hidden p-1 group-hover:border-[#D95D1E] transition-all flex items-end justify-center gap-1">
                     <div
                       className={`flex-1 rounded-t transition-all duration-700 ease-out ${
-                        isHovered ? 'bg-[#FFC928]' : 'bg-[#D95D1E]'
+                        isHovered ? 'bg-[#EA580C]' : 'bg-[#D95D1E]'
                       }`}
                       style={{ height: `${item.val > 0 ? Math.max(8, item.salesPct * 1.3) : 3}px` }}
                     />
@@ -1105,7 +1105,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
       <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-2xl space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
           <div>
-            <h3 className="text-lg sm:text-xl font-black text-white flex items-center gap-2">
+            <h3 className="text-lg sm:text-xl font-black text-slate-900 flex items-center gap-2">
               <MapPin className="w-5 h-5 text-[#D95D1E]" />
               <span>O‘zbekistonning Barcha 14 ta Hududi Diagrammasi</span>
             </h3>
@@ -1123,7 +1123,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
             <span className="text-xs font-mono font-bold text-blue-400 px-3 py-1.5 rounded-lg bg-slate-50 border border-blue-400/40">
               Mijoz: {supplierSalesStats.customerCabinetsCount} ta
             </span>
-            <span className="text-xs font-mono font-bold text-white px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200">
+            <span className="text-xs font-mono font-bold text-slate-900 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200">
               {formatSum(regionalDemands.reduce((s, r) => s + r.salesUzs, 0))}
             </span>
           </div>
@@ -1184,12 +1184,12 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
               </div>
 
               <div className="flex items-center justify-between text-[11px] font-mono text-slate-600">
-                <span>Jami kabinetlar: <strong className="text-white">{reg.totalCabinets} ta</strong></span>
+                <span>Jami kabinetlar: <strong className="text-slate-900">{reg.totalCabinets} ta</strong></span>
                 <span>Talab: <strong className="text-[#D95D1E]">{reg.ordersCount} ta</strong></span>
               </div>
 
               <div className="text-[11px] font-mono text-slate-600">
-                Savdo hajmi: <span className="text-white font-bold">{formatSum(reg.salesUzs)}</span>
+                Savdo hajmi: <span className="text-slate-900 font-bold">{formatSum(reg.salesUzs)}</span>
               </div>
 
               {/* B2B, B2C, Mijoz mini-pills */}

@@ -24,7 +24,7 @@ export const SuperAdminHub: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-xl">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 uppercase tracking-tight">
               Super Admin Boshqaruv Markazi
             </h1>
           </div>

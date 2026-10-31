@@ -66,7 +66,7 @@ export const TradeModelSection: React.FC = () => {
                 <div
                   className="p-3 rounded-xl border text-xs font-mono font-bold bg-slate-50 border-slate-200 text-slate-800"
                 >
-                  ● {item.highlightText}
+                  {item.highlightText}
                 </div>
 
                 {/* Details List */}

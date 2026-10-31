@@ -70,7 +70,7 @@ export const DeliverySection: React.FC = () => {
             <span>REKLAMA VA XARIDORLAR QAMROVI: 12 TA VILOYAT VA QORAQALPOG‘ISTON</span>
           </div>
           <span className="text-xs font-mono text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200 font-semibold">
-            ● Faol Hududiy Tarmoq
+            Faol Hududiy Tarmoq
           </span>
         </div>
 
