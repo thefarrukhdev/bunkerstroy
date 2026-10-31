@@ -1042,29 +1042,29 @@ export const SellerPanelView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 text-white pb-16 font-sans">
+    <div className="space-y-6 text-slate-900 pb-16 font-sans">
       {/* 1. Header Banner & Quick Action Bar */}
-      <div className="brushed-steel rounded-2xl p-5 sm:p-6 border-2 border-[#1E3A6D] shadow-xl relative overflow-hidden">
-        <div className="absolute top-2 left-2 industrial-rivet" />
-        <div className="absolute top-2 right-2 industrial-rivet" />
-        <div className="absolute bottom-2 left-2 industrial-rivet" />
-        <div className="absolute bottom-2 right-2 industrial-rivet" />
+      <div className="brushed-steel rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xl relative overflow-hidden">
+        <div className="absolute top-2 left-2 hidden" />
+        <div className="absolute top-2 right-2 hidden" />
+        <div className="absolute bottom-2 left-2 hidden" />
+        <div className="absolute bottom-2 right-2 hidden" />
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-black text-[#FFB800] uppercase tracking-wider flex items-center gap-1.5">
-                <Store className="w-4 h-4 text-[#FFB800]" />
+              <span className="text-xs font-mono font-black text-[#D95D1E] uppercase tracking-wider flex items-center gap-1.5">
+                <Store className="w-4 h-4 text-[#D95D1E]" />
                 Sotuvchi &amp; Do‘kon Boshqaruv Markazi
               </span>
-              <span className="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 px-2 py-0.5 rounded text-[10px] font-mono font-bold">
+              <span className="bg-emerald-50 text-emerald-600 border border-emerald-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">
                 ● Tizim Faol
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-heading font-black tracking-tight text-white">
+            <h1 className="text-2xl sm:text-3xl font-heading font-black tracking-tight text-slate-900">
               Sanoat Vitrinasi, Kassa POS &amp; B2B Xaridlar
             </h1>
-            <p className="text-xs sm:text-sm text-sky-200/80 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-500 max-w-2xl leading-relaxed">
               Jismoniy do‘kon kassa apparati (POS CRM), B2B zavodlardan ulgurji xaridlar,
               online tovarlar vitrinasi va to‘liq moliyaviy Kirim-Chiqim hisobotlari.
             </p>
@@ -1079,7 +1079,7 @@ export const SellerPanelView: React.FC = () => {
             >
               <Calculator className="w-4 h-4" />
               <span>Do‘kon Kassa / POS CRM</span>
-              <span className="bg-[#071326] text-[#FFB800] px-1.5 py-0.2 rounded-full text-[10px] font-mono">
+              <span className="bg-slate-50 text-[#D95D1E] px-1.5 py-0.2 rounded-md text-[10px] font-mono">
                 {activeBasket.items.length}
               </span>
             </button>
@@ -1091,8 +1091,8 @@ export const SellerPanelView: React.FC = () => {
           <div
             className={`mt-4 p-3 rounded-xl border text-xs font-mono font-bold flex items-center justify-between animate-in fade-in ${
               feedback.type === 'success'
-                ? 'bg-emerald-950/80 border-emerald-500/50 text-emerald-300'
-                : 'bg-red-950/80 border-red-500/50 text-red-300'
+                ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                : 'bg-rose-50 border-rose-200 text-rose-700'
             }`}
           >
             <span>{feedback.message}</span>
@@ -1111,13 +1111,13 @@ export const SellerPanelView: React.FC = () => {
           onClick={() => setActiveTab('inventory')}
           className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
             activeTab === 'inventory'
-              ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
-              : 'bg-[#0A1931] text-sky-200 border-[#1E3A6D] hover:border-[#2E5A9C] hover:text-white'
+              ? 'bg-[#D95D1E] text-white border-[#C2410C] font-black'
+              : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:text-slate-900'
           }`}
         >
           <Package className="w-4 h-4" />
           <span>Mahsulotlar Ombori</span>
-          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#071326] text-[#FFB800]">
+          <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-slate-50 text-[#D95D1E]">
             {products.length}
           </span>
         </button>
@@ -1128,8 +1128,8 @@ export const SellerPanelView: React.FC = () => {
           onClick={() => setActiveTab('create')}
           className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
             activeTab === 'create'
-              ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
-              : 'bg-[#0A1931] text-sky-200 border-[#1E3A6D] hover:border-[#2E5A9C] hover:text-white'
+              ? 'bg-[#D95D1E] text-white border-[#C2410C] font-black'
+              : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:text-slate-900'
           }`}
         >
           <PlusCircle className="w-4 h-4" />
@@ -1142,13 +1142,13 @@ export const SellerPanelView: React.FC = () => {
           onClick={() => setActiveTab('crm_pos')}
           className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
             activeTab === 'crm_pos'
-              ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
-              : 'bg-[#0A1931] text-emerald-400 border-emerald-500/40 hover:border-emerald-400'
+              ? 'bg-[#D95D1E] text-white border-[#C2410C] font-black'
+              : 'bg-white text-emerald-600 border-emerald-200 hover:border-emerald-400'
           }`}
         >
           <Calculator className="w-4 h-4" />
           <span>Do‘kon Kassa / POS CRM</span>
-          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/30">
+          <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
             POS
           </span>
         </button>
@@ -1159,13 +1159,13 @@ export const SellerPanelView: React.FC = () => {
           onClick={() => setActiveTab('b2b')}
           className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
             activeTab === 'b2b'
-              ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
-              : 'bg-[#0A1931] text-sky-200 border-[#1E3A6D] hover:border-[#2E5A9C] hover:text-white'
+              ? 'bg-[#D95D1E] text-white border-[#C2410C] font-black'
+              : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:text-slate-900'
           }`}
         >
           <Factory className="w-4 h-4" />
           <span>B2B Zavodlar &amp; Buyurtmalar</span>
-          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#071326] text-purple-400">
+          <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-slate-50 text-purple-400">
             {b2bOrders.length}
           </span>
         </button>
@@ -1176,8 +1176,8 @@ export const SellerPanelView: React.FC = () => {
           onClick={() => setActiveTab('reports')}
           className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
             activeTab === 'reports'
-              ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
-              : 'bg-[#0A1931] text-sky-200 border-[#1E3A6D] hover:border-[#2E5A9C] hover:text-white'
+              ? 'bg-[#D95D1E] text-white border-[#C2410C] font-black'
+              : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:text-slate-900'
           }`}
         >
           <BarChart3 className="w-4 h-4" />
@@ -1190,13 +1190,13 @@ export const SellerPanelView: React.FC = () => {
           onClick={() => setActiveTab('orders')}
           className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
             activeTab === 'orders'
-              ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
-              : 'bg-[#0A1931] text-sky-200 border-[#1E3A6D] hover:border-[#2E5A9C] hover:text-white'
+              ? 'bg-[#D95D1E] text-white border-[#C2410C] font-black'
+              : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:text-slate-900'
           }`}
         >
           <Truck className="w-4 h-4" />
           <span>Buyurtmalar</span>
-          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#071326] text-sky-200">
+          <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-slate-50 text-slate-600">
             {orders.length}
           </span>
         </button>
@@ -1207,8 +1207,8 @@ export const SellerPanelView: React.FC = () => {
           onClick={() => setActiveTab('escrow')}
           className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
             activeTab === 'escrow'
-              ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
-              : 'bg-[#0A1931] text-sky-200 border-[#1E3A6D] hover:border-[#2E5A9C] hover:text-white'
+              ? 'bg-[#D95D1E] text-white border-[#C2410C] font-black'
+              : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:text-slate-900'
           }`}
         >
           <Wallet className="w-4 h-4" />
@@ -1222,9 +1222,9 @@ export const SellerPanelView: React.FC = () => {
       {activeTab === 'inventory' && (
         <div className="space-y-4">
           {/* Sub-tabs: All vs Online vs Offline */}
-          <div className="industrial-card rounded-2xl p-4 bg-[#0A1931] border border-[#1E3A6D] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="industrial-card rounded-2xl p-4 bg-white border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2 font-mono text-xs">
-              <span className="text-sky-400 font-bold uppercase text-[11px] mr-1">
+              <span className="text-slate-500 font-bold uppercase text-[11px] mr-1">
                 Kanal bo‘yicha filtr:
               </span>
               <button
@@ -1232,8 +1232,8 @@ export const SellerPanelView: React.FC = () => {
                 onClick={() => setInventorySubTab('all')}
                 className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${
                   inventorySubTab === 'all'
-                    ? 'bg-[#132C54] text-[#FFB800] border-[#FFB800] font-bold'
-                    : 'bg-[#071326] text-sky-300 border-[#1E3A6D] hover:border-[#2E5A9C]'
+                    ? 'bg-orange-50 text-[#D95D1E] border-[#D95D1E] font-bold'
+                    : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-300'
                 }`}
               >
                 Barcha tovarlar ({products.length})
@@ -1243,11 +1243,11 @@ export const SellerPanelView: React.FC = () => {
                 onClick={() => setInventorySubTab('online')}
                 className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 ${
                   inventorySubTab === 'online'
-                    ? 'bg-[#132C54] text-emerald-400 border-emerald-500 font-bold'
-                    : 'bg-[#071326] text-sky-300 border-[#1E3A6D] hover:border-[#2E5A9C]'
+                    ? 'bg-orange-50 text-emerald-600 border-emerald-500 font-bold'
+                    : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-300'
                 }`}
               >
-                <Globe className="w-3.5 h-3.5 text-emerald-400" />
+                <Globe className="w-3.5 h-3.5 text-emerald-600" />
                 <span>🌐 Online Vitrina ({products.filter((p) => (p as any).isOnline !== false).length})</span>
               </button>
               <button
@@ -1255,11 +1255,11 @@ export const SellerPanelView: React.FC = () => {
                 onClick={() => setInventorySubTab('offline')}
                 className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 ${
                   inventorySubTab === 'offline'
-                    ? 'bg-[#132C54] text-[#FFB800] border-[#FFB800] font-bold'
-                    : 'bg-[#071326] text-sky-300 border-[#1E3A6D] hover:border-[#2E5A9C]'
+                    ? 'bg-orange-50 text-[#D95D1E] border-[#D95D1E] font-bold'
+                    : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-300'
                 }`}
               >
-                <Store className="w-3.5 h-3.5 text-[#FFB800]" />
+                <Store className="w-3.5 h-3.5 text-[#D95D1E]" />
                 <span>🏪 Do‘kon Kassa / POS ({products.filter((p) => (p as any).isOffline !== false).length})</span>
               </button>
             </div>
@@ -1275,10 +1275,10 @@ export const SellerPanelView: React.FC = () => {
           </div>
 
           {/* Products Table */}
-          <div className="industrial-card rounded-2xl overflow-hidden bg-[#0A1931] border border-[#1E3A6D]">
+          <div className="industrial-card rounded-2xl overflow-hidden bg-white border border-slate-200">
             <div className="overflow-x-auto">
               <table className="w-full text-left font-mono text-xs">
-                <thead className="bg-[#071326] text-sky-300 border-b border-[#1E3A6D] uppercase text-[10px]">
+                <thead className="bg-slate-50 text-slate-600 border-b border-slate-200 uppercase text-[10px]">
                   <tr>
                     <th className="p-3.5">Tovar</th>
                     <th className="p-3.5">Birlik Narxi</th>
@@ -1287,23 +1287,23 @@ export const SellerPanelView: React.FC = () => {
                     <th className="p-3.5 text-right">Amallar</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#1E3A6D]">
+                <tbody className="divide-y divide-slate-200">
                   {filteredProducts.map((p) => {
                     const isOnline = (p as any).isOnline !== false;
                     const isOffline = (p as any).isOffline !== false;
 
                     return (
-                      <tr key={p.id} className="hover:bg-[#0F2547]/60 transition-colors">
+                      <tr key={p.id} className="hover:bg-slate-50 transition-colors">
                         <td className="p-3.5">
                           <div className="flex items-center gap-3">
                             <img
                               src={p.images?.[0] || SAMPLE_IMAGE_PRESETS[0].url}
                               alt=""
-                              className="w-10 h-10 rounded-lg object-cover bg-[#071326] border border-[#1E3A6D]"
+                              className="w-10 h-10 rounded-lg object-cover bg-slate-50 border border-slate-200"
                             />
                             <div>
-                              <div className="font-bold text-white text-sm line-clamp-1">{p.title}</div>
-                              <span className="text-[10px] text-sky-400">
+                              <div className="font-bold text-slate-900 text-sm line-clamp-1">{p.title}</div>
+                              <span className="text-[10px] text-slate-500">
                                 {p.region || 'Toshkent'} • {p.unit || 'dona'}
                               </span>
                             </div>
@@ -1311,7 +1311,7 @@ export const SellerPanelView: React.FC = () => {
                         </td>
 
                         <td className="p-3.5">
-                          <span className="font-bold text-[#FFB800] text-sm font-mono-numbers">
+                          <span className="font-bold text-[#D95D1E] text-sm font-mono-numbers">
                             {Number(p.price).toLocaleString()} so‘m
                           </span>
                         </td>
@@ -1319,7 +1319,7 @@ export const SellerPanelView: React.FC = () => {
                         <td className="p-3.5">
                           <span
                             className={`font-bold ${
-                              p.stock > 10 ? 'text-emerald-400' : 'text-amber-400'
+                              p.stock > 10 ? 'text-emerald-600' : 'text-amber-400'
                             }`}
                           >
                             {p.stock} {p.unit || 'dona'}
@@ -1335,8 +1335,8 @@ export const SellerPanelView: React.FC = () => {
                               title={isOnline ? 'Online vitrinada faol' : 'Online vitrinada o‘chirilgan'}
                               className={`px-2 py-0.5 rounded text-[10px] font-bold border transition-all cursor-pointer flex items-center gap-1 ${
                                 isOnline
-                                  ? 'bg-emerald-950/80 text-emerald-400 border-emerald-500/50'
-                                  : 'bg-[#071326] text-sky-400/50 border-[#1E3A6D] line-through'
+                                  ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
+                                  : 'bg-slate-50 text-slate-400 border-slate-200 line-through'
                               }`}
                             >
                               <Globe className="w-3 h-3" />
@@ -1349,8 +1349,8 @@ export const SellerPanelView: React.FC = () => {
                               title={isOffline ? 'Do‘kon kassa POS da faol' : 'Kassada o‘chirilgan'}
                               className={`px-2 py-0.5 rounded text-[10px] font-bold border transition-all cursor-pointer flex items-center gap-1 ${
                                 isOffline
-                                  ? 'bg-[#132C54] text-[#FFB800] border-[#FFB800]/50'
-                                  : 'bg-[#071326] text-sky-400/50 border-[#1E3A6D] line-through'
+                                  ? 'bg-orange-50 text-[#D95D1E] border-[#D95D1E]/50'
+                                  : 'bg-slate-50 text-slate-400 border-slate-200 line-through'
                               }`}
                             >
                               <Store className="w-3 h-3" />
@@ -1385,15 +1385,15 @@ export const SellerPanelView: React.FC = () => {
           ===================================================================== */}
       {activeTab === 'create' && (
         <form onSubmit={handleCreateProduct} className="space-y-6">
-          <div className="industrial-card rounded-2xl p-5 sm:p-7 bg-[#0A1931] border border-[#1E3A6D] space-y-6">
-            <div className="flex items-center justify-between pb-3 border-b border-[#1E3A6D]">
+          <div className="industrial-card rounded-2xl p-5 sm:p-7 bg-white border border-slate-200 space-y-6">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
               <div className="flex items-center gap-2">
-                <PlusCircle className="w-5 h-5 text-[#FFB800]" />
-                <h2 className="text-lg font-heading font-black text-white">
+                <PlusCircle className="w-5 h-5 text-[#D95D1E]" />
+                <h2 className="text-lg font-heading font-black text-slate-900">
                   Yangi Qurilish Materiali Kiritish
                 </h2>
               </div>
-              <span className="text-xs font-mono text-[#FFB800] bg-[#132C54] px-2.5 py-1 rounded-lg border border-[#254B85]">
+              <span className="text-xs font-mono text-[#D95D1E] bg-orange-50 px-2.5 py-1 rounded-lg border border-slate-300">
                 BunkerStroy Standarti
               </span>
             </div>
@@ -1401,7 +1401,7 @@ export const SellerPanelView: React.FC = () => {
             {/* Asosiy ma'lumotlar */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label htmlFor="seller-product-title" className="text-xs font-mono font-bold text-sky-200">
+                <label htmlFor="seller-product-title" className="text-xs font-mono font-bold text-slate-600">
                   Mahsulot Nomi *
                 </label>
                 <input
@@ -1412,12 +1412,12 @@ export const SellerPanelView: React.FC = () => {
                   placeholder="Masalan: Portlendsement M500 D0 (50kg)"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-white outline-none"
+                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-[#D95D1E] text-sm text-slate-900 outline-none"
                 />
               </div>
 
               <div className="space-y-1">
-                <label htmlFor="seller-product-category" className="text-xs font-mono font-bold text-sky-200">
+                <label htmlFor="seller-product-category" className="text-xs font-mono font-bold text-slate-600">
                   Kategoriya / Bo‘lim
                 </label>
                 <select
@@ -1426,7 +1426,7 @@ export const SellerPanelView: React.FC = () => {
                   aria-label="Kategoriya tanlash"
                   value={categoryId}
                   onChange={(e) => setCategoryId(e.target.value)}
-                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-white outline-none"
+                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-[#D95D1E] text-sm text-slate-900 outline-none"
                 >
                   {categories.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -1437,7 +1437,7 @@ export const SellerPanelView: React.FC = () => {
               </div>
 
               <div className="space-y-1">
-                <label htmlFor="seller-product-price" className="text-xs font-mono font-bold text-sky-200">
+                <label htmlFor="seller-product-price" className="text-xs font-mono font-bold text-slate-600">
                   Chakana / Birlik Narxi (so‘m) *
                 </label>
                 <input
@@ -1449,12 +1449,12 @@ export const SellerPanelView: React.FC = () => {
                   placeholder="Masalan: 65000"
                   value={price}
                   onChange={(e) => setPrice(e.target.value ? Math.max(0, Number(e.target.value)) : '')}
-                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-[#FFB800] font-black outline-none font-mono-numbers"
+                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-[#D95D1E] text-sm text-[#D95D1E] font-black outline-none font-mono-numbers"
                 />
               </div>
 
               <div className="space-y-1">
-                <label htmlFor="seller-product-unit" className="text-xs font-mono font-bold text-sky-200">
+                <label htmlFor="seller-product-unit" className="text-xs font-mono font-bold text-slate-600">
                   O‘lchov birligi
                 </label>
                 <select
@@ -1463,7 +1463,7 @@ export const SellerPanelView: React.FC = () => {
                   aria-label="O‘lchov birligini tanlash"
                   value={unit}
                   onChange={(e) => setUnit(e.target.value)}
-                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-white outline-none font-mono"
+                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-[#D95D1E] text-sm text-slate-900 outline-none font-mono"
                 >
                   <option value="BAG_50KG">Qop (50 kg)</option>
                   <option value="TON">Tonna</option>
@@ -1475,7 +1475,7 @@ export const SellerPanelView: React.FC = () => {
               </div>
 
               <div className="space-y-1">
-                <label htmlFor="seller-product-stock" className="text-xs font-mono font-bold text-sky-200">
+                <label htmlFor="seller-product-stock" className="text-xs font-mono font-bold text-slate-600">
                   Ombordagi Jami Zaxira *
                 </label>
                 <input
@@ -1487,12 +1487,12 @@ export const SellerPanelView: React.FC = () => {
                   placeholder="Masalan: 500"
                   value={stock}
                   onChange={(e) => setStock(e.target.value ? Math.max(0, Number(e.target.value)) : '')}
-                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-white outline-none font-mono"
+                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-[#D95D1E] text-sm text-slate-900 outline-none font-mono"
                 />
               </div>
 
               <div className="space-y-1">
-                <label htmlFor="seller-product-min-order" className="text-xs font-mono font-bold text-sky-200">
+                <label htmlFor="seller-product-min-order" className="text-xs font-mono font-bold text-slate-600">
                   Minimal buyurtma miqdori
                 </label>
                 <input
@@ -1503,14 +1503,14 @@ export const SellerPanelView: React.FC = () => {
                   placeholder="1"
                   value={minOrder}
                   onChange={(e) => setMinOrder(e.target.value ? Math.max(1, Number(e.target.value)) : '')}
-                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-sm text-white outline-none font-mono"
+                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-[#D95D1E] text-sm text-slate-900 outline-none font-mono"
                 />
               </div>
             </div>
 
             {/* a) Savdo Kanallari Toggles (Online vitrina vs Do'kon kassa) */}
-            <div className="p-4 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-3">
-              <span className="text-xs font-mono font-bold text-[#FFB800] uppercase block">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+              <span className="text-xs font-mono font-bold text-[#D95D1E] uppercase block">
                 Savdo Kanallari Sozlamasi:
               </span>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -1521,7 +1521,7 @@ export const SellerPanelView: React.FC = () => {
                     type="checkbox"
                     checked={isOnlinePublish}
                     onChange={(e) => setIsOnlinePublish(e.target.checked)}
-                    className="w-4 h-4 rounded text-[#FFB800] focus:ring-[#FFB800] bg-[#0A1931] border-[#1E3A6D]"
+                    className="w-4 h-4 rounded text-[#D95D1E] focus:ring-[#D95D1E] bg-white border-slate-200"
                   />
                   <span className="text-xs font-mono text-white">
                     🌐 Online Vitrinada ko‘rinsin (Marketplace xaridorlari uchun)
@@ -1535,7 +1535,7 @@ export const SellerPanelView: React.FC = () => {
                     type="checkbox"
                     checked={isOfflineStore}
                     onChange={(e) => setIsOfflineStore(e.target.checked)}
-                    className="w-4 h-4 rounded text-[#FFB800] focus:ring-[#FFB800] bg-[#0A1931] border-[#1E3A6D]"
+                    className="w-4 h-4 rounded text-[#D95D1E] focus:ring-[#D95D1E] bg-white border-slate-200"
                   />
                   <span className="text-xs font-mono text-white">
                     🏪 Offline Do‘kon Kassa / POS da sotilsin
@@ -1545,12 +1545,12 @@ export const SellerPanelView: React.FC = () => {
             </div>
 
             {/* b) Ranglar Palitrasi (COLOR_OPTIONS) */}
-            <div className="p-4 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-3">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono font-bold text-[#FFB800] uppercase">
+                <span className="text-xs font-mono font-bold text-[#D95D1E] uppercase">
                   Ranglar Palitrasi (COLOR_OPTIONS):
                 </span>
-                <span className="text-[11px] font-mono text-sky-400">
+                <span className="text-[11px] font-mono text-slate-500">
                   Tanlangan: {selectedFormColors.length} ta rang
                 </span>
               </div>
@@ -1565,8 +1565,8 @@ export const SellerPanelView: React.FC = () => {
                       onClick={() => handleToggleFormColor(c.id)}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-mono font-bold cursor-pointer transition-all ${
                         isChecked
-                          ? 'bg-[#132C54] border-[#FFB800] text-white shadow-xs'
-                          : 'bg-[#0A1931] border-[#1E3A6D] text-sky-300 hover:border-[#2E5A9C]'
+                          ? 'bg-orange-50 border-[#D95D1E] text-white shadow-xs'
+                          : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
                       }`}
                     >
                       <span
@@ -1574,7 +1574,7 @@ export const SellerPanelView: React.FC = () => {
                         style={{ backgroundColor: c.bg, borderColor: c.border }}
                       />
                       <span>{c.label.split('/')[0].trim()}</span>
-                      {isChecked && <Check className="w-3.5 h-3.5 text-[#FFB800]" />}
+                      {isChecked && <Check className="w-3.5 h-3.5 text-[#D95D1E]" />}
                     </button>
                   );
                 })}
@@ -1582,20 +1582,20 @@ export const SellerPanelView: React.FC = () => {
             </div>
 
             {/* b) O'lchamlar (Sizes Chips & Custom input) */}
-            <div className="p-4 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-3">
-              <span className="text-xs font-mono font-bold text-[#FFB800] uppercase block">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+              <span className="text-xs font-mono font-bold text-[#D95D1E] uppercase block">
                 O‘lchamlar &amp; Fraksiyalar (Sizes):
               </span>
 
               {/* Popular size quick add */}
               <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-[11px] font-mono text-sky-400 mr-1">Tezkor:</span>
+                <span className="text-[11px] font-mono text-slate-500 mr-1">Tezkor:</span>
                 {['50 kg', '25 kg', 'D12', 'D14', 'D16', '1 m²', '2x1 m', 'Dona'].map((chip) => (
                   <button
                     key={chip}
                     type="button"
                     onClick={() => handleAddFormSize(chip)}
-                    className="px-2 py-0.5 rounded-lg bg-[#0A1931] border border-[#1E3A6D] hover:border-[#FFB800] text-[11px] font-mono text-sky-200 cursor-pointer"
+                    className="px-2 py-0.5 rounded-lg bg-white border border-slate-200 hover:border-[#D95D1E] text-[11px] font-mono text-slate-600 cursor-pointer"
                   >
                     + {chip}
                   </button>
@@ -1607,13 +1607,13 @@ export const SellerPanelView: React.FC = () => {
                 {selectedFormSizes.map((sz) => (
                   <span
                     key={sz}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#132C54] border border-[#254B85] text-white font-mono text-xs font-bold"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-orange-50 border border-slate-300 text-white font-mono text-xs font-bold"
                   >
                     <span>{sz}</span>
                     <button
                       type="button"
                       onClick={() => handleRemoveFormSize(sz)}
-                      className="text-sky-300 hover:text-red-400 cursor-pointer"
+                      className="text-slate-600 hover:text-red-400 cursor-pointer"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -1637,7 +1637,7 @@ export const SellerPanelView: React.FC = () => {
                       handleAddFormSize(customSizeInput);
                     }
                   }}
-                  className="flex-1 h-9 px-3 rounded-lg bg-[#0A1931] border border-[#1E3A6D] text-xs text-white outline-none"
+                  className="flex-1 h-9 px-3 rounded-lg bg-white border border-slate-200 text-xs text-slate-900 outline-none"
                 />
                 <button
                   type="button"
@@ -1650,19 +1650,19 @@ export const SellerPanelView: React.FC = () => {
             </div>
 
             {/* Generated Variants Preview */}
-            <div className="p-4 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-2">
-              <span className="text-xs font-mono font-bold text-sky-300 uppercase block">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+              <span className="text-xs font-mono font-bold text-slate-600 uppercase block">
                 Hosil bo‘lgan Variantlar ({generatedVariants.length} ta kombinatsiya):
               </span>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-mono">
                 {generatedVariants.slice(0, 6).map((v) => (
-                  <div key={v.id} className="p-2 rounded-lg bg-[#0A1931] border border-[#1E3A6D]">
-                    <span className="text-[#FFB800] font-bold">{v.color}</span> • <span>{v.size}</span>
-                    <div className="text-[10px] text-sky-400">{v.sku}</div>
+                  <div key={v.id} className="p-2 rounded-lg bg-white border border-slate-200">
+                    <span className="text-[#D95D1E] font-bold">{v.color}</span> • <span>{v.size}</span>
+                    <div className="text-[10px] text-slate-500">{v.sku}</div>
                   </div>
                 ))}
                 {generatedVariants.length > 6 && (
-                  <div className="p-2 rounded-lg bg-[#0A1931] border border-[#1E3A6D] flex items-center justify-center text-sky-400 text-xs">
+                  <div className="p-2 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-500 text-xs">
                     +{generatedVariants.length - 6} ta variant...
                   </div>
                 )}
@@ -1692,11 +1692,11 @@ export const SellerPanelView: React.FC = () => {
           {/* Left Column: Product Search & Quick Catalog (7 cols) */}
           <div className="lg:col-span-7 space-y-4">
             {/* POS Header & Basket Switcher */}
-            <div className="industrial-card rounded-2xl p-4 bg-[#0A1931] border border-[#1E3A6D] space-y-3">
+            <div className="industrial-card rounded-2xl p-4 bg-white border border-slate-200 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Calculator className="w-5 h-5 text-[#FFB800]" />
-                  <span className="font-heading font-black text-white text-base">
+                  <Calculator className="w-5 h-5 text-[#D95D1E]" />
+                  <span className="font-heading font-black text-slate-900 text-base">
                     Do‘kon Kassa Apparati (POS CRM)
                   </span>
                 </div>
@@ -1719,12 +1719,12 @@ export const SellerPanelView: React.FC = () => {
                     onClick={() => setActiveBasketId(b.id)}
                     className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border font-bold cursor-pointer transition-all ${
                       activeBasketId === b.id
-                        ? 'bg-[#132C54] text-[#FFB800] border-[#FFB800] shadow-xs'
-                        : 'bg-[#071326] text-sky-300 border-[#1E3A6D] hover:border-[#2E5A9C]'
+                        ? 'bg-orange-50 text-[#D95D1E] border-[#D95D1E] shadow-xs'
+                        : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-300'
                     }`}
                   >
                     <span>{b.name}</span>
-                    <span className="text-[10px] bg-[#071326] px-1.5 py-0.2 rounded-full text-white">
+                    <span className="text-[10px] bg-slate-100 text-slate-700 px-1.5 py-0.2 rounded-md">
                       {b.items.length}
                     </span>
                   </button>
@@ -1734,7 +1734,7 @@ export const SellerPanelView: React.FC = () => {
 
             {/* Fast Product Search in POS */}
             <div className="relative">
-              <Search className="absolute left-3.5 w-4 h-4 text-[#FFB800] pointer-events-none" />
+              <Search className="absolute left-3.5 w-4 h-4 text-[#D95D1E] pointer-events-none" />
               <input
                 id="seller-pos-search-input"
                 name="posSearch"
@@ -1743,7 +1743,7 @@ export const SellerPanelView: React.FC = () => {
                 aria-label="Mahsulot nomi yoki shtrixkodi bo‘yicha tezkor qidiruv"
                 value={posSearchTerm}
                 onChange={(e) => setPosSearchTerm(e.target.value)}
-                className="w-full h-11 pl-10 pr-4 rounded-xl bg-[#0A1931] border border-[#1E3A6D] focus:border-[#FFB800] text-base text-white placeholder-sky-300/50 outline-none font-mono"
+                className="w-full h-11 pl-10 pr-4 rounded-xl bg-white border border-slate-200 focus:border-[#D95D1E] text-base text-white placeholder-slate-400 outline-none font-mono"
               />
             </div>
 
@@ -1760,28 +1760,28 @@ export const SellerPanelView: React.FC = () => {
                   <div
                     key={prod.id}
                     onClick={() => handleAddItemToBasket(prod)}
-                    className="industrial-card rounded-xl p-3 bg-[#0A1931] border border-[#1E3A6D] hover:border-[#FFB800] cursor-pointer transition-all flex flex-col justify-between select-none group"
+                    className="industrial-card rounded-xl p-3 bg-white border border-slate-200 hover:border-[#D95D1E] cursor-pointer transition-all flex flex-col justify-between select-none group"
                   >
                     <div>
-                      <div className="relative aspect-video rounded-lg overflow-hidden bg-[#071326] mb-2 border border-[#1E3A6D]">
+                      <div className="relative aspect-video rounded-lg overflow-hidden bg-slate-50 mb-2 border border-slate-200">
                         <img
                           src={prod.images?.[0] || SAMPLE_IMAGE_PRESETS[0].url}
                           alt=""
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                         />
-                        <span className="absolute bottom-1 right-1 bg-[#071326]/90 px-1.5 py-0.2 rounded text-[9px] font-mono text-sky-200">
+                        <span className="absolute bottom-1 right-1 bg-slate-50/90 px-1.5 py-0.2 rounded text-[9px] font-mono text-slate-600">
                           {prod.stock} {prod.unit || 'dona'}
                         </span>
                       </div>
-                      <h4 className="font-bold text-white text-xs line-clamp-2 leading-tight">
+                      <h4 className="font-bold text-slate-900 text-xs line-clamp-2 leading-tight">
                         {prod.title}
                       </h4>
                     </div>
-                    <div className="pt-2 mt-2 border-t border-[#1E3A6D] flex items-center justify-between">
-                      <span className="text-xs font-black text-[#FFB800] font-mono-numbers">
+                    <div className="pt-2 mt-2 border-t border-slate-200 flex items-center justify-between">
+                      <span className="text-xs font-black text-[#D95D1E] font-mono-numbers">
                         {Number(prod.price).toLocaleString()} so‘m
                       </span>
-                      <div className="w-6 h-6 rounded bg-[#FFB800] text-[#071326] flex items-center justify-center font-black">
+                      <div className="w-6 h-6 rounded bg-[#D95D1E] text-white flex items-center justify-center font-black">
                         <Plus className="w-3.5 h-3.5" />
                       </div>
                     </div>
@@ -1792,11 +1792,11 @@ export const SellerPanelView: React.FC = () => {
 
           {/* Right Column: Active Basket, Checkout & Thermal Receipt Trigger (5 cols) */}
           <div className="lg:col-span-5 space-y-4">
-            <div className="industrial-card rounded-2xl p-5 bg-[#0A1931] border-2 border-[#1E3A6D] shadow-xl space-y-4 font-mono">
-              <div className="flex items-center justify-between pb-3 border-b border-[#1E3A6D]">
+            <div className="industrial-card rounded-2xl p-5 bg-white border border-slate-200 shadow-xl space-y-4 font-mono">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200">
                 <div>
-                  <h3 className="font-bold text-white text-sm">{activeBasket.name}</h3>
-                  <span className="text-[11px] text-sky-400">
+                  <h3 className="font-bold text-slate-900 text-sm">{activeBasket.name}</h3>
+                  <span className="text-[11px] text-slate-500">
                     Jami: {activeBasket.items.length} xil tovar
                   </span>
                 </div>
@@ -1804,7 +1804,7 @@ export const SellerPanelView: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleClearCurrentBasket}
-                    className="text-[10px] text-red-400 hover:text-red-300 cursor-pointer"
+                    className="text-[10px] text-red-400 hover:text-rose-700 cursor-pointer"
                   >
                     Savatni tozalash
                   </button>
@@ -1814,18 +1814,18 @@ export const SellerPanelView: React.FC = () => {
               {/* Basket Items List */}
               <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
                 {activeBasket.items.length === 0 ? (
-                  <div className="py-8 text-center text-sky-400/60 text-xs">
+                  <div className="py-8 text-center text-slate-400 text-xs">
                     Savat bo‘sh. Chapdagi tovarlarni bosing.
                   </div>
                 ) : (
                   activeBasket.items.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center justify-between p-2.5 rounded-xl bg-[#071326] border border-[#1E3A6D] text-xs"
+                      className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs"
                     >
                       <div className="min-w-0 flex-1 mr-2">
-                        <div className="font-bold text-white truncate">{item.title}</div>
-                        <div className="text-[10px] text-sky-400">
+                        <div className="font-bold text-slate-900 truncate">{item.title}</div>
+                        <div className="text-[10px] text-slate-500">
                           {item.price.toLocaleString()} so‘m x {item.quantity} {item.unit}
                         </div>
                       </div>
@@ -1834,7 +1834,7 @@ export const SellerPanelView: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => handleUpdateBasketQty(item.id, -1)}
-                          className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg bg-[#0F2547] border border-[#1E3A6D] text-white flex items-center justify-center font-bold hover:bg-[#132C54] hover:border-[#FFB800] active:scale-95 transition-all touch-manipulation cursor-pointer"
+                          className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg bg-slate-100 border border-slate-200 text-white flex items-center justify-center font-bold hover:bg-orange-50 hover:border-[#D95D1E] active:scale-95 transition-all touch-manipulation cursor-pointer"
                           aria-label="Miqdorni bittaga kamaytirish"
                         >
                           <Minus className="w-4 h-4" />
@@ -1845,7 +1845,7 @@ export const SellerPanelView: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => handleUpdateBasketQty(item.id, 1)}
-                          className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg bg-[#0F2547] border border-[#1E3A6D] text-white flex items-center justify-center font-bold hover:bg-[#132C54] hover:border-[#FFB800] active:scale-95 transition-all touch-manipulation cursor-pointer"
+                          className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg bg-slate-100 border border-slate-200 text-white flex items-center justify-center font-bold hover:bg-orange-50 hover:border-[#D95D1E] active:scale-95 transition-all touch-manipulation cursor-pointer"
                           aria-label="Miqdorni bittaga oshirish"
                         >
                           <Plus className="w-4 h-4" />
@@ -1853,7 +1853,7 @@ export const SellerPanelView: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => handleRemoveBasketItem(item.id)}
-                          className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg flex items-center justify-center text-sky-400 hover:text-red-400 hover:bg-red-500/10 transition-colors ml-1 touch-manipulation cursor-pointer"
+                          className="min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg flex items-center justify-center text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors ml-1 touch-manipulation cursor-pointer"
                           aria-label="Mahsulotni savatdan o‘chirish"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -1865,8 +1865,8 @@ export const SellerPanelView: React.FC = () => {
               </div>
 
               {/* Discount Selector */}
-              <div className="pt-2 border-t border-[#1E3A6D] flex items-center justify-between text-xs">
-                <span className="text-sky-300">Skidka / Chegirma:</span>
+              <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-xs">
+                <span className="text-slate-600">Skidka / Chegirma:</span>
                 <div className="flex items-center gap-1">
                   {[0, 3, 5, 10].map((pct) => (
                     <button
@@ -1875,8 +1875,8 @@ export const SellerPanelView: React.FC = () => {
                       onClick={() => setPosDiscountPercent(pct)}
                       className={`px-2 py-0.5 rounded text-[11px] font-bold border ${
                         posDiscountPercent === pct
-                          ? 'bg-[#FFB800] text-[#071326] border-[#FFC928]'
-                          : 'bg-[#071326] text-sky-300 border-[#1E3A6D]'
+                          ? 'bg-[#D95D1E] text-white border-[#C2410C]'
+                          : 'bg-slate-50 text-slate-600 border-slate-200'
                       }`}
                     >
                       {pct}%
@@ -1886,8 +1886,8 @@ export const SellerPanelView: React.FC = () => {
               </div>
 
               {/* Payment Methods */}
-              <div className="space-y-1.5 pt-2 border-t border-[#1E3A6D]">
-                <span className="text-[11px] text-sky-300 uppercase font-bold block">
+              <div className="space-y-1.5 pt-2 border-t border-slate-200">
+                <span className="text-[11px] text-slate-600 uppercase font-bold block">
                   To‘lov turi:
                 </span>
                 <div className="grid grid-cols-2 gap-2 text-xs">
@@ -1896,8 +1896,8 @@ export const SellerPanelView: React.FC = () => {
                     onClick={() => setPosPaymentMethod('CASH')}
                     className={`p-2 rounded-xl border flex items-center gap-1.5 cursor-pointer font-bold ${
                       posPaymentMethod === 'CASH'
-                        ? 'bg-emerald-950/80 border-emerald-400 text-emerald-300'
-                        : 'bg-[#071326] border-[#1E3A6D] text-sky-300'
+                        ? 'bg-emerald-50 border-emerald-400 text-emerald-700'
+                        : 'bg-slate-50 border-slate-200 text-slate-600'
                     }`}
                   >
                     <Banknote className="w-4 h-4" />
@@ -1909,8 +1909,8 @@ export const SellerPanelView: React.FC = () => {
                     onClick={() => setPosPaymentMethod('CARD')}
                     className={`p-2 rounded-xl border flex items-center gap-1.5 cursor-pointer font-bold ${
                       posPaymentMethod === 'CARD'
-                        ? 'bg-[#132C54] border-[#FFB800] text-[#FFB800]'
-                        : 'bg-[#071326] border-[#1E3A6D] text-sky-300'
+                        ? 'bg-orange-50 border-[#D95D1E] text-[#D95D1E]'
+                        : 'bg-slate-50 border-slate-200 text-slate-600'
                     }`}
                   >
                     <CreditCard className="w-4 h-4" />
@@ -1922,8 +1922,8 @@ export const SellerPanelView: React.FC = () => {
                     onClick={() => setPosPaymentMethod('PAYME_CLICK')}
                     className={`p-2 rounded-xl border flex items-center gap-1.5 cursor-pointer font-bold ${
                       posPaymentMethod === 'PAYME_CLICK'
-                        ? 'bg-[#132C54] border-cyan-400 text-cyan-300'
-                        : 'bg-[#071326] border-[#1E3A6D] text-sky-300'
+                        ? 'bg-orange-50 border-cyan-400 text-cyan-300'
+                        : 'bg-slate-50 border-slate-200 text-slate-600'
                     }`}
                   >
                     <QrCode className="w-4 h-4" />
@@ -1935,8 +1935,8 @@ export const SellerPanelView: React.FC = () => {
                     onClick={() => setPosPaymentMethod('B2B')}
                     className={`p-2 rounded-xl border flex items-center gap-1.5 cursor-pointer font-bold ${
                       posPaymentMethod === 'B2B'
-                        ? 'bg-[#132C54] border-purple-400 text-purple-300'
-                        : 'bg-[#071326] border-[#1E3A6D] text-sky-300'
+                        ? 'bg-orange-50 border-purple-400 text-purple-300'
+                        : 'bg-slate-50 border-slate-200 text-slate-600'
                     }`}
                   >
                     <Building2 className="w-4 h-4" />
@@ -1947,9 +1947,9 @@ export const SellerPanelView: React.FC = () => {
 
               {/* Cash given & Change calculator */}
               {posPaymentMethod === 'CASH' && (
-                <div className="p-3 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-2 text-xs">
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
                   <div className="flex items-center justify-between">
-                    <label htmlFor="seller-cash-input" className="text-sky-300">Qabul qilingan naqd:</label>
+                    <label htmlFor="seller-cash-input" className="text-slate-600">Qabul qilingan naqd:</label>
                     <input
                       id="seller-cash-input"
                       name="cashGiven"
@@ -1959,11 +1959,11 @@ export const SellerPanelView: React.FC = () => {
                       aria-label="Qabul qilingan naqd summa"
                       value={cashGiven}
                       onChange={(e) => setCashGiven(e.target.value ? Math.max(0, Number(e.target.value)) : '')}
-                      className="w-32 h-8 px-2 rounded-lg bg-[#0A1931] border border-[#1E3A6D] text-right font-black text-white"
+                      className="w-32 h-8 px-2 rounded-lg bg-white border border-slate-200 text-right font-black text-white"
                     />
                   </div>
                   {typeof cashGiven === 'number' && cashGiven >= posGrandTotal && (
-                    <div className="flex items-center justify-between text-emerald-400 font-black pt-1 border-t border-[#1E3A6D]">
+                    <div className="flex items-center justify-between text-emerald-600 font-black pt-1 border-t border-slate-200">
                       <span>Qaytim (Change):</span>
                       <span>{cashChange.toLocaleString()} so‘m</span>
                     </div>
@@ -1972,8 +1972,8 @@ export const SellerPanelView: React.FC = () => {
               )}
 
               {/* Calculation Summary */}
-              <div className="space-y-1.5 pt-2 border-t border-[#1E3A6D] text-xs">
-                <div className="flex justify-between text-sky-300">
+              <div className="space-y-1.5 pt-2 border-t border-slate-200 text-xs">
+                <div className="flex justify-between text-slate-600">
                   <span>Oraliq summa:</span>
                   <span>{posSubtotal.toLocaleString()} so‘m</span>
                 </div>
@@ -1983,13 +1983,13 @@ export const SellerPanelView: React.FC = () => {
                     <span>-{posDiscountAmount.toLocaleString()} so‘m</span>
                   </div>
                 )}
-                <div className="flex justify-between text-sky-400 text-[10px]">
+                <div className="flex justify-between text-slate-500 text-[10px]">
                   <span>Shu jumladan 12% QQS:</span>
                   <span>{posTaxAmount.toLocaleString()} so‘m</span>
                 </div>
-                <div className="flex justify-between text-white font-black text-base pt-2 border-t border-[#1E3A6D]">
+                <div className="flex justify-between text-white font-black text-base pt-2 border-t border-slate-200">
                   <span>To‘lov summasi:</span>
-                  <span className="text-[#FFB800]">{posGrandTotal.toLocaleString()} so‘m</span>
+                  <span className="text-[#D95D1E]">{posGrandTotal.toLocaleString()} so‘m</span>
                 </div>
               </div>
 
@@ -2016,18 +2016,18 @@ export const SellerPanelView: React.FC = () => {
       {activeTab === 'b2b' && (
         <div className="space-y-6">
           {/* Header notice */}
-          <div className="industrial-card rounded-2xl p-5 bg-[#0A1931] border border-[#1E3A6D] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="industrial-card rounded-2xl p-5 bg-white border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <Factory className="w-4 h-4 text-[#FFB800]" />
-                <span className="text-xs font-mono font-bold text-[#FFB800] uppercase">
+                <Factory className="w-4 h-4 text-[#D95D1E]" />
+                <span className="text-xs font-mono font-bold text-[#D95D1E] uppercase">
                   B2B To‘g‘ridan-to‘g‘ri Zavod Xaridlari
                 </span>
               </div>
-              <h2 className="text-lg font-heading font-black text-white">
+              <h2 className="text-lg font-heading font-black text-slate-900">
                 O‘zbekiston Ishlab Chiqaruvchi Zavodlari Vitrinasi
               </h2>
-              <p className="text-xs text-sky-200/80 max-w-xl">
+              <p className="text-xs text-slate-500 max-w-xl">
                 O‘zmetkombinat, Qizilqumsement, Knauf va boshqa yirik zavodlardan to‘g‘ridan-to‘g‘ri
                 vagon va fura partiyalarida xarid qiling. Bank to‘lov topshiriqnomasi va shartnoma bilan.
               </p>
@@ -2035,7 +2035,7 @@ export const SellerPanelView: React.FC = () => {
 
             <div className="text-right font-mono text-xs shrink-0">
               <span className="text-purple-400 font-bold block">{b2bOrders.length} ta B2B buyurtma</span>
-              <span className="text-[10px] text-sky-400">100% rasmiy invoys</span>
+              <span className="text-[10px] text-slate-500">100% rasmiy invoys</span>
             </div>
           </div>
 
@@ -2044,42 +2044,42 @@ export const SellerPanelView: React.FC = () => {
             {B2B_MANUFACTURERS_LIST.map((mfg) => (
               <div
                 key={mfg.id}
-                className="industrial-card rounded-2xl p-5 bg-[#0A1931] border border-[#1E3A6D] hover:border-[#FFB800] transition-all flex flex-col justify-between space-y-4"
+                className="industrial-card rounded-2xl p-5 bg-white border border-slate-200 hover:border-[#D95D1E] transition-all flex flex-col justify-between space-y-4"
               >
                 <div className="space-y-3">
-                  <div className="relative aspect-video rounded-xl overflow-hidden bg-[#071326] border border-[#1E3A6D]">
+                  <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-50 border border-slate-200">
                     <img src={mfg.imageUrl} alt="" className="w-full h-full object-cover" />
-                    <span className="absolute top-2 left-2 px-2 py-0.5 rounded bg-[#071326]/90 text-[#FFB800] border border-[#1E3A6D] text-[10px] font-mono font-bold">
+                    <span className="absolute top-2 left-2 px-2 py-0.5 rounded bg-slate-50/90 text-[#D95D1E] border border-slate-200 text-[10px] font-mono font-bold">
                       {mfg.category}
                     </span>
                   </div>
 
                   <div>
-                    <h3 className="font-heading font-black text-white text-base leading-snug">
+                    <h3 className="font-heading font-black text-slate-900 text-base leading-snug">
                       {mfg.name}
                     </h3>
-                    <p className="text-[11px] font-mono text-sky-400 flex items-center gap-1 mt-1">
-                      <MapPin className="w-3.5 h-3.5 text-[#FFB800]" />
+                    <p className="text-[11px] font-mono text-slate-500 flex items-center gap-1 mt-1">
+                      <MapPin className="w-3.5 h-3.5 text-[#D95D1E]" />
                       <span>{mfg.location}</span>
                     </p>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-1.5 font-mono text-xs">
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5 font-mono text-xs">
                     <div className="flex justify-between">
-                      <span className="text-sky-400">Asosiy tovar:</span>
+                      <span className="text-slate-500">Asosiy tovar:</span>
                       <span className="text-white font-bold truncate max-w-[150px]">
                         {mfg.featuredProduct}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sky-400">Zavod narxi:</span>
-                      <span className="text-[#FFB800] font-black">
+                      <span className="text-slate-500">Zavod narxi:</span>
+                      <span className="text-[#D95D1E] font-black">
                         {mfg.unitPrice.toLocaleString()} so‘m / {mfg.unit}
                       </span>
                     </div>
                     <div className="flex justify-between text-[11px]">
-                      <span className="text-sky-400">Min. partiya:</span>
-                      <span className="text-emerald-400 font-bold">
+                      <span className="text-slate-500">Min. partiya:</span>
+                      <span className="text-emerald-600 font-bold">
                         {mfg.minOrderTons} {mfg.unit}
                       </span>
                     </div>
@@ -2099,14 +2099,14 @@ export const SellerPanelView: React.FC = () => {
           </div>
 
           {/* B2B Buyurtmalarim Ro'yxati */}
-          <div className="industrial-card rounded-2xl p-5 bg-[#0A1931] border border-[#1E3A6D] space-y-4">
-            <h3 className="font-heading font-black text-white text-base">
+          <div className="industrial-card rounded-2xl p-5 bg-white border border-slate-200 space-y-4">
+            <h3 className="font-heading font-black text-slate-900 text-base">
               B2B Buyurtmalarim &amp; Invoyslar
             </h3>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left font-mono text-xs">
-                <thead className="bg-[#071326] text-sky-300 border-b border-[#1E3A6D] uppercase text-[10px]">
+                <thead className="bg-slate-50 text-slate-600 border-b border-slate-200 uppercase text-[10px]">
                   <tr>
                     <th className="p-3">Invoys #</th>
                     <th className="p-3">Ishlab Chiqaruvchi</th>
@@ -2116,27 +2116,27 @@ export const SellerPanelView: React.FC = () => {
                     <th className="p-3 text-right">Rekvizitlar</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#1E3A6D]">
+                <tbody className="divide-y divide-slate-200">
                   {b2bOrders.map((ord) => (
-                    <tr key={ord.id} className="hover:bg-[#0F2547]/50">
-                      <td className="p-3 font-bold text-[#FFB800]">{ord.orderNumber}</td>
+                    <tr key={ord.id} className="hover:bg-slate-100/50">
+                      <td className="p-3 font-bold text-[#D95D1E]">{ord.orderNumber}</td>
                       <td className="p-3 text-white font-bold">{ord.manufacturerName}</td>
-                      <td className="p-3 text-sky-200">{ord.productName}</td>
-                      <td className="p-3 font-black text-[#FFB800]">
+                      <td className="p-3 text-slate-600">{ord.productName}</td>
+                      <td className="p-3 font-black text-[#D95D1E]">
                         {ord.totalAmount.toLocaleString()} so‘m
                       </td>
                       <td className="p-3">
                         <span
                           className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                             ord.status === 'YETKAZILDI'
-                              ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-500/40'
-                              : 'bg-[#132C54] text-[#FFB800] border border-[#FFB800]/40'
+                              ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+                              : 'bg-orange-50 text-[#D95D1E] border border-[#D95D1E]/40'
                           }`}
                         >
                           {ord.status}
                         </span>
                       </td>
-                      <td className="p-3 text-right text-[11px] text-sky-300">
+                      <td className="p-3 text-right text-[11px] text-slate-600">
                         STIR: {ord.bankRequisites.stir}
                       </td>
                     </tr>
@@ -2156,50 +2156,50 @@ export const SellerPanelView: React.FC = () => {
           {/* Top KPI Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* 1. Jami Tushum / Kirim */}
-            <div className="brushed-steel rounded-2xl p-5 border border-[#1E3A6D] space-y-2">
-              <div className="flex items-center justify-between text-xs font-mono text-sky-400">
+            <div className="brushed-steel rounded-2xl p-5 border border-slate-200 space-y-2">
+              <div className="flex items-center justify-between text-xs font-mono text-slate-500">
                 <span>Jami Kirim (Tushum)</span>
-                <TrendingUp className="w-4 h-4 text-emerald-400" />
+                <TrendingUp className="w-4 h-4 text-emerald-600" />
               </div>
-              <div className="text-2xl font-black text-emerald-400 font-mono-numbers">
+              <div className="text-2xl font-black text-emerald-600 font-mono-numbers">
                 +{totalIncome.toLocaleString()} so‘m
               </div>
-              <div className="text-[10px] font-mono text-sky-300">
+              <div className="text-[10px] font-mono text-slate-600">
                 Online: {onlineIncome.toLocaleString()} • POS: {offlineIncome.toLocaleString()}
               </div>
             </div>
 
             {/* 2. Jami Chiqim / Xarajatlar */}
-            <div className="brushed-steel rounded-2xl p-5 border border-[#1E3A6D] space-y-2">
-              <div className="flex items-center justify-between text-xs font-mono text-sky-400">
+            <div className="brushed-steel rounded-2xl p-5 border border-slate-200 space-y-2">
+              <div className="flex items-center justify-between text-xs font-mono text-slate-500">
                 <span>Jami Chiqim (Xarajatlar)</span>
                 <ArrowDownRight className="w-4 h-4 text-red-400" />
               </div>
               <div className="text-2xl font-black text-red-400 font-mono-numbers">
                 -{totalExpense.toLocaleString()} so‘m
               </div>
-              <div className="text-[10px] font-mono text-sky-300">
+              <div className="text-[10px] font-mono text-slate-600">
                 Ijara, ish haqi, transport &amp; soliqlar
               </div>
             </div>
 
             {/* 3. Sof Foyda (Net Profit) */}
-            <div className="brushed-steel rounded-2xl p-5 border-2 border-[#FFB800]/50 space-y-2 shadow-lg">
-              <div className="flex items-center justify-between text-xs font-mono text-[#FFB800] font-bold">
+            <div className="brushed-steel rounded-2xl p-5 border-2 border-[#D95D1E]/50 space-y-2 shadow-lg">
+              <div className="flex items-center justify-between text-xs font-mono text-[#D95D1E] font-bold">
                 <span>Sof Foyda (Net Profit)</span>
-                <Coins className="w-4 h-4 text-[#FFB800]" />
+                <Coins className="w-4 h-4 text-[#D95D1E]" />
               </div>
-              <div className="text-2xl font-black text-[#FFB800] font-mono-numbers">
+              <div className="text-2xl font-black text-[#D95D1E] font-mono-numbers">
                 {netProfit.toLocaleString()} so‘m
               </div>
-              <div className="text-[10px] font-mono text-emerald-400 font-bold">
+              <div className="text-[10px] font-mono text-emerald-600 font-bold">
                 Marja rentabelligi: {profitMarginPercent}%
               </div>
             </div>
 
             {/* 4. Savdo Ulushi */}
-            <div className="brushed-steel rounded-2xl p-5 border border-[#1E3A6D] space-y-2">
-              <div className="flex items-center justify-between text-xs font-mono text-sky-400">
+            <div className="brushed-steel rounded-2xl p-5 border border-slate-200 space-y-2">
+              <div className="flex items-center justify-between text-xs font-mono text-slate-500">
                 <span>Kanal Ulushi (Online / POS)</span>
                 <Percent className="w-4 h-4 text-cyan-400" />
               </div>
@@ -2207,20 +2207,20 @@ export const SellerPanelView: React.FC = () => {
                 {totalIncome > 0 ? Math.round((onlineIncome / totalIncome) * 100) : 0}% /{' '}
                 {totalIncome > 0 ? Math.round((offlineIncome / totalIncome) * 100) : 0}%
               </div>
-              <div className="text-[10px] font-mono text-sky-300">
+              <div className="text-[10px] font-mono text-slate-600">
                 Marketplace vs Do‘kon Kassa
               </div>
             </div>
           </div>
 
           {/* Operations Ledger & Add Expense Button */}
-          <div className="industrial-card rounded-2xl p-5 bg-[#0A1931] border border-[#1E3A6D] space-y-4">
+          <div className="industrial-card rounded-2xl p-5 bg-white border border-slate-200 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <h3 className="font-heading font-black text-white text-base">
+                <h3 className="font-heading font-black text-slate-900 text-base">
                   Moliyaviy Kirim-Chiqim Jurnali
                 </h3>
-                <span className="text-xs font-mono text-sky-400">
+                <span className="text-xs font-mono text-slate-500">
                   Barcha kassa va marketplace tranzaksiyalari
                 </span>
               </div>
@@ -2230,7 +2230,7 @@ export const SellerPanelView: React.FC = () => {
                 onClick={() => setIsExpenseModalOpen(true)}
                 className="btn-industrial-dark px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md"
               >
-                <Plus className="w-4 h-4 text-[#FFB800]" />
+                <Plus className="w-4 h-4 text-[#D95D1E]" />
                 <span>+ Yangi Chiqim / Xarajat Kiritish</span>
               </button>
             </div>
@@ -2238,7 +2238,7 @@ export const SellerPanelView: React.FC = () => {
             {/* Transactions Table */}
             <div className="overflow-x-auto">
               <table className="w-full text-left font-mono text-xs">
-                <thead className="bg-[#071326] text-sky-300 border-b border-[#1E3A6D] uppercase text-[10px]">
+                <thead className="bg-slate-50 text-slate-600 border-b border-slate-200 uppercase text-[10px]">
                   <tr>
                     <th className="p-3">Sana</th>
                     <th className="p-3">Turi</th>
@@ -2248,27 +2248,27 @@ export const SellerPanelView: React.FC = () => {
                     <th className="p-3 text-right">Summa</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#1E3A6D]">
+                <tbody className="divide-y divide-slate-200">
                   {financialOperations.map((op) => (
-                    <tr key={op.id} className="hover:bg-[#0F2547]/50">
-                      <td className="p-3 text-sky-300">{op.date}</td>
+                    <tr key={op.id} className="hover:bg-slate-100/50">
+                      <td className="p-3 text-slate-600">{op.date}</td>
                       <td className="p-3">
                         <span
                           className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                             op.type === 'INCOME'
-                              ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-500/40'
-                              : 'bg-red-950/80 text-red-400 border border-red-500/40'
+                              ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+                              : 'bg-rose-50 text-red-400 border border-red-500/40'
                           }`}
                         >
                           {op.type === 'INCOME' ? 'KIRIM (+)' : 'CHIQIM (-)'}
                         </span>
                       </td>
                       <td className="p-3 text-white font-bold">{op.category}</td>
-                      <td className="p-3 text-sky-200">{op.paymentMethod}</td>
-                      <td className="p-3 text-sky-400 text-[11px]">{op.notes}</td>
+                      <td className="p-3 text-slate-600">{op.paymentMethod}</td>
+                      <td className="p-3 text-slate-500 text-[11px]">{op.notes}</td>
                       <td
                         className={`p-3 text-right font-black text-sm ${
-                          op.type === 'INCOME' ? 'text-emerald-400' : 'text-red-400'
+                          op.type === 'INCOME' ? 'text-emerald-600' : 'text-red-400'
                         }`}
                       >
                         {op.type === 'INCOME' ? '+' : '-'}
@@ -2287,40 +2287,40 @@ export const SellerPanelView: React.FC = () => {
           TAB 6: MARKETPLACE BUYURTMALARI
           ===================================================================== */}
       {activeTab === 'orders' && (
-        <div className="industrial-card rounded-2xl p-5 bg-[#0A1931] border border-[#1E3A6D] space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-[#1E3A6D]">
-            <h3 className="font-heading font-black text-white text-base">
+        <div className="industrial-card rounded-2xl p-5 bg-white border border-slate-200 space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+            <h3 className="font-heading font-black text-slate-900 text-base">
               Marketplace Xaridlari va Yetkazib Berish
             </h3>
-            <span className="text-xs font-mono text-sky-400">
+            <span className="text-xs font-mono text-slate-500">
               {orders.length} ta faol buyurtma
             </span>
           </div>
 
           {loadingOrders ? (
-            <div className="py-12 text-center text-sky-400 text-xs font-mono">
+            <div className="py-12 text-center text-slate-500 text-xs font-mono">
               Buyurtmalar yuklanmoqda...
             </div>
           ) : orders.length === 0 ? (
-            <div className="py-12 text-center text-sky-400/70 text-xs font-mono">
+            <div className="py-12 text-center text-slate-500/70 text-xs font-mono">
               Hozircha yangi buyurtmalar mavjud emas.
             </div>
           ) : (
-            <div className="divide-y divide-[#1E3A6D]">
+            <div className="divide-y divide-slate-200">
               {orders.map((ord) => (
                 <div key={ord.id} className="py-3 flex items-center justify-between font-mono text-xs">
                   <div>
-                    <span className="text-[#FFB800] font-bold">#{ord.orderNumber}</span>
+                    <span className="text-[#D95D1E] font-bold">#{ord.orderNumber}</span>
                     <p className="text-white font-bold text-sm mt-0.5">
                       {(ord as any).customerName || (ord as any).buyerCompanyName || 'Mijoz'} • {Number(ord.totalAmount).toLocaleString()} so‘m
                     </p>
-                    <span className="text-[10px] text-sky-400">
+                    <span className="text-[10px] text-slate-500">
                       {typeof ord.deliveryAddress === 'string'
                         ? ord.deliveryAddress
                         : `${ord.deliveryAddress?.region || ''}, ${ord.deliveryAddress?.district || ''}`}
                     </span>
                   </div>
-                  <span className="px-2.5 py-1 rounded bg-[#132C54] text-[#FFB800] border border-[#254B85] text-xs font-bold">
+                  <span className="px-2.5 py-1 rounded bg-orange-50 text-[#D95D1E] border border-slate-300 text-xs font-bold">
                     {ord.status}
                   </span>
                 </div>
@@ -2334,22 +2334,22 @@ export const SellerPanelView: React.FC = () => {
           TAB 7: 50/50 ESCROW & PAYOUT LEDGER
           ===================================================================== */}
       {activeTab === 'escrow' && (
-        <div className="industrial-card rounded-2xl p-5 bg-[#0A1931] border border-[#1E3A6D] space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-[#1E3A6D]">
+        <div className="industrial-card rounded-2xl p-5 bg-white border border-slate-200 space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-200">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-[#FFB800]" />
-              <h3 className="font-heading font-black text-white text-base">
+              <ShieldCheck className="w-5 h-5 text-[#D95D1E]" />
+              <h3 className="font-heading font-black text-slate-900 text-base">
                 50/50 Escrow Mablag‘lari va To‘lov Reestri
               </h3>
             </div>
-            <span className="text-xs font-mono text-emerald-400 bg-emerald-950/80 px-2.5 py-1 rounded border border-emerald-500/40">
+            <span className="text-xs font-mono text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200">
               BunkerStroy Escrow Himoyasi
             </span>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left font-mono text-xs">
-              <thead className="bg-[#071326] text-sky-300 border-b border-[#1E3A6D] uppercase text-[10px]">
+              <thead className="bg-slate-50 text-slate-600 border-b border-slate-200 uppercase text-[10px]">
                 <tr>
                   <th className="p-3">Dalolatnoma #</th>
                   <th className="p-3">Xaridor (STIR)</th>
@@ -2360,26 +2360,26 @@ export const SellerPanelView: React.FC = () => {
                   <th className="p-3">Holati</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#1E3A6D]">
+              <tbody className="divide-y divide-slate-200">
                 {escrowLedger.map((row) => (
-                  <tr key={row.id} className="hover:bg-[#0F2547]/50">
-                    <td className="p-3 font-bold text-[#FFB800]">{row.actNumber}</td>
+                  <tr key={row.id} className="hover:bg-slate-100/50">
+                    <td className="p-3 font-bold text-[#D95D1E]">{row.actNumber}</td>
                     <td className="p-3 text-white">
                       <div>{row.buyerName}</div>
-                      <div className="text-[10px] text-sky-400">STIR: {row.buyerStir}</div>
+                      <div className="text-[10px] text-slate-500">STIR: {row.buyerStir}</div>
                     </td>
-                    <td className="p-3 text-sky-200">{row.itemSummary}</td>
+                    <td className="p-3 text-slate-600">{row.itemSummary}</td>
                     <td className="p-3 text-white font-bold">
                       {row.grossAmount.toLocaleString()} so‘m
                     </td>
                     <td className="p-3 text-red-400 font-bold">
                       -{row.platformFee.toLocaleString()} so‘m
                     </td>
-                    <td className="p-3 text-emerald-400 font-black">
+                    <td className="p-3 text-emerald-600 font-black">
                       {row.netAmount.toLocaleString()} so‘m
                     </td>
                     <td className="p-3">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950/80 text-emerald-400 border border-emerald-500/40">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">
                         {row.status}
                       </span>
                     </td>
@@ -2395,7 +2395,7 @@ export const SellerPanelView: React.FC = () => {
           MODAL 1: THERMAL POS KASSA CHEKI (Printable / Real Receipt)
           ===================================================================== */}
       {activeReceipt && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#071326]/80 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-50/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-sm rounded-2xl bg-white text-slate-900 p-6 shadow-2xl space-y-4 font-mono text-xs border-2 border-slate-300">
             {/* Receipt Header */}
             <div className="text-center space-y-1 pb-3 border-b-2 border-dashed border-slate-400">
@@ -2508,34 +2508,34 @@ export const SellerPanelView: React.FC = () => {
           MODAL 2: B2B WHOLESALE ORDER MODAL (Bank Requisites & Contract)
           ===================================================================== */}
       {isB2bModalOpen && selectedManufacturer && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#071326]/80 backdrop-blur-sm p-4">
-          <div className="w-full max-w-lg rounded-2xl bg-[#0A1931] text-white p-6 shadow-2xl border-2 border-[#1E3A6D] space-y-5 font-mono text-xs">
-            <div className="flex items-center justify-between pb-3 border-b border-[#1E3A6D]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-50/80 backdrop-blur-sm p-4">
+          <div className="w-full max-w-lg rounded-2xl bg-white text-white p-6 shadow-2xl border border-slate-200 space-y-5 font-mono text-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
               <div className="flex items-center gap-2">
-                <Factory className="w-5 h-5 text-[#FFB800]" />
-                <h3 className="font-heading font-black text-white text-base">
+                <Factory className="w-5 h-5 text-[#D95D1E]" />
+                <h3 className="font-heading font-black text-slate-900 text-base">
                   Zavoddan Ulgurji Xarid (B2B Shartnoma)
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsB2bModalOpen(false)}
-                className="text-sky-400 hover:text-white cursor-pointer"
+                className="text-slate-500 hover:text-slate-900 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="space-y-3">
-              <div className="p-3 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-1">
-                <span className="text-[10px] text-sky-400 uppercase font-bold">Ishlab chiqaruvchi:</span>
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                <span className="text-[10px] text-slate-500 uppercase font-bold">Ishlab chiqaruvchi:</span>
                 <p className="font-black text-white text-sm">{selectedManufacturer.name}</p>
-                <p className="text-[11px] text-sky-300">{selectedManufacturer.featuredProduct}</p>
+                <p className="text-[11px] text-slate-600">{selectedManufacturer.featuredProduct}</p>
               </div>
 
               {/* Quantity selector */}
               <div className="space-y-1">
-                <label htmlFor="seller-b2b-quantity" className="text-sky-300 font-bold block">
+                <label htmlFor="seller-b2b-quantity" className="text-slate-600 font-bold block">
                   Buyurtma hajmi ({selectedManufacturer.unit}):
                 </label>
                 <input
@@ -2545,24 +2545,24 @@ export const SellerPanelView: React.FC = () => {
                   min={selectedManufacturer.minOrderTons}
                   value={b2bQuantity}
                   onChange={(e) => setB2bQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white font-bold"
+                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-white font-bold"
                 />
-                <span className="text-[10px] text-sky-400">
+                <span className="text-[10px] text-slate-500">
                   Minimal partiya: {selectedManufacturer.minOrderTons} {selectedManufacturer.unit}
                 </span>
               </div>
 
               {/* Incoterm */}
               <div className="space-y-1">
-                <label className="text-sky-300 font-bold block">Yetkazib berish sharti:</label>
+                <label className="text-slate-600 font-bold block">Yetkazib berish sharti:</label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setB2bIncoterm('DAP')}
                     className={`p-2 rounded-xl border text-center font-bold cursor-pointer ${
                       b2bIncoterm === 'DAP'
-                        ? 'bg-[#132C54] border-[#FFB800] text-white'
-                        : 'bg-[#071326] border-[#1E3A6D] text-sky-300'
+                        ? 'bg-orange-50 border-[#D95D1E] text-white'
+                        : 'bg-slate-50 border-slate-200 text-slate-600'
                     }`}
                   >
                     DAP (Manzilga fura/vagon)
@@ -2572,8 +2572,8 @@ export const SellerPanelView: React.FC = () => {
                     onClick={() => setB2bIncoterm('EXW')}
                     className={`p-2 rounded-xl border text-center font-bold cursor-pointer ${
                       b2bIncoterm === 'EXW'
-                        ? 'bg-[#132C54] border-[#FFB800] text-white'
-                        : 'bg-[#071326] border-[#1E3A6D] text-sky-300'
+                        ? 'bg-orange-50 border-[#D95D1E] text-white'
+                        : 'bg-slate-50 border-slate-200 text-slate-600'
                     }`}
                   >
                     EXW (Zavoddan olib ketish)
@@ -2582,32 +2582,32 @@ export const SellerPanelView: React.FC = () => {
               </div>
 
               {/* Bank Requisites of Manufacturer */}
-              <div className="p-3.5 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-1.5 text-[11px]">
-                <span className="text-[#FFB800] font-bold uppercase block text-[10px]">
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5 text-[11px]">
+                <span className="text-[#D95D1E] font-bold uppercase block text-[10px]">
                   Zavod Bank Rekvizitlari (To‘lov uchun):
                 </span>
-                <div className="flex justify-between text-sky-300">
+                <div className="flex justify-between text-slate-600">
                   <span>H/R (Hisob raqam):</span>
                   <span className="text-white font-bold">{selectedManufacturer.accountNumber}</span>
                 </div>
-                <div className="flex justify-between text-sky-300">
+                <div className="flex justify-between text-slate-600">
                   <span>MFO:</span>
                   <span className="text-white font-bold">{selectedManufacturer.mfo}</span>
                 </div>
-                <div className="flex justify-between text-sky-300">
+                <div className="flex justify-between text-slate-600">
                   <span>STIR:</span>
                   <span className="text-white font-bold">{selectedManufacturer.stir}</span>
                 </div>
-                <div className="flex justify-between text-sky-300">
+                <div className="flex justify-between text-slate-600">
                   <span>Bank:</span>
                   <span className="text-white font-bold">{selectedManufacturer.bankName}</span>
                 </div>
               </div>
 
               {/* Total Calculation */}
-              <div className="p-3 rounded-xl bg-[#071326] border-2 border-[#FFB800]/50 flex items-center justify-between">
-                <span className="text-sky-300">Jami shartnoma qiymati:</span>
-                <span className="text-base font-black text-[#FFB800]">
+              <div className="p-3 rounded-xl bg-slate-50 border-2 border-[#D95D1E]/50 flex items-center justify-between">
+                <span className="text-slate-600">Jami shartnoma qiymati:</span>
+                <span className="text-base font-black text-[#D95D1E]">
                   {(b2bQuantity * selectedManufacturer.unitPrice).toLocaleString()} so‘m
                 </span>
               </div>
@@ -2625,7 +2625,7 @@ export const SellerPanelView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsB2bModalOpen(false)}
-                className="py-3 px-4 rounded-xl bg-[#071326] border border-[#1E3A6D] text-sky-300 hover:text-white cursor-pointer"
+                className="py-3 px-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 cursor-pointer"
               >
                 Bekor qilish
               </button>
@@ -2638,19 +2638,19 @@ export const SellerPanelView: React.FC = () => {
           MODAL 3: YANGI XARAJAT / CHIQIM KIRITISH
           ===================================================================== */}
       {isExpenseModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#071326]/80 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-50/80 backdrop-blur-sm p-4">
           <form
             onSubmit={handleAddExpense}
-            className="w-full max-w-md rounded-2xl bg-[#0A1931] text-white p-6 shadow-2xl border-2 border-[#1E3A6D] space-y-4 font-mono text-xs"
+            className="w-full max-w-md rounded-2xl bg-white text-white p-6 shadow-2xl border border-slate-200 space-y-4 font-mono text-xs"
           >
-            <div className="flex items-center justify-between pb-3 border-b border-[#1E3A6D]">
-              <h3 className="font-heading font-black text-white text-base">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+              <h3 className="font-heading font-black text-slate-900 text-base">
                 + Yangi Chiqim / Xarajat Kiritish
               </h3>
               <button
                 type="button"
                 onClick={() => setIsExpenseModalOpen(false)}
-                className="text-sky-400 hover:text-white cursor-pointer"
+                className="text-slate-500 hover:text-slate-900 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -2658,14 +2658,14 @@ export const SellerPanelView: React.FC = () => {
 
             <div className="space-y-3">
               <div className="space-y-1">
-                <label htmlFor="seller-expense-category" className="text-sky-300 font-bold block">Xarajat Kategoriyasi *</label>
+                <label htmlFor="seller-expense-category" className="text-slate-600 font-bold block">Xarajat Kategoriyasi *</label>
                 <select
                   id="seller-expense-category"
                   name="expenseCategory"
                   aria-label="Xarajat kategoriyasi"
                   value={expenseCategory}
                   onChange={(e) => setExpenseCategory(e.target.value)}
-                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white"
+                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-white"
                 >
                   <option value="Ombor Arendasi">Ombor / Do‘kon Ijarasi</option>
                   <option value="Ishchilar Maoshi">Ishchilar va Haydovchilar Maoshi</option>
@@ -2678,7 +2678,7 @@ export const SellerPanelView: React.FC = () => {
               </div>
 
               <div className="space-y-1">
-                <label htmlFor="seller-expense-amount" className="text-sky-300 font-bold block">Summa (so‘m) *</label>
+                <label htmlFor="seller-expense-amount" className="text-slate-600 font-bold block">Summa (so‘m) *</label>
                 <input
                   id="seller-expense-amount"
                   name="expenseAmount"
@@ -2688,19 +2688,19 @@ export const SellerPanelView: React.FC = () => {
                   placeholder="Masalan: 3500000"
                   value={expenseAmount}
                   onChange={(e) => setExpenseAmount(e.target.value ? Math.max(0, Number(e.target.value)) : '')}
-                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-red-400 font-black text-sm"
+                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-red-400 font-black text-sm"
                 />
               </div>
 
               <div className="space-y-1">
-                <label htmlFor="seller-expense-method" className="text-sky-300 font-bold block">To‘lov vositasi</label>
+                <label htmlFor="seller-expense-method" className="text-slate-600 font-bold block">To‘lov vositasi</label>
                 <select
                   id="seller-expense-method"
                   name="expensePaymentMethod"
                   aria-label="To‘lov vositasi"
                   value={expensePaymentMethod}
                   onChange={(e) => setExpensePaymentMethod(e.target.value)}
-                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white"
+                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-white"
                 >
                   <option value="Bank o‘tkazmasi">Bank o‘tkazmasi (H/R)</option>
                   <option value="Korporativ Karta">Korporativ Karta</option>
@@ -2709,7 +2709,7 @@ export const SellerPanelView: React.FC = () => {
               </div>
 
               <div className="space-y-1">
-                <label htmlFor="seller-expense-notes" className="text-sky-300 font-bold block">Izoh / Maqsad</label>
+                <label htmlFor="seller-expense-notes" className="text-slate-600 font-bold block">Izoh / Maqsad</label>
                 <input
                   id="seller-expense-notes"
                   name="expenseNotes"
@@ -2717,7 +2717,7 @@ export const SellerPanelView: React.FC = () => {
                   placeholder="Xarajat bo‘yicha qo‘shimcha izoh..."
                   value={expenseNotes}
                   onChange={(e) => setExpenseNotes(e.target.value)}
-                  className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white"
+                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-white"
                 />
               </div>
             </div>
@@ -2732,7 +2732,7 @@ export const SellerPanelView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsExpenseModalOpen(false)}
-                className="py-2.5 px-4 rounded-xl bg-[#071326] border border-[#1E3A6D] text-sky-300 hover:text-white cursor-pointer"
+                className="py-2.5 px-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 cursor-pointer"
               >
                 Bekor qilish
               </button>

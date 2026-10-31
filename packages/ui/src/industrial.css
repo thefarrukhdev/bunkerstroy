@@ -1,129 +1,213 @@
 /* =========================================================================
-   BUNKERSTROY INDUSTRIAL DESIGN SYSTEM TOKENS & UTILITIES
-   Directly ported from authentic Bunker-1 industrial design
+   BUNKERSTROY NEO-ARCHITECTURAL PRECISION DESIGN SYSTEM
+   Clean, prestigious, light modern construction tech design
    ========================================================================= */
 
-:root {
-  --bg-primary: #071326;
-  --bg-secondary: #0A1931;
-  --bg-card: #0F2547;
-  --color-yellow: #FFB800;
-  --color-yellow-bright: #FFC928;
-  --text-primary: #F5F5F2;
-  --text-secondary: #BAE6FD;
-  --text-muted: #94A3B8;
-  --border-industrial: #1E3A6D;
-  --border-highlight: #2E5A9C;
+@theme {
+  /* Typography */
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Surfaces & Canvas */
+  --color-canvas: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-surface-hover: #F1F5F9;
+  --color-surface-muted: #E2E8F0;
+  
+  --color-border-subtle: #E2E8F0;
+  --color-border-strong: #CBD5E1;
+  --color-border-focus: #0F172A;
+
+  /* Text Colors */
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #334155;
+  --color-text-muted: #64748B;
+  --color-text-inverted: #FFFFFF;
+
+  /* Brand Accents */
+  --color-brand-primary: #D95D1E;
+  --color-brand-hover: #B43B06;
+  --color-brand-subtle: #FFF7ED;
+
+  /* Functional Status Colors */
+  --color-escrow: #059669;
+  --color-escrow-subtle: #ECFDF5;
+  --color-logistics: #0284C7;
+  --color-logistics-subtle: #F0F9FF;
+  --color-warning: #D97706;
+  --color-warning-subtle: #FFFBEB;
+  --color-danger: #DC2626;
+  --color-danger-subtle: #FEF2F2;
+
+  /* Backward Compatibility Bridge for BunkerStroy tokens */
+  --color-bunker-vault: #F8FAFC;
+  --color-bunker-base: #F8FAFC;
+  --color-bunker-surface-1: #FFFFFF;
+  --color-bunker-surface-2: #F8FAFC;
+  --color-bunker-surface-hover: #F1F5F9;
+  --color-bunker-input: #FFFFFF;
+  --color-bunker-amber-500: #D95D1E;
+  --color-bunker-amber-400: #EA580C;
+  --color-bunker-amber-600: #B43B06;
+  --color-bunker-border-subtle: #E2E8F0;
+  --color-bunker-border-strong: #CBD5E1;
+  --color-bunker-border-active: #0F172A;
+  --color-bunker-text-primary: #0F172A;
+  --color-bunker-text-secondary: #334155;
+  --color-bunker-text-muted: #64748B;
+  --color-bunker-status-green: #059669;
+  --color-bunker-status-amber: #D97706;
+  --color-bunker-status-red: #DC2626;
+  --color-bunker-status-cyan: #0284C7;
+
+  /* Industrial Design Aliases */
+  --color-hazard-yellow: #D95D1E;
+  --color-hazard-yellow-bright: #EA580C;
+  --color-industrial-navy: #0F172A;
+  --color-industrial-surface: #FFFFFF;
+  --color-industrial-card: #FFFFFF;
+  --color-industrial-border: #E2E8F0;
+  --color-industrial-border-highlight: #CBD5E1;
 }
 
-/* Industrial Surfaces */
+:root {
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --color-yellow: #D95D1E;
+  --color-yellow-bright: #EA580C;
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --border-industrial: #E2E8F0;
+  --border-highlight: #CBD5E1;
+
+  /* Aliases used across portals */
+  --bg-main: #F8FAFC;
+  --bg-sidebar: #FFFFFF;
+  --bg-header: #FFFFFF;
+  --bg-card-subtle: #F8FAFC;
+  --border-main: #E2E8F0;
+  --border-subtle: #E2E8F0;
+  --text-main: #0F172A;
+  --text-subtle: #64748B;
+  --scrollbar-track: #F8FAFC;
+  --scrollbar-thumb: #CBD5E1;
+  --scrollbar-thumb-hover: #D95D1E;
+  --table-header-bg: #F8FAFC;
+  --table-row-hover: #F1F5F9;
+  --accent-color: #D95D1E;
+  --accent-bg: #D95D1E;
+  --accent-text: #FFFFFF;
+  --badge-pill-bg: #F1F5F9;
+  --color-surface-bg: #F8FAFC;
+  --color-surface-card: #FFFFFF;
+  --color-surface-hover: #F1F5F9;
+  --color-accent-blue: #0284C7;
+  --color-accent-green: #059669;
+  --color-accent-yellow: #D97706;
+  --color-accent-red: #DC2626;
+}
+
+/* Modern Clean Surfaces */
 .bg-industrial-primary {
-  background-color: #071326;
+  background-color: #F8FAFC;
 }
 
 .bg-industrial-secondary {
-  background-color: #0A1931;
+  background-color: #FFFFFF;
 }
 
 .bg-industrial-card {
-  background-color: #0F2547;
+  background-color: #FFFFFF;
 }
 
 .border-industrial {
-  border-color: #1E3A6D;
+  border-color: #E2E8F0;
 }
 
 .border-industrial-highlight {
-  border-color: #2E5A9C;
+  border-color: #CBD5E1;
 }
 
-/* Brushed Steel & Metallic Header */
+/* Brushed Steel & Metallic Header replaced with Clean Precision */
 .brushed-steel {
-  background: linear-gradient(180deg, #0F2547 0%, #0A1931 100%);
-  border: 1px solid #1E3A6D;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 16px rgba(10, 25, 49, 0.25);
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05);
 }
 
 .brushed-steel-header {
-  background: linear-gradient(180deg, #0A1931 0%, #071326 100%);
-  border-bottom: 2px solid #1E3A6D;
-  box-shadow: 0 4px 20px rgba(10, 25, 49, 0.35), inset 0 -1px 0 rgba(255, 184, 0, 0.15);
+  background: #FFFFFF;
+  border-bottom: 1px solid #E2E8F0;
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
 }
 
-/* Industrial Card */
+/* Clean Card */
 .industrial-card {
-  background-color: #0A1931;
-  border: 1px solid #1E3A6D;
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05);
   transition: all 0.2s ease-in-out;
 }
 
 .industrial-card:hover {
-  border-color: #2E5A9C;
-  box-shadow: 0 8px 24px -4px rgba(10, 25, 49, 0.45), 0 0 0 1px rgba(255, 184, 0, 0.25);
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.07);
 }
 
-/* Hazard Stripes */
+/* Obsolete Hazard Stripes and Rivets are neutralized */
 .hazard-stripe-sm {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    #FFB800 0,
-    #FFB800 6px,
-    #0A1931 6px,
-    #0A1931 12px
-  );
+  display: none !important;
 }
 
-/* Industrial Rivet */
 .industrial-rivet {
-  width: 6px;
-  height: 6px;
-  border-radius: 9999px;
-  background: radial-gradient(circle at 35% 35%, #93C5FD, #1E3A6D 70%, #0A1931);
-  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.3);
-  display: inline-block;
+  display: none !important;
 }
 
-/* Tech Grid Pattern */
+/* Architectural Grid Pattern (Subtle) */
 .tech-grid-pattern {
-  background-image: linear-gradient(to right, rgba(30, 58, 109, 0.15) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(30, 58, 109, 0.15) 1px, transparent 1px);
+  background-image: linear-gradient(to right, rgba(226, 232, 240, 0.6) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(226, 232, 240, 0.6) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
-/* Industrial Yellow Action Button */
+/* Safety Terracotta Action Button */
 .btn-industrial-yellow {
-  background-color: #FFB800;
-  color: #000000;
-  font-weight: 800;
-  border: 1px solid #E5A600;
+  background-color: #D95D1E;
+  color: #FFFFFF;
+  font-weight: 700;
+  border: 1px solid #C2410C;
   transition: all 0.15s ease-in-out;
 }
 
 .btn-industrial-yellow:hover {
-  background-color: #FFC928;
-  box-shadow: 0 0 14px rgba(255, 184, 0, 0.4);
+  background-color: #B43B06;
+  box-shadow: 0 4px 12px rgba(217, 93, 30, 0.25);
 }
 
 .btn-industrial-yellow:active {
   transform: translateY(1px);
 }
 
-/* Industrial Dark Secondary Button */
+/* Slate Secondary Button */
 .btn-industrial-dark {
-  background-color: #132C54;
-  color: #FFFFFF;
-  border: 1px solid #2E5A9C;
+  background-color: #FFFFFF;
+  color: #0F172A;
+  border: 1px solid #E2E8F0;
+  font-weight: 600;
   transition: all 0.15s ease-in-out;
 }
 
 .btn-industrial-dark:hover {
-  background-color: #1B3B6F;
-  border-color: #FFB800;
-  color: #FFB800;
+  background-color: #F8FAFC;
+  border-color: #CBD5E1;
+  color: #D95D1E;
 }
 
 /* Monospaced Figures */
 .font-mono-numbers {
-  font-family: 'JetBrains Mono', 'Space Mono', monospace;
+  font-family: 'JetBrains Mono', monospace;
   font-variant-numeric: tabular-nums;
 }

@@ -41,8 +41,8 @@ export const PRODUCTS_SOLD: ProductCategoryItem[] = [
       'Pishiq G‘isht'
     ],
     icon: HardHat,
-    color: '#FFB800',
-    bgLight: 'from-amber-500/20 to-transparent'
+    color: '#D95D1E',
+    bgLight: 'from-orange-500/20 to-transparent'
   },
   {
     id: 'ichki',
@@ -118,7 +118,7 @@ export const USER_SEGMENTS: UserSegmentItem[] = [
       '12 ta viloyat bo‘ylab doimiy yangi xaridorlar va pudratchilar oqimi'
     ],
     icon: Factory,
-    accent: '#FFB800'
+    accent: '#D95D1E'
   },
   {
     id: 'marketlar',
@@ -134,7 +134,7 @@ export const USER_SEGMENTS: UserSegmentItem[] = [
       'O‘z hududingizdagi onlayn buyurtmalarni qabul qilib, savdo aylanmasini 2 barobarga oshirish'
     ],
     icon: Store,
-    accent: '#38BDF8'
+    accent: '#0284C7'
   },
   {
     id: 'mijozlar',
@@ -150,7 +150,7 @@ export const USER_SEGMENTS: UserSegmentItem[] = [
       'Maxsus poydevor va beton kalkulyatori orqali material xarajatlarini aniq rejalashtirish'
     ],
     icon: Users,
-    accent: '#10B981'
+    accent: '#059669'
   }
 ];
 
@@ -171,7 +171,7 @@ export const TRADE_MODEL_ITEMS: TradeModelItem[] = [
       'Bozor dinamikasiga mos ravishda istalgan payt narxni yangilash'
     ],
     icon: DollarSign,
-    accentColor: '#FFB800'
+    accentColor: '#D95D1E'
   },
   {
     number: 2,
@@ -186,7 +186,7 @@ export const TRADE_MODEL_ITEMS: TradeModelItem[] = [
       'Do‘kon yopiq paytda ham onlayn sotuvlar to‘xtamaydi'
     ],
     icon: Globe,
-    accentColor: '#38BDF8'
+    accentColor: '#0284C7'
   },
   {
     number: 3,
@@ -201,7 +201,7 @@ export const TRADE_MODEL_ITEMS: TradeModelItem[] = [
       'Sotuvchiga buyurtma jiddiyligi kafolati, xaridorga esa yukni ko‘rib olish erkinligi'
     ],
     icon: ShieldCheck,
-    accentColor: '#10B981'
+    accentColor: '#059669'
   }
 ];
 
@@ -216,7 +216,7 @@ export const CRM_FEATURES: CrmFeatureItem[] = [
     description: 'Onlayn do‘kondagi buyurtmalar va oflayn savdo nuqtangizdagi harakatlar yagona CRM tizimida avtomatik ajratiladi va jamlanadi.',
     metrics: '100% Avtomatlashtirilgan',
     icon: Store,
-    accentColor: '#FFB800'
+    accentColor: '#D95D1E'
   },
   {
     id: 'umumiy-hisob',
@@ -225,7 +225,7 @@ export const CRM_FEATURES: CrmFeatureItem[] = [
     description: 'Ikkala yo‘nalish (onlayn sotuvlar va do‘kondagi savdo) bo‘yicha yagona konsolidatsiyalashgan hisobot, kassa qoldiqlari va sof tushum nazorati.',
     metrics: 'Real Vaqt Balansi',
     icon: BarChart3,
-    accentColor: '#38BDF8'
+    accentColor: '#0284C7'
   },
   {
     id: 'monitoring',
@@ -234,7 +234,7 @@ export const CRM_FEATURES: CrmFeatureItem[] = [
     description: 'Savdoni daqiqama-daqiqa kuzatib borish, qoldiq tovarlar monitoringi, kam qolgan materiallar haqida ogohlantirish va tahliliy grafiklar.',
     metrics: '24/7 Kuzatuv & Tahlil',
     icon: MonitorCheck,
-    accentColor: '#10B981'
+    accentColor: '#059669'
   }
 ];
 
@@ -244,12 +244,12 @@ export const CRM_FEATURES: CrmFeatureItem[] = [
 export const DELIVERY_FEATURES: DeliveryFeatureItem[] = [
   {
     id: 'taminotchi-yetkazadi',
-    title: 'Ta‘minotchi O‘zi Yetkazadi',
-    subtitle: 'Yukni manzilgacha to‘g‘ridan-to‘g‘ri yetkazish',
-    description: 'Buyurtmani ta‘minotchining o‘zi o‘z transport parki (Gazel, Isuzu, HOWO, MAN) yoki ishonchli mintaqaviy haydovchilar orqali mijoz obyektiga yetkazib beradi.',
+    title: 'Kim Sotsa — O‘sha Yetkazadi',
+    subtitle: 'Do‘kon mijozga, Zavod do‘konga yetkazadi',
+    description: 'Buyurtmani ta‘minotchining o‘zi o‘z transport parki (Gazel, Isuzu, HOWO, MAN) orqali yetkazib beradi: do‘kon sotsa do‘konning zimmasida, zavod sotsa zavodning zimmasida.',
     stats: 'To‘g‘ridan-to‘g‘ri Obyektgacha',
     icon: Truck,
-    accentColor: '#FFB800'
+    accentColor: '#D95D1E'
   },
   {
     id: 'erkin-narx',

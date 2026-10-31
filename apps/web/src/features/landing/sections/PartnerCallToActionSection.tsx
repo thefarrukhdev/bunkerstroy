@@ -80,185 +80,168 @@ export const PartnerCallToActionSection: React.FC<PartnerCallToActionSectionProp
       notes: ''
     });
     setIsSubmitted(false);
-    setErrorMsg('');
   };
 
   return (
     <section
       aria-labelledby="cta-heading"
-      className="rounded-3xl bg-gradient-to-br from-[#0F2547] via-[#0A1931] to-[#0A1931] border-2 border-[#FFB800]/50 p-6 sm:p-10 lg:p-12 text-white space-y-8 shadow-2xl relative overflow-hidden"
+      className="rounded-3xl bg-white border border-slate-200 p-6 sm:p-10 lg:p-12 text-slate-900 space-y-8 shadow-xs relative overflow-hidden"
     >
-      {/* Decorative Glows */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-[#FFB800]/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#38BDF8]/10 rounded-full blur-3xl pointer-events-none" />
-
-      {/* Top Banner Header */}
-      <div className="max-w-3xl mx-auto text-center space-y-4 relative z-10">
-        <Badge className="bg-[#132C54] text-[#FFB800] border-[#FFB800]/60 font-mono text-xs px-4 py-1.5 uppercase tracking-wider shadow-md">
-          <Sparkles className="w-3.5 h-3.5 mr-1.5 inline-block text-[#FFB800]" />
-          Hamkorlikka Taklif
+      {/* Section Header */}
+      <div className="text-center max-w-3xl mx-auto space-y-3">
+        <Badge className="bg-orange-50 text-[#D95D1E] border-orange-200 font-mono text-xs px-4 py-1.5 uppercase tracking-wider shadow-2xs">
+          <Sparkles className="w-3.5 h-3.5 mr-1.5 inline-block text-[#D95D1E]" />
+          Hamkorlik &amp; Savdoni Boshlash
         </Badge>
-
-        <h2 id="cta-heading" className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
-          Platformada Birinchilardan Bo‘ling!
+        <h2 id="cta-heading" className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">
+          BunkerStroy Bilan Bugunoq Savdoni Kengaytiring
         </h2>
-
-        <p className="text-base sm:text-lg text-sky-200/90 max-w-2xl mx-auto leading-relaxed">
-          O‘zbekistondagi ta‘minotchi zavodlar, qurilish mollari do‘konlari va usta brigadalarini yangi raqamli bozor ekotizimida hamkorlikka chorlaymiz.
+        <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
+          Zavodingiz yoki do‘koningiz bormi? Mahsulotlaringizni 12 ta viloyat bo‘yicha minglab pudratchilarga soting va bepul CRM tizimiga ega bo‘ling.
         </p>
       </div>
 
-      {/* Main Grid: Direct Contacts Card & Lead Capture Form */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10 items-stretch">
-        {/* Left Column: Direct Official Contact Details */}
-        <div className="lg:col-span-5 bg-[#0A1931] border-2 border-[#1E3A6D] rounded-2xl p-6 sm:p-8 flex flex-col justify-between space-y-6 shadow-xl">
-          <div className="space-y-5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#132C54] text-[#FFB800] text-xs font-mono font-bold border border-[#FFB800]/30">
+      {/* Main 2-Column Action Box */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch pt-2">
+        {/* Left Column: Fast Phone Contact & Admin Hotline */}
+        <div className="lg:col-span-5 bg-slate-50/75 border border-slate-200 rounded-2xl p-6 sm:p-8 flex flex-col justify-between space-y-6 shadow-2xs">
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white text-[#D95D1E] text-xs font-mono font-bold border border-slate-200 shadow-2xs">
               <Clock className="w-3.5 h-3.5" />
-              <span>RASMIY BOSHLANISH: {PLATFORM_METRICS.startDate}</span>
+              <span>TEZKOR BOG‘LANISH (24/7)</span>
             </div>
 
-            <div className="space-y-2">
-              <h3 className="text-2xl font-black text-white">To‘g‘ridan-to‘g‘ri Aloqa</h3>
-              <p className="text-xs sm:text-sm text-sky-200/80 leading-relaxed font-sans">
-                Savollaringiz bormi? Admin bilan bevosita bog‘lanib, shartlar va hamkorlik imkoniyatlarini birinchi bo‘lib o‘rganing.
-              </p>
-            </div>
+            <h3 className="text-xl sm:text-2xl font-black text-slate-900">
+              To‘g‘ridan-to‘g‘ri Platforma Rahbariyati Bilan Aloqa
+            </h3>
 
-            {/* Direct Phone Box */}
-            <div className="p-4 rounded-xl bg-[#0F2547] border border-[#38BDF8]/40 space-y-2">
-              <div className="text-[11px] font-mono text-slate-300 font-semibold uppercase">
-                Admin bilan bog‘lanish:
-              </div>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Katta hajmli shartnomalar, zavod integratsiyasi yoki do‘koningizni tizimga ulash bo‘yicha bepul professional maslahat oling.
+            </p>
+
+            <div className="p-4 rounded-xl bg-white border border-slate-200 space-y-2 shadow-2xs">
+              <span className="text-[11px] font-mono text-slate-500 uppercase block font-semibold">
+                Mas‘ul Rahbar Telefon Raqami:
+              </span>
               <a
                 href={`tel:${PLATFORM_METRICS.adminPhoneRaw}`}
                 onClick={() => triggerHaptic('medium')}
-                className="flex items-center gap-2.5 text-xl sm:text-2xl font-black text-[#FFB800] hover:text-amber-300 transition-colors font-mono"
+                className="flex items-center gap-2.5 text-xl sm:text-2xl font-black text-[#D95D1E] hover:text-[#B43B06] transition-colors font-mono"
               >
-                <PhoneCall className="w-6 h-6 text-[#FFB800] shrink-0" />
+                <PhoneCall className="w-6 h-6 text-[#D95D1E] shrink-0" />
                 <span>{PLATFORM_METRICS.adminPhone}</span>
               </a>
-              <div className="text-[11px] text-emerald-400 font-mono">
-                ● 24/7 Qo‘ng‘iroqlar qabul qilinadi
-              </div>
+              <span className="text-[11px] font-mono text-emerald-700 block font-medium">
+                ● Qo‘ng‘iroqlarga darhol javob beriladi
+              </span>
             </div>
 
-            {/* Platform Credentials */}
-            <div className="space-y-2 text-xs font-mono text-slate-300 pt-2 border-t border-[#1E3A6D]">
-              <div className="flex justify-between py-1">
-                <span className="text-slate-400">Rasmiy Portal:</span>
-                <span className="text-white font-bold">{PLATFORM_METRICS.domain}</span>
+            <div className="space-y-2 text-xs font-mono text-slate-600 pt-2 border-t border-slate-200">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Minimal buyurtma (MOQ) va narxlarni o‘zingiz belgilaysiz</span>
               </div>
-              <div className="flex justify-between py-1">
-                <span className="text-slate-400">Savdo Qamrovi:</span>
-                <span className="text-sky-300 font-bold">12 Viloyat + Qoraqalpog‘iston</span>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>100% onlayn yoki 50/50 yetkazilganda to‘lov xavfsizligi</span>
               </div>
-              <div className="flex justify-between py-1">
-                <span className="text-slate-400">To‘lov Tizimi:</span>
-                <span className="text-emerald-400 font-bold">100% Onlayn yoki 50/50 Yetganda</span>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Do‘konlar va zavodlar uchun bepul CRM tizimi</span>
               </div>
             </div>
           </div>
 
-          <div className="space-y-3 pt-4">
+          <div className="pt-4 space-y-3">
             <a
               href={`tel:${PLATFORM_METRICS.adminPhoneRaw}`}
               onClick={() => triggerHaptic('medium')}
-              className="w-full bg-[#FFB800] hover:bg-amber-400 text-[#071326] font-black text-sm sm:text-base py-3.5 px-6 rounded-xl cursor-pointer min-h-[48px] touch-target-44 shadow-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.01]"
+              className="w-full bg-[#D95D1E] hover:bg-[#B43B06] text-white font-bold text-sm sm:text-base py-3.5 px-6 rounded-xl cursor-pointer min-h-[48px] touch-target-44 shadow-xs flex items-center justify-center gap-2 transition-all hover:scale-[1.01]"
             >
-              <PhoneCall className="w-5 h-5 text-[#071326]" />
+              <PhoneCall className="w-5 h-5 text-white" />
               <span>Hoziroq Qo‘ng‘iroq Qilish</span>
             </a>
 
             <Button
-              variant="outline"
-              size="lg"
+              variant="secondary"
               onClick={() => {
                 triggerHaptic('light');
                 onNavigateToCatalog();
               }}
-              className="w-full bg-[#132C54] hover:bg-[#1A386B] text-sky-200 hover:text-white border border-[#1E3A6D] font-bold text-sm py-3 rounded-xl cursor-pointer min-h-[44px] touch-target-44 flex items-center justify-center gap-2"
+              className="w-full bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 font-bold text-sm py-3 rounded-xl cursor-pointer min-h-[44px] touch-target-44 flex items-center justify-center gap-2 shadow-2xs"
             >
-              <Package className="w-4 h-4 text-sky-300" />
-              <span>Katalogni Ko‘rish</span>
+              <Package className="w-4 h-4 text-slate-700" />
+              <span>Barcha Tovarlarni Ko‘rish (Vitrina)</span>
             </Button>
           </div>
         </div>
 
-        {/* Right Column: Interactive Lead Capture Form */}
-        <div className="lg:col-span-7 bg-[#0A1931] border-2 border-[#1E3A6D] rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-xl">
+        {/* Right Column: Lead Capture Form */}
+        <div className="lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-xs">
           {isSubmitted ? (
-            <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-5 animate-in fade-in duration-300">
-              <div className="w-16 h-16 rounded-full bg-emerald-950/80 border-2 border-emerald-400 flex items-center justify-center text-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
-                <CheckCircle2 className="w-10 h-10" />
+            <div className="py-12 text-center space-y-4 my-auto">
+              <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 mx-auto flex items-center justify-center shadow-xs">
+                <CheckCircle2 className="w-8 h-8" />
               </div>
-
-              <div className="space-y-2">
-                <h3 className="text-2xl font-black text-white">
-                  Arizangiz Muvaffaqiyatli Qabul Qilindi!
-                </h3>
-                <p className="text-sm text-sky-200/90 max-w-md mx-auto leading-relaxed">
-                  Rahmat, <span className="text-[#FFB800] font-bold">{formData.fullName}</span>. 
-                  BunkerStroy loyihasi ma‘muri tez orada <span className="text-white font-mono font-bold">{formData.phoneNumber}</span> raqami orqali siz bilan bog‘lanadi.
-                </p>
+              <h3 className="text-2xl font-black text-slate-900">
+                Arizangiz Qabul Qilindi!
+              </h3>
+              <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
+                Rahmat, <span className="text-[#D95D1E] font-bold">{formData.fullName}</span>. 
+                Menejerimiz qisqa vaqt ichida siz bilan bog‘lanib, platformaga ulanish shartlarini tushuntiradi.
+              </p>
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono text-slate-700 max-w-sm w-full mx-auto space-y-1">
+                <div>Telefon: {formData.phoneNumber}</div>
+                <div>Faoliyat: {formData.businessType}</div>
+                <div>Viloyat: {formData.region}</div>
               </div>
-
-              <div className="p-4 rounded-xl bg-[#0F2547] border border-[#1E3A6D] text-xs font-mono text-slate-300 max-w-sm w-full space-y-1">
-                <div className="flex justify-between">
-                  <span>Faoliyat:</span>
-                  <span className="text-white font-bold capitalize">{formData.businessType}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Viloyat:</span>
-                  <span className="text-sky-300">{formData.region}</span>
-                </div>
+              <div className="pt-4">
+                <Button
+                  variant="secondary"
+                  onClick={handleResetForm}
+                  className="bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold text-xs py-2.5 px-5 rounded-xl cursor-pointer flex items-center gap-2 mx-auto shadow-2xs"
+                >
+                  <RefreshCw className="w-3.5 h-3.5 text-[#D95D1E]" />
+                  <span>Yangi Ariza Yuborish</span>
+                </Button>
               </div>
-
-              <Button
-                variant="outline"
-                onClick={handleResetForm}
-                className="bg-[#132C54] hover:bg-[#1A386B] text-sky-200 border border-[#1E3A6D] font-bold text-xs py-2.5 px-5 rounded-xl cursor-pointer flex items-center gap-2 mt-4"
-              >
-                <RefreshCw className="w-3.5 h-3.5 text-[#FFB800]" />
-                <span>Boshqa Ariza Yuborish</span>
-              </Button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <h3 className="text-xl sm:text-2xl font-black text-white">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="border-b border-slate-200 pb-3">
+                <h3 className="text-xl font-black text-slate-900">
                   Hamkorlik Uchun Ariza Qoldiring
                 </h3>
-                <p className="text-xs sm:text-sm text-sky-200/80 mt-1">
-                  Ma‘lumotlaringizni qoldiring, admin sizga barcha imtiyozli tariflar va shartlarni taqdim etadi.
+                <p className="text-xs text-slate-500 mt-1">
+                  Ma‘lumotlaringizni qoldiring, 15 daqiqa ichida sizga qo‘ng‘iroq qilamiz.
                 </p>
               </div>
 
               {errorMsg && (
-                <div className="p-3 rounded-xl bg-rose-950/80 border border-rose-500/60 text-rose-300 text-xs font-mono">
-                  ⚠️ {errorMsg}
+                <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 font-mono">
+                  {errorMsg}
                 </div>
               )}
 
-              {/* Form Field: Full Name */}
-              <div className="space-y-1.5">
-                <label className="block text-xs font-mono font-bold text-sky-300 uppercase">
-                  Ismingiz yoki Korxona Nomi <span className="text-rose-400">*</span>
+              {/* Input: Full Name / Company */}
+              <div>
+                <label className="block text-xs font-mono text-slate-700 font-bold mb-1">
+                  ISM-FAMILIYA YOKI KORXONA NOMI *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Masalan: Bekzod Aliyev / 'Mega Stroy' MCHJ"
+                  placeholder="Masalan: Bektemir Qurilish Mollari MCHJ"
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  className="w-full bg-[#0F2547] border border-[#1E3A6D] focus:border-[#FFB800] rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none transition-colors"
+                  className="w-full bg-white border border-slate-200 focus:border-[#D95D1E] rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none transition-colors shadow-2xs"
                 />
               </div>
 
-              {/* Form Field: Phone Number */}
-              <div className="space-y-1.5">
-                <label className="block text-xs font-mono font-bold text-sky-300 uppercase">
-                  Telefon Raqamingiz <span className="text-rose-400">*</span>
+              {/* Input: Phone Number */}
+              <div>
+                <label className="block text-xs font-mono text-slate-700 font-bold mb-1">
+                  TELEFON RAQAMINGIZ *
                 </label>
                 <input
                   type="tel"
@@ -266,111 +249,106 @@ export const PartnerCallToActionSection: React.FC<PartnerCallToActionSectionProp
                   placeholder="+998 90 123 45 67"
                   value={formData.phoneNumber}
                   onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                  className="w-full bg-[#0F2547] border border-[#1E3A6D] focus:border-[#FFB800] rounded-xl px-4 py-2.5 text-white font-mono text-sm focus:outline-none transition-colors"
+                  className="w-full bg-white border border-slate-200 focus:border-[#D95D1E] rounded-xl px-4 py-2.5 text-slate-900 font-mono text-sm focus:outline-none transition-colors shadow-2xs"
                 />
               </div>
 
-              {/* Form Field: Business Role Segment Selection */}
-              <div className="space-y-1.5">
-                <label className="block text-xs font-mono font-bold text-sky-300 uppercase">
-                  Faoliyat Yo‘nalishingiz
+              {/* Selector: Business Type */}
+              <div>
+                <label className="block text-xs font-mono text-slate-700 font-bold mb-1">
+                  FAOLIYAT YO‘NALISHINGIZ
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, businessType: 'zavod' })}
-                    className={`p-2.5 rounded-xl border text-left cursor-pointer transition-all ${
+                    className={`py-2 px-2.5 rounded-xl border text-xs font-mono font-bold flex flex-col items-center gap-1 cursor-pointer transition-all ${
                       formData.businessType === 'zavod'
-                        ? 'bg-[#132C54] border-[#FFB800] text-[#FFB800]'
-                        : 'bg-[#0F2547] border-[#1E3A6D] text-slate-300 hover:border-slate-500'
+                        ? 'bg-orange-50 border-[#D95D1E] text-[#D95D1E]'
+                        : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                     }`}
                   >
-                    <Building2 className="w-4 h-4 mb-1" />
-                    <div className="text-xs font-bold">Zavod</div>
-                    <div className="text-[10px] text-slate-400">Ishlab chiqaruvchi</div>
+                    <Building2 className="w-4 h-4" />
+                    <span>Zavod</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, businessType: 'market' })}
-                    className={`p-2.5 rounded-xl border text-left cursor-pointer transition-all ${
+                    className={`py-2 px-2.5 rounded-xl border text-xs font-mono font-bold flex flex-col items-center gap-1 cursor-pointer transition-all ${
                       formData.businessType === 'market'
-                        ? 'bg-[#132C54] border-[#38BDF8] text-[#38BDF8]'
-                        : 'bg-[#0F2547] border-[#1E3A6D] text-slate-300 hover:border-slate-500'
+                        ? 'bg-sky-50 border-sky-600 text-sky-700'
+                        : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                     }`}
                   >
-                    <Store className="w-4 h-4 mb-1" />
-                    <div className="text-xs font-bold">Market</div>
-                    <div className="text-[10px] text-slate-400">Do‘kon / Baza</div>
+                    <Store className="w-4 h-4" />
+                    <span>Do‘kon / Baza</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, businessType: 'usta' })}
-                    className={`p-2.5 rounded-xl border text-left cursor-pointer transition-all ${
+                    className={`py-2 px-2.5 rounded-xl border text-xs font-mono font-bold flex flex-col items-center gap-1 cursor-pointer transition-all ${
                       formData.businessType === 'usta'
-                        ? 'bg-[#132C54] border-[#10B981] text-[#10B981]'
-                        : 'bg-[#0F2547] border-[#1E3A6D] text-slate-300 hover:border-slate-500'
+                        ? 'bg-emerald-50 border-emerald-600 text-emerald-700'
+                        : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                     }`}
                   >
-                    <Wrench className="w-4 h-4 mb-1" />
-                    <div className="text-xs font-bold">Usta</div>
-                    <div className="text-[10px] text-slate-400">Qurilish brigadasi</div>
+                    <Wrench className="w-4 h-4" />
+                    <span>Usta / Pudratchi</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, businessType: 'xaridor' })}
-                    className={`p-2.5 rounded-xl border text-left cursor-pointer transition-all ${
+                    className={`py-2 px-2.5 rounded-xl border text-xs font-mono font-bold flex flex-col items-center gap-1 cursor-pointer transition-all ${
                       formData.businessType === 'xaridor'
-                        ? 'bg-[#132C54] border-[#A855F7] text-[#A855F7]'
-                        : 'bg-[#0F2547] border-[#1E3A6D] text-slate-300 hover:border-slate-500'
+                        ? 'bg-purple-50 border-purple-600 text-purple-700'
+                        : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                     }`}
                   >
-                    <User className="w-4 h-4 mb-1" />
-                    <div className="text-xs font-bold">Xaridor</div>
-                    <div className="text-[10px] text-slate-400">Buyurtmachi</div>
+                    <User className="w-4 h-4" />
+                    <span>Mijoz</span>
                   </button>
                 </div>
               </div>
 
-              {/* Form Field: Region */}
-              <div className="space-y-1.5">
-                <label className="block text-xs font-mono font-bold text-sky-300 uppercase">
-                  Viloyat / Hudud
+              {/* Selector: Region */}
+              <div>
+                <label className="block text-xs font-mono text-slate-700 font-bold mb-1">
+                  VILOYAT / SHAHAR
                 </label>
                 <select
                   value={formData.region}
                   onChange={(e) => setFormData({ ...formData, region: e.target.value })}
-                  className="w-full bg-[#0F2547] border border-[#1E3A6D] focus:border-[#FFB800] rounded-xl px-4 py-2.5 text-white text-xs sm:text-sm focus:outline-none transition-colors"
+                  className="w-full bg-white border border-slate-200 focus:border-[#D95D1E] rounded-xl px-4 py-2.5 text-slate-900 text-xs sm:text-sm focus:outline-none transition-colors shadow-2xs"
                 >
                   {UZBEKISTAN_REGIONS.map((r, idx) => (
-                    <option key={idx} value={r} className="bg-[#0A1931] text-white">
+                    <option key={idx} value={r} className="bg-white text-slate-900">
                       {r}
                     </option>
                   ))}
                 </select>
               </div>
 
-              {/* Submit CTA */}
-              <Button
-                type="submit"
-                size="lg"
-                disabled={isSubmitting}
-                className="w-full bg-[#FFB800] hover:bg-amber-400 text-[#071326] font-black text-sm sm:text-base py-3.5 rounded-xl cursor-pointer min-h-[48px] touch-target-44 shadow-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.01]"
-              >
-                {isSubmitting ? (
-                  <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
+              {/* Submit Button */}
+              <div className="pt-2">
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-[#D95D1E] hover:bg-[#B43B06] text-white font-bold text-sm sm:text-base py-3.5 rounded-xl cursor-pointer min-h-[48px] touch-target-44 shadow-xs flex items-center justify-center gap-2 transition-all hover:scale-[1.01]"
+                >
+                  {isSubmitting ? (
                     <span>Yuborilmoqda...</span>
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-4 h-4 text-[#071326]" />
-                    <span>Hamkor Bo‘lish Uchun Arizani Yuborish</span>
-                  </>
-                )}
-              </Button>
+                  ) : (
+                    <>
+                      <span>Arizani Yuborish (Bepul)</span>
+                      <Send className="w-4 h-4 text-white" />
+                    </>
+                  )}
+                </Button>
+              </div>
             </form>
           )}
         </div>

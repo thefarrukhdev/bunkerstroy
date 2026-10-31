@@ -108,7 +108,7 @@ export const RolePermissionMatrix: React.FC = () => {
                 <span className="text-xs font-bold uppercase tracking-wider text-[var(--color-accent-blue)]">
                   {r.role}
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[var(--color-surface-bg)] text-[var(--color-text-muted)] border border-[var(--color-border-subtle)]">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[var(--color-surface-bg)] text-[var(--color-text-muted)] border border-[var(--color-border-subtle)]">
                   {r.usersCount} xodim
                 </span>
               </div>

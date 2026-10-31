@@ -536,17 +536,12 @@ export const DriverMobileView: React.FC = () => {
 
             <button
               onClick={() => setIsShiftActive(!isShiftActive)}
-              className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold transition ${
+              className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-bold transition ${
                 isShiftActive
                   ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
                   : 'bg-slate-700 text-slate-400 border border-slate-600'
               }`}
             >
-              <span
-                className={`w-1.5 h-1.5 rounded-full ${
-                  isShiftActive ? 'bg-emerald-400 animate-pulse' : 'bg-slate-400'
-                }`}
-              />
               {isShiftActive ? 'Smenada (Faol)' : 'Dam olishda'}
             </button>
           </div>
@@ -588,7 +583,6 @@ export const DriverMobileView: React.FC = () => {
           <div className="bg-[#0F172A] rounded-2xl p-4 border border-slate-700/80 shadow-md">
             <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-800">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#F59E0B]" />
                 <span className="font-mono text-xs font-bold text-slate-300">
                   {task.id}
                 </span>
@@ -626,8 +620,8 @@ export const DriverMobileView: React.FC = () => {
             <div className="mt-3 pt-3 border-t border-slate-800/80 space-y-2 text-xs">
               {/* Pickup */}
               <div className="flex items-start gap-2.5">
-                <div className="w-4 h-4 rounded-full bg-blue-500/20 border border-blue-500/40 flex items-center justify-center shrink-0 mt-0.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                <div className="w-4 h-4 rounded-md bg-blue-500/20 border border-blue-500/40 flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="w-1.5 h-1.5 rounded-xs bg-blue-400" />
                 </div>
                 <div className="min-w-0">
                   <span className="text-[10px] font-mono text-slate-400 block">Yuklash manzili</span>
@@ -638,7 +632,7 @@ export const DriverMobileView: React.FC = () => {
 
               {/* Destination */}
               <div className="flex items-start gap-2.5 pt-1">
-                <div className="w-4 h-4 rounded-full bg-[#F59E0B]/20 border border-[#F59E0B]/40 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-4 h-4 rounded-md bg-[#F59E0B]/20 border border-[#F59E0B]/40 flex items-center justify-center shrink-0 mt-0.5">
                   <MapPin className="w-2.5 h-2.5 text-[#F59E0B]" />
                 </div>
                 <div className="min-w-0">
@@ -869,8 +863,7 @@ export const DriverMobileView: React.FC = () => {
                   <Navigation className="w-5 h-5 animate-spin-slow shrink-0" />
                   <h4 className="font-bold text-sm text-white">Yo‘ldasiz (Manzilga harakat)</h4>
                 </div>
-                <span className="text-[10px] font-mono bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30 flex items-center gap-1 font-bold">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                <span className="text-[10px] font-mono bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-md border border-emerald-500/30 font-bold">
                   GPS FAOL
                 </span>
               </div>
@@ -1199,8 +1192,7 @@ export const DriverMobileView: React.FC = () => {
             MOBILE BOTTOM NAVIGATION / STATUS BAR
             ================================================================== */}
         <footer className="bg-[#0F172A] border-t border-slate-800 px-4 py-2.5 flex items-center justify-between text-xs font-mono text-slate-400">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <div className="flex items-center">
             <span className="text-[11px]">BunkerStroy Driver v1.2</span>
           </div>
 

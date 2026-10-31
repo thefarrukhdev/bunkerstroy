@@ -63,22 +63,22 @@ export const PlatformSettings: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-theme-card p-4 rounded-2xl border border-[#1E3A6D]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-theme-card p-4 rounded-2xl border border-slate-200">
         <div>
           <div className="flex items-center gap-2">
-            <Settings className="w-5 h-5 text-[#FFB800]" />
-            <h1 className="text-xl font-black uppercase tracking-wider text-[#F5F5F2]">
+            <Settings className="w-5 h-5 text-[#D95D1E]" />
+            <h1 className="text-xl font-black uppercase tracking-wider text-[#0F172A]">
               Platforma Sozlamalari &amp; Integratsiyalar
             </h1>
           </div>
-          <p className="text-xs text-[#BAE6FD] font-mono mt-0.5">
+          <p className="text-xs text-[#475569] font-mono mt-0.5">
             Eskiz SMS shlyuz, E-IMZO/Soliq GNK moduli va boshqaruv parametrlari
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           {savedNotification && (
-            <span className="text-xs font-mono text-emerald-400 flex items-center gap-1 animate-pulse">
+            <span className="text-xs font-mono text-emerald-600 flex items-center gap-1 animate-pulse">
               <CheckCircle2 className="w-4 h-4" /> Sozlamalar saqlandi!
             </span>
           )}
@@ -91,15 +91,15 @@ export const PlatformSettings: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* 1. SMS Gateway (Eskiz) */}
-        <Card rivetAccents className="bg-[#0A1931] border-[#1E3A6D] space-y-4">
-          <div className="flex items-center justify-between border-b border-[#1E3A6D] pb-3">
+        <Card rivetAccents className="bg-white border-slate-200 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-sky-500/10 text-slate-500 flex items-center justify-center">
                 <MessageSquare className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-[#F5F5F2]">SMS Shlyuz (Eskiz.uz)</h3>
-                <p className="text-[11px] text-[#6C7086] font-mono">OTP tasdiqlash va bildirishnomalar</p>
+                <h3 className="text-sm font-bold text-[#0F172A]">SMS Shlyuz (Eskiz.uz)</h3>
+                <p className="text-[11px] text-[#64748B] font-mono">OTP tasdiqlash va bildirishnomalar</p>
               </div>
             </div>
             <Badge variant="success">Ulanish Faol</Badge>
@@ -107,39 +107,39 @@ export const PlatformSettings: React.FC = () => {
 
           <div className="space-y-3 text-xs">
             <div>
-              <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
+              <label className="block text-xs font-mono text-[#475569] mb-1">
                 Eskiz Hisob E-maili
               </label>
               <input
                 type="email"
                 value={eskizEmail}
                 onChange={(e) => setEskizEmail(e.target.value)}
-                className="w-full bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-2 text-[#F5F5F2] font-mono focus:outline-none focus:border-[#FFB800]"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[#0F172A] font-mono focus:outline-none focus:border-[#D95D1E]"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
+                <label className="block text-xs font-mono text-[#475569] mb-1">
                   Qoldiq SMS Balansi
                 </label>
-                <div className="bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-2 font-mono font-bold text-emerald-400">
+                <div className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono font-bold text-emerald-600">
                   {eskizSmsBalance.toLocaleString()} ta SMS
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
+                <label className="block text-xs font-mono text-[#475569] mb-1">
                   Token Holati
                 </label>
-                <div className="bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-2 font-mono text-[#F5F5F2]">
+                <div className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-mono text-[#0F172A]">
                   2026-12-31 gacha
                 </div>
               </div>
             </div>
 
             {/* Test SMS dispatch */}
-            <div className="pt-2 border-t border-[#1E3A6D]">
-              <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
+            <div className="pt-2 border-t border-slate-200">
+              <label className="block text-xs font-mono text-[#475569] mb-1">
                 Test SMS Yuborish (Sinov)
               </label>
               <div className="flex gap-2">
@@ -148,7 +148,7 @@ export const PlatformSettings: React.FC = () => {
                   value={testPhone}
                   onChange={(e) => setTestPhone(e.target.value)}
                   placeholder="+998 90 123 45 67"
-                  className="flex-1 bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-1.5 text-xs font-mono text-[#F5F5F2] focus:outline-none focus:border-[#FFB800]"
+                  className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-mono text-[#0F172A] focus:outline-none focus:border-[#D95D1E]"
                 />
                 <Button
                   variant="secondary"
@@ -162,7 +162,7 @@ export const PlatformSettings: React.FC = () => {
                 </Button>
               </div>
               {smsTestSuccess && (
-                <div className="text-[11px] text-emerald-400 font-mono mt-1.5 flex items-center gap-1">
+                <div className="text-[11px] text-emerald-600 font-mono mt-1.5 flex items-center gap-1">
                   <CheckCircle2 className="w-3 h-3" /> Test SMS muvaffaqiyatli jo'natildi!
                 </div>
               )}
@@ -171,15 +171,15 @@ export const PlatformSettings: React.FC = () => {
         </Card>
 
         {/* 2. E-IMZO & Soliq GNK */}
-        <Card rivetAccents className="bg-[#0A1931] border-[#1E3A6D] space-y-4">
-          <div className="flex items-center justify-between border-b border-[#1E3A6D] pb-3">
+        <Card rivetAccents className="bg-white border-slate-200 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
                 <ShieldCheck className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-[#F5F5F2]">E-IMZO &amp; Soliq Integratsiyasi</h3>
-                <p className="text-[11px] text-[#6C7086] font-mono">B2B shartnomalar va STIR avtomatlashtirish</p>
+                <h3 className="text-sm font-bold text-[#0F172A]">E-IMZO &amp; Soliq Integratsiyasi</h3>
+                <p className="text-[11px] text-[#64748B] font-mono">B2B shartnomalar va STIR avtomatlashtirish</p>
               </div>
             </div>
             <Badge variant="success">E-IMZO v3.42</Badge>
@@ -188,46 +188,46 @@ export const PlatformSettings: React.FC = () => {
           <div className="space-y-3 text-xs">
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
+                <label className="block text-xs font-mono text-[#475569] mb-1">
                   E-IMZO Mahalliy Port
                 </label>
                 <input
                   type="text"
                   value={eimzoPort}
                   onChange={(e) => setEimzoPort(e.target.value)}
-                  className="w-full bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-2 text-[#F5F5F2] font-mono focus:outline-none focus:border-[#FFB800]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[#0F172A] font-mono focus:outline-none focus:border-[#D95D1E]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
+                <label className="block text-xs font-mono text-[#475569] mb-1">
                   Challenge muddati (soniya)
                 </label>
                 <input
                   type="number"
                   value={eimzoTimeout}
                   onChange={(e) => setEimzoTimeout(Number(e.target.value))}
-                  className="w-full bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-2 text-[#F5F5F2] font-mono focus:outline-none focus:border-[#FFB800]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[#0F172A] font-mono focus:outline-none focus:border-[#D95D1E]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
+              <label className="block text-xs font-mono text-[#475569] mb-1">
                 Soliq Qo'mitasi STIR Gateway API
               </label>
               <input
                 type="text"
                 value={soliqApiUrl}
                 onChange={(e) => setSoliqApiUrl(e.target.value)}
-                className="w-full bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-2 text-[#F5F5F2] font-mono focus:outline-none focus:border-[#FFB800]"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[#0F172A] font-mono focus:outline-none focus:border-[#D95D1E]"
               />
             </div>
 
-            <div className="p-3 bg-[#071326] rounded-xl border border-[#1E3A6D] flex items-center justify-between">
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
               <div>
-                <div className="font-bold text-[#F5F5F2]">PKCS#7 Imzoni Avtomatik Tekshirish</div>
-                <div className="text-[11px] text-[#6C7086]">
+                <div className="font-bold text-[#0F172A]">PKCS#7 Imzoni Avtomatik Tekshirish</div>
+                <div className="text-[11px] text-[#64748B]">
                   Har bir B2B buyurtma shartnomasi xesh qilinib tekshiriladi
                 </div>
               </div>
@@ -237,15 +237,15 @@ export const PlatformSettings: React.FC = () => {
         </Card>
 
         {/* 3. Platform Parameters */}
-        <Card rivetAccents className="bg-[#0A1931] border-[#1E3A6D] space-y-4">
-          <div className="flex items-center justify-between border-b border-[#1E3A6D] pb-3">
+        <Card rivetAccents className="bg-white border-slate-200 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-[#FFB800] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-[#D95D1E] flex items-center justify-center">
                 <Sliders className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-[#F5F5F2]">Platforma Standartlari</h3>
-                <p className="text-[11px] text-[#6C7086] font-mono">Komissiya, QQS va tizim rejimi</p>
+                <h3 className="text-sm font-bold text-[#0F172A]">Platforma Standartlari</h3>
+                <p className="text-[11px] text-[#64748B] font-mono">Komissiya, QQS va tizim rejimi</p>
               </div>
             </div>
             <Badge variant="neutral">Operatsion</Badge>
@@ -254,7 +254,7 @@ export const PlatformSettings: React.FC = () => {
           <div className="space-y-3 text-xs">
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
+                <label className="block text-xs font-mono text-[#475569] mb-1">
                   B2B Komissiya stavkasi (%)
                 </label>
                 <input
@@ -262,27 +262,27 @@ export const PlatformSettings: React.FC = () => {
                   step="0.1"
                   value={platformCommission}
                   onChange={(e) => setPlatformCommission(Number(e.target.value))}
-                  className="w-full bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-2 text-[#F5F5F2] font-mono focus:outline-none focus:border-[#FFB800]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[#0F172A] font-mono focus:outline-none focus:border-[#D95D1E]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
+                <label className="block text-xs font-mono text-[#475569] mb-1">
                   Davlat QQS stavkasi (%)
                 </label>
                 <input
                   type="number"
                   value={vatRate}
                   onChange={(e) => setVatRate(Number(e.target.value))}
-                  className="w-full bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-2 text-[#F5F5F2] font-mono focus:outline-none focus:border-[#FFB800]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[#0F172A] font-mono focus:outline-none focus:border-[#D95D1E]"
                 />
               </div>
             </div>
 
-            <div className="p-3 bg-[#071326] rounded-xl border border-[#1E3A6D] flex items-center justify-between">
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
               <div>
-                <div className="font-bold text-[#F5F5F2]">Texnik Xizmat Rejimi (Maintenance)</div>
-                <div className="text-[11px] text-[#6C7086]">
+                <div className="font-bold text-[#0F172A]">Texnik Xizmat Rejimi (Maintenance)</div>
+                <div className="text-[11px] text-[#64748B]">
                   Platformaga vaqtinchalik kirishni cheklash
                 </div>
               </div>
@@ -290,7 +290,7 @@ export const PlatformSettings: React.FC = () => {
                 type="checkbox"
                 checked={maintenanceMode}
                 onChange={(e) => setMaintenanceMode(e.target.checked)}
-                className="w-5 h-5 accent-[#FFB800] rounded cursor-pointer"
+                className="w-5 h-5 accent-[#D95D1E] rounded cursor-pointer"
               />
             </div>
 
@@ -304,15 +304,15 @@ export const PlatformSettings: React.FC = () => {
         </Card>
 
         {/* 5. 50/50 Escrow Rules (TZ-5 AD-12) */}
-        <Card rivetAccents className="bg-[#0A1931] border-[#1E3A6D] space-y-4">
-          <div className="flex items-center justify-between border-b border-[#1E3A6D] pb-3">
+        <Card rivetAccents className="bg-white border-slate-200 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
                 <ShieldCheck className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-[#F5F5F2]">50/50 Escrow Qoidalari (AD-12)</h3>
-                <p className="text-[11px] text-[#6C7086] font-mono">Bo‘lib to‘lash, taymer va jarima nazorati</p>
+                <h3 className="text-sm font-bold text-[#0F172A]">50/50 Escrow Qoidalari (AD-12)</h3>
+                <p className="text-[11px] text-[#64748B] font-mono">Bo‘lib to‘lash, taymer va jarima nazorati</p>
               </div>
             </div>
             <Badge variant="warning">B2B Qat'iy</Badge>
@@ -321,33 +321,33 @@ export const PlatformSettings: React.FC = () => {
           <div className="space-y-3 text-xs">
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
+                <label className="block text-xs font-mono text-[#475569] mb-1">
                   Minimal buyurtma summasi (so‘m)
                 </label>
                 <input
                   type="number"
                   value={splitMinAmount}
                   onChange={(e) => setSplitMinAmount(Number(e.target.value))}
-                  className="w-full bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-2 text-[#F5F5F2] font-mono focus:outline-none focus:border-[#FFB800]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[#0F172A] font-mono focus:outline-none focus:border-[#D95D1E]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
+                <label className="block text-xs font-mono text-[#475569] mb-1">
                   Kutish vaqti taymeri (daqiqa)
                 </label>
                 <input
                   type="number"
                   value={splitWaitingMinutes}
                   onChange={(e) => setSplitWaitingMinutes(Number(e.target.value))}
-                  className="w-full bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-2 text-[#F5F5F2] font-mono focus:outline-none focus:border-[#FFB800]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[#0F172A] font-mono focus:outline-none focus:border-[#D95D1E]"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
+                <label className="block text-xs font-mono text-[#475569] mb-1">
                   Kechikish jarimasi (%)
                 </label>
                 <input
@@ -355,31 +355,31 @@ export const PlatformSettings: React.FC = () => {
                   step="0.5"
                   value={splitPenaltyRate}
                   onChange={(e) => setSplitPenaltyRate(Number(e.target.value))}
-                  className="w-full bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-2 text-[#F5F5F2] font-mono focus:outline-none focus:border-[#FFB800]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[#0F172A] font-mono focus:outline-none focus:border-[#D95D1E]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
+                <label className="block text-xs font-mono text-[#475569] mb-1">
                   Avto-tasdiqlash (soat)
                 </label>
                 <input
                   type="number"
                   value={autoConfirmHours}
                   onChange={(e) => setAutoConfirmHours(Number(e.target.value))}
-                  className="w-full bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-2 text-[#F5F5F2] font-mono focus:outline-none focus:border-[#FFB800]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[#0F172A] font-mono focus:outline-none focus:border-[#D95D1E]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
+                <label className="block text-xs font-mono text-[#475569] mb-1">
                   Qaytarish muddati (kun)
                 </label>
                 <input
                   type="number"
                   value={returnDaysAllowed}
                   onChange={(e) => setReturnDaysAllowed(Number(e.target.value))}
-                  className="w-full bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-2 text-[#F5F5F2] font-mono focus:outline-none focus:border-[#FFB800]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[#0F172A] font-mono focus:outline-none focus:border-[#D95D1E]"
                 />
               </div>
             </div>
@@ -387,15 +387,15 @@ export const PlatformSettings: React.FC = () => {
         </Card>
 
         {/* 6. Logistics & Tariffs (TZ-4 LG-04, TZ-5 AD-12) */}
-        <Card rivetAccents className="bg-[#0A1931] border-[#1E3A6D] space-y-4">
-          <div className="flex items-center justify-between border-b border-[#1E3A6D] pb-3">
+        <Card rivetAccents className="bg-white border-slate-200 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-sky-500/10 text-slate-500 flex items-center justify-center">
                 <Globe className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-[#F5F5F2]">Logistika &amp; Flot Tariflari</h3>
-                <p className="text-[11px] text-[#6C7086] font-mono">Platforma ulushi va masofa koeffitsientlari</p>
+                <h3 className="text-sm font-bold text-[#0F172A]">Logistika &amp; Flot Tariflari</h3>
+                <p className="text-[11px] text-[#64748B] font-mono">Platforma ulushi va masofa koeffitsientlari</p>
               </div>
             </div>
             <Badge variant="success">Avtomatlashtirilgan</Badge>
@@ -404,52 +404,52 @@ export const PlatformSettings: React.FC = () => {
           <div className="space-y-3 text-xs">
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
+                <label className="block text-xs font-mono text-[#475569] mb-1">
                   Platforma logistika ulushi (%)
                 </label>
                 <input
                   type="number"
                   value={logisticsSharePct}
                   onChange={(e) => setLogisticsSharePct(Number(e.target.value))}
-                  className="w-full bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-2 text-[#F5F5F2] font-mono focus:outline-none focus:border-[#FFB800]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[#0F172A] font-mono focus:outline-none focus:border-[#D95D1E]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
+                <label className="block text-xs font-mono text-[#475569] mb-1">
                   Baza yuklash to‘lovi (so‘m)
                 </label>
                 <input
                   type="number"
                   value={baseDeliveryFee}
                   onChange={(e) => setBaseDeliveryFee(Number(e.target.value))}
-                  className="w-full bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-2 text-[#F5F5F2] font-mono focus:outline-none focus:border-[#FFB800]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[#0F172A] font-mono focus:outline-none focus:border-[#D95D1E]"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
+                <label className="block text-xs font-mono text-[#475569] mb-1">
                   Shahar ichi 1 km stavkasi (so‘m)
                 </label>
                 <input
                   type="number"
                   value={kmFeeCity}
                   onChange={(e) => setKmFeeCity(Number(e.target.value))}
-                  className="w-full bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-2 text-[#F5F5F2] font-mono focus:outline-none focus:border-[#FFB800]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[#0F172A] font-mono focus:outline-none focus:border-[#D95D1E]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-[#BAE6FD] mb-1">
+                <label className="block text-xs font-mono text-[#475569] mb-1">
                   Viloyatlararo 1 km stavkasi (so‘m)
                 </label>
                 <input
                   type="number"
                   value={kmFeeIntercity}
                   onChange={(e) => setKmFeeIntercity(Number(e.target.value))}
-                  className="w-full bg-[#071326] border border-[#1E3A6D] rounded-xl px-3 py-2 text-[#F5F5F2] font-mono focus:outline-none focus:border-[#FFB800]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[#0F172A] font-mono focus:outline-none focus:border-[#D95D1E]"
                 />
               </div>
             </div>

@@ -20,7 +20,6 @@ import {
   MapPin,
   ShieldCheck,
   Store,
-  SlidersHorizontal,
   ExternalLink,
   Calculator,
   FileSpreadsheet,
@@ -98,15 +97,15 @@ export const UZBEKISTAN_REGIONS = [
   'Qoraqalpog‘iston Respublikasi'
 ] as const;
 
-export const CABINET_OPTIONS: readonly CabinetOption[] = [
+export const CABINET_OPTIONS: CabinetOption[] = [
   {
-    id: 'customer',
+    id: 'client',
     title: 'Mijoz Kabineti',
-    subtitle: 'Buyurtmalar, hisob-fakturalar & shartnomalar',
+    subtitle: 'Buyurtmalar, Hisob-faktura va Escrow holati',
     path: '/orders',
     icon: ClipboardList,
     badge: 'XARIDOR',
-    badgeColor: 'bg-blue-500/20 text-blue-400 border-blue-500/30'
+    badgeColor: 'bg-slate-100 text-slate-700 border-slate-200'
   },
   {
     id: 'seller',
@@ -115,7 +114,7 @@ export const CABINET_OPTIONS: readonly CabinetOption[] = [
     path: '/seller-panel',
     icon: Store,
     badge: 'POS & CRM',
-    badgeColor: 'bg-[#FFB800]/20 text-[#FFB800] border-[#FFB800]/40',
+    badgeColor: 'bg-orange-50 text-[#D95D1E] border-orange-200',
     isDedicatedApp: true
   },
   {
@@ -125,7 +124,7 @@ export const CABINET_OPTIONS: readonly CabinetOption[] = [
     path: '/driver',
     icon: Truck,
     badge: 'LOGISTIKA',
-    badgeColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+    badgeColor: 'bg-sky-50 text-sky-800 border-sky-200',
     isDedicatedApp: true
   },
   {
@@ -135,7 +134,7 @@ export const CABINET_OPTIONS: readonly CabinetOption[] = [
     path: '/suppliers',
     icon: Factory,
     badge: 'B2B ZAVOD',
-    badgeColor: 'bg-purple-500/20 text-purple-400 border-purple-500/30'
+    badgeColor: 'bg-purple-50 text-purple-800 border-purple-200'
   },
   {
     id: 'admin',
@@ -144,14 +143,14 @@ export const CABINET_OPTIONS: readonly CabinetOption[] = [
     path: '/admin',
     icon: ShieldCheck,
     badge: 'ROOT ADMIN',
-    badgeColor: 'bg-red-500/20 text-red-400 border-red-500/30',
+    badgeColor: 'bg-red-50 text-red-800 border-red-200',
     isAdmin: true,
     isDedicatedApp: true
   }
 ];
 
 /* ==========================================================================
-   Subcomponent: LanguageToggle (Industrial UZ | RU)
+   Subcomponent: LanguageToggle (UZ | RU)
    ========================================================================== */
 
 export const LanguageToggle: React.FC<{ variant?: 'desktop' | 'mobile' }> = ({ variant = 'desktop' }) => {
@@ -159,19 +158,19 @@ export const LanguageToggle: React.FC<{ variant?: 'desktop' | 'mobile' }> = ({ v
 
   if (variant === 'mobile') {
     return (
-      <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#0F2547] border border-[#1E3A6D]">
+      <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-mono font-bold text-sky-200">Til / Язык:</span>
+          <span className="text-xs font-mono font-bold text-slate-700">Til / Язык:</span>
         </div>
-        <div className="inline-flex p-0.5 rounded-lg bg-[#071326] border border-[#1E3A6D] font-mono text-[11px] font-bold">
+        <div className="inline-flex p-0.5 rounded-lg bg-white border border-slate-200 font-mono text-[11px] font-bold shadow-2xs">
           <button
             type="button"
             onClick={() => setLanguage('uz')}
             className={cn(
               'px-3 py-1 rounded-md transition-all cursor-pointer',
               language === 'uz'
-                ? 'bg-[#FFB800] text-[#071326] font-black shadow-xs'
-                : 'text-sky-200 hover:text-white'
+                ? 'bg-[#D95D1E] text-white font-bold shadow-2xs'
+                : 'text-slate-600 hover:text-slate-900'
             )}
           >
             UZ
@@ -182,8 +181,8 @@ export const LanguageToggle: React.FC<{ variant?: 'desktop' | 'mobile' }> = ({ v
             className={cn(
               'px-3 py-1 rounded-md transition-all cursor-pointer',
               language === 'ru'
-                ? 'bg-[#FFB800] text-[#071326] font-black shadow-xs'
-                : 'text-sky-200 hover:text-white'
+                ? 'bg-[#D95D1E] text-white font-bold shadow-2xs'
+                : 'text-slate-600 hover:text-slate-900'
             )}
           >
             RU
@@ -195,7 +194,7 @@ export const LanguageToggle: React.FC<{ variant?: 'desktop' | 'mobile' }> = ({ v
 
   return (
     <div
-      className="inline-flex items-center h-9 sm:h-9 p-0.5 rounded-xl bg-[#071326] border border-[#1E3A6D] font-mono text-[11px] font-bold select-none shrink-0"
+      className="inline-flex items-center h-9 sm:h-9 p-0.5 rounded-xl bg-slate-100 border border-slate-200 font-mono text-[11px] font-bold select-none shrink-0"
       role="group"
       aria-label="Til tanlash"
     >
@@ -206,8 +205,8 @@ export const LanguageToggle: React.FC<{ variant?: 'desktop' | 'mobile' }> = ({ v
         className={cn(
           'h-7.5 px-2.5 rounded-lg transition-all cursor-pointer flex items-center justify-center font-bold min-w-[32px]',
           language === 'uz'
-            ? 'bg-[#FFB800] text-[#071326] font-black shadow-xs'
-            : 'text-sky-300 hover:text-white'
+            ? 'bg-[#D95D1E] text-white font-bold shadow-2xs'
+            : 'text-slate-600 hover:text-slate-900'
         )}
       >
         UZ
@@ -219,8 +218,8 @@ export const LanguageToggle: React.FC<{ variant?: 'desktop' | 'mobile' }> = ({ v
         className={cn(
           'h-7.5 px-2.5 rounded-lg transition-all cursor-pointer flex items-center justify-center font-bold min-w-[32px]',
           language === 'ru'
-            ? 'bg-[#FFB800] text-[#071326] font-black shadow-xs'
-            : 'text-sky-300 hover:text-white'
+            ? 'bg-[#D95D1E] text-white font-bold shadow-2xs'
+            : 'text-slate-600 hover:text-slate-900'
         )}
       >
         RU
@@ -230,7 +229,7 @@ export const LanguageToggle: React.FC<{ variant?: 'desktop' | 'mobile' }> = ({ v
 };
 
 /* ==========================================================================
-   Subcomponent: BrandLogo (Industrial with Rivets & Hazard Pulse)
+   Subcomponent: BrandLogo (Neo-Architectural Precision)
    ========================================================================== */
 
 interface BrandLogoProps {
@@ -245,24 +244,22 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({ onClick }) => {
       className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group select-none shrink-0 py-0.5"
       aria-label="BunkerStroy Asosiy sahifa"
     >
-      {/* Industrial Logo Icon Container with Rivets */}
-      <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#0F2547] border border-[#254B85] group-hover:border-[#FFB800] flex items-center justify-center transition-all shadow-[0_4px_12px_rgba(7,19,38,0.5)]">
-        <div className="absolute top-1 left-1 industrial-rivet" />
-        <div className="absolute top-1 right-1 industrial-rivet" />
-        <HardHat className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-[#FFB800] stroke-[2.2] transition-transform duration-200 group-hover:scale-105" />
+      {/* Clean Terracotta Logo Container */}
+      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#D95D1E] flex items-center justify-center text-white shadow-xs transition-transform duration-200 group-hover:scale-105">
+        <HardHat className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-white stroke-[2.2]" />
       </div>
 
       {/* Brand Name & Subtitle */}
       <div className="flex flex-col">
         <div className="flex items-center gap-1.5 leading-none">
-          <span className="font-heading font-black text-lg sm:text-xl tracking-tight text-white">
-            <span className="text-[#FFB800]">BUNKER</span>STROY
+          <span className="font-heading font-black text-lg sm:text-xl tracking-tight text-slate-900">
+            <span className="text-[#D95D1E]">BUNKER</span>STROY
           </span>
-          <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-[#132C54] text-[#FFB800] border border-[#254B85] leading-none">
+          <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-orange-50 text-[#D95D1E] border border-orange-200 leading-none">
             B2B
           </span>
         </div>
-        <span className="text-[9px] font-mono font-medium tracking-[0.14em] text-sky-200/80 uppercase mt-1 leading-none hidden sm:block">
+        <span className="text-[9px] font-mono font-medium tracking-[0.14em] text-slate-500 uppercase mt-1 leading-none hidden sm:block">
           Sanoat Xaridlari B2B &amp; B2C
         </span>
       </div>
@@ -288,7 +285,6 @@ export const RegionSelector: React.FC<RegionSelectorProps> = ({
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Parse region from URL if present
   const searchParams = new URLSearchParams(location.search);
   const activeRegion = searchParams.get('region') || currentRegion;
 
@@ -321,24 +317,24 @@ export const RegionSelector: React.FC<RegionSelectorProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1.5 h-9 sm:h-9 min-h-[38px] px-2.5 sm:px-3 rounded-xl bg-[#071326] hover:bg-[#0F2547] border border-[#1E3A6D] hover:border-[#FFB800]/70 text-sky-100 text-xs font-mono font-medium transition-all cursor-pointer shadow-xs select-none"
+        className="flex items-center gap-1.5 h-9 sm:h-9 min-h-[38px] px-2.5 sm:px-3 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 text-slate-700 text-xs font-mono font-medium transition-all cursor-pointer shadow-2xs select-none"
         title="Viloyat bo‘yicha filtr"
       >
-        <MapPin className="w-3.5 h-3.5 text-[#FFB800] shrink-0" />
+        <MapPin className="w-3.5 h-3.5 text-[#D95D1E] shrink-0" />
         <span className="truncate max-w-[100px] sm:max-w-[125px] xl:max-w-[150px]">
           {activeRegion}
         </span>
         <ChevronDown
           className={cn(
-            'w-3 h-3 text-sky-400 transition-transform duration-150 shrink-0',
+            'w-3 h-3 text-slate-400 transition-transform duration-150 shrink-0',
             isOpen && 'rotate-180'
           )}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 sm:left-auto sm:right-0 mt-1.5 w-56 max-h-80 overflow-y-auto rounded-xl bg-[#0A1931] border border-[#254B85] shadow-[0_12px_32px_rgba(7,19,38,0.75)] z-50 py-1 font-mono text-xs text-sky-100 animate-in fade-in-50 zoom-in-95">
-          <div className="px-3 py-1.5 text-[10px] uppercase font-bold text-sky-300/70 border-b border-[#1E3A6D]">
+        <div className="absolute left-0 sm:left-auto sm:right-0 mt-1.5 w-56 max-h-80 overflow-y-auto rounded-xl bg-white border border-slate-200 shadow-xl z-50 py-1 font-mono text-xs text-slate-700 animate-in fade-in-50 zoom-in-95">
+          <div className="px-3 py-1.5 text-[10px] uppercase font-bold text-slate-400 border-b border-slate-100">
             Yetkazib berish hududi:
           </div>
           {UZBEKISTAN_REGIONS.map((region) => {
@@ -349,12 +345,12 @@ export const RegionSelector: React.FC<RegionSelectorProps> = ({
                 type="button"
                 onClick={() => handleSelect(region)}
                 className={cn(
-                  'w-full text-left px-3 py-2 flex items-center justify-between hover:bg-[#0F2547] transition-colors cursor-pointer',
-                  isSelected ? 'text-[#FFB800] font-bold bg-[#0F2547]/80' : 'text-sky-200'
+                  'w-full text-left px-3 py-2 flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer',
+                  isSelected ? 'text-[#D95D1E] font-bold bg-orange-50' : 'text-slate-700'
                 )}
               >
                 <span>{region}</span>
-                {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-[#FFB800]" />}
+                {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-[#D95D1E]" />}
               </button>
             );
           })}
@@ -392,7 +388,7 @@ export const NavbarSearch: React.FC<{ className?: string; onSearchComplete?: () 
 
   return (
     <form onSubmit={handleSubmit} className={cn('relative flex items-center', className)}>
-      <Search className="absolute left-2.5 w-3.5 h-3.5 text-[#FFB800] pointer-events-none" />
+      <Search className="absolute left-2.5 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
       <input
         id="marketplace-nav-search"
         name="query"
@@ -402,7 +398,7 @@ export const NavbarSearch: React.FC<{ className?: string; onSearchComplete?: () 
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Material, sement, armatura, g‘isht..."
         aria-label="Qurilish mollari qidiruvi"
-        className="w-full h-9 sm:h-9 pl-8 pr-7 rounded-lg bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] focus:ring-1 focus:ring-[#FFB800]/40 text-base sm:text-xs font-sans text-white placeholder-sky-300/50 outline-none transition-colors"
+        className="w-full h-9 sm:h-9 pl-8 pr-7 rounded-lg bg-slate-50 border border-slate-200 focus:bg-white focus:border-[#D95D1E] focus:ring-2 focus:ring-[#D95D1E]/10 text-base sm:text-xs font-sans text-slate-900 placeholder-slate-400 outline-none transition-colors shadow-2xs"
       />
       {searchTerm && (
         <button
@@ -413,7 +409,7 @@ export const NavbarSearch: React.FC<{ className?: string; onSearchComplete?: () 
             params.delete('query');
             navigate(`/?${params.toString()}`);
           }}
-          className="absolute right-2 text-sky-400 hover:text-white cursor-pointer p-0.5"
+          className="absolute right-2 text-slate-400 hover:text-slate-700 cursor-pointer p-0.5"
         >
           <X className="w-3 h-3" />
         </button>
@@ -452,7 +448,6 @@ export const CabinetSwitcherDropdown: React.FC<CabinetSwitcherProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Determine active cabinet based on route
   const currentPath = location.pathname;
   const currentCabinet =
     CABINET_OPTIONS.find((c) => currentPath.startsWith(c.path)) ||
@@ -472,40 +467,40 @@ export const CabinetSwitcherDropdown: React.FC<CabinetSwitcherProps> = ({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'flex items-center gap-2 h-9 sm:h-9 min-h-[40px] sm:min-h-[36px] px-2.5 sm:px-3 rounded-xl border transition-all text-xs font-semibold cursor-pointer shadow-xs select-none',
+          'flex items-center gap-2 h-9 sm:h-9 min-h-[40px] sm:min-h-[36px] px-2.5 sm:px-3 rounded-xl border transition-all text-xs font-semibold cursor-pointer shadow-2xs select-none',
           isOpen
-            ? 'bg-[#132C54] border-[#FFB800] text-white ring-1 ring-[#FFB800]/50'
-            : 'bg-[#0F2547] hover:bg-[#132C54] border-[#1E3A6D] hover:border-[#2E5A9C] text-sky-100'
+            ? 'bg-slate-50 border-[#D95D1E] text-slate-900 ring-2 ring-[#D95D1E]/10'
+            : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
         )}
         title="Kabinetlar tanlash (Mijoz, Sotuvchi, Haydovchi, Hamkor, Admin)"
       >
-        <div className="w-5 h-5 rounded bg-[#071326] border border-[#254B85] flex items-center justify-center text-[#FFB800] shrink-0">
+        <div className="w-5 h-5 rounded bg-orange-50 border border-orange-200 flex items-center justify-center text-[#D95D1E] shrink-0">
           <CurrentIcon className="w-3.5 h-3.5" />
         </div>
         <div className="flex flex-col text-left leading-none hidden md:block">
-          <span className="text-[10px] font-mono text-sky-300 font-bold uppercase tracking-tight">
+          <span className="text-[10px] font-mono text-slate-500 font-bold uppercase tracking-tight">
             Kabinet
           </span>
-          <span className="text-xs font-bold text-white truncate max-w-[95px] xl:max-w-[120px]">
+          <span className="text-xs font-bold text-slate-900 truncate max-w-[95px] xl:max-w-[120px]">
             {currentCabinet.title.split(' ')[0]}
           </span>
         </div>
         <ChevronDown
           className={cn(
-            'w-3 h-3 text-sky-400 transition-transform duration-150 shrink-0',
+            'w-3 h-3 text-slate-400 transition-transform duration-150 shrink-0',
             isOpen && 'rotate-180'
           )}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-1.5 w-72 sm:w-80 rounded-2xl bg-[#0A1931] border-2 border-[#254B85] shadow-[0_16px_40px_rgba(7,19,38,0.85)] z-50 p-2 font-sans text-xs animate-in fade-in-50 zoom-in-95">
+        <div className="absolute right-0 mt-1.5 w-72 sm:w-80 rounded-2xl bg-white border border-slate-200 shadow-2xl z-50 p-2 font-sans text-xs animate-in fade-in-50 zoom-in-95">
           {/* Header */}
-          <div className="px-3 py-2 border-b border-[#1E3A6D] flex items-center justify-between">
-            <span className="font-mono text-[11px] font-bold text-[#FFB800] uppercase tracking-wider">
+          <div className="px-3 py-2 border-b border-slate-100 flex items-center justify-between">
+            <span className="font-mono text-[11px] font-bold text-slate-900 uppercase tracking-wider">
               5 ta Boshqaruv Kabineti:
             </span>
-            <span className="text-[10px] font-mono bg-[#071326] px-2 py-0.5 rounded text-sky-300 border border-[#1E3A6D]">
+            <span className="text-[10px] font-mono bg-slate-100 px-2 py-0.5 rounded text-slate-600 border border-slate-200">
               BunkerStroy OS
             </span>
           </div>
@@ -532,8 +527,8 @@ export const CabinetSwitcherDropdown: React.FC<CabinetSwitcherProps> = ({
                   className={cn(
                     'w-full flex items-center justify-between p-2 sm:p-2.5 rounded-xl transition-all cursor-pointer text-left border',
                     isActive
-                      ? 'bg-[#132C54] border-[#FFB800]/70 text-white shadow-xs'
-                      : 'bg-[#071326]/60 hover:bg-[#0F2547] border-[#1E3A6D] text-sky-100 hover:text-white'
+                      ? 'bg-orange-50 border-orange-200 text-slate-900 shadow-2xs font-semibold'
+                      : 'bg-white hover:bg-slate-50 border-transparent text-slate-700 hover:text-slate-900'
                   )}
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
@@ -541,20 +536,20 @@ export const CabinetSwitcherDropdown: React.FC<CabinetSwitcherProps> = ({
                       className={cn(
                         'w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border',
                         isActive
-                          ? 'bg-[#FFB800] text-[#071326] border-[#FFC928]'
-                          : 'bg-[#0F2547] text-[#FFB800] border-[#254B85]'
+                          ? 'bg-[#D95D1E] text-white border-[#C2410C]'
+                          : 'bg-slate-50 text-[#D95D1E] border-slate-200'
                       )}
                     >
                       <Icon className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-white text-xs truncate">
+                        <span className="font-bold text-slate-900 text-xs truncate">
                           {cab.title}
                         </span>
-                        {cab.isDedicatedApp && <ExternalLink className="w-3 h-3 text-[#FFB800]" />}
+                        {cab.isDedicatedApp && <ExternalLink className="w-3 h-3 text-slate-400" />}
                       </div>
-                      <p className="text-[10px] text-sky-300/70 truncate mt-0.5">
+                      <p className="text-[10px] text-slate-500 truncate mt-0.5">
                         {cab.subtitle}
                       </p>
                     </div>
@@ -573,17 +568,17 @@ export const CabinetSwitcherDropdown: React.FC<CabinetSwitcherProps> = ({
           </div>
 
           {/* User Account / Auth Section inside dropdown */}
-          <div className="mt-1 pt-2 border-t border-[#1E3A6D]">
+          <div className="mt-1 pt-2 border-t border-slate-100">
             {currentUser ? (
-              <div className="flex items-center justify-between p-2 rounded-xl bg-[#071326] border border-[#1E3A6D]">
+              <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-200">
                 <div className="min-w-0">
                   <div className="flex items-center gap-1">
-                    <span className="text-[10px] font-mono font-bold text-[#FFB800]">
+                    <span className="text-[10px] font-mono font-bold text-[#D95D1E]">
                       {currentUser.stir ? `STIR: ${currentUser.stir}` : currentUser.phone || 'Kirilgan'}
                     </span>
-                    <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                    <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                   </div>
-                  <div className="text-white font-bold text-xs truncate">
+                  <div className="text-slate-900 font-bold text-xs truncate">
                     {currentUser.companyName || currentUser.displayName || 'Foydalanuvchi'}
                   </div>
                 </div>
@@ -593,7 +588,7 @@ export const CabinetSwitcherDropdown: React.FC<CabinetSwitcherProps> = ({
                     setIsOpen(false);
                     onLogout();
                   }}
-                  className="p-1.5 rounded-lg bg-[#132C54] hover:bg-red-950/80 text-sky-300 hover:text-red-400 border border-[#254B85] hover:border-red-500/40 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-lg bg-white hover:bg-red-50 text-slate-500 hover:text-red-600 border border-slate-200 hover:border-red-200 transition-colors cursor-pointer"
                   title="Chiqish"
                 >
                   <LogOut className="w-3.5 h-3.5" />
@@ -606,7 +601,7 @@ export const CabinetSwitcherDropdown: React.FC<CabinetSwitcherProps> = ({
                   setIsOpen(false);
                   onOpenAuth();
                 }}
-                className="w-full py-2 px-3 rounded-xl bg-[#FFB800] hover:bg-[#FFC928] text-[#071326] font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                className="w-full py-2 px-3 rounded-xl bg-[#D95D1E] hover:bg-[#B43B06] text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
               >
                 <UserIcon className="w-3.5 h-3.5" />
                 <span>Kabinetga Kirish (B2B &amp; B2C)</span>
@@ -640,22 +635,22 @@ export const CartButton: React.FC<CartButtonProps> = ({ count, onClick, classNam
       title={hasItems ? `${count} ta mahsulot xarid savatida` : "Xarid savati bo'sh"}
       aria-label={hasItems ? `Xarid savati, ${count} ta mahsulot` : 'Xarid savati'}
       className={cn(
-        'group relative flex items-center gap-2 h-9 sm:h-9 min-h-[40px] sm:min-h-[36px] px-2.5 sm:px-3 rounded-xl border transition-all text-xs font-semibold cursor-pointer shadow-xs select-none shrink-0',
+        'group relative flex items-center gap-2 h-9 sm:h-9 min-h-[40px] sm:min-h-[36px] px-2.5 sm:px-3 rounded-xl border transition-all text-xs font-semibold cursor-pointer shadow-2xs select-none shrink-0',
         hasItems
-          ? 'bg-emerald-950/80 hover:bg-emerald-900 border-emerald-400 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.35)] ring-1 ring-emerald-500/40'
-          : 'bg-[#0F2547] hover:bg-[#132C54] border-[#1E3A6D] hover:border-[#FFB800] text-sky-100',
+          ? 'bg-[#D95D1E] hover:bg-[#B43B06] border-[#C2410C] text-white shadow-xs'
+          : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700',
         className
       )}
     >
       <ShoppingCart
         className={cn(
           'w-4 h-4 transition-transform group-hover:scale-105 shrink-0',
-          hasItems ? 'text-emerald-400' : 'text-[#FFB800]'
+          hasItems ? 'text-white' : 'text-slate-600'
         )}
       />
       <span className="hidden sm:inline font-bold">Savat</span>
       {hasItems && (
-        <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-mono font-black rounded-full bg-emerald-500 text-[#071326] shadow-xs animate-pulse">
+        <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-mono font-black rounded-full bg-white text-[#D95D1E] shadow-2xs">
           {count > 99 ? '99+' : count}
         </span>
       )}
@@ -688,7 +683,6 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  // Close on Escape key
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -712,7 +706,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex justify-end bg-[#071326]/80 backdrop-blur-sm transition-opacity lg:hidden"
+      className="fixed inset-0 z-50 flex justify-end bg-slate-900/60 backdrop-blur-xs transition-opacity lg:hidden"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -720,14 +714,14 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
       aria-modal="true"
       aria-label="Mobil navigatsiya menyusi"
     >
-      <div className="w-full max-w-sm h-full bg-[#0A1931] border-l-2 border-[#1E3A6D] flex flex-col justify-between shadow-[0_0_40px_rgba(7,19,38,0.9)] overflow-y-auto animate-in slide-in-from-right duration-200 text-white">
+      <div className="w-full max-w-sm h-full bg-white border-l border-slate-200 flex flex-col justify-between shadow-2xl overflow-y-auto animate-in slide-in-from-right duration-200 text-slate-900">
         {/* Drawer Header */}
-        <div className="flex items-center justify-between px-4 py-3.5 border-b border-[#1E3A6D] shrink-0 bg-[#071326]">
+        <div className="flex items-center justify-between px-4 py-3.5 border-b border-slate-200 shrink-0 bg-slate-50">
           <BrandLogo onClick={onClose} />
           <button
             type="button"
             onClick={onClose}
-            className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-sky-200 hover:text-white bg-[#0F2547] border border-[#1E3A6D] transition-colors cursor-pointer touch-target-44"
+            className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-900 bg-white border border-slate-200 transition-colors cursor-pointer touch-target-44 shadow-2xs"
             aria-label="Menyuni yopish"
           >
             <X className="w-5 h-5" />
@@ -740,8 +734,8 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
           <NavbarSearch onSearchComplete={onClose} />
 
           {/* Region selector */}
-          <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#0F2547] border border-[#1E3A6D]">
-            <span className="text-xs font-mono font-bold text-sky-200">Hudud / Viloyat:</span>
+          <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+            <span className="text-xs font-mono font-bold text-slate-700">Hudud / Viloyat:</span>
             <RegionSelector />
           </div>
 
@@ -756,29 +750,29 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               onOpenCart();
             }}
             className={cn(
-              'w-full flex items-center justify-between p-3 rounded-xl border text-xs font-medium transition-all cursor-pointer select-none min-h-[48px] touch-target-44',
+              'w-full flex items-center justify-between p-3 rounded-xl border text-xs font-medium transition-all cursor-pointer select-none min-h-[48px] touch-target-44 shadow-2xs',
               cartCount > 0
-                ? 'bg-emerald-950/80 border-emerald-500/50 text-white shadow-[0_0_12px_rgba(16,185,129,0.25)]'
-                : 'bg-[#0F2547] border-[#1E3A6D] text-sky-100 hover:bg-[#132C54]'
+                ? 'bg-[#D95D1E] border-[#C2410C] text-white shadow-xs'
+                : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
             )}
           >
             <div className="flex items-center gap-2.5">
               <ShoppingCart
-                className={cn('w-4 h-4', cartCount > 0 ? 'text-emerald-400' : 'text-[#FFB800]')}
+                className={cn('w-4 h-4', cartCount > 0 ? 'text-white' : 'text-slate-600')}
               />
               <span className="font-bold text-sm">Xarid Savati</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-mono font-black px-2 py-0.5 rounded-full bg-[#FFB800] text-[#071326]">
+              <span className={cn('text-[11px] font-mono font-black px-2 py-0.5 rounded-full', cartCount > 0 ? 'bg-white text-[#D95D1E]' : 'bg-slate-100 text-slate-700')}>
                 {cartCount} ta
               </span>
-              <ChevronRight className="w-4 h-4 text-sky-300" />
+              <ChevronRight className="w-4 h-4" />
             </div>
           </button>
 
           {/* Asosiy Sahifalar Ro'yxati */}
           <div className="space-y-1.5 pt-1">
-            <div className="text-[10px] font-mono font-bold tracking-wider text-[#FFB800] uppercase px-1">
+            <div className="text-[10px] font-mono font-bold tracking-wider text-slate-500 uppercase px-1">
               Asosiy Bo‘limlar:
             </div>
             <NavLink
@@ -787,14 +781,14 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               onClick={onClose}
               className={({ isActive }) =>
                 cn(
-                  'w-full flex items-center gap-3 p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer min-h-[44px] touch-target-44',
+                  'w-full flex items-center gap-3 p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer min-h-[44px] touch-target-44 shadow-2xs',
                   isActive
-                    ? 'bg-[#132C54] border-[#FFB800] text-[#FFB800] font-bold'
-                    : 'bg-[#0F2547] border-[#1E3A6D] text-sky-100 hover:bg-[#132C54]'
+                    ? 'bg-orange-50 border-orange-200 text-[#D95D1E] font-bold'
+                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                 )
               }
             >
-              <Home className="w-4.5 h-4.5 text-[#FFB800]" />
+              <Home className="w-4.5 h-4.5 text-[#D95D1E]" />
               <span>Bosh Sahifa</span>
             </NavLink>
 
@@ -803,14 +797,14 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               onClick={onClose}
               className={({ isActive }) =>
                 cn(
-                  'w-full flex items-center gap-3 p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer min-h-[44px] touch-target-44',
+                  'w-full flex items-center gap-3 p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer min-h-[44px] touch-target-44 shadow-2xs',
                   isActive
-                    ? 'bg-[#132C54] border-[#FFB800] text-[#FFB800] font-bold'
-                    : 'bg-[#0F2547] border-[#1E3A6D] text-sky-100 hover:bg-[#132C54]'
+                    ? 'bg-orange-50 border-orange-200 text-[#D95D1E] font-bold'
+                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                 )
               }
             >
-              <Package className="w-4.5 h-4.5 text-[#FFB800]" />
+              <Package className="w-4.5 h-4.5 text-[#D95D1E]" />
               <span>Katalog &amp; Vitrina</span>
             </NavLink>
 
@@ -819,14 +813,14 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               onClick={onClose}
               className={({ isActive }) =>
                 cn(
-                  'w-full flex items-center gap-3 p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer min-h-[44px] touch-target-44',
+                  'w-full flex items-center gap-3 p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer min-h-[44px] touch-target-44 shadow-2xs',
                   isActive
-                    ? 'bg-[#132C54] border-[#FFB800] text-[#FFB800] font-bold'
-                    : 'bg-[#0F2547] border-[#1E3A6D] text-sky-100 hover:bg-[#132C54]'
+                    ? 'bg-orange-50 border-orange-200 text-[#D95D1E] font-bold'
+                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                 )
               }
             >
-              <Factory className="w-4.5 h-4.5 text-[#FFB800]" />
+              <Factory className="w-4.5 h-4.5 text-[#D95D1E]" />
               <span>Hamkor Zavodlar</span>
             </NavLink>
 
@@ -835,14 +829,14 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               onClick={onClose}
               className={({ isActive }) =>
                 cn(
-                  'w-full flex items-center gap-3 p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer min-h-[44px] touch-target-44',
+                  'w-full flex items-center gap-3 p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer min-h-[44px] touch-target-44 shadow-2xs',
                   isActive
-                    ? 'bg-[#132C54] border-[#FFB800] text-[#FFB800] font-bold'
-                    : 'bg-[#0F2547] border-[#1E3A6D] text-sky-100 hover:bg-[#132C54]'
+                    ? 'bg-orange-50 border-orange-200 text-[#D95D1E] font-bold'
+                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                 )
               }
             >
-              <Calculator className="w-4.5 h-4.5 text-[#FFB800]" />
+              <Calculator className="w-4.5 h-4.5 text-[#D95D1E]" />
               <span>Qurilish &amp; ESCO Kalkulyatori</span>
             </NavLink>
 
@@ -851,14 +845,14 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               onClick={onClose}
               className={({ isActive }) =>
                 cn(
-                  'w-full flex items-center gap-3 p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer min-h-[44px] touch-target-44',
+                  'w-full flex items-center gap-3 p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer min-h-[44px] touch-target-44 shadow-2xs',
                   isActive
-                    ? 'bg-[#132C54] border-[#FFB800] text-[#FFB800] font-bold'
-                    : 'bg-[#0F2547] border-[#1E3A6D] text-sky-100 hover:bg-[#132C54]'
+                    ? 'bg-orange-50 border-orange-200 text-[#D95D1E] font-bold'
+                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                 )
               }
             >
-              <FileSpreadsheet className="w-4.5 h-4.5 text-[#FFB800]" />
+              <FileSpreadsheet className="w-4.5 h-4.5 text-[#D95D1E]" />
               <span>B2B Tenderlar &amp; Auksion</span>
             </NavLink>
 
@@ -867,21 +861,21 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               onClick={onClose}
               className={({ isActive }) =>
                 cn(
-                  'w-full flex items-center gap-3 p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer min-h-[44px] touch-target-44',
+                  'w-full flex items-center gap-3 p-3 rounded-xl border text-sm font-semibold transition-all cursor-pointer min-h-[44px] touch-target-44 shadow-2xs',
                   isActive
-                    ? 'bg-[#132C54] border-[#FFB800] text-[#FFB800] font-bold'
-                    : 'bg-[#0F2547] border-[#1E3A6D] text-sky-100 hover:bg-[#132C54]'
+                    ? 'bg-orange-50 border-orange-200 text-[#D95D1E] font-bold'
+                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                 )
               }
             >
-              <Truck className="w-4.5 h-4.5 text-[#FFB800]" />
+              <Truck className="w-4.5 h-4.5 text-[#D95D1E]" />
               <span>Logistika &amp; Dispetcherlik</span>
             </NavLink>
           </div>
 
           {/* 5 ta Kabinetlar ro'yxati */}
-          <div className="space-y-2 pt-2 border-t border-[#1E3A6D]">
-            <div className="text-[10px] font-mono font-bold tracking-wider text-[#FFB800] uppercase px-1">
+          <div className="space-y-2 pt-2 border-t border-slate-200">
+            <div className="text-[10px] font-mono font-bold tracking-wider text-slate-500 uppercase px-1">
               5 ta Boshqaruv Kabineti:
             </div>
             {CABINET_OPTIONS.map((item) => {
@@ -899,25 +893,25 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                       navigate(item.path);
                     }
                   }}
-                  className="w-full flex items-center justify-between p-3 rounded-xl bg-[#0F2547] hover:bg-[#132C54] border border-[#1E3A6D] hover:border-[#FFB800]/50 transition-all cursor-pointer text-left min-h-[44px] touch-target-44"
+                  className="w-full flex items-center justify-between p-3 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 transition-all cursor-pointer text-left min-h-[44px] touch-target-44 shadow-2xs"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-9 h-9 rounded-lg bg-[#071326] border border-[#254B85] flex items-center justify-center shrink-0 text-[#FFB800]">
+                    <div className="w-9 h-9 rounded-lg bg-orange-50 border border-orange-200 flex items-center justify-center shrink-0 text-[#D95D1E]">
                       <Icon className="w-4.5 h-4.5" />
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-white text-sm truncate">
+                        <span className="font-bold text-slate-900 text-sm truncate">
                           {item.title}
                         </span>
-                        {item.isDedicatedApp && <ExternalLink className="w-3.5 h-3.5 text-[#FFB800]" />}
+                        {item.isDedicatedApp && <ExternalLink className="w-3.5 h-3.5 text-slate-400" />}
                       </div>
-                      <p className="text-[11px] text-sky-200/70 truncate mt-0.5">
+                      <p className="text-[11px] text-slate-500 truncate mt-0.5">
                         {item.subtitle}
                       </p>
                     </div>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-sky-400 shrink-0" />
+                  <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
                 </button>
               );
             })}
@@ -926,13 +920,13 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
           {/* User Profile / Auth Action */}
           <div className="pt-2">
             {currentUser ? (
-              <div className="p-3.5 rounded-xl bg-[#071326] border border-[#1E3A6D]">
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
                 <div className="flex items-center justify-between">
                   <div className="min-w-0">
-                    <div className="text-[10px] font-mono font-bold text-[#FFB800]">
+                    <div className="text-[10px] font-mono font-bold text-[#D95D1E]">
                       {currentUser.stir ? `STIR: ${currentUser.stir}` : currentUser.phone || 'Kirilgan'}
                     </div>
-                    <div className="font-bold text-sm text-white truncate mt-0.5">
+                    <div className="font-bold text-sm text-slate-900 truncate mt-0.5">
                       {currentUser.companyName || currentUser.displayName || 'Kabinet'}
                     </div>
                   </div>
@@ -942,7 +936,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                       onClose();
                       onLogout();
                     }}
-                    className="p-2 rounded-lg bg-[#132C54] hover:bg-red-950/80 text-sky-200 hover:text-red-400 border border-[#254B85] transition-colors"
+                    className="p-2 rounded-lg bg-white hover:bg-red-50 text-slate-600 hover:text-red-600 border border-slate-200 transition-colors shadow-2xs"
                   >
                     <LogOut className="w-4 h-4" />
                   </button>
@@ -955,7 +949,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                   onClose();
                   onOpenAuth();
                 }}
-                className="w-full py-2.5 rounded-xl bg-[#FFB800] hover:bg-[#FFC928] text-[#071326] font-extrabold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                className="w-full py-2.5 rounded-xl bg-[#D95D1E] hover:bg-[#B43B06] text-white font-bold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-xs"
               >
                 <UserIcon className="w-4 h-4" />
                 <span>Kabinetga Kirish (B2B &amp; B2C)</span>
@@ -965,19 +959,19 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
         </div>
 
         {/* Drawer Footer */}
-        <div className="p-4 border-t border-[#1E3A6D] bg-[#071326] shrink-0 space-y-2">
+        <div className="p-4 border-t border-slate-200 bg-slate-50 shrink-0 space-y-2">
           <a
             href="tel:+998712004546"
-            className="flex items-center justify-between px-3 py-2 rounded-lg bg-[#0F2547] border border-[#1E3A6D] text-xs text-sky-100 hover:border-[#FFB800] transition-colors"
+            className="flex items-center justify-between px-3 py-2 rounded-lg bg-white border border-slate-200 text-xs text-slate-700 hover:border-slate-300 transition-colors shadow-2xs"
           >
             <div className="flex items-center gap-2">
-              <PhoneCall className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="font-mono font-bold text-white">+998 (71) 200-45-46</span>
+              <PhoneCall className="w-3.5 h-3.5 text-emerald-600" />
+              <span className="font-mono font-bold text-slate-900">+998 (71) 200-45-46</span>
             </div>
-            <span className="text-[10px] text-sky-300">24/7 B2B Qo‘llab-quvvatlash</span>
+            <span className="text-[10px] text-slate-500">24/7 B2B Qo‘llab-quvvatlash</span>
           </a>
-          <div className="flex items-center justify-between text-[10px] font-mono text-sky-400/80 px-1 pt-1">
-            <span>BunkerStroy v2.5 Industrial</span>
+          <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 px-1 pt-1">
+            <span>BunkerStroy v3.0 Neo</span>
             <span>O‘zDSt / GOST 100%</span>
           </div>
         </div>
@@ -988,9 +982,9 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
 
 /* ==========================================================================
    Main Component: Navbar
-   Sanoat darajasidagi industrial header:
-   brushed-steel-header, Hazard Yellow aksentlar, Logo, Qidiruv,
-   Viloyat filtri, Til tanlash, Savat (badge bilan), 5 ta kabinet switcher.
+   Neo-Architectural Precision:
+   Clean white surface, Safety Terracotta accents, Logo, Search,
+   Region filter, Language switch, Cart button, 5 cabinet switcher.
    ========================================================================== */
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -1003,17 +997,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
-  // Auto-close mobile menu on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full brushed-steel-header text-white transition-colors">
-        {/* Top Hazard Stripe Hairline Accent */}
-        <div className="h-[2px] w-full hazard-stripe-sm opacity-90" />
-
+      <header className="sticky top-0 z-40 w-full bg-white border-b border-slate-200 text-slate-900 shadow-2xs transition-colors">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 gap-2 sm:gap-4">
             
@@ -1034,12 +1024,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                   cn(
                     'px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5',
                     isActive
-                      ? 'bg-[#132C54] text-[#FFB800] border border-[#FFB800]/50'
-                      : 'text-sky-200 hover:text-white hover:bg-[#0F2547]'
+                      ? 'bg-orange-50 text-[#D95D1E] border border-orange-200 font-bold'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   )
                 }
               >
-                <Home className="w-3.5 h-3.5 text-[#FFB800]" />
+                <Home className="w-3.5 h-3.5 text-[#D95D1E]" />
                 <span>Asosiy</span>
               </NavLink>
 
@@ -1049,12 +1039,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                   cn(
                     'px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5',
                     isActive
-                      ? 'bg-[#132C54] text-[#FFB800] border border-[#FFB800]/50'
-                      : 'text-sky-200 hover:text-white hover:bg-[#0F2547]'
+                      ? 'bg-orange-50 text-[#D95D1E] border border-orange-200 font-bold'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   )
                 }
               >
-                <Package className="w-3.5 h-3.5 text-[#FFB800]" />
+                <Package className="w-3.5 h-3.5 text-[#D95D1E]" />
                 <span>Katalog</span>
               </NavLink>
 
@@ -1064,12 +1054,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                   cn(
                     'px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5',
                     isActive
-                      ? 'bg-[#132C54] text-[#FFB800] border border-[#FFB800]/50'
-                      : 'text-sky-200 hover:text-white hover:bg-[#0F2547]'
+                      ? 'bg-orange-50 text-[#D95D1E] border border-orange-200 font-bold'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   )
                 }
               >
-                <Factory className="w-3.5 h-3.5 text-[#FFB800]" />
+                <Factory className="w-3.5 h-3.5 text-[#D95D1E]" />
                 <span>Zavodlar</span>
               </NavLink>
 
@@ -1079,12 +1069,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                   cn(
                     'px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5',
                     isActive
-                      ? 'bg-[#132C54] text-[#FFB800] border border-[#FFB800]/50'
-                      : 'text-sky-200 hover:text-white hover:bg-[#0F2547]'
+                      ? 'bg-orange-50 text-[#D95D1E] border border-orange-200 font-bold'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   )
                 }
               >
-                <Calculator className="w-3.5 h-3.5 text-[#FFB800]" />
+                <Calculator className="w-3.5 h-3.5 text-[#D95D1E]" />
                 <span>Kalkulyator</span>
               </NavLink>
 
@@ -1094,12 +1084,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                   cn(
                     'px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5',
                     isActive
-                      ? 'bg-[#132C54] text-[#FFB800] border border-[#FFB800]/50'
-                      : 'text-sky-200 hover:text-white hover:bg-[#0F2547]'
+                      ? 'bg-orange-50 text-[#D95D1E] border border-orange-200 font-bold'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   )
                 }
               >
-                <FileSpreadsheet className="w-3.5 h-3.5 text-[#FFB800]" />
+                <FileSpreadsheet className="w-3.5 h-3.5 text-[#D95D1E]" />
                 <span>Tenderlar</span>
               </NavLink>
             </nav>
@@ -1125,18 +1115,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onLogout={onLogout}
               />
 
-              {/* Mobile Hamburger Button (44px min touch target compliant) */}
+              {/* Mobile Hamburger Button */}
               <button
                 type="button"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl border border-[#1E3A6D] bg-[#0F2547] hover:bg-[#132C54] text-sky-200 hover:text-white transition-colors cursor-pointer shadow-xs touch-target-44"
+                className="lg:hidden flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 transition-colors cursor-pointer shadow-2xs touch-target-44"
                 aria-label={isMobileMenuOpen ? 'Menyuni yopish' : 'Menyuni ochish'}
                 aria-expanded={isMobileMenuOpen}
               >
                 {isMobileMenuOpen ? (
-                  <X className="w-5 h-5 text-sky-200" />
+                  <X className="w-5 h-5" />
                 ) : (
-                  <Menu className="w-5 h-5 text-sky-200" />
+                  <Menu className="w-5 h-5" />
                 )}
               </button>
             </div>

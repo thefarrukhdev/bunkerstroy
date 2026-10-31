@@ -21,20 +21,20 @@ export const KpiStatCard: React.FC<KpiStatCardProps> = ({
   subtitle
 }) => {
   return (
-    <div className="p-5 rounded-2xl border border-[#1E3A6D] bg-[#0A1931] text-white shadow-md hover:border-[#2E5A9C] transition-all">
+    <div className="p-5 rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-xs hover:border-slate-300 transition-all">
       <div className="flex items-center justify-between gap-3">
-        <span className="text-xs font-mono font-bold text-sky-200 uppercase tracking-wider">
+        <span className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider">
           {title}
         </span>
         {icon && (
-          <div className="w-8 h-8 rounded-xl bg-[#0F2547] border border-[#1E3A6D] flex items-center justify-center text-[#FFB800] shadow-sm">
+          <div className="w-8 h-8 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center text-[#D95D1E] shadow-xs">
             {icon}
           </div>
         )}
       </div>
 
       <div className="mt-3 flex items-baseline gap-2">
-        <span className="text-2xl font-black font-mono tracking-tight text-white font-mono-numbers">
+        <span className="text-2xl font-black font-mono tracking-tight text-slate-900 font-mono-numbers">
           {value}
         </span>
       </div>
@@ -45,10 +45,10 @@ export const KpiStatCard: React.FC<KpiStatCardProps> = ({
             <span
               className={`inline-flex items-center gap-1 font-bold ${
                 changeType === 'positive'
-                  ? 'text-emerald-400'
+                  ? 'text-emerald-600'
                   : changeType === 'negative'
-                  ? 'text-rose-400'
-                  : 'text-sky-300'
+                  ? 'text-rose-600'
+                  : 'text-slate-500'
               }`}
             >
               {changeType === 'positive' && <TrendingUp className="w-3.5 h-3.5" />}
@@ -57,7 +57,7 @@ export const KpiStatCard: React.FC<KpiStatCardProps> = ({
               <span>{change}</span>
             </span>
           )}
-          <span className="text-[11px] text-sky-300/80 truncate">
+          <span className="text-[11px] text-slate-500 truncate">
             {subtitle || periodLabel}
           </span>
         </div>

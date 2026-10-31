@@ -26,15 +26,15 @@ export const Button: React.FC<ButtonProps> = ({
   const getVariantStyles = () => {
     switch (variant) {
       case 'primary':
-        return 'bg-[#FFB800] text-[#071326] hover:bg-[#FFC928] border border-[#E5A600] font-black shadow-md shadow-[#FFB800]/20 active:translate-y-[1px]';
+        return 'bg-[#D95D1E] text-white hover:bg-[#B43B06] border border-[#C2410C] font-bold shadow-xs active:translate-y-[1px]';
       case 'secondary':
-        return 'bg-[#0F2547] border border-[#1E3A6D] text-white hover:border-[#FFB800] hover:text-[#FFB800] font-bold';
+        return 'bg-white border border-slate-200 text-slate-800 hover:bg-slate-50 hover:border-slate-300 font-bold';
       case 'danger':
-        return 'bg-[#F43F5E]/15 border border-[#F43F5E]/40 text-[#F43F5E] hover:bg-[#F43F5E]/25 font-bold';
+        return 'bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 font-bold';
       case 'outline':
-        return 'bg-transparent border border-[#1E3A6D] text-white hover:border-[#FFB800] hover:text-[#FFB800] font-bold';
+        return 'bg-transparent border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 font-bold';
       case 'ghost':
-        return 'bg-transparent text-sky-200 hover:text-white hover:bg-[#0F2547] font-medium';
+        return 'bg-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium';
     }
   };
 

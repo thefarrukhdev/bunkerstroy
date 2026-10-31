@@ -156,59 +156,53 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
   };
 
   return (
-    <div className="space-y-6 text-white pb-12 font-sans">
-      {/* 1. Welcoming Industrial Banner (Brushed Steel & Rivets) */}
-      <div className="relative brushed-steel rounded-2xl p-5 sm:p-7 shadow-[0_8px_24px_rgba(7,19,38,0.5)] border border-[#1E3A6D] overflow-hidden">
-        <div className="absolute top-2 left-2 industrial-rivet" />
-        <div className="absolute top-2 right-2 industrial-rivet" />
-        <div className="absolute bottom-2 left-2 industrial-rivet" />
-        <div className="absolute bottom-2 right-2 industrial-rivet" />
-
+    <div className="space-y-6 text-slate-900 pb-12 font-sans">
+      {/* 1. Welcoming Industrial Banner (Precision Light Construction Card) */}
+      <div className="relative bg-white rounded-2xl p-5 sm:p-7 shadow-2xs border border-slate-200 overflow-hidden">
         {/* Subtle background tech grid */}
-        <div className="absolute inset-0 tech-grid-pattern opacity-40 pointer-events-none" />
+        <div className="absolute inset-0 tech-grid-pattern opacity-15 pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-mono font-bold text-[#FFB800] uppercase tracking-wider flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#FFB800] animate-ping" />
+              <span className="text-xs font-mono font-bold text-[#D95D1E] uppercase tracking-wider">
                 BunkerStroy Sanoat Vitrinasi
               </span>
-              <span className="bg-[#132C54] text-[#FFB800] border border-[#254B85] px-2.5 py-0.5 rounded-md text-[10px] font-mono font-black">
+              <span className="bg-orange-50 text-[#D95D1E] border border-orange-200 px-2.5 py-0.5 rounded-md text-[10px] font-mono font-black">
                 ZAVOD NARXLARIDA
               </span>
-              <span className="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 px-2.5 py-0.5 rounded-md text-[10px] font-mono font-black flex items-center gap-1">
-                <ShieldCheck className="w-3 h-3 text-[#FFB800]" /> 50/50 Xavfsiz Escrow
+              <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-md text-[10px] font-mono font-black flex items-center gap-1">
+                <ShieldCheck className="w-3 h-3 text-emerald-600" /> 50/50 Xavfsiz Escrow
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-heading font-black tracking-tight text-white">
+            <h1 className="text-2xl sm:text-3xl font-heading font-black tracking-tight text-slate-900">
               Sifatli Qurilish Materiallari &amp; Xom-ashyo Bozori
             </h1>
-            <p className="text-xs sm:text-sm text-sky-200/90 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
               O‘zbekiston va mintaqaning yetakchi zavodlaridan to‘g‘ridan-to‘g‘ri ulgurji va chakana xaridlar.
               50% avans va 50% ob'ektda qabul qilingandan keyin to‘lash imkoniyati bilan 100% himoyalangan.
             </p>
           </div>
 
           <div className="flex flex-wrap md:flex-col items-start md:items-end gap-2 shrink-0 font-mono text-xs">
-            <div className="bg-[#071326] border border-[#1E3A6D] px-3 py-1.5 rounded-xl text-sky-200 flex items-center gap-2">
-              <span className="text-[#FFB800] font-black">{products.length}</span>
+            <div className="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-slate-700 flex items-center gap-2 shadow-2xs">
+              <span className="text-[#D95D1E] font-black">{products.length}</span>
               <span>xil tovar omborda</span>
             </div>
-            <div className="bg-[#071326] border border-[#1E3A6D] px-3 py-1.5 rounded-xl text-emerald-400 flex items-center gap-1.5">
-              <Truck className="w-3.5 h-3.5 text-[#FFB800]" />
-              <span>Obyektgacha yetkazib berish</span>
+            <div className="bg-emerald-50/60 border border-emerald-200 px-3 py-1.5 rounded-xl text-emerald-700 flex items-center gap-1.5 shadow-2xs">
+              <Truck className="w-3.5 h-3.5 text-emerald-600" />
+              <span className="font-medium">Kim sotsa — o'sha yetkazadi</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* 2. Search & Region Filter Bar */}
-      <div className="bg-[#0A1931] border border-[#1E3A6D] p-3 rounded-2xl flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-between shadow-md">
+      <div className="bg-white border border-slate-200 p-3 rounded-2xl flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-between shadow-2xs">
         {/* Search input */}
         <div className="relative flex-1">
-          <Search className="absolute left-3 w-4 h-4 text-[#FFB800] pointer-events-none" />
+          <Search className="absolute left-3 w-4 h-4 text-slate-400 pointer-events-none" />
           <input
             id="marketplace-filter-search"
             name="search"
@@ -219,7 +213,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
             onKeyDown={(e) => e.key === 'Enter' && fetchProducts()}
             placeholder="Mahsulot nomi, markasi, sement, g‘isht yoki zavod bo‘yicha qidiruv..."
             aria-label="Mahsulot qidirish"
-            className="w-full h-10 pl-9 pr-4 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-xs sm:text-sm text-white placeholder-sky-300/50 outline-none transition-colors"
+            className="w-full h-10 pl-9 pr-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-[#D95D1E] text-xs sm:text-sm text-slate-900 placeholder-slate-400 outline-none transition-colors"
           />
         </div>
 
@@ -232,7 +226,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
             aria-label="Viloyat bo‘yicha saralash"
             value={selectedRegion}
             onChange={(e) => setSelectedRegion(e.target.value)}
-            className="w-full h-10 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] focus:border-[#FFB800] text-xs font-mono text-sky-100 outline-none cursor-pointer"
+            className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-[#D95D1E] text-xs font-mono text-slate-700 outline-none cursor-pointer"
           >
             <option value="all">Barcha viloyatlar</option>
             <option value="Toshkent shahri">Toshkent shahri</option>
@@ -255,10 +249,10 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
         <button
           type="button"
           onClick={() => setSelectedCategory('all')}
-          className={`px-3.5 py-2 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
+          className={`px-3.5 py-2 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-2xs ${
             selectedCategory === 'all'
-              ? 'bg-[#FFB800] text-[#071326] border-[#FFC928]'
-              : 'bg-[#0A1931] text-sky-200 border-[#1E3A6D] hover:border-[#2E5A9C] hover:text-white'
+              ? 'bg-[#D95D1E] text-white border-[#D95D1E]'
+              : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:text-slate-900'
           }`}
         >
           Barcha toifalar
@@ -268,10 +262,10 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
             key={cat.id}
             type="button"
             onClick={() => setSelectedCategory(cat.slug || cat.id)}
-            className={`px-3.5 py-2 rounded-xl border font-semibold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
+            className={`px-3.5 py-2 rounded-xl border font-semibold transition-all whitespace-nowrap cursor-pointer shadow-2xs ${
               selectedCategory === cat.slug || selectedCategory === cat.id
-                ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
-                : 'bg-[#0A1931] text-sky-200 border-[#1E3A6D] hover:border-[#2E5A9C] hover:text-white'
+                ? 'bg-[#D95D1E] text-white border-[#D95D1E] font-bold'
+                : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:text-slate-900'
             }`}
           >
             {cat.name}
@@ -280,14 +274,14 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
       </div>
 
       {/* 4. COLOR_OPTIONS Palette Filter Bar */}
-      <div className="bg-[#0A1931] border border-[#1E3A6D] p-3 rounded-2xl space-y-2">
+      <div className="bg-white border border-slate-200 p-3 rounded-2xl space-y-2 shadow-2xs">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono font-bold text-[#FFB800] uppercase tracking-wider">
+            <span className="text-[11px] font-mono font-bold text-slate-900 uppercase tracking-wider">
               Ranglar Bo‘yicha Filtr (Palette):
             </span>
             {selectedColor && (
-              <span className="text-[10px] font-mono bg-[#132C54] text-sky-200 px-2 py-0.5 rounded">
+              <span className="text-[10px] font-mono bg-orange-50 text-[#D95D1E] border border-orange-200 px-2 py-0.5 rounded font-bold">
                 Tanlangan: {COLOR_OPTIONS.find((c) => c.id === selectedColor)?.label}
               </span>
             )}
@@ -296,7 +290,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
             <button
               type="button"
               onClick={() => setSelectedColor(null)}
-              className="text-[10px] font-mono text-[#FFB800] hover:underline cursor-pointer"
+              className="text-[10px] font-mono text-[#D95D1E] hover:underline cursor-pointer font-bold"
             >
               Rang filtrini tozalash
             </button>
@@ -309,8 +303,8 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
             onClick={() => setSelectedColor(null)}
             className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-all cursor-pointer border ${
               selectedColor === null
-                ? 'bg-[#132C54] text-white border-[#FFB800]'
-                : 'bg-[#071326] text-sky-300 border-[#1E3A6D] hover:border-[#2E5A9C]'
+                ? 'bg-slate-900 text-white border-slate-900'
+                : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-300 hover:text-slate-900'
             }`}
           >
             Barchasi
@@ -326,8 +320,8 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                 title={col.label}
                 className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-semibold transition-all cursor-pointer border shrink-0 ${
                   isSelected
-                    ? 'bg-[#132C54] border-[#FFB800] text-white shadow-[0_0_10px_rgba(255,184,0,0.3)] ring-1 ring-[#FFB800]'
-                    : 'bg-[#071326] border-[#1E3A6D] text-sky-200 hover:border-[#2E5A9C] hover:text-white'
+                    ? 'bg-orange-50 border-[#D95D1E] text-[#D95D1E] ring-1 ring-[#D95D1E]'
+                    : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 hover:text-slate-900'
                 }`}
               >
                 <span
@@ -345,23 +339,23 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="industrial-card rounded-2xl p-4 space-y-3 bg-[#0A1931]">
-              <Skeleton variant="rect" height={190} className="rounded-xl bg-[#0F2547]" />
-              <Skeleton variant="text" width="40%" className="bg-[#0F2547]" />
-              <Skeleton variant="text" width="80%" className="bg-[#0F2547]" />
-              <Skeleton variant="text" width="60%" className="bg-[#0F2547]" />
+            <div key={i} className="bg-white rounded-2xl p-4 space-y-3 border border-slate-200 shadow-2xs">
+              <Skeleton variant="rect" height={190} className="rounded-xl bg-slate-100" />
+              <Skeleton variant="text" width="40%" className="bg-slate-100" />
+              <Skeleton variant="text" width="80%" className="bg-slate-100" />
+              <Skeleton variant="text" width="60%" className="bg-slate-100" />
             </div>
           ))}
         </div>
       ) : filteredProducts.length === 0 ? (
-        <div className="industrial-card rounded-2xl p-12 text-center space-y-4 bg-[#0A1931]">
-          <div className="w-14 h-14 rounded-2xl bg-[#0F2547] border border-[#1E3A6D] flex items-center justify-center mx-auto text-[#FFB800]">
+        <div className="bg-white rounded-2xl p-12 text-center space-y-4 border border-slate-200 shadow-2xs">
+          <div className="w-14 h-14 rounded-2xl bg-orange-50 border border-orange-200 flex items-center justify-center mx-auto text-[#D95D1E]">
             <Package className="w-7 h-7" />
           </div>
-          <h3 className="font-heading font-black text-lg text-white">
+          <h3 className="font-heading font-black text-lg text-slate-900">
             Materiallar topilmadi
           </h3>
-          <p className="text-xs text-sky-200/80 max-w-sm mx-auto">
+          <p className="text-xs text-slate-600 max-w-sm mx-auto">
             Qidiruv so‘zini o‘zgartirib ko‘ring yoki toifalar va rang filtrini tozalang.
           </p>
           <button
@@ -372,7 +366,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
               setSelectedRegion('all');
               setSelectedColor(null);
             }}
-            className="btn-industrial-dark px-4 py-2 rounded-xl text-xs font-bold cursor-pointer"
+            className="px-4 py-2 rounded-xl text-xs font-bold cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 transition-colors"
           >
             Barcha filtrlarni tozalash
           </button>
@@ -389,15 +383,11 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
               <div
                 key={p.id}
                 onClick={() => navigate(`/products/${p.id}`)}
-                className="industrial-card group relative rounded-2xl p-4 flex flex-col justify-between border border-[#1E3A6D] hover:border-[#2E5A9C] bg-[#0A1931] shadow-lg cursor-pointer select-none transition-all duration-200"
+                className="group relative rounded-2xl p-4 flex flex-col justify-between border border-slate-200 hover:border-slate-300 bg-white shadow-2xs hover:shadow-md cursor-pointer select-none transition-all duration-200"
               >
-                {/* Corner Industrial Rivets */}
-                <div className="absolute top-2.5 left-2.5 industrial-rivet opacity-70" />
-                <div className="absolute top-2.5 right-2.5 industrial-rivet opacity-70" />
-
                 <div>
                   {/* Product Image Box */}
-                  <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-[#071326] border border-[#1E3A6D] mb-3 group-hover:border-[#2E5A9C] transition-colors">
+                  <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-50 border border-slate-100 mb-3 group-hover:border-slate-200 transition-colors">
                     <img
                       src={p.images?.[0] || 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800'}
                       alt={p.title}
@@ -410,43 +400,43 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                     />
 
                     {/* Stock badge */}
-                    <div className="absolute bottom-2.5 right-2.5 bg-[#071326]/90 backdrop-blur-md px-2.5 py-0.5 rounded text-[10px] font-mono font-bold text-sky-200 border border-[#1E3A6D] shadow-sm">
+                    <div className="absolute bottom-2.5 right-2.5 bg-white/95 backdrop-blur-md px-2.5 py-0.5 rounded text-[10px] font-mono font-bold text-slate-700 border border-slate-200 shadow-2xs">
                       {p.stock > 0 ? `${p.stock} ${formatUnit(p.unit)}` : 'Zaxira tugagan'}
                     </div>
 
                     {/* 50/50 Escrow Pill on Image */}
-                    <div className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#071326]/90 backdrop-blur-md border border-emerald-500/40 text-[10px] font-mono font-bold text-emerald-400 shadow-xs">
-                      <ShieldCheck className="w-3 h-3 text-[#FFB800]" />
+                    <div className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50/95 backdrop-blur-md border border-emerald-200 text-[10px] font-mono font-bold text-emerald-700 shadow-2xs">
+                      <ShieldCheck className="w-3 h-3 text-emerald-600" />
                       <span>50/50 Escrow</span>
                     </div>
                   </div>
 
                   {/* Supplier & Delivery Badges */}
-                  <div className="flex items-center justify-between text-[11px] font-mono text-sky-300/80 mb-1.5">
-                    <span className="truncate max-w-[170px] text-sky-200 font-semibold flex items-center gap-1">
-                      <Factory className="w-3 h-3 text-[#FFB800] shrink-0" />
+                  <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 mb-1.5">
+                    <span className="truncate max-w-[170px] text-slate-700 font-semibold flex items-center gap-1">
+                      <Factory className="w-3 h-3 text-[#D95D1E] shrink-0" />
                       {p.supplierName || 'Rasmiy Ishlab chiqaruvchi'}
                     </span>
                     <div className="flex items-center gap-1.5 shrink-0">
                       {p.hasDelivery && (
-                        <span className="text-emerald-400 font-bold flex items-center gap-0.5 text-[10px]">
+                        <span className="text-emerald-700 bg-emerald-50/80 px-1.5 py-0.5 rounded font-bold flex items-center gap-0.5 text-[10px]">
                           <Truck className="w-3 h-3" /> Yetkazish bor
                         </span>
                       )}
-                      <span className="text-sky-600">•</span>
-                      <span className="text-emerald-400 font-bold text-[10px]">12% QQS</span>
+                      <span className="text-slate-300">•</span>
+                      <span className="text-slate-600 font-medium text-[10px]">12% QQS</span>
                     </div>
                   </div>
 
                   {/* Title */}
-                  <h3 className="font-heading font-black text-white text-base line-clamp-2 group-hover:text-[#FFB800] transition-colors leading-snug">
+                  <h3 className="font-heading font-black text-slate-900 text-base line-clamp-2 group-hover:text-[#D95D1E] transition-colors leading-snug">
                     {p.title}
                   </h3>
 
                   {/* Variants / Color Swatches Preview if available */}
                   {variantColors.length > 0 && (
                     <div className="flex items-center gap-1.5 mt-2">
-                      <span className="text-[10px] font-mono text-sky-400">Ranglar:</span>
+                      <span className="text-[10px] font-mono text-slate-500">Ranglar:</span>
                       <div className="flex items-center gap-1">
                         {variantColors.slice(0, 5).map((cName, idx) => {
                           const opt = COLOR_OPTIONS.find((c) =>
@@ -456,7 +446,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                             <span
                               key={idx}
                               title={cName || ''}
-                              className="w-3 h-3 rounded-full border border-sky-400/50"
+                              className="w-3 h-3 rounded-full border border-slate-300"
                               style={{ backgroundColor: opt?.bg || '#64748b' }}
                             />
                           );
@@ -467,19 +457,19 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                 </div>
 
                 {/* Bottom Price & Action Row */}
-                <div className="pt-3 mt-3 border-t border-[#1E3A6D] flex items-center justify-between">
+                <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between">
                   <div>
-                    <span className="text-[10px] uppercase font-mono text-sky-400/80 block">
+                    <span className="text-[10px] uppercase font-mono text-slate-500 block">
                       Zavod Narxi:
                     </span>
-                    <p className="text-lg font-heading font-black text-[#FFB800] leading-tight font-mono-numbers">
+                    <p className="text-lg font-heading font-black text-[#D95D1E] leading-tight font-mono-numbers">
                       {priceNum.toLocaleString()}{' '}
-                      <span className="text-xs font-sans font-normal text-sky-200">
+                      <span className="text-xs font-sans font-normal text-slate-600">
                         so‘m / {formatUnit(p.unit)}
                       </span>
                     </p>
                     {p.tieredPrices && p.tieredPrices.length > 0 && (
-                      <span className="text-[10px] font-mono font-bold text-[#FFB800] bg-[#132C54] border border-[#254B85] px-1.5 py-0.5 rounded mt-0.5 inline-block">
+                      <span className="text-[10px] font-mono font-bold text-amber-800 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded mt-0.5 inline-block">
                         Ulgurji: {Number(p.tieredPrices[p.tieredPrices.length - 1].price).toLocaleString()} so‘mdan
                       </span>
                     )}
@@ -488,11 +478,11 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                   <button
                     type="button"
                     onClick={(e) => handleAdd(e, p)}
-                    className="btn-industrial-yellow px-3.5 py-2 rounded-xl font-black text-xs flex items-center gap-1.5 cursor-pointer shadow-md select-none"
+                    className="bg-[#D95D1E] hover:bg-[#B43B06] text-white px-3.5 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs transition-colors select-none"
                   >
                     {addedId === p.id ? (
                       <>
-                        <Check className="w-4 h-4 text-emerald-800 stroke-[3]" />
+                        <Check className="w-4 h-4 stroke-[3]" />
                         <span>Savatda</span>
                       </>
                     ) : (

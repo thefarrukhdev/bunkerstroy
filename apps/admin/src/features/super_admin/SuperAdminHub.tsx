@@ -21,20 +21,19 @@ export const SuperAdminHub: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Sahifa sarlavhasi */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#0A1931] p-5 rounded-2xl border-2 border-[#1E3A6D] shadow-xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-xl">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#FFB800] animate-pulse" />
             <h1 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight">
               Super Admin Boshqaruv Markazi
             </h1>
           </div>
-          <p className="text-xs text-sky-200 font-mono mt-1">
+          <p className="text-xs text-slate-600 font-mono mt-1">
             BunkerStroy platformasi boshqaruvi, Sub-Adminlar ruxsatlar matritsasi va xavfsizlik rollari
           </p>
         </div>
 
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#071326] border border-[#FFB800]/50 text-[#FFB800] font-mono text-xs font-black">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-[#D95D1E]/50 text-[#D95D1E] font-mono text-xs font-black">
           <ShieldAlert className="w-4 h-4" />
           <span>SUPER ADMIN LEVEL 10</span>
         </div>
@@ -73,13 +72,13 @@ export const SuperAdminHub: React.FC = () => {
       </div>
 
       {/* Tab Switcher */}
-      <div className="flex flex-wrap border-b-2 border-[#1E3A6D] gap-2 pb-1">
+      <div className="flex flex-wrap border-b-2 border-slate-200 gap-2 pb-1">
         <button
           onClick={() => setActiveTab('sub_admins')}
           className={`flex items-center gap-2 py-2.5 px-4 text-xs font-black rounded-xl transition-all cursor-pointer font-mono ${
             activeTab === 'sub_admins'
-              ? 'bg-[#FFB800] text-[#071326] shadow-md shadow-[#FFB800]/20'
-              : 'bg-[#0A1931] text-sky-200 hover:text-white border border-[#1E3A6D]'
+              ? 'bg-[#D95D1E] text-white shadow-md shadow-[#D95D1E]/20'
+              : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
           }`}
         >
           <KeyRound className="w-4 h-4" />
@@ -90,8 +89,8 @@ export const SuperAdminHub: React.FC = () => {
           onClick={() => setActiveTab('staff')}
           className={`flex items-center gap-2 py-2.5 px-4 text-xs font-black rounded-xl transition-all cursor-pointer font-mono ${
             activeTab === 'staff'
-              ? 'bg-[#FFB800] text-[#071326] shadow-md shadow-[#FFB800]/20'
-              : 'bg-[#0A1931] text-sky-200 hover:text-white border border-[#1E3A6D]'
+              ? 'bg-[#D95D1E] text-white shadow-md shadow-[#D95D1E]/20'
+              : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
           }`}
         >
           <Users className="w-4 h-4" />
@@ -102,8 +101,8 @@ export const SuperAdminHub: React.FC = () => {
           onClick={() => setActiveTab('roles')}
           className={`flex items-center gap-2 py-2.5 px-4 text-xs font-black rounded-xl transition-all cursor-pointer font-mono ${
             activeTab === 'roles'
-              ? 'bg-[#FFB800] text-[#071326] shadow-md shadow-[#FFB800]/20'
-              : 'bg-[#0A1931] text-sky-200 hover:text-white border border-[#1E3A6D]'
+              ? 'bg-[#D95D1E] text-white shadow-md shadow-[#D95D1E]/20'
+              : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
           }`}
         >
           <Shield className="w-4 h-4" />
@@ -114,8 +113,8 @@ export const SuperAdminHub: React.FC = () => {
           onClick={() => setActiveTab('system')}
           className={`flex items-center gap-2 py-2.5 px-4 text-xs font-black rounded-xl transition-all cursor-pointer font-mono ${
             activeTab === 'system'
-              ? 'bg-[#FFB800] text-[#071326] shadow-md shadow-[#FFB800]/20'
-              : 'bg-[#0A1931] text-sky-200 hover:text-white border border-[#1E3A6D]'
+              ? 'bg-[#D95D1E] text-white shadow-md shadow-[#D95D1E]/20'
+              : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
           }`}
         >
           <Cpu className="w-4 h-4" />

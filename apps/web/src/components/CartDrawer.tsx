@@ -249,34 +249,34 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       footer={
         step !== 'success' && items.length > 0 ? (
           <div className="w-full space-y-3 font-mono">
-            {/* Price Summary bar (High contrast WCAG AAA on bg-[#0F2547]) */}
-            <div className="bg-[#0F2547] border border-[#1E3A6D] rounded-xl p-3.5 space-y-2 text-xs shadow-md">
-              <div className="flex justify-between text-slate-200 font-medium">
+            {/* Price Summary bar (Clean Neo-Architectural precision) */}
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2 text-xs shadow-2xs">
+              <div className="flex justify-between text-slate-600 font-medium">
                 <span>Mahsulotlar summasi:</span>
-                <span className="text-white font-bold">{totalItemsSum.toLocaleString()} so‘m</span>
+                <span className="text-slate-900 font-bold">{totalItemsSum.toLocaleString()} so‘m</span>
               </div>
-              <div className="flex justify-between text-slate-200 font-medium">
+              <div className="flex justify-between text-slate-600 font-medium">
                 <span>Yetkazib berish to‘lovi:</span>
-                <span className={deliveryFee === 0 ? 'text-emerald-400 font-bold' : 'text-white font-bold'}>
+                <span className={deliveryFee === 0 ? 'text-emerald-700 font-bold' : 'text-slate-900 font-bold'}>
                   {deliveryFee === 0 ? 'BEPUL (O‘zi olib ketish)' : `${deliveryFee.toLocaleString()} so‘m`}
                 </span>
               </div>
-              <div className="pt-2 border-t border-[#1E3A6D] flex justify-between text-sm font-bold text-white items-baseline">
+              <div className="pt-2 border-t border-slate-200 flex justify-between text-sm font-bold text-slate-900 items-baseline">
                 <span>Jami to‘lov:</span>
-                <span className="text-[#FFB800] font-black text-base">{grandTotal.toLocaleString()} so‘m</span>
+                <span className="text-[#D95D1E] font-black text-base">{grandTotal.toLocaleString()} so‘m</span>
               </div>
 
               {paymentMode === 'SPLIT_50_50' && (
-                <div className="bg-[#071326] border border-[#1E3A6D] rounded-lg p-2.5 text-[11px] space-y-1 text-slate-200">
-                  <div className="flex justify-between font-bold text-white">
+                <div className="bg-white border border-slate-200 rounded-lg p-2.5 text-[11px] space-y-1 text-slate-700 shadow-2xs">
+                  <div className="flex justify-between font-bold text-slate-900">
                     <span>Avans to‘lovi (50%):</span>
-                    <span className="text-[#FFB800]">{Math.round(grandTotal / 2).toLocaleString()} so‘m</span>
+                    <span className="text-[#D95D1E]">{Math.round(grandTotal / 2).toLocaleString()} so‘m</span>
                   </div>
-                  <div className="flex justify-between text-slate-300">
+                  <div className="flex justify-between text-slate-600">
                     <span>Qoldiq to‘lov (50%):</span>
-                    <span className="text-slate-100 font-semibold">{(grandTotal - Math.round(grandTotal / 2)).toLocaleString()} so‘m (yetib kelgach)</span>
+                    <span className="text-slate-900 font-semibold">{(grandTotal - Math.round(grandTotal / 2)).toLocaleString()} so‘m (yetib kelgach)</span>
                   </div>
-                  <p className="text-[10px] text-amber-300/90 pt-0.5 font-sans">
+                  <p className="text-[10px] text-amber-700 pt-0.5 font-sans">
                     * Qabul kodi yuk yetib kelib, 2-to‘lov tasdiqlangach ochiladi.
                   </p>
                 </div>
@@ -367,47 +367,47 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               {items.map(({ product, quantity }) => (
                 <div
                   key={product.id}
-                  className="bg-[#0F2547] border border-[#1E3A6D] rounded-xl p-3 flex items-start gap-3 shadow-xs"
+                  className="bg-white border border-slate-200 rounded-xl p-3 flex items-start gap-3 shadow-2xs"
                 >
                   <img
                     src={product.images?.[0] || 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800'}
                     alt={product.title}
-                    className="w-16 h-16 rounded-lg object-cover border border-[#1E3A6D] shrink-0 bg-[#071326]"
+                    className="w-16 h-16 rounded-lg object-cover border border-slate-200 shrink-0 bg-slate-50"
                   />
 
                   <div className="flex-1 min-w-0 space-y-1">
-                    <h4 className="font-heading font-bold text-xs text-white line-clamp-1">
+                    <h4 className="font-heading font-bold text-xs text-slate-900 line-clamp-1">
                       {product.title}
                     </h4>
 
-                    <div className="text-[11px] font-mono text-sky-300">
+                    <div className="text-[11px] font-mono text-slate-600">
                       {Number(product.price).toLocaleString()} so‘m / {product.unit}
                     </div>
 
                     <div className="flex items-center justify-between pt-1">
                       {/* Quantity Controls */}
-                      <div className="flex items-center border border-[#1E3A6D] rounded-lg bg-[#071326] overflow-hidden font-mono text-xs">
+                      <div className="flex items-center border border-slate-200 rounded-lg bg-slate-50 overflow-hidden font-mono text-xs">
                         <button
                           type="button"
                           onClick={() => onUpdateQty(product.id, -1)}
-                          className="px-2 py-1 hover:bg-[#132C54] transition-colors text-sky-200"
+                          className="px-2 py-1 hover:bg-slate-100 transition-colors text-slate-700"
                         >
                           <Minus className="w-3 h-3" />
                         </button>
-                        <span className="px-3 py-1 font-bold text-white bg-[#0A1931]">
+                        <span className="px-3 py-1 font-bold text-slate-900 bg-white">
                           {quantity}
                         </span>
                         <button
                           type="button"
                           onClick={() => onUpdateQty(product.id, 1)}
-                          className="px-2 py-1 hover:bg-[#132C54] transition-colors text-sky-200"
+                          className="px-2 py-1 hover:bg-slate-100 transition-colors text-slate-700"
                         >
                           <Plus className="w-3 h-3" />
                         </button>
                       </div>
 
                       <div className="text-right font-mono">
-                        <div className="text-xs font-black text-[#FFB800]">
+                        <div className="text-xs font-black text-[#D95D1E]">
                           {(Number(product.price) * quantity).toLocaleString()} so‘m
                         </div>
                       </div>
@@ -417,7 +417,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <button
                     type="button"
                     onClick={() => onRemove(product.id)}
-                    className="text-slate-400 hover:text-red-700 p-1 rounded-md transition-colors"
+                    className="text-slate-400 hover:text-red-600 p-1 rounded-md transition-colors"
                     title="O‘chirish"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -435,17 +435,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       {step === 2 && (
         <div className="space-y-5 font-mono">
           {/* 1. Receiver Details */}
-          <div className="bg-[#0F2547] border border-[#1E3A6D] rounded-xl p-4 space-y-3 shadow-xs">
-            <div className="flex items-center gap-2 pb-2 border-b border-[#1E3A6D]">
-              <User className="w-4 h-4 text-bunker-amber-500" />
-              <h3 className="text-xs font-bold uppercase tracking-wider text-white">
+          <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-3 shadow-2xs">
+            <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+              <User className="w-4 h-4 text-[#D95D1E]" />
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
                 1. Qabul Qiluvchi Ma’lumotlari
               </h3>
             </div>
 
             <div className="space-y-2.5">
               <div>
-                <label className="text-[11px] text-sky-200 block mb-1">
+                <label className="text-[11px] text-slate-700 font-medium block mb-1">
                   Ismingiz / Korxona nomi *
                 </label>
                 <Input
@@ -457,7 +457,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </div>
 
               <div>
-                <label className="text-[11px] text-sky-200 block mb-1">
+                <label className="text-[11px] text-slate-700 font-medium block mb-1">
                   Telefon raqamingiz *
                 </label>
                 <Input
@@ -466,7 +466,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   value={buyerPhone}
                   onChange={(e) => setBuyerPhone(e.target.value)}
                 />
-                <span className="text-[10px] text-sky-400 mt-0.5 block">
+                <span className="text-[10px] text-slate-500 mt-0.5 block">
                   Kuryer yoki sotuvchi yetkazib berishdan oldin telefon qiladi.
                 </span>
               </div>
@@ -474,10 +474,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           </div>
 
           {/* 2. Delivery Method */}
-          <div className="bg-[#0F2547] border border-[#1E3A6D] rounded-xl p-4 space-y-3 shadow-xs">
-            <div className="flex items-center gap-2 pb-2 border-b border-[#1E3A6D]">
-              <Truck className="w-4 h-4 text-bunker-amber-500" />
-              <h3 className="text-xs font-bold uppercase tracking-wider text-white">
+          <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-3 shadow-2xs">
+            <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+              <Truck className="w-4 h-4 text-[#D95D1E]" />
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
                 2. Yetkazib Berish Usuli
               </h3>
             </div>
@@ -488,18 +488,18 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 onClick={() => setDeliveryMethod('COURIER')}
                 className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                   deliveryMethod === 'COURIER'
-                    ? 'border-[#FFB800] bg-[#132C54] shadow-xs'
-                    : 'border-[#1E3A6D] bg-[#071326] hover:border-slate-500'
+                    ? 'border-[#D95D1E] bg-[#D95D1E]/5 shadow-2xs'
+                    : 'border-slate-200 bg-slate-50 hover:border-slate-300'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <div className="font-bold text-xs text-white flex items-center gap-1.5">
-                    <Truck className="w-3.5 h-3.5 text-bunker-amber-500" />
+                  <div className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
+                    <Truck className="w-3.5 h-3.5 text-[#D95D1E]" />
                     <span>Keltirib berish</span>
                   </div>
-                  <span className="text-[11px] font-bold text-[#FFB800]">+50,000 so‘m</span>
+                  <span className="text-[11px] font-bold text-[#D95D1E]">+50,000 so‘m</span>
                 </div>
-                <p className="text-[10px] text-sky-300">
+                <p className="text-[10px] text-slate-600">
                   Toshkent va viloyatlar bo‘yicha manzilingizgacha olib boriladi.
                 </p>
               </button>
@@ -509,18 +509,18 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 onClick={() => setDeliveryMethod('PICKUP')}
                 className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                   deliveryMethod === 'PICKUP'
-                    ? 'border-[#FFB800] bg-[#132C54] shadow-xs'
-                    : 'border-[#1E3A6D] bg-[#071326] hover:border-slate-500'
+                    ? 'border-[#D95D1E] bg-[#D95D1E]/5 shadow-2xs'
+                    : 'border-slate-200 bg-slate-50 hover:border-slate-300'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <div className="font-bold text-xs text-white flex items-center gap-1.5">
-                    <Building className="w-3.5 h-3.5 text-sky-300" />
+                  <div className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
+                    <Building className="w-3.5 h-3.5 text-slate-600" />
                     <span>O‘zi olib ketish</span>
                   </div>
-                  <span className="text-[11px] font-bold text-emerald-400">BEPUL</span>
+                  <span className="text-[11px] font-bold text-emerald-600">BEPUL</span>
                 </div>
-                <p className="text-[10px] text-sky-300">
+                <p className="text-[10px] text-slate-600">
                   Sotuvchining omboridan o‘zingiz olib ketasiz.
                 </p>
               </button>
@@ -529,16 +529,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             {deliveryMethod === 'COURIER' && (
               <div className="pt-2 space-y-3">
                 {/* Saved Construction Sites Quick-Picker (MJ-02) */}
-                <div className="bg-[#071326] border border-[#1E3A6D] rounded-lg p-2.5 space-y-2">
+                <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-white flex items-center gap-1.5 font-mono">
-                      <Bookmark className="w-3.5 h-3.5 text-[#FFB800]" />
+                    <span className="text-[11px] font-bold text-slate-900 flex items-center gap-1.5 font-mono">
+                      <Bookmark className="w-3.5 h-3.5 text-[#D95D1E]" />
                       Qurilish Obyektlari (Saqlangan Manzillar)
                     </span>
                     <button
                       type="button"
                       onClick={() => setIsAddingSite(!isAddingSite)}
-                      className="text-[10px] text-[#FFB800] font-bold hover:underline"
+                      className="text-[10px] text-[#D95D1E] font-bold hover:underline"
                     >
                       {isAddingSite ? 'Yopish' : '+ Obyekt qo‘shish'}
                     </button>
@@ -554,15 +554,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           onClick={() => handleSelectSite(site)}
                           className={`p-2 rounded-md border text-left transition-all text-xs flex items-center justify-between cursor-pointer ${
                             isSelected
-                              ? 'border-[#FFB800] bg-[#FFB800]/15 font-bold text-[#FFB800] shadow-sm'
-                              : 'border-[#1E3A6D] bg-[#0A1931] text-slate-200 hover:border-[#FFB800]/60 hover:text-white'
+                              ? 'border-[#D95D1E] bg-white font-bold text-[#D95D1E] shadow-2xs'
+                              : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:text-slate-900'
                           }`}
                         >
                           <div className="truncate mr-1">
                             <div className="text-[11px] font-semibold truncate">{site.name}</div>
-                            <div className="text-[9px] text-sky-300/70 truncate">{site.district}, {site.street}</div>
+                            <div className="text-[9px] text-slate-500 truncate">{site.district}, {site.street}</div>
                           </div>
-                          {isSelected && <Check className="w-3.5 h-3.5 text-[#FFB800] shrink-0" />}
+                          {isSelected && <Check className="w-3.5 h-3.5 text-[#D95D1E] shrink-0" />}
                         </button>
                       );
                     })}
@@ -572,21 +572,21 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       onClick={() => setSelectedSiteId('custom')}
                       className={`p-2 rounded-md border text-left transition-all text-xs flex items-center justify-between cursor-pointer ${
                         selectedSiteId === 'custom'
-                          ? 'border-[#FFB800] bg-[#FFB800]/15 font-bold text-[#FFB800] shadow-sm'
-                          : 'border-[#1E3A6D] bg-[#0A1931] text-slate-200 hover:border-[#FFB800]/60 hover:text-white'
+                          ? 'border-[#D95D1E] bg-white font-bold text-[#D95D1E] shadow-2xs'
+                          : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:text-slate-900'
                       }`}
                     >
                       <div>
                         <div className="text-[11px] font-semibold">Boshqa yangi manzil</div>
-                        <div className="text-[9px] text-sky-300/70">Qo‘lda kiritish</div>
+                        <div className="text-[9px] text-slate-500">Qo‘lda kiritish</div>
                       </div>
-                      {selectedSiteId === 'custom' && <Check className="w-3.5 h-3.5 text-[#FFB800] shrink-0" />}
+                      {selectedSiteId === 'custom' && <Check className="w-3.5 h-3.5 text-[#D95D1E] shrink-0" />}
                     </button>
                   </div>
 
                   {/* Add New Site Form */}
                   {isAddingSite && (
-                    <div className="pt-2 border-t border-[#1E3A6D] flex gap-2">
+                    <div className="pt-2 border-t border-slate-200 flex gap-2">
                       <Input
                         sizeVariant="sm"
                         placeholder="Obyekt nomi (masalan: Mirzo Ulug‘bek Lot 2)"
@@ -614,7 +614,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div>
-                    <label className="text-[11px] text-bunker-text-secondary block mb-1">
+                    <label className="text-[11px] text-slate-700 font-medium block mb-1">
                       Viloyat / Shahar
                     </label>
                     <Select
@@ -630,7 +630,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-[11px] text-bunker-text-secondary block mb-1">
+                    <label className="text-[11px] text-slate-700 font-medium block mb-1">
                       Tuman
                     </label>
                     <Input
@@ -643,7 +643,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
 
                 <div>
-                  <label className="text-[11px] text-bunker-text-secondary block mb-1">
+                  <label className="text-[11px] text-slate-700 font-medium block mb-1">
                     Ko‘cha, uy / xonadon raqami *
                   </label>
                   <Input
@@ -655,7 +655,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
 
                 <div>
-                  <label className="text-[11px] text-bunker-text-secondary block mb-1">
+                  <label className="text-[11px] text-slate-700 font-medium block mb-1">
                     Mo‘ljal (Landmark)
                   </label>
                   <Input
@@ -670,56 +670,56 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           </div>
 
           {/* 3. Payment Method */}
-          <div className="bg-[#0F2547] border border-[#1E3A6D] rounded-xl p-4 space-y-3 shadow-xs">
-            <div className="flex items-center gap-2 pb-2 border-b border-[#1E3A6D]">
-              <CreditCard className="w-4 h-4 text-bunker-amber-500" />
-              <h3 className="text-xs font-bold uppercase tracking-wider text-white">
+          <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-3 shadow-2xs">
+            <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+              <CreditCard className="w-4 h-4 text-[#D95D1E]" />
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
                 3. To‘lov Turi
               </h3>
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="payment-cod" className="flex items-center gap-2.5 p-2.5 rounded-lg border border-[#1E3A6D] bg-[#071326] hover:bg-[#132C54] cursor-pointer">
+              <label htmlFor="payment-cod" className="flex items-center gap-2.5 p-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 cursor-pointer">
                 <input
                   id="payment-cod"
                   type="radio"
                   name="payment"
                   checked={paymentMethod === 'CASH_ON_DELIVERY'}
                   onChange={() => setPaymentMethod('CASH_ON_DELIVERY')}
-                  className="text-bunker-amber-500"
+                  className="accent-[#D95D1E]"
                 />
-                <Banknote className="w-4 h-4 text-emerald-400" />
-                <span className="text-xs font-bold text-white">
+                <Banknote className="w-4 h-4 text-emerald-600" />
+                <span className="text-xs font-bold text-slate-900">
                   Qabul qilganda naqd yoki karta orqali to‘lov
                 </span>
               </label>
 
-              <label htmlFor="payment-payme" className="flex items-center gap-2.5 p-2.5 rounded-lg border border-[#1E3A6D] bg-[#071326] hover:bg-[#132C54] cursor-pointer">
+              <label htmlFor="payment-payme" className="flex items-center gap-2.5 p-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 cursor-pointer">
                 <input
                   id="payment-payme"
                   type="radio"
                   name="payment"
                   checked={paymentMethod === 'PAYME'}
                   onChange={() => setPaymentMethod('PAYME')}
-                  className="text-bunker-amber-500"
+                  className="accent-[#D95D1E]"
                 />
-                <CreditCard className="w-4 h-4 text-sky-400" />
-                <span className="text-xs font-bold text-white">
+                <CreditCard className="w-4 h-4 text-sky-600" />
+                <span className="text-xs font-bold text-slate-900">
                   Payme / Click orqali onlayn to‘lov
                 </span>
               </label>
 
-              <label htmlFor="payment-bank" className="flex items-center gap-2.5 p-2.5 rounded-lg border border-[#1E3A6D] bg-[#071326] hover:bg-[#132C54] cursor-pointer">
+              <label htmlFor="payment-bank" className="flex items-center gap-2.5 p-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 cursor-pointer">
                 <input
                   id="payment-bank"
                   type="radio"
                   name="payment"
                   checked={paymentMethod === 'BANK_TRANSFER'}
                   onChange={() => setPaymentMethod('BANK_TRANSFER')}
-                  className="text-bunker-amber-500"
+                  className="accent-[#D95D1E]"
                 />
-                <FileText className="w-4 h-4 text-purple-400" />
-                <span className="text-xs font-bold text-white">
+                <FileText className="w-4 h-4 text-purple-600" />
+                <span className="text-xs font-bold text-slate-900">
                   Korxona hisob-fakturasi (B2B Bank o‘tkazmasi)
                 </span>
               </label>
@@ -727,11 +727,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           </div>
 
           {/* 4. Escrow & Payment Mode (100% vs 50/50) */}
-          <div className="bg-[#0F2547] border border-[#1E3A6D] rounded-xl p-4 space-y-3 shadow-xs">
-            <div className="flex items-center justify-between pb-2 border-b border-[#1E3A6D]">
+          <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-3 shadow-2xs">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-bunker-amber-500" />
-                <h3 className="text-xs font-bold uppercase tracking-wider text-white">
+                <Sparkles className="w-4 h-4 text-[#D95D1E]" />
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
                   4. To‘lov Rejimi (Escrow Himoyasi)
                 </h3>
               </div>
@@ -746,15 +746,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 onClick={() => setPaymentMode('FULL_100')}
                 className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                   paymentMode === 'FULL_100'
-                    ? 'border-[#FFB800] bg-[#132C54] shadow-xs'
-                    : 'border-[#1E3A6D] bg-[#071326] hover:border-slate-500'
+                    ? 'border-[#D95D1E] bg-[#D95D1E]/5 shadow-2xs'
+                    : 'border-slate-200 bg-slate-50 hover:border-slate-300'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-bold text-xs text-white">100% Oldindan To‘lov</span>
+                  <span className="font-bold text-xs text-slate-900">100% Oldindan To‘lov</span>
                   <Badge variant="success" size="sm">Standart</Badge>
                 </div>
-                <p className="text-[10px] text-sky-300 leading-relaxed">
+                <p className="text-[10px] text-slate-600 leading-relaxed">
                   Pul xavfsiz Escrow hisobida turadi. Yuk yetib kelgach darhol qabul kodi bilan qabul qilasiz.
                 </p>
               </button>
@@ -764,15 +764,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 onClick={() => setPaymentMode('SPLIT_50_50')}
                 className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                   paymentMode === 'SPLIT_50_50'
-                    ? 'border-[#FFB800] bg-[#132C54] shadow-xs'
-                    : 'border-[#1E3A6D] bg-[#071326] hover:border-slate-500'
+                    ? 'border-[#D95D1E] bg-[#D95D1E]/5 shadow-2xs'
+                    : 'border-slate-200 bg-slate-50 hover:border-slate-300'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-bold text-xs text-white">50% / 50% Bo‘lib To‘lash</span>
+                  <span className="font-bold text-xs text-slate-900">50% / 50% Bo‘lib To‘lash</span>
                   <Badge variant="warning" size="sm">B2B Pilot</Badge>
                 </div>
-                <p className="text-[10px] text-sky-300 leading-relaxed">
+                <p className="text-[10px] text-slate-600 leading-relaxed">
                   50% avans buyurtmada, qolgan 50% yuk yetib kelganda, tushirishdan oldin to‘lanadi.
                 </p>
               </button>

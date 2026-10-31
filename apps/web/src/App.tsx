@@ -224,34 +224,31 @@ export const AppContent: React.FC = () => {
         </Routes>
       </main>
 
-      {/* 3. Minimalist Industrial Footer */}
-      <footer className="mt-auto bg-[#0A1931] border-t-2 border-[#1E3A6D] text-sky-200">
-        <div className="h-[2px] w-full hazard-stripe-sm opacity-90" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* 3. Minimalist Precision Footer */}
+      <footer className="mt-auto bg-white border-t border-slate-200 text-slate-600">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
             {/* Column 1: Brand Info */}
             <div className="lg:col-span-2 space-y-3">
               <div className="flex items-center gap-2.5">
-                <div className="relative w-8 h-8 rounded-lg bg-[#0F2547] border border-[#254B85] flex items-center justify-center">
-                  <div className="absolute top-0.5 left-0.5 industrial-rivet" />
-                  <div className="absolute top-0.5 right-0.5 industrial-rivet" />
-                  <HardHat className="w-4 h-4 text-[#FFB800]" />
+                <div className="w-8 h-8 rounded-lg bg-[#D95D1E] flex items-center justify-center text-white shadow-xs">
+                  <HardHat className="w-4 h-4" />
                 </div>
-                <span className="font-heading text-lg font-extrabold tracking-tight text-white">
-                  <span className="text-[#FFB800]">BUNKER</span>STROY
+                <span className="font-heading text-lg font-extrabold tracking-tight text-slate-900">
+                  <span className="text-[#D95D1E]">BUNKER</span>STROY
                 </span>
               </div>
 
-              <p className="text-xs text-sky-200/80 max-w-sm leading-relaxed">
+              <p className="text-xs text-slate-500 max-w-sm leading-relaxed">
                 Qurilish mollari ishlab chiqaruvchilar, do‘konlar va xaridorlarni to‘g‘ridan-to‘g‘ri
                 birlashtiruvchi zamonaviy marketplace va og‘ir yuk logistika platformasi.
               </p>
 
               <div className="flex items-center gap-2 pt-1 font-mono text-[10px]">
-                <span className="bg-[#0F2547] border border-[#1E3A6D] px-2 py-0.5 rounded text-sky-200">
+                <span className="bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700">
                   ISO 9001:2015
                 </span>
-                <span className="bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded text-emerald-400 font-bold">
+                <span className="bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-emerald-700 font-bold">
                   O‘zDSt &amp; GOST
                 </span>
               </div>
@@ -259,42 +256,42 @@ export const AppContent: React.FC = () => {
 
             {/* Column 2: Platform Links */}
             <div className="space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#FFB800] font-mono">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 font-mono">
                 Platforma
               </h4>
-              <ul className="space-y-1.5 text-xs font-mono text-sky-100">
+              <ul className="space-y-1.5 text-xs font-mono text-slate-600">
                 <li>
-                  <Link to="/" className="hover:text-[#FFB800] transition-colors">
+                  <Link to="/" className="hover:text-[#D95D1E] transition-colors">
                     Bosh Sahifa
                   </Link>
                 </li>
                 <li>
-                  <Link to="/catalog" className="hover:text-[#FFB800] transition-colors">
+                  <Link to="/catalog" className="hover:text-[#D95D1E] transition-colors">
                     Katalog &amp; Vitrina
                   </Link>
                 </li>
                 <li>
-                  <Link to="/suppliers" className="hover:text-[#FFB800] transition-colors">
+                  <Link to="/suppliers" className="hover:text-[#D95D1E] transition-colors">
                     Do‘konlar &amp; Zavodlar
                   </Link>
                 </li>
                 <li>
-                  <Link to="/orders" className="hover:text-[#FFB800] transition-colors">
+                  <Link to="/orders" className="hover:text-[#D95D1E] transition-colors">
                     Mening Buyurtmalarim
                   </Link>
                 </li>
                 <li>
-                  <Link to="/seller-panel" className="text-[#FFB800] font-bold hover:underline transition-colors">
+                  <Link to="/seller-panel" className="text-[#D95D1E] font-bold hover:underline transition-colors">
                     + Sotuvchi Kabineti (POS &amp; CRM)
                   </Link>
                 </li>
                 <li>
-                  <Link to="/logistics" className="hover:text-[#FFB800] transition-colors">
+                  <Link to="/logistics" className="hover:text-[#D95D1E] transition-colors">
                     Yetkazib berish (Logistika)
                   </Link>
                 </li>
                 <li>
-                  <Link to="/driver" className="text-amber-400 font-bold hover:underline transition-colors flex items-center gap-1">
+                  <Link to="/driver" className="text-sky-700 font-bold hover:underline transition-colors flex items-center gap-1">
                     <span>🚛 Haydovchi Kabineti</span>
                   </Link>
                 </li>
@@ -303,24 +300,24 @@ export const AppContent: React.FC = () => {
 
             {/* Column 3: Standards & Integrations */}
             <div className="space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#FFB800] font-mono">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 font-mono">
                 Afzalliklar
               </h4>
-              <ul className="space-y-1.5 text-xs font-mono text-sky-200/90">
+              <ul className="space-y-1.5 text-xs font-mono text-slate-600">
                 <li className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FFB800]" />
+                  <span className="text-[#D95D1E] font-bold">—</span>
                   <span>Zavod va ishlab chiqaruvchi narxlari</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FFB800]" />
+                  <span className="text-[#D95D1E] font-bold">—</span>
                   <span>Ob'ektgacha yuk yetkazib berish</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                  <span>50/50 Xavfsiz Escrow to‘lovi</span>
+                  <span className="text-emerald-700 font-bold">—</span>
+                  <span>100% yoki 50/50 Xavfsiz to‘lov</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <span className="text-emerald-700 font-bold">—</span>
                   <span>Payme, Click, Naqd va B2B to‘lov</span>
                 </li>
               </ul>
@@ -328,20 +325,20 @@ export const AppContent: React.FC = () => {
 
             {/* Column 4: Contact & Support */}
             <div className="space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#FFB800] font-mono">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 font-mono">
                 Dispetcherlik
               </h4>
-              <div className="space-y-1.5 text-xs text-sky-200/90 font-mono">
+              <div className="space-y-1.5 text-xs text-slate-600 font-mono">
                 <div className="flex items-center gap-1.5">
-                  <PhoneCall className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                  <span className="text-white font-bold">+998 (71) 200-45-46</span>
+                  <PhoneCall className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span className="text-slate-900 font-bold">+998 (71) 200-45-46</span>
                 </div>
                 <div className="flex items-start gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-[#FFB800] shrink-0 mt-0.5" />
+                  <MapPin className="w-3.5 h-3.5 text-[#D95D1E] shrink-0 mt-0.5" />
                   <span>Toshkent sh., Bunyodkor shoh ko'chasi 42-A</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-sky-300/70">
-                  <Clock className="w-3.5 h-3.5 text-[#FFB800] shrink-0" />
+                <div className="flex items-center gap-1.5 text-slate-500">
+                  <Clock className="w-3.5 h-3.5 text-[#D95D1E] shrink-0" />
                   <span>24/7 uzluksiz xizmat</span>
                 </div>
               </div>
@@ -349,13 +346,13 @@ export const AppContent: React.FC = () => {
           </div>
 
           {/* Bottom Copyright */}
-          <div className="mt-8 pt-4 border-t border-[#1E3A6D] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono">
-            <p className="text-sky-300/70">
+          <div className="mt-8 pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono">
+            <p className="text-slate-500">
               &copy; 2026 BunkerStroy Enterprise LLC. Barcha huquqlar himoyalangan.
             </p>
             <div className="flex items-center gap-2">
-              <span className="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 px-2.5 py-0.5 rounded text-[11px] font-bold">
-                ● SLA: 99.98%
+              <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded text-[11px] font-bold">
+                SLA: 99.98%
               </span>
             </div>
           </div>

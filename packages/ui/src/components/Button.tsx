@@ -21,15 +21,15 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variantStyles = {
     primary:
-      'bg-bunker-amber-500 hover:bg-bunker-amber-400 text-black font-extrabold border border-[#E5A600] focus:ring-bunker-amber-500/30 shadow-xs active:shadow-none',
+      'bg-bunker-amber-500 hover:bg-[#B43B06] text-white font-bold border border-[#D95D1E] focus:ring-[#D95D1E]/30 shadow-xs active:shadow-none',
     secondary:
-      'bg-bunker-surface-1 hover:bg-bunker-surface-hover text-bunker-text-primary border border-bunker-border-strong focus:ring-bunker-border-strong shadow-xs active:bg-bunker-surface-2',
+      'bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 focus:ring-slate-300 shadow-xs active:bg-slate-100',
     danger:
-      'bg-bunker-status-red hover:bg-red-700 text-white focus:ring-bunker-status-red/30 shadow-xs',
+      'bg-bunker-status-red hover:bg-red-700 text-white font-bold focus:ring-bunker-status-red/30 shadow-xs',
     outline:
-      'border border-bunker-border-strong hover:border-bunker-amber-500 text-bunker-text-primary hover:text-bunker-amber-500 hover:bg-bunker-surface-hover focus:ring-bunker-amber-500/20',
+      'border border-slate-200 hover:border-[#D95D1E] text-slate-900 hover:text-[#D95D1E] hover:bg-slate-50 focus:ring-[#D95D1E]/20',
     ghost:
-      'text-bunker-text-secondary hover:text-bunker-text-primary hover:bg-bunker-surface-hover'
+      'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
   };
 
   const sizeStyles = {

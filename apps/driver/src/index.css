@@ -8,52 +8,52 @@
   --font-heading: 'Space Grotesk', 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  /* BunkerStroy Industrial Theme Tokens (Deep Industrial Navy & Hazard Yellow) */
-  --color-bunker-vault: #071326;
-  --color-bunker-base: #071326;
-  --color-bunker-surface-1: #0A1931;
-  --color-bunker-surface-2: #0F2547;
-  --color-bunker-surface-hover: #132C54;
-  --color-bunker-input: #071326;
-  --color-bunker-amber-500: #FFB800;
-  --color-bunker-amber-400: #FFC928;
-  --color-bunker-border-subtle: #1E3A6D;
-  --color-bunker-border-strong: #254B85;
-  --color-bunker-border-active: #FFB800;
-  --color-bunker-text-primary: #F5F5F2;
-  --color-bunker-text-secondary: #BAE6FD;
-  --color-bunker-text-muted: #94A3B8;
-  --color-bunker-status-green: #10B981;
-  --color-bunker-status-amber: #FFB800;
+  /* BunkerStroy Industrial Theme Tokens (Neo-Architectural Precision) */
+  --color-bunker-vault: #F8FAFC;
+  --color-bunker-base: #F8FAFC;
+  --color-bunker-surface-1: #FFFFFF;
+  --color-bunker-surface-2: #FFFFFF;
+  --color-bunker-surface-hover: #F1F5F9;
+  --color-bunker-input: #FFFFFF;
+  --color-bunker-amber-500: #D95D1E;
+  --color-bunker-amber-400: #EA580C;
+  --color-bunker-border-subtle: #E2E8F0;
+  --color-bunker-border-strong: #CBD5E1;
+  --color-bunker-border-active: #D95D1E;
+  --color-bunker-text-primary: #0F172A;
+  --color-bunker-text-secondary: #334155;
+  --color-bunker-text-muted: #64748B;
+  --color-bunker-status-green: #059669;
+  --color-bunker-status-amber: #D97706;
   --color-bunker-status-red: #DC2626;
-  --color-bunker-status-cyan: #38BDF8;
+  --color-bunker-status-cyan: #0284C7;
 
   /* Industrial Design Aliases */
-  --color-canvas: #071326;
-  --color-surface: #0A1931;
-  --color-surface-hover: #0F2547;
-  --color-surface-muted: #1E3A6D;
-  --color-brand-primary: #FFB800;
-  --color-brand-hover: #FFC928;
-  --color-hazard-yellow: #FFB800;
-  --color-hazard-yellow-bright: #FFC928;
-  --color-industrial-navy: #071326;
-  --color-industrial-surface: #0A1931;
-  --color-industrial-card: #0F2547;
-  --color-industrial-border: #1E3A6D;
-  --color-industrial-border-highlight: #2E5A9C;
+  --color-canvas: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-surface-hover: #F1F5F9;
+  --color-surface-muted: #E2E8F0;
+  --color-brand-primary: #D95D1E;
+  --color-brand-hover: #B43B06;
+  --color-hazard-yellow: #D95D1E;
+  --color-hazard-yellow-bright: #EA580C;
+  --color-industrial-navy: #F8FAFC;
+  --color-industrial-surface: #FFFFFF;
+  --color-industrial-card: #FFFFFF;
+  --color-industrial-border: #E2E8F0;
+  --color-industrial-border-highlight: #CBD5E1;
 }
 
 :root {
-  --bg-primary: #071326;
-  --bg-secondary: #0A1931;
-  --bg-card: #0F2547;
-  --color-yellow: #FFB800;
-  --color-yellow-bright: #FFC928;
-  --text-primary: #F5F5F2;
-  --text-secondary: #BAE6FD;
-  --border-industrial: #1E3A6D;
-  --metallic-highlight: #2E5A9C;
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --color-yellow: #D95D1E;
+  --color-yellow-bright: #EA580C;
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --border-industrial: #E2E8F0;
+  --metallic-highlight: #CBD5E1;
 }
 
 @layer base {
@@ -62,8 +62,8 @@
     min-height: 100vh;
     margin: 0;
     padding: 0;
-    background-color: #071326;
-    color: #F5F5F2;
+    background-color: #F8FAFC;
+    color: #0F172A;
     font-family: var(--font-sans);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     font-variant-numeric: tabular-nums;
@@ -83,106 +83,93 @@
     transform: translateY(1px) scale(0.99);
   }
 
-  /* Industrial scrollbar */
+  /* Precision scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #071326;
+    background: #F8FAFC;
   }
   ::-webkit-scrollbar-thumb {
-    background: #1E3A6D;
+    background: #CBD5E1;
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #FFB800;
+    background: #94A3B8;
   }
 }
 
 /* =========================================================================
-   AUTHENTIC INDUSTRIAL UTILITIES (#071326 / #0A1931 / #0F2547 & #FFB800)
+   AUTHENTIC INDUSTRIAL UTILITIES (#F8FAFC / #FFFFFF & #D95D1E)
    ========================================================================= */
 
 .bg-industrial-primary {
-  background-color: #071326;
+  background-color: #F8FAFC;
 }
 
 .bg-industrial-secondary {
-  background-color: #0A1931;
+  background-color: #FFFFFF;
 }
 
 .bg-industrial-card {
-  background-color: #0F2547;
+  background-color: #FFFFFF;
 }
 
 .border-industrial {
-  border-color: #1E3A6D;
+  border-color: #E2E8F0;
 }
 
 .border-industrial-highlight {
-  border-color: #2E5A9C;
+  border-color: #CBD5E1;
 }
 
 .brushed-steel {
-  background: linear-gradient(180deg, #0F2547 0%, #0A1931 100%);
-  border: 1px solid #1E3A6D;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 16px rgba(10, 25, 49, 0.25);
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .brushed-steel-header {
-  background: linear-gradient(180deg, #0A1931 0%, #071326 100%);
-  border-bottom: 2px solid #1E3A6D;
-  box-shadow: 0 4px 20px rgba(10, 25, 49, 0.35), inset 0 -1px 0 rgba(255, 184, 0, 0.15);
+  background: #FFFFFF;
+  border-bottom: 1px solid #E2E8F0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .industrial-card {
-  background-color: #0A1931;
-  border: 1px solid #1E3A6D;
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
   transition: all 0.2s ease-in-out;
 }
 
 .industrial-card:hover {
-  border-color: #2E5A9C;
-  box-shadow: 0 8px 24px -4px rgba(10, 25, 49, 0.45), 0 0 0 1px rgba(255, 184, 0, 0.25);
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.06);
 }
 
 .hazard-stripe-sm {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    #FFB800 0,
-    #FFB800 6px,
-    #0A1931 6px,
-    #0A1931 12px
-  );
+  display: none !important;
 }
 
 .industrial-rivet {
-  width: 6px;
-  height: 6px;
-  border-radius: 9999px;
-  background: radial-gradient(circle at 35% 35%, #93C5FD, #1E3A6D 70%, #0A1931);
-  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.3);
-  display: inline-block;
+  display: none !important;
 }
 
 .tech-grid-pattern {
-  background-image: linear-gradient(to right, rgba(30, 58, 109, 0.15) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(30, 58, 109, 0.15) 1px, transparent 1px);
-  background-size: 24px 24px;
+  display: none !important;
 }
 
 .btn-industrial-yellow {
-  background-color: #FFB800;
-  color: #000000;
-  font-weight: 800;
-  border: 1px solid #E5A600;
+  background-color: #D95D1E;
+  color: #FFFFFF;
+  font-weight: 700;
+  border: 1px solid #D95D1E;
   transition: all 0.15s ease-in-out;
 }
 
 .btn-industrial-yellow:hover {
-  background-color: #FFC928;
-  box-shadow: 0 0 14px rgba(255, 184, 0, 0.4);
+  background-color: #B43B06;
+  border-color: #B43B06;
 }
 
 .btn-industrial-yellow:active {
@@ -190,16 +177,15 @@
 }
 
 .btn-industrial-dark {
-  background-color: #132C54;
-  color: #FFFFFF;
-  border: 1px solid #2E5A9C;
+  background-color: #F1F5F9;
+  color: #0F172A;
+  border: 1px solid #E2E8F0;
   transition: all 0.15s ease-in-out;
 }
 
 .btn-industrial-dark:hover {
-  background-color: #1B3B6F;
-  border-color: #FFB800;
-  color: #FFB800;
+  background-color: #E2E8F0;
+  color: #0F172A;
 }
 
 .font-mono-numbers {

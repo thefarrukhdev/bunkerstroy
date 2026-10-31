@@ -250,71 +250,66 @@ export const OrdersView: React.FC = () => {
   const getStatusBadge = (status: OrderStatus) => {
     switch (status) {
       case 'DRAFT':
-        return <span className="bg-[#0F2547] text-sky-300 border border-[#1E3A6D] px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">SAVATDA</span>;
+        return <span className="bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">SAVATDA</span>;
       case 'PENDING_PAYMENT':
       case 'PENDING':
-        return <span className="bg-amber-950/80 text-[#FFB800] border border-[#FFB800]/50 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">TO‘LOV KUTILMOQDA</span>;
+        return <span className="bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">TO‘LOV KUTILMOQDA</span>;
       case 'PAID':
       case 'CONFIRMED':
-        return <span className="bg-sky-950/80 text-sky-300 border border-sky-500/40 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">TO‘LANDI (TASDIQLANDI)</span>;
+        return <span className="bg-sky-50 text-sky-700 border border-sky-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">TO‘LANDI (TASDIQLANDI)</span>;
       case 'ACCEPTED':
-        return <span className="bg-blue-950/80 text-blue-300 border border-blue-500/40 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">TA‘MINOTCHI TASDIQLADI</span>;
+        return <span className="bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">TA‘MINOTCHI TASDIQLADI</span>;
       case 'PACKING':
-        return <span className="bg-amber-950/70 text-amber-300 border border-amber-500/40 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">YIG‘ILMOQDA (OMBORDA)</span>;
+        return <span className="bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">YIG‘ILMOQDA (OMBORDA)</span>;
       case 'ASSIGNED':
       case 'ASSIGNED_TO_FLEET':
-        return <span className="bg-indigo-950/80 text-indigo-300 border border-indigo-500/40 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">HAYDOVCHI TAYINLANDI</span>;
+        return <span className="bg-indigo-50 text-indigo-700 border border-indigo-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">HAYDOVCHI TAYINLANDI</span>;
       case 'IN_TRANSIT':
-        return <span className="bg-purple-950/80 text-purple-300 border border-purple-500/40 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold flex items-center gap-1">🚚 YO‘LDA</span>;
+        return <span className="bg-purple-50 text-purple-700 border border-purple-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold flex items-center gap-1">🚚 YO‘LDA</span>;
       case 'ARRIVED':
-        return <span className="bg-[#132C54] text-[#FFB800] border-2 border-[#FFB800] px-2.5 py-0.5 rounded text-[10px] font-mono font-black animate-pulse">MANZILGA YETDI</span>;
+        return <span className="bg-orange-50 text-[#D95D1E] border border-orange-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-black animate-pulse">MANZILGA YETDI</span>;
       case 'FULLY_PAID':
-        return <span className="bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">TO‘LIQ TO‘LANDI</span>;
+        return <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">TO‘LIQ TO‘LANDI</span>;
       case 'RECEIVED':
       case 'DELIVERED':
-        return <span className="bg-emerald-900/60 text-emerald-300 border border-emerald-400 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">QABUL QILINDI</span>;
+        return <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">QABUL QILINDI</span>;
       case 'COMPLETED':
-        return <span className="bg-emerald-950/90 text-emerald-400 border border-emerald-500/60 px-2.5 py-0.5 rounded text-[10px] font-mono font-black">YAKUNLANDI (ESCROW AJRATILDI)</span>;
+        return <span className="bg-emerald-50 text-emerald-800 border border-emerald-300 px-2.5 py-0.5 rounded text-[10px] font-mono font-black">YAKUNLANDI (ESCROW AJRATILDI)</span>;
       case 'DISPUTE':
-        return <span className="bg-red-950/90 text-rose-300 border border-rose-500 px-2.5 py-0.5 rounded text-[10px] font-mono font-black">OCHIQ NIZO (DISPUTE)</span>;
+        return <span className="bg-red-50 text-red-700 border border-red-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-black">OCHIQ NIZO (DISPUTE)</span>;
       case 'CANCELLED':
-        return <span className="bg-slate-900 text-slate-400 border border-slate-700 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">BEKOR QILINGAN</span>;
+        return <span className="bg-slate-100 text-slate-600 border border-slate-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">BEKOR QILINGAN</span>;
       default:
-        return <span className="bg-[#0F2547] text-sky-200 border border-[#1E3A6D] px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">{status}</span>;
+        return <span className="bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">{status}</span>;
     }
   };
 
   return (
-    <div className="space-y-6 text-white pb-12 font-sans">
-      {/* 1. Authentic Industrial Header Banner */}
-      <div className="relative brushed-steel rounded-2xl p-5 sm:p-7 shadow-[0_8px_24px_rgba(7,19,38,0.5)] border border-[#1E3A6D] overflow-hidden">
-        <div className="absolute top-2 left-2 industrial-rivet" />
-        <div className="absolute top-2 right-2 industrial-rivet" />
-        <div className="absolute bottom-2 left-2 industrial-rivet" />
-        <div className="absolute bottom-2 right-2 industrial-rivet" />
-        <div className="absolute inset-0 tech-grid-pattern opacity-40 pointer-events-none" />
+    <div className="space-y-6 text-slate-900 pb-12 font-sans">
+      {/* 1. Header Banner */}
+      <div className="relative bg-white rounded-2xl p-5 sm:p-7 shadow-2xs border border-slate-200 overflow-hidden">
+        <div className="absolute inset-0 tech-grid-pattern opacity-15 pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="text-xs font-mono font-bold text-[#FFB800] uppercase tracking-wider flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#FFB800] animate-ping" />
+              <span className="text-xs font-mono font-bold text-[#D95D1E] uppercase tracking-wider">
                 BunkerStroy Mijoz Kabineti
               </span>
-              <span className="bg-[#132C54] text-[#FFB800] border border-[#254B85] px-2 py-0.5 rounded text-[10px] font-mono font-black">
+              <span className="bg-orange-50 text-[#D95D1E] border border-orange-200 px-2 py-0.5 rounded text-[10px] font-mono font-black">
                 ESCROW HIMOYA
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-heading font-black tracking-tight text-white">
+            <h1 className="text-2xl sm:text-3xl font-heading font-black tracking-tight text-slate-900">
               Mening Buyurtmalarim &amp; Yetkazib Berish Nazorati
             </h1>
-            <p className="text-xs sm:text-sm text-sky-200/90 mt-1 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
               Escrow kafolati, 50/50 to‘lov boshqaruvi va qabul kodi orqali yuklarni xavfsiz qabul qilish.
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0 font-mono text-xs">
-            <div className="bg-[#071326] border border-[#1E3A6D] px-3.5 py-2 rounded-xl text-sky-200 flex items-center gap-2">
-              <span className="text-[#FFB800] font-black">{orders.length}</span>
+            <div className="bg-slate-50 border border-slate-200 px-3.5 py-2 rounded-xl text-slate-700 flex items-center gap-2 shadow-2xs">
+              <span className="text-[#D95D1E] font-black">{orders.length}</span>
               <span>ta faol buyurtma</span>
             </div>
           </div>
@@ -326,12 +321,12 @@ export const OrdersView: React.FC = () => {
       )}
 
       {/* 2. Control bar */}
-      <div className="flex items-center justify-between bg-[#0A1931] border border-[#1E3A6D] p-3.5 sm:p-4 rounded-2xl shadow-md font-mono">
+      <div className="flex items-center justify-between bg-white border border-slate-200 p-3.5 sm:p-4 rounded-2xl shadow-2xs font-mono">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-bold uppercase text-sky-200">
+          <span className="text-xs font-bold uppercase text-slate-700">
             Jami Buyurtmalar:
           </span>
-          <span className="bg-[#071326] text-[#FFB800] px-2.5 py-0.5 rounded-lg text-xs font-bold border border-[#1E3A6D]">
+          <span className="bg-orange-50 text-[#D95D1E] px-2.5 py-0.5 rounded-lg text-xs font-bold border border-orange-200">
             {orders.length} ta
           </span>
         </div>
@@ -339,9 +334,9 @@ export const OrdersView: React.FC = () => {
         <button
           type="button"
           onClick={() => fetchOrders(true)}
-          className="btn-industrial-dark px-3 py-1.5 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 cursor-pointer"
+          className="px-3 py-1.5 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 transition-colors"
         >
-          <RotateCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-[#FFB800]' : ''}`} />
+          <RotateCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-[#D95D1E]' : ''}`} />
           <span>Yangilash</span>
         </button>
       </div>
@@ -350,29 +345,29 @@ export const OrdersView: React.FC = () => {
       {loading ? (
         <div className="space-y-4">
           {[1, 2, 3].map((n) => (
-            <div key={n} className="industrial-card rounded-2xl p-5 space-y-4 bg-[#0A1931]">
-              <div className="flex justify-between items-center pb-3 border-b border-[#1E3A6D]">
+            <div key={n} className="bg-white rounded-2xl p-5 space-y-4 border border-slate-200 shadow-2xs">
+              <div className="flex justify-between items-center pb-3 border-b border-slate-100">
                 <div className="flex items-center gap-2.5">
-                  <Skeleton variant="circle" width={32} height={32} className="bg-[#0F2547]" />
-                  <Skeleton variant="text" width={160} className="bg-[#0F2547]" />
+                  <Skeleton variant="circle" width={32} height={32} className="bg-slate-100" />
+                  <Skeleton variant="text" width={160} className="bg-slate-100" />
                 </div>
-                <Skeleton variant="rect" width={90} height={24} className="bg-[#0F2547]" />
+                <Skeleton variant="rect" width={90} height={24} className="bg-slate-100" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <Skeleton variant="text" width="80%" className="bg-[#0F2547]" />
-                <Skeleton variant="text" width="60%" className="bg-[#0F2547]" />
-                <Skeleton variant="text" width="50%" className="bg-[#0F2547]" />
+                <Skeleton variant="text" width="80%" className="bg-slate-100" />
+                <Skeleton variant="text" width="60%" className="bg-slate-100" />
+                <Skeleton variant="text" width="50%" className="bg-slate-100" />
               </div>
             </div>
           ))}
         </div>
       ) : orders.length === 0 ? (
-        <div className="industrial-card text-center py-16 rounded-2xl p-8 space-y-4 bg-[#0A1931] border border-dashed border-[#1E3A6D]">
-          <div className="w-14 h-14 rounded-2xl bg-[#0F2547] border border-[#1E3A6D] flex items-center justify-center mx-auto text-[#FFB800]">
+        <div className="text-center py-16 rounded-2xl p-8 space-y-4 bg-white border border-dashed border-slate-200 shadow-2xs">
+          <div className="w-14 h-14 rounded-2xl bg-orange-50 border border-orange-200 flex items-center justify-center mx-auto text-[#D95D1E]">
             <Package className="w-7 h-7" />
           </div>
-          <h3 className="font-heading font-black text-lg text-white">Hozircha buyurtmalar mavjud emas</h3>
-          <p className="text-xs max-w-sm mx-auto text-sky-200/80">
+          <h3 className="font-heading font-black text-lg text-slate-900">Hozircha buyurtmalar mavjud emas</h3>
+          <p className="text-xs max-w-sm mx-auto text-slate-600">
             Katalogdan kerakli materiallarni savatchaga qo‘shing va Escrow himoyasi ostida buyurtma bering.
           </p>
         </div>
@@ -386,20 +381,17 @@ export const OrdersView: React.FC = () => {
             return (
               <div
                 key={o.id}
-                className="industrial-card group relative rounded-2xl p-5 border border-[#1E3A6D] hover:border-[#2E5A9C] bg-[#0A1931] shadow-lg text-white space-y-4 transition-all duration-200"
+                className="group relative rounded-2xl p-5 border border-slate-200 hover:border-slate-300 bg-white shadow-2xs hover:shadow-md text-slate-900 space-y-4 transition-all duration-200"
               >
-                <div className="absolute top-2.5 left-2.5 industrial-rivet opacity-70" />
-                <div className="absolute top-2.5 right-2.5 industrial-rivet opacity-70" />
-
                 {/* Header Row */}
-                <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#1E3A6D] font-mono">
+                <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100 font-mono">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-[#0F2547] border border-[#254B85] flex items-center justify-center">
-                      <Package className="w-4 h-4 text-[#FFB800]" />
+                    <div className="w-8 h-8 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center">
+                      <Package className="w-4 h-4 text-[#D95D1E]" />
                     </div>
                     <div>
-                      <span className="font-bold text-sm text-white">{o.orderNumber}</span>
-                      <span className="text-[11px] text-sky-400 ml-2">
+                      <span className="font-bold text-sm text-slate-900">{o.orderNumber}</span>
+                      <span className="text-[11px] text-slate-500 ml-2">
                         {new Date(o.createdAt).toLocaleString('uz-UZ')}
                       </span>
                     </div>
@@ -407,21 +399,21 @@ export const OrdersView: React.FC = () => {
 
                   <div className="flex items-center gap-2">
                     {getStatusBadge(o.status)}
-                    <span className="bg-[#071326] text-[#FFB800] border border-[#1E3A6D] px-2 py-0.5 rounded text-[10px] font-mono font-bold">
+                    <span className="bg-orange-50 text-[#D95D1E] border border-orange-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">
                       {o.paymentMode === 'SPLIT_50_50' ? '50/50 BO‘LIB TO‘LASH' : '100% ESCROW'}
                     </span>
                   </div>
                 </div>
 
                 {/* Status Progress Line */}
-                <div className="bg-[#071326] border border-[#1E3A6D] rounded-xl p-3 font-mono text-[11px]">
-                  <div className="flex items-center justify-between text-sky-200 font-bold mb-2">
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 font-mono text-[11px]">
+                  <div className="flex items-center justify-between text-slate-700 font-bold mb-2">
                     <span>Buyurtma bosqichi:</span>
-                    <span className="text-[#FFB800] uppercase">{o.status}</span>
+                    <span className="text-[#D95D1E] uppercase">{o.status}</span>
                   </div>
-                  <div className="w-full bg-[#0F2547] h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
                     <div
-                      className="bg-[#FFB800] h-full transition-all duration-500 shadow-[0_0_8px_rgba(255,184,0,0.5)]"
+                      className="bg-[#D95D1E] h-full transition-all duration-500"
                       style={{
                         width:
                           o.status === 'PENDING_PAYMENT' ? '10%'
@@ -441,33 +433,33 @@ export const OrdersView: React.FC = () => {
                 {/* Primary Information Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-mono">
                   <div>
-                    <span className="text-sky-400 uppercase text-[10px] block">Qabul qiluvchi:</span>
-                    <p className="font-semibold text-white mt-0.5">{o.buyerName}</p>
-                    <p className="text-[11px] text-sky-300">{o.buyerPhone}</p>
+                    <span className="text-slate-400 uppercase text-[10px] block">Qabul qiluvchi:</span>
+                    <p className="font-semibold text-slate-900 mt-0.5">{o.buyerName}</p>
+                    <p className="text-[11px] text-slate-500">{o.buyerPhone}</p>
                   </div>
 
                   <div>
-                    <span className="text-sky-400 uppercase text-[10px] block">Yetkazish manzili:</span>
-                    <p className="font-semibold text-white mt-0.5">
+                    <span className="text-slate-400 uppercase text-[10px] block">Yetkazish manzili:</span>
+                    <p className="font-semibold text-slate-900 mt-0.5">
                       {o.deliveryAddress?.region || 'Toshkent shahri'}, {o.deliveryAddress?.district || 'Chilonzor'}
                     </p>
-                    <p className="truncate text-[11px] text-sky-300">{o.deliveryAddress?.street || 'Ko‘rsatilmagan'}</p>
+                    <p className="truncate text-[11px] text-slate-500">{o.deliveryAddress?.street || 'Ko‘rsatilmagan'}</p>
                   </div>
 
                   <div>
-                    <span className="text-sky-400 uppercase text-[10px] block">Jami summa:</span>
-                    <p className="text-base font-black text-[#FFB800] mt-0.5 font-mono-numbers">
+                    <span className="text-slate-400 uppercase text-[10px] block">Jami summa:</span>
+                    <p className="text-base font-black text-[#D95D1E] mt-0.5 font-mono-numbers">
                       {Number(o.finalAmount).toLocaleString()} so‘m
                     </p>
-                    <p className="text-[11px] text-sky-300">Rejim: {o.paymentMode}</p>
+                    <p className="text-[11px] text-slate-500">Rejim: {o.paymentMode}</p>
                   </div>
                 </div>
 
                 {/* 1. INITIAL PAYMENT BUTTON (If pending payment) */}
                 {isPendingPayment && (
-                  <div className="bg-[#0F2547] border border-[#1E3A6D] p-3.5 rounded-xl flex flex-wrap items-center justify-between gap-3 font-mono">
-                    <div className="flex items-center gap-2 text-xs text-sky-200">
-                      <CreditCard className="w-4 h-4 shrink-0 text-[#FFB800]" />
+                  <div className="bg-orange-50/50 border border-orange-200 p-3.5 rounded-xl flex flex-wrap items-center justify-between gap-3 font-mono">
+                    <div className="flex items-center gap-2 text-xs text-slate-800">
+                      <CreditCard className="w-4 h-4 shrink-0 text-[#D95D1E]" />
                       <span>
                         {o.paymentMode === 'SPLIT_50_50'
                           ? `Birinchi 50% avans to‘lovi (${(Number(o.firstPaymentAmount || o.finalAmount / 2)).toLocaleString()} so‘m) kutilmoqda:`
@@ -479,18 +471,18 @@ export const OrdersView: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleOpenPayment(o, 'PAYME')}
-                        className="px-3 py-1.5 rounded-lg bg-[#071326] border border-sky-400/50 text-sky-300 hover:text-white hover:bg-sky-950 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
+                        className="px-3 py-1.5 rounded-lg bg-sky-50 border border-sky-300 text-sky-800 hover:bg-sky-100 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-2xs transition-colors"
                       >
-                        <CreditCard className="w-3.5 h-3.5 text-sky-400" />
+                        <CreditCard className="w-3.5 h-3.5 text-sky-600" />
                         <span>Payme</span>
                       </button>
 
                       <button
                         type="button"
                         onClick={() => handleOpenPayment(o, 'CLICK')}
-                        className="px-3 py-1.5 rounded-lg bg-[#071326] border border-amber-400/50 text-amber-300 hover:text-white hover:bg-amber-950 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
+                        className="px-3 py-1.5 rounded-lg bg-amber-50 border border-amber-300 text-amber-800 hover:bg-amber-100 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-2xs transition-colors"
                       >
-                        <CreditCard className="w-3.5 h-3.5 text-[#FFB800]" />
+                        <CreditCard className="w-3.5 h-3.5 text-[#D95D1E]" />
                         <span>Click</span>
                       </button>
                     </div>
@@ -499,29 +491,29 @@ export const OrdersView: React.FC = () => {
 
                 {/* 2. 50/50 SECOND PAYMENT PROMPT (When arrived) */}
                 {isArrivedWaitingSecondPayment && (
-                  <div className="bg-[#071326] border-2 border-[#FFB800] p-4 rounded-xl space-y-3 font-mono">
+                  <div className="bg-amber-50/80 border-2 border-amber-400 p-4 rounded-xl space-y-3 font-mono">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Truck className="w-5 h-5 text-[#FFB800]" />
-                        <span className="font-extrabold text-xs text-white">
+                        <Truck className="w-5 h-5 text-[#D95D1E]" />
+                        <span className="font-extrabold text-xs text-slate-900">
                           YUK MANZILINGIZGA YETIB KELDI!
                         </span>
                       </div>
-                      <span className="bg-amber-950 text-[#FFB800] border border-[#FFB800]/50 px-2 py-0.5 rounded text-[10px] font-bold">
+                      <span className="bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded text-[10px] font-bold">
                         30 DAQIQA KUTISH TAYMERI
                       </span>
                     </div>
 
-                    <p className="text-xs text-sky-200/90 font-sans leading-relaxed">
+                    <p className="text-xs text-slate-700 font-sans leading-relaxed">
                       Qurilish mollari manzilga yetkazildi. Tushirishdan oldin ikkinchi 50% to‘lovni (
-                      <strong className="text-[#FFB800]">{(Number(o.secondPaymentAmount || o.finalAmount / 2)).toLocaleString()} so‘m</strong>
+                      <strong className="text-[#D95D1E]">{(Number(o.secondPaymentAmount || o.finalAmount / 2)).toLocaleString()} so‘m</strong>
                       ) amalga oshiring. To‘lov o‘tgach, haydovchiga aytish uchun <strong>Qabul Kodi</strong> ekranda paydo bo‘ladi.
                     </p>
 
                     <button
                       type="button"
                       onClick={() => handlePaySecondHalf(o.id)}
-                      className="btn-industrial-yellow px-4 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 cursor-pointer"
+                      className="bg-[#D95D1E] hover:bg-[#B43B06] text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs transition-colors"
                     >
                       <CreditCard className="w-4 h-4" />
                       <span>Ikkinchi 50% to‘lovni tasdiqlash</span>
@@ -531,41 +523,41 @@ export const OrdersView: React.FC = () => {
 
                 {/* 3. REVEALED ACCEPTANCE PIN CODE BOX */}
                 {o.isAcceptanceCodeRevealed && o.acceptanceCode && (
-                  <div className="bg-gradient-to-r from-[#FFB800]/10 via-[#FFB800]/20 to-[#FFB800]/10 border-2 border-dashed border-[#FFB800] rounded-xl p-5 text-center space-y-2 font-mono shadow-md">
-                    <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-[#FFB800] uppercase">
-                      <KeyRound className="w-4 h-4 text-[#FFB800]" />
+                  <div className="bg-amber-50/70 border-2 border-dashed border-amber-300 rounded-xl p-5 text-center space-y-2 font-mono shadow-2xs">
+                    <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-[#D95D1E] uppercase">
+                      <KeyRound className="w-4 h-4 text-[#D95D1E]" />
                       <span>Maxfiy Qabul Kodi (Delivery PIN)</span>
                     </div>
 
-                    <div className="text-4xl font-extrabold tracking-widest text-[#FFB800] py-1 select-all font-mono-numbers">
+                    <div className="text-4xl font-extrabold tracking-widest text-[#D95D1E] py-1 select-all font-mono-numbers">
                       {o.acceptanceCode}
                     </div>
 
-                    <p className="text-xs text-sky-200/90 font-sans max-w-md mx-auto">
+                    <p className="text-xs text-slate-600 font-sans max-w-md mx-auto">
                       Ushbu 4-xonali PIN kodni haydovchiga ayting. Haydovchi uni kiritgach yuk topshirilgan hisoblanadi va Escrowdan mablag‘ ajratiladi.
                     </p>
                   </div>
                 )}
 
                 {/* Bottom action row: Chek, B2B Hujjatlar, Nizo ochish, Expand */}
-                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#1E3A6D] font-mono text-xs">
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 font-mono text-xs">
                   <div className="flex items-center gap-2">
                     <a
                       href={`https://bunkerstroy.uz/receipt/${o.id}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[#1E3A6D] bg-[#071326] text-sky-200 hover:text-white hover:border-[#FFB800] transition-colors"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 hover:text-slate-900 hover:border-slate-300 transition-colors"
                     >
-                      <QrCode className="w-3.5 h-3.5 text-[#FFB800]" />
+                      <QrCode className="w-3.5 h-3.5 text-[#D95D1E]" />
                       <span>QR Chek</span>
                     </a>
 
                     <button
                       type="button"
                       onClick={() => setSelectedB2bOrder(o)}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[#254B85] bg-[#0F2547] text-white hover:border-[#FFB800] transition-colors cursor-pointer font-bold shadow-xs"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-orange-200 bg-orange-50 text-[#D95D1E] hover:bg-orange-100 transition-colors cursor-pointer font-bold shadow-2xs"
                     >
-                      <FileCheck className="w-3.5 h-3.5 text-[#FFB800]" />
+                      <FileCheck className="w-3.5 h-3.5 text-[#D95D1E]" />
                       <span>B2B Hujjatlar</span>
                     </button>
 
@@ -580,7 +572,7 @@ export const OrdersView: React.FC = () => {
                           evidenceUrl: ''
                         })
                       }
-                      className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-red-500/40 bg-red-950/40 text-red-300 hover:text-white hover:bg-red-900/60 transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 transition-colors cursor-pointer"
                     >
                       <AlertTriangle className="w-3.5 h-3.5" />
                       <span>Nizo ochish</span>
@@ -590,7 +582,7 @@ export const OrdersView: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => toggleExpand(o.id)}
-                    className="flex items-center gap-1 text-sky-300 hover:text-[#FFB800] cursor-pointer font-semibold py-1 transition-colors"
+                    className="flex items-center gap-1 text-slate-600 hover:text-[#D95D1E] cursor-pointer font-semibold py-1 transition-colors"
                   >
                     <span>{isExpanded ? "Tafsilotni yashirish" : "Tovarlar ro‘yxati"}</span>
                     {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -599,10 +591,10 @@ export const OrdersView: React.FC = () => {
 
                 {/* EXPANDABLE ACCORDION CONTENT */}
                 {isExpanded && (
-                  <div className="mt-3 space-y-3 pt-3 border-t border-[#1E3A6D] text-xs animate-in fade-in font-mono">
-                    <div className="overflow-x-auto rounded-xl border border-[#1E3A6D]">
+                  <div className="mt-3 space-y-3 pt-3 border-t border-slate-100 text-xs animate-in fade-in font-mono">
+                    <div className="overflow-x-auto rounded-xl border border-slate-200">
                       <table className="w-full text-left">
-                        <thead className="bg-[#071326] text-sky-300 border-b border-[#1E3A6D]">
+                        <thead className="bg-slate-50 text-slate-700 border-b border-slate-200">
                           <tr>
                             <th className="py-2.5 px-3">Mahsulot Nomi</th>
                             <th className="py-2.5 px-3 text-center">Miqdori &amp; Birligi</th>
@@ -610,19 +602,19 @@ export const OrdersView: React.FC = () => {
                             <th className="py-2.5 px-3 text-right">Jami Summa</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-[#1E3A6D] bg-[#0A1931]">
+                        <tbody className="divide-y divide-slate-100 bg-white">
                           {o.items.map((item, idx) => (
-                            <tr key={idx} className="hover:bg-[#0F2547]/50 transition-colors">
-                              <td className="py-2.5 px-3 font-semibold text-white">
+                            <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                              <td className="py-2.5 px-3 font-semibold text-slate-900">
                                 {item.productTitle}
                               </td>
-                              <td className="py-2.5 px-3 text-center text-sky-200">
+                              <td className="py-2.5 px-3 text-center text-slate-700">
                                 {item.quantity} {item.unit}
                               </td>
-                              <td className="py-2.5 px-3 text-right text-sky-300 font-mono-numbers">
+                              <td className="py-2.5 px-3 text-right text-slate-600 font-mono-numbers">
                                 {Number(item.unitPrice).toLocaleString()} so‘m
                               </td>
-                              <td className="py-2.5 px-3 text-right font-black text-[#FFB800] font-mono-numbers">
+                              <td className="py-2.5 px-3 text-right font-black text-[#D95D1E] font-mono-numbers">
                                 {Number(item.totalPrice).toLocaleString()} so‘m
                               </td>
                             </tr>
@@ -649,14 +641,14 @@ export const OrdersView: React.FC = () => {
         >
           <div className="space-y-3 font-mono text-xs">
             <div>
-              <label htmlFor="dispute-reason-text" className="block text-sky-200 font-bold mb-1">
+              <label htmlFor="dispute-reason-text" className="block text-slate-700 font-bold mb-1">
                 E‘tiroz sababi * (sifat, yetishmovchilik, shikastlanish)
               </label>
               <textarea
                 id="dispute-reason-text"
                 name="reason"
                 rows={3}
-                className="w-full bg-[#071326] border border-[#1E3A6D] text-white rounded-xl p-2.5 text-xs font-sans focus:outline-none focus:border-[#FFB800]"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-2.5 text-xs font-sans focus:outline-none focus:border-[#D95D1E]"
                 placeholder="Yuk shikastlangan holda yetib keldi yoki miqdori kam..."
                 value={disputeModal.reason}
                 onChange={(e) => setDisputeModal((prev) => ({ ...prev, reason: e.target.value }))}
@@ -664,7 +656,7 @@ export const OrdersView: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="dispute-evidence-url" className="block text-sky-200 font-bold mb-1">
+              <label htmlFor="dispute-evidence-url" className="block text-slate-700 font-bold mb-1">
                 Foto yoki video dalil havolasi (ixtiyoriy)
               </label>
               <Input
@@ -680,14 +672,14 @@ export const OrdersView: React.FC = () => {
             <div className="flex gap-2 pt-2">
               <button
                 type="button"
-                className="btn-industrial-dark px-3 py-2 rounded-xl flex-1 text-xs font-bold cursor-pointer"
+                className="px-3 py-2 rounded-xl flex-1 text-xs font-bold cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 transition-colors"
                 onClick={() => setDisputeModal({ isOpen: false, orderId: null, orderNumber: null, reason: '', evidenceUrl: '' })}
               >
                 Bekor qilish
               </button>
               <button
                 type="button"
-                className="btn-industrial-yellow px-3 py-2 rounded-xl flex-1 text-xs font-black cursor-pointer shadow-md"
+                className="bg-[#D95D1E] hover:bg-[#B43B06] text-white px-3 py-2 rounded-xl flex-1 text-xs font-bold cursor-pointer shadow-xs transition-colors"
                 onClick={handleSubmitDispute}
               >
                 {disputeLoading ? 'Yuborilmoqda...' : 'Nizo Arizasini Yuborish'}
@@ -707,8 +699,8 @@ export const OrdersView: React.FC = () => {
             <div
               className={`w-10 h-10 rounded-xl flex items-center justify-center ${
                 paymentModal.provider === 'PAYME'
-                  ? 'bg-sky-950 border border-sky-400 text-sky-400'
-                  : 'bg-amber-950 border border-[#FFB800] text-[#FFB800]'
+                  ? 'bg-sky-50 border border-sky-300 text-sky-600'
+                  : 'bg-orange-50 border border-orange-300 text-[#D95D1E]'
               }`}
             >
               <CreditCard className="w-5 h-5" />
@@ -720,20 +712,20 @@ export const OrdersView: React.FC = () => {
           {paymentError && <Alert variant="error" description={paymentError} onDismiss={() => setPaymentError(null)} />}
           {paymentSuccessMsg && <Alert variant="success" description={paymentSuccessMsg} />}
 
-          <div className="bg-[#071326] border border-[#1E3A6D] p-4 rounded-xl space-y-2 text-xs font-mono text-white">
-            <div className="flex justify-between text-sky-300">
+          <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-2 text-xs font-mono text-slate-900">
+            <div className="flex justify-between text-slate-600">
               <span>Buyurtma raqami:</span>
-              <span className="text-white font-bold">{paymentModal.order.orderNumber}</span>
+              <span className="text-slate-900 font-bold">{paymentModal.order.orderNumber}</span>
             </div>
-            <div className="flex justify-between text-sky-300">
+            <div className="flex justify-between text-slate-600">
               <span>To‘lov turi:</span>
-              <span className="text-white font-bold">
+              <span className="text-slate-900 font-bold">
                 {paymentModal.order.paymentMode === 'SPLIT_50_50' ? '50% Avans To‘lovi' : '100% To‘lov'}
               </span>
             </div>
-            <div className="pt-2 border-t border-[#1E3A6D] flex justify-between items-baseline">
-              <span className="font-bold text-sky-200">To‘lanadigan summa:</span>
-              <span className="text-xl font-black text-[#FFB800] font-mono-numbers">
+            <div className="pt-2 border-t border-slate-200 flex justify-between items-baseline">
+              <span className="font-bold text-slate-800">To‘lanadigan summa:</span>
+              <span className="text-xl font-black text-[#D95D1E] font-mono-numbers">
                 {(paymentModal.order.paymentMode === 'SPLIT_50_50'
                   ? Number(paymentModal.order.firstPaymentAmount || paymentModal.order.finalAmount / 2)
                   : Number(paymentModal.order.finalAmount)
@@ -745,7 +737,7 @@ export const OrdersView: React.FC = () => {
           <div className="space-y-2.5 pt-2 font-mono">
             <button
               type="button"
-              className="w-full btn-industrial-yellow py-3 rounded-xl font-black text-sm flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+              className="w-full bg-[#D95D1E] hover:bg-[#B43B06] text-white py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-xs transition-colors"
               onClick={handleSimulatePayment}
               disabled={simulatingPayment || !!paymentSuccessMsg}
             >

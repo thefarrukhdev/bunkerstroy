@@ -193,38 +193,31 @@ export const CalculatorsView: React.FC = () => {
   }, [heatedAreaM2, insulationThicknessMm]);
 
   return (
-    <div className="space-y-6 text-white pb-16 font-sans">
+    <div className="space-y-6 text-slate-900 pb-16 font-sans">
       {/* 1. Industrial Header Banner */}
-      <div className="relative brushed-steel rounded-2xl p-5 sm:p-7 shadow-[0_8px_24px_rgba(7,19,38,0.5)] border border-[#1E3A6D] overflow-hidden">
-        <div className="absolute top-2 left-2 industrial-rivet" />
-        <div className="absolute top-2 right-2 industrial-rivet" />
-        <div className="absolute bottom-2 left-2 industrial-rivet" />
-        <div className="absolute bottom-2 right-2 industrial-rivet" />
-        <div className="absolute inset-0 tech-grid-pattern opacity-40 pointer-events-none" />
-
+      <div className="relative bg-white rounded-2xl p-5 sm:p-7 shadow-sm border border-slate-200 overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="text-xs font-mono font-bold text-[#FFB800] uppercase tracking-wider flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#FFB800] animate-ping" />
+              <span className="text-xs font-mono font-bold text-[#D95D1E] uppercase tracking-wider">
                 Sanoat Muhandislik Kalkulyatorlari
               </span>
-              <span className="bg-[#132C54] text-[#FFB800] border border-[#254B85] px-2 py-0.5 rounded text-[10px] font-mono font-black">
+              <span className="bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">
                 GOST &amp; ShNQ Standart
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-heading font-black tracking-tight text-white">
+            <h1 className="text-2xl sm:text-3xl font-heading font-black tracking-tight text-slate-900">
               Qurilish Materiallari &amp; ESCO Hisoblagichi
             </h1>
-            <p className="text-xs sm:text-sm text-sky-200/90 mt-1 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
               Beton, sement, g‘isht, armatura va energiya tejamkor bazalt izolyatsiyasini aniq muhandislik formulalari asosida bir zumda hisoblang.
             </p>
           </div>
 
           <div className="flex items-center gap-2 font-mono text-xs shrink-0">
-            <div className="bg-[#071326] border border-[#1E3A6D] px-3.5 py-2 rounded-xl text-sky-200 flex items-center gap-2">
-              <Calculator className="w-4 h-4 text-[#FFB800]" />
-              <span>4 xil ixtisoslashgan modul</span>
+            <div className="bg-slate-50 border border-slate-200 px-3.5 py-2 rounded-xl text-slate-700 flex items-center gap-2">
+              <Calculator className="w-4 h-4 text-[#D95D1E]" />
+              <span className="font-semibold">4 xil ixtisoslashgan modul</span>
             </div>
           </div>
         </div>
@@ -241,8 +234,8 @@ export const CalculatorsView: React.FC = () => {
           className={cn(
             'flex items-center gap-2 px-4 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs min-h-[44px]',
             activeTab === 'concrete'
-              ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
-              : 'bg-[#0A1931] text-sky-200 border-[#1E3A6D] hover:border-[#2E5A9C] hover:text-white'
+              ? 'bg-[#D95D1E] text-white border-[#D95D1E]'
+              : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:text-slate-900'
           )}
         >
           <Building2 className="w-4 h-4 shrink-0" />
@@ -258,8 +251,8 @@ export const CalculatorsView: React.FC = () => {
           className={cn(
             'flex items-center gap-2 px-4 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs min-h-[44px]',
             activeTab === 'brick'
-              ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
-              : 'bg-[#0A1931] text-sky-200 border-[#1E3A6D] hover:border-[#2E5A9C] hover:text-white'
+              ? 'bg-[#D95D1E] text-white border-[#D95D1E]'
+              : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:text-slate-900'
           )}
         >
           <Layers className="w-4 h-4 shrink-0" />
@@ -275,8 +268,8 @@ export const CalculatorsView: React.FC = () => {
           className={cn(
             'flex items-center gap-2 px-4 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs min-h-[44px]',
             activeTab === 'rebar'
-              ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
-              : 'bg-[#0A1931] text-sky-200 border-[#1E3A6D] hover:border-[#2E5A9C] hover:text-white'
+              ? 'bg-[#D95D1E] text-white border-[#D95D1E]'
+              : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:text-slate-900'
           )}
         >
           <Zap className="w-4 h-4 shrink-0" />
@@ -292,11 +285,11 @@ export const CalculatorsView: React.FC = () => {
           className={cn(
             'flex items-center gap-2 px-4 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs min-h-[44px]',
             activeTab === 'esco'
-              ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
-              : 'bg-[#0A1931] text-sky-200 border-[#1E3A6D] hover:border-[#2E5A9C] hover:text-white'
+              ? 'bg-[#D95D1E] text-white border-[#D95D1E]'
+              : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:text-slate-900'
           )}
         >
-          <Leaf className="w-4 h-4 shrink-0 text-emerald-400" />
+          <Leaf className="w-4 h-4 shrink-0 text-emerald-600" />
           <span>4. ESCO &amp; Termoizolyatsiya</span>
         </button>
       </div>
@@ -307,25 +300,25 @@ export const CalculatorsView: React.FC = () => {
       {activeTab === 'concrete' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start font-mono">
           {/* Input controls (5 cols) */}
-          <div className="lg:col-span-5 bg-[#0A1931] border border-[#1E3A6D] rounded-2xl p-4 sm:p-5 space-y-4 shadow-lg">
-            <div className="flex items-center justify-between pb-2 border-b border-[#1E3A6D]">
-              <span className="font-bold text-sm text-white uppercase flex items-center gap-1.5">
-                <Building2 className="w-4 h-4 text-[#FFB800]" />
+          <div className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+              <span className="font-bold text-sm text-slate-900 uppercase flex items-center gap-1.5">
+                <Building2 className="w-4 h-4 text-[#D95D1E]" />
                 Beton Parametrlari
               </span>
-              <span className="text-[10px] text-sky-300">GOST 7473-2010</span>
+              <span className="text-[10px] text-slate-500 font-medium">GOST 7473-2010</span>
             </div>
 
             {/* Mode switcher: By Volume vs By Area & Thickness */}
-            <div className="grid grid-cols-2 gap-2 bg-[#071326] p-1 rounded-xl border border-[#1E3A6D]">
+            <div className="grid grid-cols-2 gap-2 bg-slate-100 p-1 rounded-xl border border-slate-200">
               <button
                 type="button"
                 onClick={() => setConcreteMode('volume')}
                 className={cn(
                   'py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[40px]',
                   concreteMode === 'volume'
-                    ? 'bg-[#FFB800] text-[#071326] shadow-xs'
-                    : 'text-sky-300 hover:text-white'
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
                 )}
               >
                 Hajm bo‘yicha (m³)
@@ -336,8 +329,8 @@ export const CalculatorsView: React.FC = () => {
                 className={cn(
                   'py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer min-h-[40px]',
                   concreteMode === 'area'
-                    ? 'bg-[#FFB800] text-[#071326] shadow-xs'
-                    : 'text-sky-300 hover:text-white'
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
                 )}
               >
                 Maydon &times; Qalinlik
@@ -347,37 +340,37 @@ export const CalculatorsView: React.FC = () => {
             {/* Inputs based on mode */}
             {concreteMode === 'volume' ? (
               <div className="space-y-1">
-                <label className="text-xs text-sky-200 block">Jami beton hajmi (m³):</label>
+                <label className="text-xs text-slate-700 block font-medium">Jami beton hajmi (m³):</label>
                 <input
                   type="number"
                   min="0.5"
                   step="0.5"
                   value={concreteVolumeM3}
                   onChange={(e) => setConcreteVolumeM3(Math.max(0.1, parseFloat(e.target.value) || 0.1))}
-                  className="w-full h-11 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white font-bold text-sm focus:border-[#FFB800] outline-none"
+                  className="w-full h-11 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold text-sm focus:border-[#D95D1E] outline-none"
                 />
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs text-sky-200 block">Maydon (m²):</label>
+                  <label className="text-xs text-slate-700 block font-medium">Maydon (m²):</label>
                   <input
                     type="number"
                     min="1"
                     value={concreteAreaM2}
                     onChange={(e) => setConcreteAreaM2(Math.max(1, parseFloat(e.target.value) || 1))}
-                    className="w-full h-11 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white font-bold text-sm focus:border-[#FFB800] outline-none"
+                    className="w-full h-11 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold text-sm focus:border-[#D95D1E] outline-none"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs text-sky-200 block">Qalinlik (sm):</label>
+                  <label className="text-xs text-slate-700 block font-medium">Qalinlik (sm):</label>
                   <input
                     type="number"
                     min="1"
                     max="100"
                     value={concreteThicknessCm}
                     onChange={(e) => setConcreteThicknessCm(Math.max(1, parseFloat(e.target.value) || 1))}
-                    className="w-full h-11 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white font-bold text-sm focus:border-[#FFB800] outline-none"
+                    className="w-full h-11 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold text-sm focus:border-[#D95D1E] outline-none"
                   />
                 </div>
               </div>
@@ -385,7 +378,7 @@ export const CalculatorsView: React.FC = () => {
 
             {/* Concrete Grade Selector */}
             <div className="space-y-1.5">
-              <label className="text-xs text-sky-200 block">Beton markasi (Sinf):</label>
+              <label className="text-xs text-slate-700 block font-medium">Beton markasi (Sinf):</label>
               <div className="grid grid-cols-5 gap-1.5">
                 {(['M150', 'M200', 'M250', 'M300', 'M350'] as const).map((grade) => (
                   <button
@@ -395,15 +388,15 @@ export const CalculatorsView: React.FC = () => {
                     className={cn(
                       'py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer min-h-[44px]',
                       concreteGrade === grade
-                        ? 'bg-[#132C54] border-[#FFB800] text-white ring-1 ring-[#FFB800]'
-                        : 'bg-[#071326] border-[#1E3A6D] text-sky-200 hover:border-[#2E5A9C]'
+                        ? 'bg-orange-50/50 border-[#D95D1E] text-[#D95D1E] ring-1 ring-[#D95D1E]'
+                        : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                     )}
                   >
                     {grade}
                   </button>
                 ))}
               </div>
-              <span className="text-[10px] text-sky-400 block pt-0.5">
+              <span className="text-[10px] text-slate-500 block pt-0.5">
                 {concreteGrade === 'M200' && 'Tasma fundament, pol styajkasi uchun'}
                 {concreteGrade === 'M250' && 'Monolit fundament, zinalar, plitalar'}
                 {concreteGrade === 'M300' && 'Monolit karkas, ustun va og‘ir yukbop konstruksiyalar'}
@@ -414,17 +407,17 @@ export const CalculatorsView: React.FC = () => {
           </div>
 
           {/* Results Display (7 cols) */}
-          <div className="lg:col-span-7 bg-[#0A1931] border-2 border-[#1E3A6D] rounded-2xl p-5 space-y-5 shadow-xl">
-            <div className="flex items-center justify-between pb-3 border-b border-[#1E3A6D]">
+          <div className="lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-5 space-y-5 shadow-sm">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
               <div>
-                <span className="text-[10px] text-sky-400 uppercase font-bold block">Hisoblangan Hajm:</span>
-                <span className="text-xl sm:text-2xl font-black text-[#FFB800] font-mono-numbers">
+                <span className="text-[10px] text-slate-500 uppercase font-bold block">Hisoblangan Hajm:</span>
+                <span className="text-xl sm:text-2xl font-black text-[#D95D1E] font-mono-numbers">
                   {concreteResults.volume} m³ beton ({concreteGrade})
                 </span>
               </div>
               <div className="text-right">
-                <span className="text-[10px] text-sky-400 uppercase font-bold block">Taxminiy Qiymat:</span>
-                <span className="text-xl sm:text-2xl font-black text-emerald-400 font-mono-numbers">
+                <span className="text-[10px] text-slate-500 uppercase font-bold block">Taxminiy Qiymat:</span>
+                <span className="text-xl sm:text-2xl font-black text-emerald-600 font-mono-numbers">
                   {concreteResults.estimatedCost.toLocaleString()} so‘m
                 </span>
               </div>
@@ -432,43 +425,43 @@ export const CalculatorsView: React.FC = () => {
 
             {/* Breakdown Cards */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-              <div className="bg-[#071326] border border-[#1E3A6D] p-3 rounded-xl space-y-1">
-                <span className="text-[10px] text-[#FFB800] uppercase font-bold">Portlendsement M500</span>
-                <p className="text-base font-black text-white font-mono-numbers">
+              <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-1">
+                <span className="text-[10px] text-slate-700 uppercase font-bold">Portlendsement M500</span>
+                <p className="text-base font-black text-slate-900 font-mono-numbers">
                   {concreteResults.cementBags50kg} qop
                 </p>
-                <p className="text-[10px] text-sky-300">({concreteResults.cementTons} tonna)</p>
+                <p className="text-[10px] text-slate-500">({concreteResults.cementTons} tonna)</p>
               </div>
 
-              <div className="bg-[#071326] border border-[#1E3A6D] p-3 rounded-xl space-y-1">
-                <span className="text-[10px] text-[#FFB800] uppercase font-bold">Yuvilgan Qum</span>
-                <p className="text-base font-black text-white font-mono-numbers">
+              <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-1">
+                <span className="text-[10px] text-slate-700 uppercase font-bold">Yuvilgan Qum</span>
+                <p className="text-base font-black text-slate-900 font-mono-numbers">
                   {concreteResults.sandTons} t
                 </p>
-                <p className="text-[10px] text-sky-300">Fraksiya 0-5mm</p>
+                <p className="text-[10px] text-slate-500">Fraksiya 0-5mm</p>
               </div>
 
-              <div className="bg-[#071326] border border-[#1E3A6D] p-3 rounded-xl space-y-1">
-                <span className="text-[10px] text-[#FFB800] uppercase font-bold">Sheben / Shag‘al</span>
-                <p className="text-base font-black text-white font-mono-numbers">
+              <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-1">
+                <span className="text-[10px] text-slate-700 uppercase font-bold">Sheben / Shag‘al</span>
+                <p className="text-base font-black text-slate-900 font-mono-numbers">
                   {concreteResults.gravelTons} t
                 </p>
-                <p className="text-[10px] text-sky-300">Fraksiya 5-20mm</p>
+                <p className="text-[10px] text-slate-500">Fraksiya 5-20mm</p>
               </div>
 
-              <div className="bg-[#071326] border border-[#1E3A6D] p-3 rounded-xl space-y-1">
-                <span className="text-[10px] text-[#FFB800] uppercase font-bold">Texnik Suv</span>
-                <p className="text-base font-black text-white font-mono-numbers">
+              <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-1">
+                <span className="text-[10px] text-slate-700 uppercase font-bold">Texnik Suv</span>
+                <p className="text-base font-black text-slate-900 font-mono-numbers">
                   {concreteResults.waterLiters} L
                 </p>
-                <p className="text-[10px] text-sky-300">Optimal nisbat</p>
+                <p className="text-[10px] text-slate-500">Optimal nisbat</p>
               </div>
             </div>
 
-            <div className="p-3.5 bg-[#071326] border border-emerald-500/40 rounded-xl flex items-center justify-between text-xs font-sans">
+            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between text-xs font-sans">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span className="text-sky-200">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span className="text-emerald-800 font-medium">
                   Ushbu materiallar to‘g‘ridan-to‘g‘ri BunkerStroy hamkor karer va sement zavodlaridan 50/50 Escrow bilan yetkazib beriladi.
                 </span>
               </div>
@@ -482,56 +475,56 @@ export const CalculatorsView: React.FC = () => {
           ===================================================================== */}
       {activeTab === 'brick' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start font-mono">
-          <div className="lg:col-span-5 bg-[#0A1931] border border-[#1E3A6D] rounded-2xl p-4 sm:p-5 space-y-4 shadow-lg">
-            <div className="flex items-center justify-between pb-2 border-b border-[#1E3A6D]">
-              <span className="font-bold text-sm text-white uppercase flex items-center gap-1.5">
-                <Layers className="w-4 h-4 text-[#FFB800]" />
+          <div className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+              <span className="font-bold text-sm text-slate-900 uppercase flex items-center gap-1.5">
+                <Layers className="w-4 h-4 text-[#D95D1E]" />
                 Devor Parametrlari
               </span>
-              <span className="text-[10px] text-sky-300">GOST 530-2012</span>
+              <span className="text-[10px] text-slate-500 font-medium">GOST 530-2012</span>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label className="text-xs text-sky-200 block">Devor uzunligi (m):</label>
+                <label className="text-xs text-slate-700 block font-medium">Devor uzunligi (m):</label>
                 <input
                   type="number"
                   min="1"
                   value={wallLengthM}
                   onChange={(e) => setWallLengthM(Math.max(1, parseFloat(e.target.value) || 1))}
-                  className="w-full h-11 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white font-bold text-sm focus:border-[#FFB800] outline-none"
+                  className="w-full h-11 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold text-sm focus:border-[#D95D1E] outline-none"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs text-sky-200 block">Devor balandligi (m):</label>
+                <label className="text-xs text-slate-700 block font-medium">Devor balandligi (m):</label>
                 <input
                   type="number"
                   min="1"
                   value={wallHeightM}
                   onChange={(e) => setWallHeightM(Math.max(1, parseFloat(e.target.value) || 1))}
-                  className="w-full h-11 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white font-bold text-sm focus:border-[#FFB800] outline-none"
+                  className="w-full h-11 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold text-sm focus:border-[#D95D1E] outline-none"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs text-sky-200 block">Eshik va romlar maydoni (m²):</label>
+              <label className="text-xs text-slate-700 block font-medium">Eshik va romlar maydoni (m²):</label>
               <input
                 type="number"
                 min="0"
                 value={openingsAreaM2}
                 onChange={(e) => setOpeningsAreaM2(Math.max(0, parseFloat(e.target.value) || 0))}
-                className="w-full h-11 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white font-bold text-sm focus:border-[#FFB800] outline-none"
+                className="w-full h-11 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold text-sm focus:border-[#D95D1E] outline-none"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs text-sky-200 block">Material turi:</label>
+              <label className="text-xs text-slate-700 block font-medium">Material turi:</label>
               <select
                 value={materialType}
                 onChange={(e) => setMaterialType(e.target.value as any)}
-                className="w-full h-11 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white text-xs font-mono outline-none cursor-pointer"
+                className="w-full h-11 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono outline-none cursor-pointer focus:border-[#D95D1E]"
               >
                 <option value="brick_standard">Standart pishgan qizil g‘isht (250x120x65 mm)</option>
                 <option value="gasblock_200">Avtoklav Gazoblok D500 (600x300x200 mm)</option>
@@ -541,7 +534,7 @@ export const CalculatorsView: React.FC = () => {
 
             {materialType === 'brick_standard' && (
               <div className="space-y-1.5">
-                <label className="text-xs text-sky-200 block">Devor qalinligi:</label>
+                <label className="text-xs text-slate-700 block font-medium">Devor qalinligi:</label>
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
@@ -549,8 +542,8 @@ export const CalculatorsView: React.FC = () => {
                     className={cn(
                       'py-2 px-1 rounded-xl text-xs font-bold border transition-all cursor-pointer min-h-[44px]',
                       wallThicknessType === 'half'
-                        ? 'bg-[#132C54] border-[#FFB800] text-white'
-                        : 'bg-[#071326] border-[#1E3A6D] text-sky-300'
+                        ? 'bg-orange-50/50 border-[#D95D1E] text-[#D95D1E] ring-1 ring-[#D95D1E]'
+                        : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                     )}
                   >
                     0.5 g‘isht (12 sm)
@@ -561,8 +554,8 @@ export const CalculatorsView: React.FC = () => {
                     className={cn(
                       'py-2 px-1 rounded-xl text-xs font-bold border transition-all cursor-pointer min-h-[44px]',
                       wallThicknessType === 'single'
-                        ? 'bg-[#132C54] border-[#FFB800] text-white'
-                        : 'bg-[#071326] border-[#1E3A6D] text-sky-300'
+                        ? 'bg-orange-50/50 border-[#D95D1E] text-[#D95D1E] ring-1 ring-[#D95D1E]'
+                        : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                     )}
                   >
                     1 g‘isht (25 sm)
@@ -573,8 +566,8 @@ export const CalculatorsView: React.FC = () => {
                     className={cn(
                       'py-2 px-1 rounded-xl text-xs font-bold border transition-all cursor-pointer min-h-[44px]',
                       wallThicknessType === 'one_and_half'
-                        ? 'bg-[#132C54] border-[#FFB800] text-white'
-                        : 'bg-[#071326] border-[#1E3A6D] text-sky-300'
+                        ? 'bg-orange-50/50 border-[#D95D1E] text-[#D95D1E] ring-1 ring-[#D95D1E]'
+                        : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                     )}
                   >
                     1.5 g‘isht (38 sm)
@@ -584,45 +577,45 @@ export const CalculatorsView: React.FC = () => {
             )}
           </div>
 
-          <div className="lg:col-span-7 bg-[#0A1931] border-2 border-[#1E3A6D] rounded-2xl p-5 space-y-5 shadow-xl">
-            <div className="flex items-center justify-between pb-3 border-b border-[#1E3A6D]">
+          <div className="lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-5 space-y-5 shadow-sm">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
               <div>
-                <span className="text-[10px] text-sky-400 uppercase font-bold block">Sof Devor Maydoni:</span>
-                <span className="text-xl sm:text-2xl font-black text-[#FFB800] font-mono-numbers">
+                <span className="text-[10px] text-slate-500 uppercase font-bold block">Sof Devor Maydoni:</span>
+                <span className="text-xl sm:text-2xl font-black text-[#D95D1E] font-mono-numbers">
                   {brickResults.netArea} m²
                 </span>
               </div>
               <div className="text-right">
-                <span className="text-[10px] text-sky-400 uppercase font-bold block">Taxminiy Material Narxi:</span>
-                <span className="text-xl sm:text-2xl font-black text-emerald-400 font-mono-numbers">
+                <span className="text-[10px] text-slate-500 uppercase font-bold block">Taxminiy Material Narxi:</span>
+                <span className="text-xl sm:text-2xl font-black text-emerald-600 font-mono-numbers">
                   {brickResults.estimatedCost.toLocaleString()} so‘m
                 </span>
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="bg-[#071326] border border-[#1E3A6D] p-3.5 rounded-xl space-y-1">
-                <span className="text-[10px] text-[#FFB800] uppercase font-bold">Kerakli Miqdor</span>
-                <p className="text-xl font-black text-white font-mono-numbers">
+              <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl space-y-1">
+                <span className="text-[10px] text-slate-700 uppercase font-bold">Kerakli Miqdor</span>
+                <p className="text-xl font-black text-slate-900 font-mono-numbers">
                   {brickResults.unitCount.toLocaleString()}
                 </p>
-                <p className="text-[10px] text-sky-300">{brickResults.unitLabel}</p>
+                <p className="text-[10px] text-slate-500">{brickResults.unitLabel}</p>
               </div>
 
-              <div className="bg-[#071326] border border-[#1E3A6D] p-3.5 rounded-xl space-y-1">
-                <span className="text-[10px] text-emerald-400 uppercase font-bold">5% Zaxira (Sinish)</span>
-                <p className="text-xl font-black text-emerald-400 font-mono-numbers">
+              <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl space-y-1">
+                <span className="text-[10px] text-emerald-600 uppercase font-bold">5% Zaxira (Sinish)</span>
+                <p className="text-xl font-black text-emerald-600 font-mono-numbers">
                   +{brickResults.reserveCount.toLocaleString()} dona
                 </p>
-                <p className="text-[10px] text-sky-300">Zaxira kiritilgan</p>
+                <p className="text-[10px] text-slate-500">Zaxira kiritilgan</p>
               </div>
 
-              <div className="bg-[#071326] border border-[#1E3A6D] p-3.5 rounded-xl space-y-1">
-                <span className="text-[10px] text-[#FFB800] uppercase font-bold">Qorishma / Yelim</span>
-                <p className="text-xl font-black text-white font-mono-numbers">
+              <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl space-y-1">
+                <span className="text-[10px] text-slate-700 uppercase font-bold">Qorishma / Yelim</span>
+                <p className="text-xl font-black text-slate-900 font-mono-numbers">
                   ~{brickResults.mortarM3} m³
                 </p>
-                <p className="text-[10px] text-sky-300">Sement-qum qorishmasi</p>
+                <p className="text-[10px] text-slate-500">Sement-qum qorishmasi</p>
               </div>
             </div>
           </div>
@@ -634,17 +627,17 @@ export const CalculatorsView: React.FC = () => {
           ===================================================================== */}
       {activeTab === 'rebar' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start font-mono">
-          <div className="lg:col-span-5 bg-[#0A1931] border border-[#1E3A6D] rounded-2xl p-4 sm:p-5 space-y-4 shadow-lg">
-            <div className="flex items-center justify-between pb-2 border-b border-[#1E3A6D]">
-              <span className="font-bold text-sm text-white uppercase flex items-center gap-1.5">
-                <Zap className="w-4 h-4 text-[#FFB800]" />
+          <div className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+              <span className="font-bold text-sm text-slate-900 uppercase flex items-center gap-1.5">
+                <Zap className="w-4 h-4 text-[#D95D1E]" />
                 Armatura Parametrlari
               </span>
-              <span className="text-[10px] text-sky-300">GOST 5781-82 / A500C</span>
+              <span className="text-[10px] text-slate-500 font-medium">GOST 5781-82 / A500C</span>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs text-sky-200 block">Armatura diametri (mm):</label>
+              <label className="text-xs text-slate-700 block font-medium">Armatura diametri (mm):</label>
               <div className="grid grid-cols-4 sm:grid-cols-5 gap-1.5">
                 {[8, 10, 12, 14, 16, 18, 20, 25, 32].map((diam) => (
                   <button
@@ -654,8 +647,8 @@ export const CalculatorsView: React.FC = () => {
                     className={cn(
                       'py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer min-h-[44px]',
                       rebarDiameter === diam
-                        ? 'bg-[#132C54] border-[#FFB800] text-white ring-1 ring-[#FFB800]'
-                        : 'bg-[#071326] border-[#1E3A6D] text-sky-200 hover:border-[#2E5A9C]'
+                        ? 'bg-orange-50/50 border-[#D95D1E] text-[#D95D1E] ring-1 ring-[#D95D1E]'
+                        : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                     )}
                   >
                     d{diam}
@@ -665,57 +658,57 @@ export const CalculatorsView: React.FC = () => {
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs text-sky-200 block">Umumiy uzunlik (metr):</label>
+              <label className="text-xs text-slate-700 block font-medium">Umumiy uzunlik (metr):</label>
               <input
                 type="number"
                 min="1"
                 step="10"
                 value={rebarLengthMeters}
                 onChange={(e) => setRebarLengthMeters(Math.max(1, parseFloat(e.target.value) || 1))}
-                className="w-full h-11 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white font-bold text-sm focus:border-[#FFB800] outline-none"
+                className="w-full h-11 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold text-sm focus:border-[#D95D1E] outline-none"
               />
             </div>
           </div>
 
-          <div className="lg:col-span-7 bg-[#0A1931] border-2 border-[#1E3A6D] rounded-2xl p-5 space-y-5 shadow-xl">
-            <div className="flex items-center justify-between pb-3 border-b border-[#1E3A6D]">
+          <div className="lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-5 space-y-5 shadow-sm">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
               <div>
-                <span className="text-[10px] text-sky-400 uppercase font-bold block">Jami Og‘irlik:</span>
-                <span className="text-xl sm:text-2xl font-black text-[#FFB800] font-mono-numbers">
+                <span className="text-[10px] text-slate-500 uppercase font-bold block">Jami Og‘irlik:</span>
+                <span className="text-xl sm:text-2xl font-black text-[#D95D1E] font-mono-numbers">
                   {rebarResults.totalWeightTons} tonna ({rebarResults.totalWeightKg.toLocaleString()} kg)
                 </span>
               </div>
               <div className="text-right">
-                <span className="text-[10px] text-sky-400 uppercase font-bold block">Zavod Ulgurji Narxi:</span>
-                <span className="text-xl sm:text-2xl font-black text-emerald-400 font-mono-numbers">
+                <span className="text-[10px] text-slate-500 uppercase font-bold block">Zavod Ulgurji Narxi:</span>
+                <span className="text-xl sm:text-2xl font-black text-emerald-600 font-mono-numbers">
                   {rebarResults.estimatedCost.toLocaleString()} so‘m
                 </span>
               </div>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <div className="bg-[#071326] border border-[#1E3A6D] p-3.5 rounded-xl space-y-1">
-                <span className="text-[10px] text-[#FFB800] uppercase font-bold">1 Metr Vazni</span>
-                <p className="text-lg font-black text-white font-mono-numbers">
+              <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl space-y-1">
+                <span className="text-[10px] text-slate-700 uppercase font-bold">1 Metr Vazni</span>
+                <p className="text-lg font-black text-slate-900 font-mono-numbers">
                   {rebarResults.massPerMeter} kg/m
                 </p>
-                <p className="text-[10px] text-sky-300">Standart GOST</p>
+                <p className="text-[10px] text-slate-500">Standart GOST</p>
               </div>
 
-              <div className="bg-[#071326] border border-[#1E3A6D] p-3.5 rounded-xl space-y-1">
-                <span className="text-[10px] text-[#FFB800] uppercase font-bold">11.7m Xodalar Soni</span>
-                <p className="text-lg font-black text-white font-mono-numbers">
+              <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl space-y-1">
+                <span className="text-[10px] text-slate-700 uppercase font-bold">11.7m Xodalar Soni</span>
+                <p className="text-lg font-black text-slate-900 font-mono-numbers">
                   ~{rebarResults.standardBars117m} dona
                 </p>
-                <p className="text-[10px] text-sky-300">Standart uzunlik</p>
+                <p className="text-[10px] text-slate-500">Standart uzunlik</p>
               </div>
 
-              <div className="bg-[#071326] border border-[#1E3A6D] p-3.5 rounded-xl space-y-1 col-span-2 sm:col-span-1">
-                <span className="text-[10px] text-emerald-400 uppercase font-bold">Yuk Tashish</span>
-                <p className="text-lg font-black text-emerald-400 font-mono-numbers">
+              <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl space-y-1 col-span-2 sm:col-span-1">
+                <span className="text-[10px] text-emerald-600 uppercase font-bold">Yuk Tashish</span>
+                <p className="text-lg font-black text-emerald-600 font-mono-numbers">
                   {rebarResults.totalWeightTons <= 4 ? 'ISUZU Bortli' : 'Fura 20t'}
                 </p>
-                <p className="text-[10px] text-sky-300">Og‘irlikka mos</p>
+                <p className="text-[10px] text-slate-500">Og‘irlikka mos</p>
               </div>
             </div>
           </div>
@@ -727,29 +720,29 @@ export const CalculatorsView: React.FC = () => {
           ===================================================================== */}
       {activeTab === 'esco' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start font-mono">
-          <div className="lg:col-span-5 bg-[#0A1931] border border-[#1E3A6D] rounded-2xl p-4 sm:p-5 space-y-4 shadow-lg">
-            <div className="flex items-center justify-between pb-2 border-b border-[#1E3A6D]">
-              <span className="font-bold text-sm text-white uppercase flex items-center gap-1.5">
-                <Leaf className="w-4 h-4 text-emerald-400" />
+          <div className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+              <span className="font-bold text-sm text-slate-900 uppercase flex items-center gap-1.5">
+                <Leaf className="w-4 h-4 text-emerald-600" />
                 ESCO Bino Parametrlari
               </span>
-              <span className="text-[10px] text-emerald-400 font-bold">ShNQ 2.01.04-18</span>
+              <span className="text-[10px] text-emerald-600 font-bold">ShNQ 2.01.04-18</span>
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs text-sky-200 block">Isitiladigan maydon (m²):</label>
+              <label className="text-xs text-slate-700 block font-medium">Isitiladigan maydon (m²):</label>
               <input
                 type="number"
                 min="20"
                 step="10"
                 value={heatedAreaM2}
                 onChange={(e) => setHeatedAreaM2(Math.max(10, parseFloat(e.target.value) || 10))}
-                className="w-full h-11 px-3 rounded-xl bg-[#071326] border border-[#1E3A6D] text-white font-bold text-sm focus:border-[#FFB800] outline-none"
+                className="w-full h-11 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold text-sm focus:border-[#D95D1E] outline-none"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs text-sky-200 block">Bazalt plita qalinligi:</label>
+              <label className="text-xs text-slate-700 block font-medium">Bazalt plita qalinligi:</label>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
@@ -757,8 +750,8 @@ export const CalculatorsView: React.FC = () => {
                   className={cn(
                     'py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer min-h-[44px]',
                     insulationThicknessMm === 50
-                      ? 'bg-[#132C54] border-[#FFB800] text-white'
-                      : 'bg-[#071326] border-[#1E3A6D] text-sky-300'
+                      ? 'bg-emerald-50 border-emerald-600 text-emerald-800 ring-1 ring-emerald-600'
+                      : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                   )}
                 >
                   50 mm Bazalt (Standart)
@@ -769,8 +762,8 @@ export const CalculatorsView: React.FC = () => {
                   className={cn(
                     'py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer min-h-[44px]',
                     insulationThicknessMm === 100
-                      ? 'bg-[#132C54] border-[#FFB800] text-white'
-                      : 'bg-[#071326] border-[#1E3A6D] text-sky-300'
+                      ? 'bg-emerald-50 border-emerald-600 text-emerald-800 ring-1 ring-emerald-600'
+                      : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                   )}
                 >
                   100 mm Bazalt (Energiya A+)
@@ -779,45 +772,45 @@ export const CalculatorsView: React.FC = () => {
             </div>
           </div>
 
-          <div className="lg:col-span-7 bg-[#0A1931] border-2 border-[#1E3A6D] rounded-2xl p-5 space-y-5 shadow-xl">
-            <div className="flex items-center justify-between pb-3 border-b border-[#1E3A6D]">
+          <div className="lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-5 space-y-5 shadow-sm">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
               <div>
-                <span className="text-[10px] text-emerald-400 uppercase font-bold block">Energiya Tejash Salohiyati:</span>
-                <span className="text-2xl sm:text-3xl font-black text-emerald-400 font-mono-numbers">
+                <span className="text-[10px] text-emerald-600 uppercase font-bold block">Energiya Tejash Salohiyati:</span>
+                <span className="text-2xl sm:text-3xl font-black text-emerald-600 font-mono-numbers">
                   -{escoResults.savingsPercent}% Issiqlik Yo‘qotilishi
                 </span>
               </div>
               <div className="text-right">
-                <span className="text-[10px] text-sky-400 uppercase font-bold block">Yillik Iqtisod (Gaz/Tok):</span>
-                <span className="text-xl sm:text-2xl font-black text-[#FFB800] font-mono-numbers">
+                <span className="text-[10px] text-slate-500 uppercase font-bold block">Yillik Iqtisod (Gaz/Tok):</span>
+                <span className="text-xl sm:text-2xl font-black text-[#D95D1E] font-mono-numbers">
                   {escoResults.annualSavingsUzs.toLocaleString()} so‘m / yil
                 </span>
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="bg-[#071326] border border-[#1E3A6D] p-3.5 rounded-xl space-y-1">
-                <span className="text-[10px] text-[#FFB800] uppercase font-bold">Xarajat Qoplanishi</span>
-                <p className="text-xl font-black text-white font-mono-numbers">
+              <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl space-y-1">
+                <span className="text-[10px] text-slate-700 uppercase font-bold">Xarajat Qoplanishi</span>
+                <p className="text-xl font-black text-slate-900 font-mono-numbers">
                   ~{escoResults.paybackYears} yil
                 </p>
-                <p className="text-[10px] text-sky-300">Tejamkorlik hisobiga</p>
+                <p className="text-[10px] text-slate-500">Tejamkorlik hisobiga</p>
               </div>
 
-              <div className="bg-[#071326] border border-[#1E3A6D] p-3.5 rounded-xl space-y-1">
-                <span className="text-[10px] text-emerald-400 uppercase font-bold">CO₂ Kamayishi</span>
-                <p className="text-xl font-black text-emerald-400 font-mono-numbers">
+              <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl space-y-1">
+                <span className="text-[10px] text-emerald-600 uppercase font-bold">CO₂ Kamayishi</span>
+                <p className="text-xl font-black text-emerald-600 font-mono-numbers">
                   {escoResults.co2Tons} tonna/yil
                 </p>
-                <p className="text-[10px] text-sky-300">Ekologik sertifikat</p>
+                <p className="text-[10px] text-slate-500">Ekologik sertifikat</p>
               </div>
 
-              <div className="bg-[#071326] border border-[#1E3A6D] p-3.5 rounded-xl space-y-1">
-                <span className="text-[10px] text-[#FFB800] uppercase font-bold">Bazalt Hajmi</span>
-                <p className="text-xl font-black text-white font-mono-numbers">
+              <div className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl space-y-1">
+                <span className="text-[10px] text-slate-700 uppercase font-bold">Bazalt Hajmi</span>
+                <p className="text-xl font-black text-slate-900 font-mono-numbers">
                   {escoResults.basaltVolumeM3} m³
                 </p>
-                <p className="text-[10px] text-sky-300">NG yong‘inga chidamli</p>
+                <p className="text-[10px] text-slate-500">NG yong‘inga chidamli</p>
               </div>
             </div>
           </div>

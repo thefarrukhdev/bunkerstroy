@@ -137,18 +137,17 @@ const AdminLayout: React.FC = () => {
         </main>
 
         {/* Industrial Footer */}
-        <footer className="mt-auto border-t-2 border-[#1E3A6D] bg-[#071326] p-4 text-xs font-mono text-sky-200 transition-colors">
+        <footer className="mt-auto border-t border-slate-200 bg-white p-4 text-xs font-mono text-slate-500 transition-colors">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#FFB800]" />
-              &copy; {new Date().getFullYear()} <span className="text-white font-black">BUNKER<span className="text-[#FFB800]">STROY</span></span> Heavy Industrial B2B Ecosystem.
+              &copy; {new Date().getFullYear()} <span className="text-slate-900 font-bold">BUNKER<span className="text-[#D95D1E]">STROY</span></span> B2B Industrial Ecosystem.
             </div>
             <div className="flex items-center gap-3 text-[11px]">
-              <span className="text-[#FFB800] font-black">[BUNKER INDUSTRIAL STANDARD]</span>
-              <span className="text-sky-400/40">|</span>
-              <span className="text-sky-200">React 19 + TypeScript</span>
-              <span className="text-sky-400/40">|</span>
-              <span className="text-emerald-400 font-bold">STIR &amp; E-IMZO</span>
+              <span className="text-[#D95D1E] font-bold">[NEO-ARCHITECTURAL STANDARD]</span>
+              <span className="text-slate-300">|</span>
+              <span className="text-slate-600">React 19 + TypeScript</span>
+              <span className="text-slate-300">|</span>
+              <span className="text-emerald-700 font-bold">STIR &amp; E-IMZO</span>
             </div>
           </div>
         </footer>

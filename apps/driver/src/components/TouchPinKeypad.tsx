@@ -143,10 +143,10 @@ export const TouchPinKeypad: React.FC<TouchPinKeypadProps> = ({
               key={idx}
               className={`w-14 h-16 sm:w-16 sm:h-18 rounded-2xl border-2 flex items-center justify-center font-mono text-3xl font-black transition-all ${
                 isFilled
-                  ? 'bg-[#071326] border-[#FFB800] text-amber-300 shadow-[0_0_12px_rgba(255,184,0,0.3)] scale-105'
+                  ? 'bg-orange-50 border-[#D95D1E] text-[#D95D1E] shadow-sm scale-105'
                   : isCurrent
-                  ? 'bg-[#0A1931] border-sky-400 text-sky-400 ring-2 ring-sky-400/30 animate-pulse'
-                  : 'bg-[#071326] border-[#1E3A6D] text-slate-600'
+                  ? 'bg-slate-50 border-[#D95D1E] text-[#D95D1E] ring-2 ring-orange-200 animate-pulse'
+                  : 'bg-slate-100 border-slate-200 text-slate-400'
               }`}
             >
               {isFilled ? char : <span className="w-2 h-2 rounded-full bg-slate-600" />}
@@ -173,19 +173,19 @@ export const TouchPinKeypad: React.FC<TouchPinKeypadProps> = ({
               disabled={disabled}
               onClick={k.action}
               aria-label={k.ariaLabel}
-              className={`w-full min-w-[60px] min-h-[60px] h-[64px] sm:h-[68px] rounded-2xl flex items-center justify-center font-mono transition-all active:scale-95 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-md touch-manipulation border ${
+              className={`w-full min-w-[60px] min-h-[60px] h-[64px] sm:h-[68px] rounded-2xl flex items-center justify-center font-mono transition-all active:scale-95 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-xs touch-manipulation border ${
                 isNumber
-                  ? 'bg-[#0F2547] hover:bg-[#132C54] active:bg-[#1A3865] border-[#1E3A6D] active:border-[#FFB800] text-white text-2xl font-black'
+                  ? 'bg-white hover:bg-slate-50 active:bg-slate-100 border-slate-200 active:border-[#D95D1E] text-slate-900 text-2xl font-black'
                   : isClear
-                  ? 'bg-[#181E2E] hover:bg-[#222B3F] active:bg-[#2A354E] border-[#2A374F] text-amber-400 text-sm font-bold flex flex-col items-center gap-0.5'
-                  : 'bg-[#181E2E] hover:bg-[#222B3F] active:bg-[#2A354E] border-[#2A374F] text-rose-400 flex items-center justify-center'
+                  ? 'bg-slate-100 hover:bg-slate-200 active:bg-slate-300 border-slate-200 text-amber-700 text-sm font-bold flex flex-col items-center gap-0.5'
+                  : 'bg-slate-100 hover:bg-slate-200 active:bg-slate-300 border-slate-200 text-rose-600 flex items-center justify-center'
               }`}
             >
               {isBack ? (
                 <Delete className="w-6 h-6 stroke-[2.2]" />
               ) : isClear ? (
                 <>
-                  <RotateCcw className="w-4 h-4 text-amber-400" />
+                  <RotateCcw className="w-4 h-4 text-amber-700" />
                   <span className="text-[10px] tracking-tight uppercase font-mono">Tozalash</span>
                 </>
               ) : (
@@ -198,8 +198,8 @@ export const TouchPinKeypad: React.FC<TouchPinKeypadProps> = ({
 
       {/* Optional In-Keypad Error Notice */}
       {error && (
-        <p className="text-xs font-mono text-red-400 flex items-center justify-center gap-1.5 pt-1 text-center font-bold animate-in fade-in">
-          <XCircle className="w-4 h-4 text-red-400 shrink-0" />
+        <p className="text-xs font-mono text-red-600 flex items-center justify-center gap-1.5 pt-1 text-center font-bold animate-in fade-in">
+          <XCircle className="w-4 h-4 text-red-600 shrink-0" />
           <span>{error}</span>
         </p>
       )}
@@ -212,9 +212,9 @@ export const TouchPinKeypad: React.FC<TouchPinKeypadProps> = ({
           playFeedback('click');
           onSubmit();
         }}
-        className="w-full max-w-[360px] min-h-[56px] py-3.5 px-6 rounded-2xl bg-[#FFB800] hover:bg-amber-400 active:bg-amber-500 disabled:opacity-40 disabled:cursor-not-allowed text-black font-mono text-sm font-black transition-all active:scale-98 cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20"
+        className="w-full max-w-[360px] min-h-[56px] py-3.5 px-6 rounded-2xl bg-[#D95D1E] hover:bg-[#B43B06] active:bg-[#9A3412] disabled:opacity-40 disabled:cursor-not-allowed text-white font-mono text-sm font-black transition-all active:scale-98 cursor-pointer flex items-center justify-center gap-2 shadow-sm"
       >
-        <KeyRound className="w-5 h-5 text-black" />
+        <KeyRound className="w-5 h-5 text-white" />
         <span>PIN-KODNI TASDIQLASH</span>
       </button>
     </div>

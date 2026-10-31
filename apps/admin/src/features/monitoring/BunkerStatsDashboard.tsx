@@ -574,33 +574,32 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
   }, [filteredOrders, suppliers]);
 
   return (
-    <div className={`w-full space-y-6 text-[#F5F5F2] ${className}`}>
+    <div className={`w-full space-y-6 text-[#0F172A] ${className}`}>
       {/* ==============================================================
           TOP HEADER & VAQT FILTRI (KUN, HAFTA, OY, VAQT ORALIG'I)
           ============================================================== */}
-      <div className="bg-[#0A1931] border-2 border-[#1E3A6D] rounded-2xl p-5 sm:p-6 shadow-2xl relative overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-2xl relative overflow-hidden">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#FFB800] animate-pulse" />
               <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight uppercase flex items-center gap-2">
                 <span>BunkerStats: Respublika 14 Hududi Monitoringi</span>
               </h1>
             </div>
-            <p className="text-xs text-sky-200">
+            <p className="text-xs text-slate-600">
               O‘zbekistonning 14 ta hududi bo‘yicha B2B, B2C va Foydalanuvchi kabinetlari, aylanma va ulushlar tahlili
             </p>
           </div>
 
           {/* Period Filter Tabs: Umumiy, Kun, Hafta, Oy, Vaqt oralig'i */}
-          <div className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-xl bg-[#071326] border border-[#1E3A6D] shrink-0">
+          <div className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-xl bg-slate-50 border border-slate-200 shrink-0">
             <button
               type="button"
               onClick={() => setSelectedPeriod(null)}
               className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 selectedPeriod === null
-                  ? 'bg-[#FFB800] text-[#071326] font-black shadow-md shadow-[#FFB800]/20'
-                  : 'text-sky-200 hover:text-white'
+                  ? 'bg-[#D95D1E] text-white font-black shadow-md shadow-[#D95D1E]/20'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Umumiy
@@ -610,8 +609,8 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
               onClick={() => setSelectedPeriod((prev) => (prev === 'day' ? null : 'day'))}
               className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 selectedPeriod === 'day'
-                  ? 'bg-[#FFB800] text-[#071326] font-black shadow-md shadow-[#FFB800]/20'
-                  : 'text-sky-200 hover:text-white'
+                  ? 'bg-[#D95D1E] text-white font-black shadow-md shadow-[#D95D1E]/20'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Bugun
@@ -621,8 +620,8 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
               onClick={() => setSelectedPeriod((prev) => (prev === 'week' ? null : 'week'))}
               className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 selectedPeriod === 'week'
-                  ? 'bg-[#FFB800] text-[#071326] font-black shadow-md shadow-[#FFB800]/20'
-                  : 'text-sky-200 hover:text-white'
+                  ? 'bg-[#D95D1E] text-white font-black shadow-md shadow-[#D95D1E]/20'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Hafta
@@ -632,8 +631,8 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
               onClick={() => setSelectedPeriod((prev) => (prev === 'month' ? null : 'month'))}
               className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 selectedPeriod === 'month'
-                  ? 'bg-[#FFB800] text-[#071326] font-black shadow-md shadow-[#FFB800]/20'
-                  : 'text-sky-200 hover:text-white'
+                  ? 'bg-[#D95D1E] text-white font-black shadow-md shadow-[#D95D1E]/20'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Oy
@@ -643,14 +642,14 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
               onClick={() => setIsRangeModalOpen(true)}
               className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 selectedPeriod === 'range'
-                  ? 'bg-[#FFB800] text-[#071326] font-black shadow-md shadow-[#FFB800]/20'
-                  : 'text-sky-200 hover:text-white'
+                  ? 'bg-[#D95D1E] text-white font-black shadow-md shadow-[#D95D1E]/20'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <Calendar className="w-3.5 h-3.5" />
               <span>Vaqt oralig‘i</span>
               {selectedPeriod === 'range' && (
-                <span className="text-[10px] bg-[#0A1931] text-[#FFB800] px-1.5 py-0.5 rounded font-mono ml-1 font-bold">
+                <span className="text-[10px] bg-white text-[#D95D1E] px-1.5 py-0.5 rounded font-mono ml-1 font-bold">
                   {startDate.slice(5)} - {endDate.slice(5)}
                 </span>
               )}
@@ -660,7 +659,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
                 type="button"
                 onClick={() => setSelectedPeriod(null)}
                 title="Umumiy barchasini ko'rsatish"
-                className="px-2.5 py-2 rounded-lg text-xs font-bold text-[#FFB800] hover:bg-[#0F2547] transition-all cursor-pointer flex items-center gap-1"
+                className="px-2.5 py-2 rounded-lg text-xs font-bold text-[#D95D1E] hover:bg-slate-100 transition-all cursor-pointer flex items-center gap-1"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -671,17 +670,17 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
         {/* Custom Date Range Modal */}
         {isRangeModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-            <div className="bg-[#0A1931] border-2 border-[#FFB800] rounded-2xl max-w-sm w-full max-h-[90vh] overflow-y-auto p-4 sm:p-5 space-y-4 shadow-2xl flex flex-col">
-              <div className="flex items-center justify-between pb-2 border-b border-[#1E3A6D]">
+            <div className="bg-white border-2 border-[#D95D1E] rounded-2xl max-w-sm w-full max-h-[90vh] overflow-y-auto p-4 sm:p-5 space-y-4 shadow-2xl flex flex-col">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-200">
                 <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-[#FFB800]" />
+                  <Calendar className="w-4 h-4 text-[#D95D1E]" />
                   <h3 className="text-sm font-black text-white">Vaqt oralig'ini belgilash</h3>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsRangeModalOpen(false)}
                   aria-label="Yopish"
-                  className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl bg-[#071326] text-sky-200 hover:text-white cursor-pointer"
+                  className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl bg-slate-50 text-slate-600 hover:text-slate-900 cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -689,37 +688,37 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
 
               <div className="space-y-3 text-xs font-mono flex-1">
                 <div className="space-y-1">
-                  <label htmlFor="bunker-stats-start-date" className="text-sky-200 font-bold block">Boshlang‘ich sana:</label>
+                  <label htmlFor="bunker-stats-start-date" className="text-slate-600 font-bold block">Boshlang‘ich sana:</label>
                   <input
                     id="bunker-stats-start-date"
                     name="startDate"
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full px-3 py-2 text-base sm:text-xs min-h-[44px] sm:min-h-0 bg-[#071326] border border-[#1E3A6D] rounded-xl text-white focus:outline-none focus:border-[#FFB800] font-mono"
+                    className="w-full px-3 py-2 text-base sm:text-xs min-h-[44px] sm:min-h-0 bg-slate-50 border border-slate-200 rounded-xl text-white focus:outline-none focus:border-[#D95D1E] font-mono"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label htmlFor="bunker-stats-end-date" className="text-sky-200 font-bold block">Tugash sanasi:</label>
+                  <label htmlFor="bunker-stats-end-date" className="text-slate-600 font-bold block">Tugash sanasi:</label>
                   <input
                     id="bunker-stats-end-date"
                     name="endDate"
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full px-3 py-2 text-base sm:text-xs min-h-[44px] sm:min-h-0 bg-[#071326] border border-[#1E3A6D] rounded-xl text-white focus:outline-none focus:border-[#FFB800] font-mono"
+                    className="w-full px-3 py-2 text-base sm:text-xs min-h-[44px] sm:min-h-0 bg-slate-50 border border-slate-200 rounded-xl text-white focus:outline-none focus:border-[#D95D1E] font-mono"
                   />
                 </div>
               </div>
 
-              <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2 pt-2 border-t border-[#1E3A6D]">
+              <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2 pt-2 border-t border-slate-200">
                 <button
                   type="button"
                   onClick={() => {
                     setSelectedPeriod(null);
                     setIsRangeModalOpen(false);
                   }}
-                  className="w-full sm:w-auto min-h-[44px] px-3.5 py-2 rounded-xl bg-[#071326] text-xs font-bold text-sky-200 hover:text-white cursor-pointer text-center"
+                  className="w-full sm:w-auto min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-50 text-xs font-bold text-slate-600 hover:text-slate-900 cursor-pointer text-center"
                 >
                   Umumiy
                 </button>
@@ -727,7 +726,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
                   <button
                     type="button"
                     onClick={() => setIsRangeModalOpen(false)}
-                    className="flex-1 sm:flex-none min-h-[44px] px-3.5 py-2 rounded-xl bg-[#071326] text-xs font-bold text-sky-200 hover:text-white cursor-pointer text-center"
+                    className="flex-1 sm:flex-none min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-50 text-xs font-bold text-slate-600 hover:text-slate-900 cursor-pointer text-center"
                   >
                     Yopish
                   </button>
@@ -737,7 +736,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
                       setSelectedPeriod('range');
                       setIsRangeModalOpen(false);
                     }}
-                    className="flex-1 sm:flex-none min-h-[44px] px-4 py-2 rounded-xl bg-[#FFB800] hover:bg-[#FFC928] text-[#071326] text-xs font-black shadow-md cursor-pointer text-center"
+                    className="flex-1 sm:flex-none min-h-[44px] px-4 py-2 rounded-xl bg-[#D95D1E] hover:bg-[#FFC928] text-white text-xs font-black shadow-md cursor-pointer text-center"
                   >
                     Belgilash
                   </button>
@@ -753,38 +752,38 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
           ============================================================== */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* 1. B2B Kabinetlar Soni va Savdo Aylanmasi */}
-        <div className="bg-[#0A1931] border-2 border-[#FFB800]/60 rounded-2xl p-5 shadow-xl flex flex-col justify-between gap-4">
-          <div className="flex items-center justify-between border-b border-[#1E3A6D] pb-3">
+        <div className="bg-white border-2 border-[#D95D1E]/60 rounded-2xl p-5 shadow-xl flex flex-col justify-between gap-4">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#FFB800]/20 border border-[#FFB800]/50 text-[#FFB800] flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-[#D95D1E]/20 border border-[#D95D1E]/50 text-[#D95D1E] flex items-center justify-center shrink-0">
                 <Building2 className="w-5 h-5" />
               </div>
               <div>
                 <h3 className="text-sm sm:text-base font-black text-white">B2B Kabinetlar Soni</h3>
-                <p className="text-[11px] text-sky-200">Ishlab chiqaruvchi yirik zavodlar</p>
+                <p className="text-[11px] text-slate-600">Ishlab chiqaruvchi yirik zavodlar</p>
               </div>
             </div>
-            <span className="px-3 py-1 rounded-xl bg-[#071326] border border-[#FFB800]/50 text-[#FFB800] font-mono font-black text-lg">
+            <span className="px-3 py-1 rounded-xl bg-slate-50 border border-[#D95D1E]/50 text-[#D95D1E] font-mono font-black text-lg">
               {supplierSalesStats.b2bCabinetsCount} ta
             </span>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-2 text-xs font-mono">
+          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2 text-xs font-mono">
             <div className="flex items-center justify-between gap-2">
-              <span className="text-sky-200 font-bold">B2B Umumiy Aylanmasi:</span>
-              <span className="text-sm sm:text-base font-black text-[#FFB800]">
+              <span className="text-slate-600 font-bold">B2B Umumiy Aylanmasi:</span>
+              <span className="text-sm sm:text-base font-black text-[#D95D1E]">
                 {formatSum(supplierSalesStats.b2bTurnoverUzs)}
               </span>
             </div>
-            <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-[#1E3A6D]/70">
-              <span className="text-sky-200">Ta’minotchi Ulushi (95%):</span>
+            <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-slate-200/70">
+              <span className="text-slate-600">Ta’minotchi Ulushi (95%):</span>
               <span className="font-black text-white">
                 {formatSum(supplierSalesStats.b2bSupplierNetUzs)}
               </span>
             </div>
-            <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-[#1E3A6D]/70">
-              <span className="text-emerald-400 font-bold">Bunker Foydasi (5%):</span>
-              <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/50 text-emerald-400 font-black">
+            <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-slate-200/70">
+              <span className="text-emerald-600 font-bold">Bunker Foydasi (5%):</span>
+              <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/50 text-emerald-600 font-black">
                 {formatSum(supplierSalesStats.b2bBunkerProfitUzs)}
               </span>
             </div>
@@ -792,38 +791,38 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
         </div>
 
         {/* 2. B2C Kabinetlar Soni va Savdo Aylanmasi */}
-        <div className="bg-[#0A1931] border-2 border-emerald-500/60 rounded-2xl p-5 shadow-xl flex flex-col justify-between gap-4">
-          <div className="flex items-center justify-between border-b border-[#1E3A6D] pb-3">
+        <div className="bg-white border-2 border-emerald-500/60 rounded-2xl p-5 shadow-xl flex flex-col justify-between gap-4">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400/50 text-emerald-400 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400/50 text-emerald-600 flex items-center justify-center shrink-0">
                 <Store className="w-5 h-5" />
               </div>
               <div>
                 <h3 className="text-sm sm:text-base font-black text-white">B2C Kabinetlar Soni</h3>
-                <p className="text-[11px] text-sky-200">Hamkor distribyutorlar & do‘konlar</p>
+                <p className="text-[11px] text-slate-600">Hamkor distribyutorlar & do‘konlar</p>
               </div>
             </div>
-            <span className="px-3 py-1 rounded-xl bg-[#071326] border border-emerald-400/50 text-emerald-400 font-mono font-black text-lg">
+            <span className="px-3 py-1 rounded-xl bg-slate-50 border border-emerald-400/50 text-emerald-600 font-mono font-black text-lg">
               {supplierSalesStats.b2cCabinetsCount} ta
             </span>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-2 text-xs font-mono">
+          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2 text-xs font-mono">
             <div className="flex items-center justify-between gap-2">
-              <span className="text-sky-200 font-bold">B2C Umumiy Aylanmasi:</span>
-              <span className="text-sm sm:text-base font-black text-[#FFB800]">
+              <span className="text-slate-600 font-bold">B2C Umumiy Aylanmasi:</span>
+              <span className="text-sm sm:text-base font-black text-[#D95D1E]">
                 {formatSum(supplierSalesStats.b2cTurnoverUzs)}
               </span>
             </div>
-            <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-[#1E3A6D]/70">
-              <span className="text-sky-200">Ta’minotchi Ulushi (95%):</span>
+            <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-slate-200/70">
+              <span className="text-slate-600">Ta’minotchi Ulushi (95%):</span>
               <span className="font-black text-white">
                 {formatSum(supplierSalesStats.b2cSupplierNetUzs)}
               </span>
             </div>
-            <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-[#1E3A6D]/70">
-              <span className="text-emerald-400 font-bold">Bunker Foydasi (5%):</span>
-              <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/50 text-emerald-400 font-black">
+            <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-slate-200/70">
+              <span className="text-emerald-600 font-bold">Bunker Foydasi (5%):</span>
+              <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/50 text-emerald-600 font-black">
                 {formatSum(supplierSalesStats.b2cBunkerProfitUzs)}
               </span>
             </div>
@@ -831,30 +830,30 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
         </div>
 
         {/* 3. Foydalanuvchi Kabinetlar Soni va Savdo Aylanmasi */}
-        <div className="bg-[#0A1931] border-2 border-blue-500/60 rounded-2xl p-5 shadow-xl flex flex-col justify-between gap-4">
-          <div className="flex items-center justify-between border-b border-[#1E3A6D] pb-3">
+        <div className="bg-white border-2 border-blue-500/60 rounded-2xl p-5 shadow-xl flex flex-col justify-between gap-4">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-400/50 text-blue-400 flex items-center justify-center shrink-0">
                 <Users className="w-5 h-5" />
               </div>
               <div>
                 <h3 className="text-sm sm:text-base font-black text-white">Foydalanuvchi Kabinetlari</h3>
-                <p className="text-[11px] text-sky-200">Xaridorlar & pudrat tashkilotlari</p>
+                <p className="text-[11px] text-slate-600">Xaridorlar & pudrat tashkilotlari</p>
               </div>
             </div>
-            <span className="px-3 py-1 rounded-xl bg-[#071326] border border-blue-400/50 text-blue-400 font-mono font-black text-lg">
+            <span className="px-3 py-1 rounded-xl bg-slate-50 border border-blue-400/50 text-blue-400 font-mono font-black text-lg">
               {supplierSalesStats.customerCabinetsCount} ta
             </span>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-[#071326] border border-[#1E3A6D] space-y-2 text-xs font-mono">
-            <span className="text-[11px] font-bold uppercase text-sky-200 block">
+          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2 text-xs font-mono">
+            <span className="text-[11px] font-bold uppercase text-slate-600 block">
               Platforma Umumiy Aylanmasi:
             </span>
             <div className="text-lg sm:text-xl font-black text-blue-400 font-mono">
               {formatSum(supplierSalesStats.totalTransferredUzs)}
             </div>
-            <div className="text-[11px] text-sky-300/80 pt-1 border-t border-[#1E3A6D]/70 flex items-center justify-between">
+            <div className="text-[11px] text-slate-500 pt-1 border-t border-slate-200/70 flex items-center justify-between">
               <span>Onlayn buyurtmalar soni:</span>
               <strong className="text-white">{supplierSalesStats.validOrdersCount} ta</strong>
             </div>
@@ -865,28 +864,28 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
       {/* ==============================================================
           2-QATOR: DONUT / CIRCULAR SVG GAUGE & ULUSHLAR TAQSIMOTI
           ============================================================== */}
-      <div className="bg-[#0A1931] border-2 border-[#1E3A6D] rounded-2xl p-5 sm:p-6 shadow-2xl space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#1E3A6D]">
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-2xl space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#FFB800]/15 border border-[#FFB800]/40 text-[#FFB800] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-[#D95D1E]/15 border border-[#D95D1E]/40 text-[#D95D1E] flex items-center justify-center shrink-0">
               <Wallet className="w-5 h-5" />
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-black text-white">
                 Umumiy Savdo Mablag‘i & Ulushlar Balansi (B2B + B2C)
               </h2>
-              <p className="text-xs text-sky-200">
+              <p className="text-xs text-slate-600">
                 Ta’minotchilar ulushi (95%) hamda Bunker Stroy platforma daromadi (5%)
               </p>
             </div>
           </div>
-          <span className="px-3.5 py-1.5 rounded-xl bg-[#071326] border border-[#FFB800]/50 font-mono text-sm sm:text-base text-[#FFB800] font-black">
+          <span className="px-3.5 py-1.5 rounded-xl bg-slate-50 border border-[#D95D1E]/50 font-mono text-sm sm:text-base text-[#D95D1E] font-black">
             Jami savdo (100%): {formatSum(supplierSalesStats.totalTransferredUzs)}
           </span>
         </div>
 
         {/* Circular Gauge */}
-        <div className="p-4 sm:p-5 rounded-xl bg-[#071326] border border-[#1E3A6D] flex flex-col md:flex-row items-center gap-6">
+        <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col md:flex-row items-center gap-6">
           {(() => {
             const radius = 52;
             const circumference = 2 * Math.PI * radius;
@@ -908,7 +907,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
                       cy="70"
                       r={radius}
                       fill="transparent"
-                      stroke="#0A1931"
+                      stroke="#E2E8F0"
                       strokeWidth="16"
                     />
                     {/* Ta'minotchilar Ulushi — Ko'k rangda */}
@@ -940,7 +939,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
                     <span className="text-xs sm:text-sm font-black text-white font-mono leading-tight">
                       100%
                     </span>
-                    <span className="text-[10px] font-mono text-[#FFB800] font-bold mt-0.5">
+                    <span className="text-[10px] font-mono text-[#D95D1E] font-bold mt-0.5">
                       BUNKER
                     </span>
                   </div>
@@ -948,44 +947,42 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
 
                 <div className="flex-1 w-full space-y-3">
                   {/* 1. Ta'minotchilar Ulushi (B2B + B2C) */}
-                  <div className="p-3.5 rounded-xl bg-[#0A1931] border border-blue-500/50 hover:border-blue-400 transition-all space-y-1.5 text-xs sm:text-sm">
+                  <div className="p-3.5 rounded-xl bg-white border border-blue-500/50 hover:border-blue-400 transition-all space-y-1.5 text-xs sm:text-sm">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2.5">
-                        <span className="w-3.5 h-3.5 rounded-full bg-blue-500 shrink-0 shadow-[0_0_8px_rgba(59,130,246,0.6)]" />
-                        <span className="font-black text-white">Ta’minotchilar Ulushi (B2B + B2C)</span>
+                        <span className="font-black text-slate-900">Ta’minotchilar Ulushi (B2B + B2C)</span>
                       </div>
                       <div className="font-mono font-black flex items-center gap-2.5">
-                        <span className="px-2.5 py-0.5 rounded-lg bg-blue-500/20 text-blue-300 border border-blue-400/40 text-xs">
+                        <span className="px-2.5 py-0.5 rounded-lg bg-blue-500/20 text-blue-700 border border-blue-400/40 text-xs">
                           {suppPct}%
                         </span>
-                        <span className="text-blue-400 text-sm sm:text-base">{formatSum(netSupp)}</span>
+                        <span className="text-blue-600 text-sm sm:text-base">{formatSum(netSupp)}</span>
                       </div>
                     </div>
-                    <div className="text-[11px] font-mono text-sky-200 flex flex-wrap items-center gap-3 pl-6">
-                      <span>B2B ta’minotchilar: <strong className="text-white">{formatSum(supplierSalesStats.b2bSupplierNetUzs)}</strong></span>
-                      <span>•</span>
-                      <span>B2C ta’minotchilar: <strong className="text-white">{formatSum(supplierSalesStats.b2cSupplierNetUzs)}</strong></span>
+                    <div className="text-[11px] font-mono text-slate-600 flex flex-wrap items-center gap-3">
+                      <span>B2B ta’minotchilar: <strong className="text-slate-900">{formatSum(supplierSalesStats.b2bSupplierNetUzs)}</strong></span>
+                      <span>|</span>
+                      <span>B2C ta’minotchilar: <strong className="text-slate-900">{formatSum(supplierSalesStats.b2cSupplierNetUzs)}</strong></span>
                     </div>
                   </div>
 
                   {/* 2. Bunker Stroy Ulushi */}
-                  <div className="p-3.5 rounded-xl bg-[#0A1931] border border-emerald-500/60 hover:border-emerald-400 transition-all space-y-1.5 text-xs sm:text-sm">
+                  <div className="p-3.5 rounded-xl bg-white border border-emerald-500/60 hover:border-emerald-400 transition-all space-y-1.5 text-xs sm:text-sm">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2.5">
-                        <span className="w-3.5 h-3.5 rounded-full bg-emerald-500 shrink-0 shadow-[0_0_8px_rgba(16,185,129,0.7)]" />
-                        <span className="font-black text-white">Bunker Stroy Platforma Marjasi (Komissiya)</span>
+                        <span className="font-black text-slate-900">Bunker Stroy Platforma Marjasi (Komissiya)</span>
                       </div>
                       <div className="font-mono font-black flex items-center gap-2.5">
-                        <span className="px-2.5 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-400/50 text-xs">
+                        <span className="px-2.5 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-700 border border-emerald-400/50 text-xs">
                           {bunkerPct}%
                         </span>
-                        <span className="text-emerald-400 text-sm sm:text-base">{formatSum(profit)}</span>
+                        <span className="text-emerald-600 text-sm sm:text-base">{formatSum(profit)}</span>
                       </div>
                     </div>
-                    <div className="text-[11px] font-mono text-emerald-200 flex flex-wrap items-center gap-3 pl-6">
-                      <span>B2B komissiya: <strong className="text-emerald-400">{formatSum(supplierSalesStats.b2bBunkerProfitUzs)}</strong></span>
-                      <span>•</span>
-                      <span>B2C komissiya: <strong className="text-emerald-400">{formatSum(supplierSalesStats.b2cBunkerProfitUzs)}</strong></span>
+                    <div className="text-[11px] font-mono text-slate-600 flex flex-wrap items-center gap-3">
+                      <span>B2B komissiya: <strong className="text-emerald-700">{formatSum(supplierSalesStats.b2bBunkerProfitUzs)}</strong></span>
+                      <span>|</span>
+                      <span>B2C komissiya: <strong className="text-emerald-700">{formatSum(supplierSalesStats.b2cBunkerProfitUzs)}</strong></span>
                     </div>
                   </div>
                 </div>
@@ -998,14 +995,14 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
       {/* ==============================================================
           3-QATOR: 12 OYLIK SAVDO HAJMI & TALAB DINAMIKASI
           ============================================================== */}
-      <div className="bg-[#0A1931] border-2 border-[#1E3A6D] rounded-2xl p-6 sm:p-7 shadow-2xl space-y-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-[#1E3A6D]">
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-2xl space-y-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
           <div>
             <h2 className="text-lg sm:text-xl font-black text-white flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-[#FFB800]" />
+              <BarChart3 className="w-5 h-5 text-[#D95D1E]" />
               <span>Bunker Oylik Savdo Hajmi & Talab Dinamikasi (12 Oy)</span>
             </h2>
-            <p className="text-xs text-sky-200 mt-0.5">
+            <p className="text-xs text-slate-600 mt-0.5">
               Yanvar — Dekabr oylari kesimida savdo aylanmasi va buyurtmalar oqimi
             </p>
           </div>
@@ -1014,7 +1011,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
             <span className="px-3 py-1.5 rounded-lg bg-blue-500/15 text-blue-400 border border-blue-500/30 text-xs font-mono font-black">
               Talab: {total12MonthsDemand} buyurtma
             </span>
-            <span className="px-3 py-1.5 rounded-lg bg-[#FFB800]/15 text-[#FFB800] border border-[#FFB800]/30 text-xs font-mono font-black">
+            <span className="px-3 py-1.5 rounded-lg bg-[#D95D1E]/15 text-[#D95D1E] border border-[#D95D1E]/30 text-xs font-mono font-black">
               Jami: {formatSum(total12MonthsTurnover)}
             </span>
           </div>
@@ -1024,7 +1021,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
         <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-mono px-2">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5 text-white font-bold">
-              <span className="w-3 h-3 rounded-xs bg-[#FFB800] inline-block" />
+              <span className="w-3 h-3 rounded-xs bg-[#D95D1E] inline-block" />
               Savdo hajmi (so‘m)
             </span>
             <span className="flex items-center gap-1.5 text-blue-400 font-bold">
@@ -1032,17 +1029,17 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
               Talab (buyurtmalar soni)
             </span>
           </div>
-          <span className="text-sky-200">12 oylik ko‘rsatkich</span>
+          <span className="text-slate-600">12 oylik ko‘rsatkich</span>
         </div>
 
         {/* 12 Months Dual-Bar Chart */}
         <div className="pt-6 pb-2 overflow-x-auto">
           <div className="min-w-[680px] h-64 sm:h-72 w-full flex items-end justify-between gap-2 sm:gap-3 px-2 sm:px-4 relative">
             <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-20">
-              <div className="border-b border-[#1E3A6D] w-full" />
-              <div className="border-b border-[#1E3A6D] w-full" />
-              <div className="border-b border-[#1E3A6D] w-full" />
-              <div className="border-b border-[#1E3A6D] w-full" />
+              <div className="border-b border-slate-200 w-full" />
+              <div className="border-b border-slate-200 w-full" />
+              <div className="border-b border-slate-200 w-full" />
+              <div className="border-b border-slate-200 w-full" />
             </div>
 
             {monthlyData.map((item, idx) => {
@@ -1055,30 +1052,30 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
                   onMouseLeave={() => setActiveBarHover(null)}
                 >
                   <div
-                    className={`mb-1 px-2 py-1 rounded-lg bg-[#071326] border text-center transition-all duration-200 whitespace-nowrap z-10 ${
+                    className={`mb-1 px-2 py-1 rounded-lg bg-slate-50 border text-center transition-all duration-200 whitespace-nowrap z-10 ${
                       isHovered || item.val > 0
-                        ? 'border-[#FFB800] opacity-100 shadow-md'
-                        : 'border-[#1E3A6D]/70 opacity-85'
+                        ? 'border-[#D95D1E] opacity-100 shadow-md'
+                        : 'border-slate-200/70 opacity-85'
                     }`}
                   >
-                    <div className="text-[9px] text-sky-200 uppercase font-mono">{item.month}</div>
-                    <div className="text-[10px] font-black text-[#FFB800] font-mono">{item.full}</div>
+                    <div className="text-[9px] text-slate-600 uppercase font-mono">{item.month}</div>
+                    <div className="text-[10px] font-black text-[#D95D1E] font-mono">{item.full}</div>
                     <div className="text-[9px] font-bold text-blue-400 font-mono">Talab: {item.demandCount} ta</div>
                   </div>
 
                   <span
                     className={`text-[10px] sm:text-[11px] font-mono font-black mb-1.5 transition-colors ${
-                      isHovered ? 'text-[#FFB800]' : 'text-white'
+                      isHovered ? 'text-[#D95D1E]' : 'text-white'
                     }`}
                   >
                     {item.displayUzs}
                   </span>
 
                   {/* Dual Bars: Savdo (Yellow) + Talab (Blue) */}
-                  <div className="w-full max-w-[44px] bg-[#071326] rounded-t-lg border border-[#1E3A6D] overflow-hidden p-1 group-hover:border-[#FFB800] transition-all flex items-end justify-center gap-1">
+                  <div className="w-full max-w-[44px] bg-slate-50 rounded-t-lg border border-slate-200 overflow-hidden p-1 group-hover:border-[#D95D1E] transition-all flex items-end justify-center gap-1">
                     <div
                       className={`flex-1 rounded-t transition-all duration-700 ease-out ${
-                        isHovered ? 'bg-[#FFC928]' : 'bg-[#FFB800]'
+                        isHovered ? 'bg-[#FFC928]' : 'bg-[#D95D1E]'
                       }`}
                       style={{ height: `${item.val > 0 ? Math.max(8, item.salesPct * 1.3) : 3}px` }}
                     />
@@ -1090,7 +1087,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
 
                   <span
                     className={`mt-2.5 text-[11px] font-mono uppercase font-bold transition-colors ${
-                      isHovered ? 'text-[#FFB800]' : item.isCurrent ? 'text-emerald-400 underline' : 'text-sky-200'
+                      isHovered ? 'text-[#D95D1E]' : item.isCurrent ? 'text-emerald-600 underline' : 'text-slate-600'
                     }`}
                   >
                     {item.month}
@@ -1105,49 +1102,49 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
       {/* ==============================================================
           4-QATOR: HUDUDLAR MIQYOSIDA KABINETLAR DIAGRAMMASI (BARCHA 14 TA HUDUD)
           ============================================================== */}
-      <div className="bg-[#0A1931] border-2 border-[#1E3A6D] rounded-2xl p-6 sm:p-7 shadow-2xl space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#1E3A6D]">
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-2xl space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
           <div>
             <h3 className="text-lg sm:text-xl font-black text-white flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-[#FFB800]" />
+              <MapPin className="w-5 h-5 text-[#D95D1E]" />
               <span>O‘zbekistonning Barcha 14 ta Hududi Diagrammasi</span>
             </h3>
-            <p className="text-xs text-sky-200">
+            <p className="text-xs text-slate-600">
               14 ta ma'muriy hudud kesimida B2B, B2C, Mijoz kabinetlari va savdo tushumi
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-mono font-bold text-[#FFB800] px-3 py-1.5 rounded-lg bg-[#071326] border border-[#FFB800]/40">
+            <span className="text-xs font-mono font-bold text-[#D95D1E] px-3 py-1.5 rounded-lg bg-slate-50 border border-[#D95D1E]/40">
               B2B: {supplierSalesStats.b2bCabinetsCount} ta
             </span>
-            <span className="text-xs font-mono font-bold text-emerald-400 px-3 py-1.5 rounded-lg bg-[#071326] border border-emerald-400/40">
+            <span className="text-xs font-mono font-bold text-emerald-600 px-3 py-1.5 rounded-lg bg-slate-50 border border-emerald-400/40">
               B2C: {supplierSalesStats.b2cCabinetsCount} ta
             </span>
-            <span className="text-xs font-mono font-bold text-blue-400 px-3 py-1.5 rounded-lg bg-[#071326] border border-blue-400/40">
+            <span className="text-xs font-mono font-bold text-blue-400 px-3 py-1.5 rounded-lg bg-slate-50 border border-blue-400/40">
               Mijoz: {supplierSalesStats.customerCabinetsCount} ta
             </span>
-            <span className="text-xs font-mono font-bold text-white px-3 py-1.5 rounded-lg bg-[#071326] border border-[#1E3A6D]">
+            <span className="text-xs font-mono font-bold text-white px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200">
               {formatSum(regionalDemands.reduce((s, r) => s + r.salesUzs, 0))}
             </span>
           </div>
         </div>
 
         {/* 14 Regions Bar Chart */}
-        <div className="p-4 rounded-xl bg-[#071326] border border-[#1E3A6D] overflow-x-auto">
+        <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 overflow-x-auto">
           <div className="min-w-[700px]">
-            <div className="h-48 flex items-end justify-between gap-2 pt-4 px-2 border-b border-[#1E3A6D]">
+            <div className="h-48 flex items-end justify-between gap-2 pt-4 px-2 border-b border-slate-200">
               {regionalDemands.map((reg) => (
                 <div
                   key={reg.region}
                   className="flex-1 flex flex-col items-center justify-end h-full group"
                 >
-                  <span className="text-[9px] font-mono font-bold text-sky-200 mb-0.5 truncate max-w-[50px]">
+                  <span className="text-[9px] font-mono font-bold text-slate-600 mb-0.5 truncate max-w-[50px]">
                     {formatSum(reg.salesUzs).split(" ")[0]}
                   </span>
-                  <span className="text-[10px] font-mono font-black text-[#FFB800] mb-1">
+                  <span className="text-[10px] font-mono font-black text-[#D95D1E] mb-1">
                     {reg.totalCabinets}k
                   </span>
-                  <div className="w-full max-w-[36px] bg-[#0A1931] rounded-t-lg border border-[#1E3A6D] p-1 flex items-end justify-center">
+                  <div className="w-full max-w-[36px] bg-white rounded-t-lg border border-slate-200 p-1 flex items-end justify-center">
                     <div
                       className={`w-full ${reg.color} rounded-t transition-all duration-700`}
                       style={{ height: `${reg.barPct > 0 ? Math.max(10, reg.barPct * 1.15) : 4}px` }}
@@ -1161,7 +1158,7 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
               {regionalDemands.map((reg) => (
                 <div key={reg.region} className="flex-1 text-center">
                   <span
-                    className="text-[9px] font-bold text-sky-200 block truncate"
+                    className="text-[9px] font-bold text-slate-600 block truncate"
                     title={reg.region}
                   >
                     {reg.region.replace(' viloyati', '').replace(' shahri', ' sh.').replace(' Resp.', '')}
@@ -1177,41 +1174,40 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
           {regionalDemands.map((reg) => (
             <div
               key={reg.region}
-              className="p-4 rounded-xl bg-[#071326] border border-[#1E3A6D] hover:border-[#FFB800]/60 transition-all space-y-2.5 shadow-md"
+              className="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-[#D95D1E]/60 transition-all space-y-2.5 shadow-md"
             >
-              <div className="flex items-center justify-between text-xs font-bold text-white">
+              <div className="flex items-center justify-between text-xs font-bold text-slate-900">
                 <span className="truncate flex items-center gap-1.5">
-                  <span className={`w-2.5 h-2.5 rounded-full ${reg.color} shrink-0`} />
                   <strong className="truncate">{reg.region}</strong>
                 </span>
-                <span className="text-[#FFB800] font-mono font-black">{reg.sharePct}%</span>
+                <span className="text-[#D95D1E] font-mono font-black">{reg.sharePct}%</span>
               </div>
 
-              <div className="flex items-center justify-between text-[11px] font-mono text-sky-200">
+              <div className="flex items-center justify-between text-[11px] font-mono text-slate-600">
                 <span>Jami kabinetlar: <strong className="text-white">{reg.totalCabinets} ta</strong></span>
-                <span>Talab: <strong className="text-[#FFB800]">{reg.ordersCount} ta</strong></span>
+                <span>Talab: <strong className="text-[#D95D1E]">{reg.ordersCount} ta</strong></span>
               </div>
 
-              <div className="text-[11px] font-mono text-sky-200">
+              <div className="text-[11px] font-mono text-slate-600">
                 Savdo hajmi: <span className="text-white font-bold">{formatSum(reg.salesUzs)}</span>
               </div>
 
               {/* B2B, B2C, Mijoz mini-pills */}
-              <div className="pt-2 border-t border-[#1E3A6D] grid grid-cols-3 gap-1.5 text-[10px]">
-                <div className="p-1.5 rounded-lg bg-[#0A1931] border border-[#FFB800]/40 flex flex-col text-center">
-                  <span className="text-sky-200 truncate font-mono">B2B</span>
-                  <span className="font-mono font-black text-[#FFB800] text-xs mt-0.5">
+              <div className="pt-2 border-t border-slate-200 grid grid-cols-3 gap-1.5 text-[10px]">
+                <div className="p-1.5 rounded-lg bg-white border border-[#D95D1E]/40 flex flex-col text-center">
+                  <span className="text-slate-600 truncate font-mono">B2B</span>
+                  <span className="font-mono font-black text-[#D95D1E] text-xs mt-0.5">
                     {reg.b2bCount}
                   </span>
                 </div>
-                <div className="p-1.5 rounded-lg bg-[#0A1931] border border-emerald-400/40 flex flex-col text-center">
-                  <span className="text-sky-200 truncate font-mono">B2C</span>
-                  <span className="font-mono font-black text-emerald-400 text-xs mt-0.5">
+                <div className="p-1.5 rounded-lg bg-white border border-emerald-400/40 flex flex-col text-center">
+                  <span className="text-slate-600 truncate font-mono">B2C</span>
+                  <span className="font-mono font-black text-emerald-600 text-xs mt-0.5">
                     {reg.b2cCount}
                   </span>
                 </div>
-                <div className="p-1.5 rounded-lg bg-[#0A1931] border border-blue-400/40 flex flex-col text-center">
-                  <span className="text-sky-200 truncate font-mono">Mijoz</span>
+                <div className="p-1.5 rounded-lg bg-white border border-blue-400/40 flex flex-col text-center">
+                  <span className="text-slate-600 truncate font-mono">Mijoz</span>
                   <span className="font-mono font-black text-blue-400 text-xs mt-0.5">
                     {reg.customersCount}
                   </span>
@@ -1219,9 +1215,9 @@ export const BunkerStatsDashboard: React.FC<BunkerStatsDashboardProps> = ({
               </div>
 
               {/* Progress bar */}
-              <div className="w-full h-2 rounded-full bg-[#0A1931] overflow-hidden">
+              <div className="w-full h-2 rounded-sm bg-white overflow-hidden">
                 <div
-                  className={`h-full ${reg.color} rounded-full transition-all duration-700`}
+                  className={`h-full ${reg.color} rounded-sm transition-all duration-700`}
                   style={{ width: `${reg.barPct > 0 ? Math.max(6, reg.barPct) : 2}%` }}
                 />
               </div>

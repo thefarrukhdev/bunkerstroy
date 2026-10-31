@@ -46,32 +46,32 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
   const getStatusBadge = (status: OrderStatus) => {
     switch (status) {
       case 'DRAFT':
-        return <span className="bg-[#0F2547] text-sky-300 border border-[#1E3A6D] px-2 py-0.5 rounded text-[10px] font-mono font-bold">SAVATDA</span>;
+        return <span className="bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">SAVATDA</span>;
       case 'PENDING_PAYMENT':
       case 'PENDING':
-        return <span className="bg-amber-950/80 text-[#FFB800] border border-[#FFB800]/50 px-2 py-0.5 rounded text-[10px] font-mono font-bold">TO‘LOV KUTILMOQDA</span>;
+        return <span className="bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">TO‘LOV KUTILMOQDA</span>;
       case 'PAID':
       case 'CONFIRMED':
-        return <span className="bg-sky-950/80 text-sky-300 border border-sky-500/40 px-2 py-0.5 rounded text-[10px] font-mono font-bold">TO‘LANDI</span>;
+        return <span className="bg-sky-50 text-sky-700 border border-sky-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">TO‘LANDI</span>;
       case 'ACCEPTED':
       case 'PACKING':
-        return <span className="bg-blue-950/80 text-blue-300 border border-blue-500/40 px-2 py-0.5 rounded text-[10px] font-mono font-bold">TAYYORLANMOQDA</span>;
+        return <span className="bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">TAYYORLANMOQDA</span>;
       case 'ASSIGNED':
       case 'ASSIGNED_TO_FLEET':
-        return <span className="bg-indigo-950/80 text-indigo-300 border border-indigo-500/40 px-2 py-0.5 rounded text-[10px] font-mono font-bold">HAYDOVCHI TAYINLANDI</span>;
+        return <span className="bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">HAYDOVCHI TAYINLANDI</span>;
       case 'IN_TRANSIT':
-        return <span className="bg-purple-950/80 text-purple-300 border border-purple-500/40 px-2 py-0.5 rounded text-[10px] font-mono font-bold">🚚 YO‘LDA</span>;
+        return <span className="bg-purple-50 text-purple-700 border border-purple-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">🚚 YO‘LDA</span>;
       case 'ARRIVED':
-        return <span className="bg-[#132C54] text-[#FFB800] border-2 border-[#FFB800] px-2 py-0.5 rounded text-[10px] font-mono font-black animate-pulse">MANZILGA YETDI</span>;
+        return <span className="bg-orange-50 text-[#D95D1E] border border-orange-200 px-2 py-0.5 rounded text-[10px] font-mono font-black animate-pulse">MANZILGA YETDI</span>;
       case 'FULLY_PAID':
       case 'RECEIVED':
       case 'DELIVERED':
       case 'COMPLETED':
-        return <span className="bg-emerald-950/90 text-emerald-400 border border-emerald-500/60 px-2 py-0.5 rounded text-[10px] font-mono font-black">YAKUNLANDI</span>;
+        return <span className="bg-emerald-50 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded text-[10px] font-mono font-black">YAKUNLANDI</span>;
       case 'DISPUTE':
-        return <span className="bg-red-950/90 text-rose-300 border border-rose-500 px-2 py-0.5 rounded text-[10px] font-mono font-black">NIZO (DISPUTE)</span>;
+        return <span className="bg-red-50 text-red-700 border border-red-200 px-2 py-0.5 rounded text-[10px] font-mono font-black">NIZO (DISPUTE)</span>;
       default:
-        return <span className="bg-[#0F2547] text-sky-200 border border-[#1E3A6D] px-2 py-0.5 rounded text-[10px] font-mono font-bold">{status}</span>;
+        return <span className="bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">{status}</span>;
     }
   };
 
@@ -82,7 +82,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
       size="lg"
       title={
         <div className="flex items-center gap-2">
-          <Package className="w-5 h-5 text-[#FFB800]" />
+          <Package className="w-5 h-5 text-[#D95D1E]" />
           <span>Buyurtma Tafsilotlari #{order.orderNumber}</span>
         </div>
       }
@@ -101,9 +101,9 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
               href={`https://bunkerstroy.uz/receipt/${order.id}`}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#1E3A6D] bg-[#071326] text-sky-200 hover:text-white hover:border-[#FFB800] transition-colors cursor-pointer min-h-[44px]"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:text-slate-900 hover:border-slate-300 transition-colors cursor-pointer min-h-[44px]"
             >
-              <QrCode className="w-4 h-4 text-[#FFB800]" />
+              <QrCode className="w-4 h-4 text-[#D95D1E]" />
               <span>QR Chek</span>
             </a>
 
@@ -114,9 +114,9 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
                   onClose();
                   onOpenB2bDocuments(order);
                 }}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#254B85] bg-[#0F2547] text-white hover:border-[#FFB800] transition-colors cursor-pointer font-bold shadow-xs min-h-[44px]"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-orange-200 bg-orange-50 text-[#D95D1E] hover:bg-orange-100 transition-colors cursor-pointer font-bold shadow-2xs min-h-[44px]"
               >
-                <FileCheck className="w-4 h-4 text-[#FFB800]" />
+                <FileCheck className="w-4 h-4 text-[#D95D1E]" />
                 <span>B2B Hujjatlar</span>
               </button>
             )}
@@ -130,14 +130,14 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
     >
       <div className="space-y-4 font-sans text-xs">
         {/* 1. Progress Step Bar */}
-        <div className="bg-[#071326] border border-[#1E3A6D] rounded-xl p-3 font-mono text-xs">
-          <div className="flex items-center justify-between text-sky-200 mb-1.5">
+        <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 font-mono text-xs">
+          <div className="flex items-center justify-between text-slate-700 mb-1.5">
             <span className="font-bold">Buyurtma Bosqichi:</span>
-            <span className="text-[#FFB800] font-black uppercase">{order.status}</span>
+            <span className="text-[#D95D1E] font-black uppercase">{order.status}</span>
           </div>
-          <div className="w-full bg-[#0F2547] h-2.5 rounded-full overflow-hidden">
+          <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
             <div
-              className="bg-[#FFB800] h-full transition-all duration-500 shadow-[0_0_8px_rgba(255,184,0,0.5)]"
+              className="bg-[#D95D1E] h-full transition-all duration-500"
               style={{
                 width:
                   order.status === 'PENDING_PAYMENT' ? '12%'
@@ -154,15 +154,15 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
 
         {/* 2. Revealed PIN Code Banner */}
         {order.isAcceptanceCodeRevealed && order.acceptanceCode && (
-          <div className="bg-gradient-to-r from-[#FFB800]/15 via-[#FFB800]/25 to-[#FFB800]/15 border-2 border-dashed border-[#FFB800] rounded-xl p-4 text-center space-y-1 font-mono shadow-md">
-            <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-[#FFB800] uppercase">
-              <KeyRound className="w-4 h-4 text-[#FFB800]" />
+          <div className="bg-amber-50/70 border-2 border-dashed border-amber-300 rounded-xl p-4 text-center space-y-1 font-mono shadow-2xs">
+            <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-[#D95D1E] uppercase">
+              <KeyRound className="w-4 h-4 text-[#D95D1E]" />
               <span>Maxfiy Qabul Kodi (Delivery PIN)</span>
             </div>
-            <div className="text-3xl sm:text-4xl font-extrabold tracking-widest text-[#FFB800] select-all font-mono-numbers py-1">
+            <div className="text-3xl sm:text-4xl font-extrabold tracking-widest text-[#D95D1E] select-all font-mono-numbers py-1">
               {order.acceptanceCode}
             </div>
-            <p className="text-[11px] text-sky-200 max-w-sm mx-auto">
+            <p className="text-[11px] text-slate-600 max-w-sm mx-auto">
               Yuk ob'ektda tekshirib qabul qilingach, ushbu kodni haydovchiga ayting.
             </p>
           </div>
@@ -170,23 +170,23 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
 
         {/* 3. Waiting second payment prompt */}
         {isArrivedWaitingSecondPayment && onPaySecondHalf && (
-          <div className="bg-[#071326] border-2 border-[#FFB800] p-3.5 rounded-xl space-y-2.5 font-mono">
+          <div className="bg-amber-50/80 border-2 border-amber-400 p-3.5 rounded-xl space-y-2.5 font-mono">
             <div className="flex items-center justify-between">
-              <span className="font-extrabold text-xs text-white flex items-center gap-1.5">
-                <Truck className="w-4 h-4 text-[#FFB800]" />
+              <span className="font-extrabold text-xs text-slate-900 flex items-center gap-1.5">
+                <Truck className="w-4 h-4 text-[#D95D1E]" />
                 YUK MANZILGA YETIB KELDI!
               </span>
-              <span className="bg-amber-950 text-[#FFB800] border border-[#FFB800]/50 px-2 py-0.5 rounded text-[10px] font-bold">
+              <span className="bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded text-[10px] font-bold">
                 50% Qoldiq to‘lov
               </span>
             </div>
-            <p className="text-xs text-sky-200 font-sans">
+            <p className="text-xs text-slate-700 font-sans">
               Tushirishdan oldin ikkinchi 50% to‘lovni tasdiqlang. Shundan so‘ng ekranda haydovchiga aytiladigan Qabul Kodi ochiladi.
             </p>
             <button
               type="button"
               onClick={() => onPaySecondHalf(order.id)}
-              className="w-full btn-industrial-yellow py-2.5 rounded-xl text-xs font-black flex items-center justify-center gap-2 cursor-pointer shadow-md min-h-[44px]"
+              className="w-full bg-[#D95D1E] hover:bg-[#B43B06] text-white py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-xs min-h-[44px] transition-colors"
             >
               <CreditCard className="w-4 h-4" />
               <span>Ikkinchi 50% to‘lovni tasdiqlash</span>
@@ -196,14 +196,14 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
 
         {/* 4. Products List (Responsive mobile cards + table on desktop) */}
         <div className="space-y-2">
-          <span className="text-xs font-mono font-bold text-sky-300 uppercase block">
+          <span className="text-xs font-mono font-bold text-slate-700 uppercase block">
             Mahsulotlar ({order.items.length}):
           </span>
 
           {/* Desktop Table View */}
-          <div className="hidden sm:block overflow-x-auto rounded-xl border border-[#1E3A6D]">
+          <div className="hidden sm:block overflow-x-auto rounded-xl border border-slate-200">
             <table className="w-full text-left font-mono text-xs">
-              <thead className="bg-[#071326] text-sky-300 border-b border-[#1E3A6D]">
+              <thead className="bg-slate-50 text-slate-700 border-b border-slate-200">
                 <tr>
                   <th className="py-2.5 px-3">Mahsulot</th>
                   <th className="py-2.5 px-3 text-center">Miqdor</th>
@@ -211,19 +211,19 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
                   <th className="py-2.5 px-3 text-right">Jami</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#1E3A6D] bg-[#0A1931]">
+              <tbody className="divide-y divide-slate-100 bg-white">
                 {order.items.map((item, idx) => (
                   <tr key={idx}>
-                    <td className="py-2.5 px-3 font-semibold text-white">
+                    <td className="py-2.5 px-3 font-semibold text-slate-900">
                       {item.productTitle}
                     </td>
-                    <td className="py-2.5 px-3 text-center text-sky-200">
+                    <td className="py-2.5 px-3 text-center text-slate-700">
                       {item.quantity} {item.unit}
                     </td>
-                    <td className="py-2.5 px-3 text-right text-sky-300 font-mono-numbers">
+                    <td className="py-2.5 px-3 text-right text-slate-600 font-mono-numbers">
                       {Number(item.unitPrice).toLocaleString()} so‘m
                     </td>
-                    <td className="py-2.5 px-3 text-right font-black text-[#FFB800] font-mono-numbers">
+                    <td className="py-2.5 px-3 text-right font-black text-[#D95D1E] font-mono-numbers">
                       {Number(item.totalPrice).toLocaleString()} so‘m
                     </td>
                   </tr>
@@ -237,16 +237,16 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
             {order.items.map((item, idx) => (
               <div
                 key={idx}
-                className="bg-[#0F2547] border border-[#1E3A6D] rounded-xl p-3 space-y-1.5 font-mono"
+                className="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-1.5 font-mono"
               >
-                <div className="font-bold text-xs text-white leading-snug">
+                <div className="font-bold text-xs text-slate-900 leading-snug">
                   {item.productTitle}
                 </div>
-                <div className="flex items-center justify-between text-xs pt-1 border-t border-[#1E3A6D]">
-                  <span className="text-sky-300 text-[11px]">
+                <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-200">
+                  <span className="text-slate-600 text-[11px]">
                     {item.quantity} {item.unit} &times; {Number(item.unitPrice).toLocaleString()}
                   </span>
-                  <span className="font-black text-[#FFB800] font-mono-numbers">
+                  <span className="font-black text-[#D95D1E] font-mono-numbers">
                     {Number(item.totalPrice).toLocaleString()} so‘m
                   </span>
                 </div>
@@ -258,57 +258,57 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
         {/* 5. Delivery and Financials Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs">
           {/* Delivery Card */}
-          <div className="bg-[#071326] border border-[#1E3A6D] rounded-xl p-3.5 space-y-2">
-            <span className="text-[10px] text-sky-400 uppercase font-bold flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-[#FFB800]" />
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
+            <span className="text-[10px] text-slate-500 uppercase font-bold flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 text-[#D95D1E]" />
               Yetkazib Berish Manzili
             </span>
             <div className="space-y-1">
-              <p className="font-semibold text-white">
+              <p className="font-semibold text-slate-900">
                 {order.deliveryAddress?.region || 'Toshkent shahri'},{' '}
                 {order.deliveryAddress?.district || 'Chilonzor tumani'}
               </p>
-              <p className="text-sky-300 text-[11px]">
+              <p className="text-slate-600 text-[11px]">
                 {order.deliveryAddress?.street || 'Ko‘rsatilmagan'}
               </p>
               {order.deliveryAddress?.landmark && (
-                <p className="text-[10px] text-sky-400">
+                <p className="text-[10px] text-slate-500">
                   Mo‘ljal: {order.deliveryAddress.landmark}
                 </p>
               )}
             </div>
-            <div className="pt-2 border-t border-[#1E3A6D] flex items-center justify-between text-[11px]">
-              <span className="text-sky-400">Transport:</span>
-              <span className="text-white font-bold">{order.vehicleType || 'Standart Kuryer'}</span>
+            <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px]">
+              <span className="text-slate-500">Transport:</span>
+              <span className="text-slate-900 font-bold">{order.vehicleType || 'Standart Kuryer'}</span>
             </div>
           </div>
 
           {/* Financial Breakdown Card */}
-          <div className="bg-[#071326] border border-[#1E3A6D] rounded-xl p-3.5 space-y-2">
-            <span className="text-[10px] text-sky-400 uppercase font-bold flex items-center gap-1.5">
-              <CreditCard className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
+            <span className="text-[10px] text-slate-500 uppercase font-bold flex items-center gap-1.5">
+              <CreditCard className="w-3.5 h-3.5 text-emerald-600" />
               To‘lov Tafsilotlari (Escrow)
             </span>
             <div className="space-y-1">
-              <div className="flex justify-between text-sky-300">
+              <div className="flex justify-between text-slate-600">
                 <span>Mahsulotlar summasi:</span>
                 <span>{Number(order.totalAmount).toLocaleString()} so‘m</span>
               </div>
-              <div className="flex justify-between text-sky-300">
+              <div className="flex justify-between text-slate-600">
                 <span>Yetkazish narxi:</span>
                 <span>
                   {Number(order.deliveryFee || 0) === 0 ? 'BEPUL' : `${Number(order.deliveryFee).toLocaleString()} so‘m`}
                 </span>
               </div>
               {order.paymentMode === 'SPLIT_50_50' && (
-                <div className="pt-1 border-t border-[#1E3A6D] space-y-0.5 text-[11px]">
-                  <div className="flex justify-between text-amber-300">
+                <div className="pt-1 border-t border-slate-200 space-y-0.5 text-[11px]">
+                  <div className="flex justify-between text-amber-800">
                     <span>1-bosqich (50% Avans):</span>
                     <span className="font-bold">
                       {(Number(order.firstPaymentAmount || order.finalAmount / 2)).toLocaleString()} so‘m
                     </span>
                   </div>
-                  <div className="flex justify-between text-sky-300">
+                  <div className="flex justify-between text-slate-600">
                     <span>2-bosqich (50% Qoldiq):</span>
                     <span className="font-bold">
                       {(Number(order.secondPaymentAmount || order.finalAmount / 2)).toLocaleString()} so‘m
@@ -317,9 +317,9 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
                 </div>
               )}
             </div>
-            <div className="pt-2 border-t border-[#1E3A6D] flex justify-between items-baseline">
-              <span className="font-bold text-white uppercase text-xs">Jami To‘lov:</span>
-              <span className="text-base font-black text-[#FFB800] font-mono-numbers">
+            <div className="pt-2 border-t border-slate-200 flex justify-between items-baseline">
+              <span className="font-bold text-slate-900 uppercase text-xs">Jami To‘lov:</span>
+              <span className="text-base font-black text-[#D95D1E] font-mono-numbers">
                 {Number(order.finalAmount).toLocaleString()} so‘m
               </span>
             </div>

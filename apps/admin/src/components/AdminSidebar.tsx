@@ -133,24 +133,23 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       )}
 
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-72 bg-[#0A1931] border-r-2 border-[#1E3A6D] flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-72 bg-white border-r border-slate-200 flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Brand Header with Industrial Rivets & Hazard Stripe Accent */}
-        <div className="p-4 border-b-2 border-[#1E3A6D] bg-[#071326] relative overflow-hidden flex items-center justify-between">
+        {/* Brand Header */}
+        <div className="p-4 border-b border-slate-200 bg-white relative overflow-hidden flex items-center justify-between">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-11 h-11 rounded-xl bg-[#FFB800] text-[#071326] flex items-center justify-center font-black tracking-widest shadow-md shadow-[#FFB800]/25 shrink-0 border border-[#E5A600]">
-              <Terminal className="w-6 h-6 stroke-[3]" />
+            <div className="w-10 h-10 rounded-xl bg-[#D95D1E] text-white flex items-center justify-center font-bold tracking-widest shadow-xs shrink-0 border border-[#C2410C]">
+              <Terminal className="w-5 h-5 stroke-[2.5]" />
             </div>
 
             <div className="min-w-0">
-              <div className="text-base font-black tracking-wider text-white font-mono uppercase flex items-center gap-1">
-                BUNKER<span className="text-[#FFB800]">STROY</span>
+              <div className="text-base font-bold tracking-wider text-slate-900 font-mono uppercase flex items-center gap-1">
+                BUNKER<span className="text-[#D95D1E]">STROY</span>
               </div>
-              <div className="text-[10px] tracking-widest text-sky-200 uppercase font-mono flex items-center gap-1.5 mt-0.5 font-bold">
-                <span className="w-2 h-2 rounded-full bg-[#FFB800] animate-pulse" />
-                ENTERPRISE INDUSTRIAL
+              <div className="text-[10px] tracking-widest text-slate-500 uppercase font-mono mt-0.5 font-bold">
+                ENTERPRISE ADMIN
               </div>
             </div>
           </div>
@@ -159,12 +158,10 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           <button
             onClick={onClose}
             aria-label="Menyuni yopish"
-            className="lg:hidden p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl bg-[#0F2547] text-sky-200 hover:text-white border border-[#1E3A6D] cursor-pointer transition-colors shrink-0"
+            className="lg:hidden p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl bg-slate-50 text-slate-600 hover:text-slate-900 border border-slate-200 cursor-pointer transition-colors shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
-
-          <div className="absolute top-0 right-0 left-0 h-[2px] hazard-stripe-sm" />
         </div>
 
         {/* Navigation Menu */}
@@ -172,9 +169,9 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           
           {/* Section 1: Asosiy Ekranlar (TZ-5 + BunkerStats) */}
           <div className="space-y-1">
-            <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-[#FFB800] font-black flex items-center justify-between">
+            <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold flex items-center justify-between">
               <span>Asosiy Ekranlar (Sanoat)</span>
-              <span className="text-[9px] bg-[#FFB800]/15 text-[#FFB800] px-1.5 py-0.5 rounded border border-[#FFB800]/30 font-bold">
+              <span className="text-[9px] bg-orange-50 text-[#D95D1E] px-1.5 py-0.5 rounded border border-orange-200 font-bold">
                 6 MODUL
               </span>
             </div>
@@ -190,12 +187,12 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   }}
                   className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-mono text-xs transition-all duration-150 cursor-pointer min-h-[44px] ${
                     isActive
-                      ? 'bg-[#FFB800] text-[#071326] font-black shadow-lg shadow-[#FFB800]/30 border border-[#E5A600]'
-                      : 'text-sky-100 hover:text-white hover:bg-[#0F2547] border border-transparent hover:border-[#1E3A6D]'
+                      ? 'bg-[#D95D1E] text-white font-bold shadow-xs border border-[#C2410C]'
+                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-50 border border-transparent hover:border-slate-200'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className={isActive ? 'text-[#071326]' : 'text-[#FFB800]'}>
+                    <span className={isActive ? 'text-white' : 'text-slate-500'}>
                       {item.icon}
                     </span>
                     <span className="truncate">{item.label}</span>
@@ -206,14 +203,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                       <span
                         className={`text-[9px] font-mono px-2 py-0.5 rounded-md border uppercase font-bold ${
                           isActive
-                            ? 'bg-[#071326]/20 text-[#071326] border-[#071326]/30'
-                            : 'bg-[#071326] text-sky-200 border-[#1E3A6D]'
+                            ? 'bg-white/20 text-white border-white/30'
+                            : 'bg-slate-100 text-slate-600 border-slate-200'
                         }`}
                       >
                         {item.badge}
                       </span>
                     )}
-                    {isActive && <ChevronRight className="w-3.5 h-3.5 stroke-[3] text-[#071326]" />}
+                    {isActive && <ChevronRight className="w-3.5 h-3.5 stroke-[3] text-white" />}
                   </div>
                 </button>
               );
@@ -221,8 +218,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           </div>
 
           {/* Section 2: Secondary Financial & Disputes Screens */}
-          <div className="space-y-1 pt-2 border-t border-[#1E3A6D]">
-            <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-sky-300 font-bold">
+          <div className="space-y-1 pt-2 border-t border-slate-200">
+            <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold">
               Moliya &amp; Nizolar
             </div>
 
@@ -237,12 +234,12 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   }}
                   className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-mono text-xs transition-all duration-150 cursor-pointer min-h-[44px] ${
                     isActive
-                      ? 'bg-[#FFB800] text-[#071326] font-black shadow-lg shadow-[#FFB800]/30 border border-[#E5A600]'
-                      : 'text-sky-100 hover:text-white hover:bg-[#0F2547] border border-transparent hover:border-[#1E3A6D]'
+                      ? 'bg-[#D95D1E] text-white font-bold shadow-xs border border-[#C2410C]'
+                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-50 border border-transparent hover:border-slate-200'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className={isActive ? 'text-[#071326]' : 'text-[#FFB800]'}>
+                    <span className={isActive ? 'text-white' : 'text-slate-500'}>
                       {item.icon}
                     </span>
                     <span className="truncate">{item.label}</span>
@@ -253,14 +250,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                       <span
                         className={`text-[9px] font-mono px-2 py-0.5 rounded-md border uppercase font-bold ${
                           isActive
-                            ? 'bg-[#071326]/20 text-[#071326] border-[#071326]/30'
-                            : 'bg-[#071326] text-sky-200 border-[#1E3A6D]'
+                            ? 'bg-white/20 text-white border-white/30'
+                            : 'bg-slate-100 text-slate-600 border-slate-200'
                         }`}
                       >
                         {item.badge}
                       </span>
                     )}
-                    {isActive && <ChevronRight className="w-3.5 h-3.5 stroke-[3] text-[#071326]" />}
+                    {isActive && <ChevronRight className="w-3.5 h-3.5 stroke-[3] text-white" />}
                   </div>
                 </button>
               );
@@ -268,8 +265,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
           </div>
 
           {/* Section 3: Operations & Catalog */}
-          <div className="space-y-1 pt-2 border-t border-[#1E3A6D]">
-            <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-sky-300 font-bold">
+          <div className="space-y-1 pt-2 border-t border-slate-200">
+            <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold">
               Katalog &amp; Ma’murlar
             </div>
 
@@ -284,18 +281,18 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                   }}
                   className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-mono text-xs transition-all duration-150 cursor-pointer min-h-[44px] ${
                     isActive
-                      ? 'bg-[#FFB800] text-[#071326] font-black shadow-lg shadow-[#FFB800]/30 border border-[#E5A600]'
-                      : 'text-sky-100 hover:text-white hover:bg-[#0F2547] border border-transparent hover:border-[#1E3A6D]'
+                      ? 'bg-[#D95D1E] text-white font-bold shadow-xs border border-[#C2410C]'
+                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-50 border border-transparent hover:border-slate-200'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className={isActive ? 'text-[#071326]' : 'text-[#FFB800]'}>
+                    <span className={isActive ? 'text-white' : 'text-slate-500'}>
                       {item.icon}
                     </span>
                     <span className="truncate">{item.label}</span>
                   </div>
 
-                  {isActive && <ChevronRight className="w-3.5 h-3.5 stroke-[3] text-[#071326]" />}
+                  {isActive && <ChevronRight className="w-3.5 h-3.5 stroke-[3] text-white" />}
                 </button>
               );
             })}
@@ -304,8 +301,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         </div>
 
         {/* Footer info: Staff Role and Cross-App Portal Links */}
-        <div className="p-3 border-t-2 border-[#1E3A6D] bg-[#071326] text-xs font-mono space-y-1.5">
-          <div className="text-[10px] font-bold text-[#FFB800] uppercase tracking-wider px-1">
+        <div className="p-3 border-t border-slate-200 bg-slate-50 text-xs font-mono space-y-1.5">
+          <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-1">
             BunkerStroy Portallari:
           </div>
 
@@ -313,38 +310,37 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             <a
               href={typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://bunkerstroy-web.vercel.app'}
               title="Bozor Vitrinasi & Marketplace"
-              className="flex items-center justify-center gap-1 py-1.5 px-1 rounded-lg bg-[#0F2547] hover:bg-[#132C54] border border-[#1E3A6D] hover:border-[#FFB800] text-sky-200 hover:text-white transition-all text-[10px] font-mono font-bold select-none text-center"
+              className="flex items-center justify-center gap-1 py-1.5 px-1 rounded-lg bg-white hover:bg-slate-100 border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 transition-all text-[10px] font-mono font-bold select-none text-center"
             >
               <span>🏪 Vitrina</span>
             </a>
             <a
               href={typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://bunkerstroy-seller.vercel.app'}
               title="Sotuvchi & POS CRM"
-              className="flex items-center justify-center gap-1 py-1.5 px-1 rounded-lg bg-[#0F2547] hover:bg-[#132C54] border border-[#1E3A6D] hover:border-[#FFB800] text-sky-200 hover:text-white transition-all text-[10px] font-mono font-bold select-none text-center"
+              className="flex items-center justify-center gap-1 py-1.5 px-1 rounded-lg bg-white hover:bg-slate-100 border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 transition-all text-[10px] font-mono font-bold select-none text-center"
             >
               <span>🏬 Sotuvchi</span>
             </a>
             <a
               href={typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3003' : 'https://bunkerstroy-driver.vercel.app'}
               title="Haydovchi PWA"
-              className="flex items-center justify-center gap-1 py-1.5 px-1 rounded-lg bg-[#0F2547] hover:bg-[#132C54] border border-[#1E3A6D] hover:border-[#FFB800] text-sky-200 hover:text-white transition-all text-[10px] font-mono font-bold select-none text-center"
+              className="flex items-center justify-center gap-1 py-1.5 px-1 rounded-lg bg-white hover:bg-slate-100 border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 transition-all text-[10px] font-mono font-bold select-none text-center"
             >
               <span>🚛 Haydovchi</span>
             </a>
           </div>
 
-          <div className="p-2.5 rounded-xl bg-[#0A1931] border border-[#1E3A6D] flex items-center justify-between">
+          <div className="p-2.5 rounded-xl bg-white border border-slate-200 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-[#FFB800]/20 border border-[#FFB800]/50 text-[#FFB800] flex items-center justify-center font-bold">
+              <div className="w-7 h-7 rounded-lg bg-orange-50 border border-orange-200 text-[#D95D1E] flex items-center justify-center font-bold">
                 <ShieldCheck className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-[11px] font-black text-white">{adminName}</div>
-                <div className="text-[9px] text-[#FFB800] font-bold">{currentRole}</div>
+                <div className="text-[11px] font-bold text-slate-900">{adminName}</div>
+                <div className="text-[9px] text-[#D95D1E] font-bold">{currentRole}</div>
               </div>
             </div>
-            <span className="flex items-center gap-1 text-[10px] text-emerald-400 font-black px-2 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/30">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[10px] text-emerald-700 font-bold px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200">
               ONLINE
             </span>
           </div>

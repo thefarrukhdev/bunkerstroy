@@ -169,7 +169,7 @@ export const DisputesManager: React.FC = () => {
           <span className="font-mono font-bold text-xs text-theme-main block">
             {row.disputeNumber}
           </span>
-          <span className="font-mono text-[11px] text-[#FFB800] font-semibold">
+          <span className="font-mono text-[11px] text-[#D95D1E] font-semibold">
             {row.orderNumber}
           </span>
           <div className="text-[10px] font-mono text-theme-muted mt-0.5">
@@ -255,7 +255,6 @@ export const DisputesManager: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-theme-card p-4 rounded-2xl border border-theme">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
             <h1 className="text-xl font-black uppercase tracking-wider text-theme-main">
               Nizolar Markazi &amp; Arbitraj (AD-10)
             </h1>

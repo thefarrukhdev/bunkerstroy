@@ -91,18 +91,18 @@ export const B2bDocumentsModal: React.FC<B2bDocumentsModalProps> = ({
       }
       subtitle={`Buyurtma #${order.orderNumber} bo‘yicha yuridik kuchga ega Didox va Soliq.uz elektron hujjatlari to‘plami`}
       headerExtra={
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#1E3A6D] pb-3">
-          <div className="flex items-center gap-1.5 bg-[#071326] border border-[#1E3A6D] p-1 rounded-xl text-xs font-mono">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
+          <div className="flex items-center gap-1.5 bg-slate-100 border border-slate-200 p-1 rounded-xl text-xs font-mono">
             <button
               type="button"
               onClick={() => setActiveTab('escrow')}
               className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                 activeTab === 'escrow'
-                  ? 'bg-[#FFB800] text-[#071326] shadow-sm font-black'
-                  : 'text-sky-200 hover:text-white hover:bg-[#0A1931]'
+                  ? 'bg-[#D95D1E] text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
               }`}
             >
-              <ShieldCheck className={`w-3.5 h-3.5 ${activeTab === 'escrow' ? 'text-[#071326]' : 'text-[#FFB800]'}`} />
+              <ShieldCheck className={`w-3.5 h-3.5 ${activeTab === 'escrow' ? 'text-white' : 'text-slate-500'}`} />
               <span>1. Escrow Shartnomasi</span>
             </button>
 
@@ -111,11 +111,11 @@ export const B2bDocumentsModal: React.FC<B2bDocumentsModalProps> = ({
               onClick={() => setActiveTab('invoice')}
               className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                 activeTab === 'invoice'
-                  ? 'bg-[#FFB800] text-[#071326] shadow-sm font-black'
-                  : 'text-sky-200 hover:text-white hover:bg-[#0A1931]'
+                  ? 'bg-[#D95D1E] text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
               }`}
             >
-              <FileText className={`w-3.5 h-3.5 ${activeTab === 'invoice' ? 'text-[#071326]' : 'text-sky-400'}`} />
+              <FileText className={`w-3.5 h-3.5 ${activeTab === 'invoice' ? 'text-white' : 'text-slate-500'}`} />
               <span>2. Elektron Hisob-Faktura (Didox)</span>
             </button>
 
@@ -124,11 +124,11 @@ export const B2bDocumentsModal: React.FC<B2bDocumentsModalProps> = ({
               onClick={() => setActiveTab('act')}
               className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                 activeTab === 'act'
-                  ? 'bg-[#FFB800] text-[#071326] shadow-sm font-black'
-                  : 'text-sky-200 hover:text-white hover:bg-[#0A1931]'
+                  ? 'bg-[#D95D1E] text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
               }`}
             >
-              <CheckCircle2 className={`w-3.5 h-3.5 ${activeTab === 'act' ? 'text-[#071326]' : 'text-emerald-400'}`} />
+              <CheckCircle2 className={`w-3.5 h-3.5 ${activeTab === 'act' ? 'text-white' : 'text-slate-500'}`} />
               <span>3. Topshirish Dalolatnomasi</span>
             </button>
           </div>
@@ -353,7 +353,7 @@ export const B2bDocumentsModal: React.FC<B2bDocumentsModalProps> = ({
               </div>
 
               <div className="text-right">
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border border-emerald-300 bg-emerald-50 text-emerald-800">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold border border-emerald-300 bg-emerald-50 text-emerald-800">
                   <Check className="w-3.5 h-3.5 text-emerald-600" />
                   {order.status === 'COMPLETED' || order.status === 'FULLY_PAID' || order.isSecondPaid
                     ? 'STATUS: TO‘LANGAN'

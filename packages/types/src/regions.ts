@@ -6,7 +6,7 @@ export interface UzbekistanRegion {
 }
 
 export const UZBEKISTAN_REGIONS: UzbekistanRegion[] = [
-  { key: 'Toshkent shahri', match: ['toshkent sh', 'tashkent city', 'toshkent shahri'], color: 'bg-[#FFB800]', hex: '#FFB800' },
+  { key: 'Toshkent shahri', match: ['toshkent sh', 'tashkent city', 'toshkent shahri'], color: 'bg-[#D95D1E]', hex: '#D95D1E' },
   { key: 'Toshkent viloyati', match: ['toshkent vil', 'chirchiq', 'olmaliq', 'angren', 'bekobod', 'qibray', 'zangiota'], color: 'bg-blue-500', hex: '#3B82F6' },
   { key: 'Samarqand viloyati', match: ['samarqand', 'urgut', 'kattaqo'], color: 'bg-emerald-500', hex: '#10B981' },
   { key: 'Farg‘ona viloyati', match: ['farg', 'qo‘qon', 'qoqon', 'marg‘ilon', 'margilon'], color: 'bg-amber-400', hex: '#FBBF24' },

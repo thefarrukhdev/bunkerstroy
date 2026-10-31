@@ -120,7 +120,7 @@ export const StatCard: React.FC<StatCardProps> = ({
             {parsedTrend && (
               <div
                 className={cn(
-                  'inline-flex items-center gap-1 font-bold text-[11px] px-2 py-0.5 rounded-full border',
+                  'inline-flex items-center gap-1 font-bold text-[11px] px-2 py-0.5 rounded-md border',
                   isPos && 'bg-bunker-status-green/10 border-bunker-status-green/25 text-bunker-status-green',
                   isNeg && 'bg-bunker-status-red/10 border-bunker-status-red/25 text-bunker-status-red',
                   isNeu && 'bg-bunker-surface-2 border-bunker-border-strong text-bunker-text-muted'

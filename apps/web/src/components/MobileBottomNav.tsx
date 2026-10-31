@@ -5,9 +5,7 @@ import {
   Package,
   Factory,
   Calculator,
-  ClipboardList,
-  ShoppingCart,
-  HardHat
+  ShoppingCart
 } from 'lucide-react';
 import { cn } from '@bunkerstroy/ui';
 import { triggerHaptic } from '../services/mobileBridge';
@@ -59,14 +57,11 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   return (
     <nav
       aria-label="Mobil pastki navigatsiya"
-      className="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-[#0A1931]/95 backdrop-blur-md border-t-2 border-[#1E3A6D] shadow-[0_-4px_20px_rgba(7,19,38,0.7)] select-none transition-transform"
+      className="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-md select-none transition-transform"
       style={{
         paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 4px)'
       }}
     >
-      {/* Top subtle hazard accent line */}
-      <div className="h-[1.5px] w-full hazard-stripe-sm opacity-80" />
-
       <div className="max-w-md mx-auto px-2 py-1 flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -83,29 +78,29 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               className={cn(
                 'flex flex-col items-center justify-center py-1.5 px-2 rounded-xl transition-all cursor-pointer min-w-[56px] min-h-[48px] touch-target-44',
                 isActive
-                  ? 'text-[#FFB800] font-black'
-                  : 'text-sky-200/70 hover:text-white'
+                  ? 'text-[#D95D1E] font-bold'
+                  : 'text-slate-500 hover:text-slate-900'
               )}
             >
               <div
                 className={cn(
                   'relative p-1 rounded-lg transition-transform',
                   isActive
-                    ? 'bg-[#132C54] border border-[#FFB800]/50 scale-110 shadow-xs'
+                    ? 'bg-orange-50 border border-orange-200 scale-105 shadow-2xs'
                     : 'bg-transparent'
                 )}
               >
                 <Icon
                   className={cn(
                     'w-5 h-5 transition-colors',
-                    isActive ? 'text-[#FFB800]' : 'text-sky-300'
+                    isActive ? 'text-[#D95D1E]' : 'text-slate-500'
                   )}
                 />
               </div>
               <span
                 className={cn(
                   'text-[10px] font-mono tracking-tight mt-0.5 leading-none',
-                  isActive ? 'text-[#FFB800] font-bold' : 'text-sky-200/70'
+                  isActive ? 'text-[#D95D1E] font-bold' : 'text-slate-500'
                 )}
               >
                 {item.label}
@@ -120,7 +115,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
           onClick={handleCartClick}
           className={cn(
             'relative flex flex-col items-center justify-center py-1.5 px-2 rounded-xl transition-all cursor-pointer min-w-[56px] min-h-[48px] touch-target-44',
-            cartCount > 0 ? 'text-emerald-400 font-black' : 'text-sky-200/70 hover:text-white'
+            cartCount > 0 ? 'text-[#D95D1E] font-bold' : 'text-slate-500 hover:text-slate-900'
           )}
           aria-label={`Savat, ${cartCount} ta mahsulot`}
         >
@@ -128,18 +123,18 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
             className={cn(
               'relative p-1 rounded-lg transition-transform',
               cartCount > 0
-                ? 'bg-emerald-950/80 border border-emerald-500/50 shadow-xs'
+                ? 'bg-orange-50 border border-orange-200 shadow-2xs'
                 : 'bg-transparent'
             )}
           >
             <ShoppingCart
               className={cn(
                 'w-5 h-5 transition-colors',
-                cartCount > 0 ? 'text-emerald-400' : 'text-sky-300'
+                cartCount > 0 ? 'text-[#D95D1E]' : 'text-slate-500'
               )}
             />
             {cartCount > 0 && (
-              <span className="absolute -top-1.5 -right-2 min-w-[18px] h-4 px-1 rounded-full bg-[#FFB800] text-[#071326] font-mono text-[9px] font-black flex items-center justify-center shadow-xs animate-pulse">
+              <span className="absolute -top-1.5 -right-2 min-w-[18px] h-4 px-1 rounded-full bg-[#D95D1E] text-white font-mono text-[9px] font-black flex items-center justify-center shadow-2xs animate-pulse">
                 {cartCount > 99 ? '99+' : cartCount}
               </span>
             )}
@@ -147,7 +142,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
           <span
             className={cn(
               'text-[10px] font-mono tracking-tight mt-0.5 leading-none',
-              cartCount > 0 ? 'text-emerald-400 font-bold' : 'text-sky-200/70'
+              cartCount > 0 ? 'text-[#D95D1E] font-bold' : 'text-slate-500'
             )}
           >
             Savat

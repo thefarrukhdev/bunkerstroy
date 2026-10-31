@@ -10,77 +10,75 @@
 @variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* Authentic Bunker-1 Deep Industrial Navy & Hazard Yellow Design */
-  --bg-main: #071326;
-  --bg-sidebar: #0A1931;
-  --bg-header: #0A1931;
-  --bg-card: #0A1931;
-  --bg-card-subtle: #0F2547;
-  --border-main: #1E3A6D;
-  --border-subtle: #1E3A6D;
-  --text-main: #F5F5F2;
-  --text-muted: #94A3B8;
+  /* Neo-Architectural Precision Light Theme */
+  --bg-main: #F8FAFC;
+  --bg-sidebar: #FFFFFF;
+  --bg-header: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-card-subtle: #F1F5F9;
+  --border-main: #E2E8F0;
+  --border-subtle: #F1F5F9;
+  --text-main: #0F172A;
+  --text-muted: #475569;
   --text-subtle: #64748B;
-  --scrollbar-track: #071326;
-  --scrollbar-thumb: #1E3A6D;
-  --scrollbar-thumb-hover: #FFB800;
-  --table-header-bg: #0F2547;
-  --table-row-hover: #132C54;
-  --accent-color: #FFB800;
-  --accent-bg: #FFB800;
-  --accent-text: #071326;
-  --badge-pill-bg: #0F2547;
+  --scrollbar-track: #F8FAFC;
+  --scrollbar-thumb: #CBD5E1;
+  --scrollbar-thumb-hover: #94A3B8;
+  --table-header-bg: #F8FAFC;
+  --table-row-hover: #F1F5F9;
+  --accent-color: #D95D1E;
+  --accent-bg: #D95D1E;
+  --accent-text: #FFFFFF;
+  --badge-pill-bg: #F1F5F9;
 
   /* Aliases for super_admin & design components */
-  --color-text-primary: #F5F5F2;
-  --color-text-secondary: #BAE6FD;
-  --color-text-muted: #94A3B8;
-  --color-surface-bg: #071326;
-  --color-surface-card: #0A1931;
-  --color-surface-hover: #0F2547;
-  --color-border-subtle: #1E3A6D;
-  --color-border-strong: #2E5A9C;
-  --color-accent-blue: #38BDF8;
-  --color-accent-green: #10B981;
-  --color-accent-yellow: #FFB800;
-  --color-accent-red: #F43F5E;
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #334155;
+  --color-text-muted: #64748B;
+  --color-surface-bg: #F8FAFC;
+  --color-surface-card: #FFFFFF;
+  --color-surface-hover: #F1F5F9;
+  --color-border-subtle: #E2E8F0;
+  --color-border-strong: #CBD5E1;
+  --color-accent-blue: #0284C7;
+  --color-accent-green: #059669;
+  --color-accent-yellow: #D95D1E;
+  --color-accent-red: #E11D48;
 }
 
 .dark {
-  /* Authentic Bunker-1 Deep Industrial Navy & Hazard Yellow */
-  --bg-main: #071326;
-  --bg-sidebar: #0A1931;
-  --bg-header: #0A1931;
-  --bg-card: #0A1931;
-  --bg-card-subtle: #0F2547;
-  --border-main: #1E3A6D;
-  --border-subtle: #1E3A6D;
-  --text-main: #F5F5F2;
-  --text-muted: #94A3B8;
+  --bg-main: #F8FAFC;
+  --bg-sidebar: #FFFFFF;
+  --bg-header: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-card-subtle: #F1F5F9;
+  --border-main: #E2E8F0;
+  --border-subtle: #F1F5F9;
+  --text-main: #0F172A;
+  --text-muted: #475569;
   --text-subtle: #64748B;
-  --scrollbar-track: #071326;
-  --scrollbar-thumb: #1E3A6D;
-  --scrollbar-thumb-hover: #FFB800;
-  --table-header-bg: #0F2547;
-  --table-row-hover: #132C54;
-  --accent-color: #FFB800;
-  --accent-bg: #FFB800;
-  --accent-text: #071326;
-  --badge-pill-bg: #0F2547;
+  --scrollbar-track: #F8FAFC;
+  --scrollbar-thumb: #CBD5E1;
+  --scrollbar-thumb-hover: #94A3B8;
+  --table-header-bg: #F8FAFC;
+  --table-row-hover: #F1F5F9;
+  --accent-color: #D95D1E;
+  --accent-bg: #D95D1E;
+  --accent-text: #FFFFFF;
+  --badge-pill-bg: #F1F5F9;
 
-  /* Aliases for super_admin & design components */
-  --color-text-primary: #F5F5F2;
-  --color-text-secondary: #BAE6FD;
-  --color-text-muted: #94A3B8;
-  --color-surface-bg: #071326;
-  --color-surface-card: #0A1931;
-  --color-surface-hover: #0F2547;
-  --color-border-subtle: #1E3A6D;
-  --color-border-strong: #2E5A9C;
-  --color-accent-blue: #38BDF8;
-  --color-accent-green: #10B981;
-  --color-accent-yellow: #FFB800;
-  --color-accent-red: #F43F5E;
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #334155;
+  --color-text-muted: #64748B;
+  --color-surface-bg: #F8FAFC;
+  --color-surface-card: #FFFFFF;
+  --color-surface-hover: #F1F5F9;
+  --color-border-subtle: #E2E8F0;
+  --color-border-strong: #CBD5E1;
+  --color-accent-blue: #0284C7;
+  --color-accent-green: #059669;
+  --color-accent-yellow: #D95D1E;
+  --color-accent-red: #E11D48;
 }
 
 @layer base {
@@ -125,84 +123,71 @@
 
 /* Direct Industrial Design Utilities */
 .bg-industrial-primary {
-  background-color: #071326;
+  background-color: #F8FAFC;
 }
 
 .bg-industrial-secondary {
-  background-color: #0A1931;
+  background-color: #FFFFFF;
 }
 
 .bg-industrial-card {
-  background-color: #0F2547;
+  background-color: #FFFFFF;
 }
 
 .border-industrial {
-  border-color: #1E3A6D;
+  border-color: #E2E8F0;
 }
 
 .border-industrial-highlight {
-  border-color: #2E5A9C;
+  border-color: #CBD5E1;
 }
 
 .brushed-steel {
-  background: linear-gradient(180deg, #0F2547 0%, #0A1931 100%);
-  border: 1px solid #1E3A6D;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 16px rgba(10, 25, 49, 0.25);
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .brushed-steel-header {
-  background: linear-gradient(180deg, #0A1931 0%, #071326 100%);
-  border-bottom: 2px solid #1E3A6D;
-  box-shadow: 0 4px 20px rgba(10, 25, 49, 0.35), inset 0 -1px 0 rgba(255, 184, 0, 0.15);
+  background: #FFFFFF;
+  border-bottom: 1px solid #E2E8F0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .industrial-card {
-  background-color: #0A1931;
-  border: 1px solid #1E3A6D;
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
   transition: all 0.2s ease-in-out;
 }
 
 .industrial-card:hover {
-  border-color: #2E5A9C;
-  box-shadow: 0 8px 24px -4px rgba(10, 25, 49, 0.45), 0 0 0 1px rgba(255, 184, 0, 0.25);
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.06);
 }
 
 .hazard-stripe-sm {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    #FFB800 0,
-    #FFB800 6px,
-    #0A1931 6px,
-    #0A1931 12px
-  );
+  display: none !important;
 }
 
 .industrial-rivet {
-  width: 6px;
-  height: 6px;
-  border-radius: 9999px;
-  background: radial-gradient(circle at 35% 35%, #93C5FD, #1E3A6D 70%, #0A1931);
-  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.3);
-  display: inline-block;
+  display: none !important;
 }
 
 .tech-grid-pattern {
-  background-image: linear-gradient(to right, rgba(30, 58, 109, 0.15) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(30, 58, 109, 0.15) 1px, transparent 1px);
-  background-size: 24px 24px;
+  display: none !important;
 }
 
 .btn-industrial-yellow {
-  background-color: #FFB800;
-  color: #071326;
-  font-weight: 800;
-  border: 1px solid #E5A600;
+  background-color: #D95D1E;
+  color: #FFFFFF;
+  font-weight: 700;
+  border: 1px solid #D95D1E;
   transition: all 0.15s ease-in-out;
 }
 
 .btn-industrial-yellow:hover {
-  background-color: #FFC928;
-  box-shadow: 0 0 14px rgba(255, 184, 0, 0.4);
+  background-color: #B43B06;
+  border-color: #B43B06;
 }
 
 .btn-industrial-yellow:active {
@@ -210,16 +195,15 @@
 }
 
 .btn-industrial-dark {
-  background-color: #0F2547;
-  color: #FFFFFF;
-  border: 1px solid #1E3A6D;
+  background-color: #F1F5F9;
+  color: #0F172A;
+  border: 1px solid #E2E8F0;
   transition: all 0.15s ease-in-out;
 }
 
 .btn-industrial-dark:hover {
-  background-color: #132C54;
-  border-color: #FFB800;
-  color: #FFB800;
+  background-color: #E2E8F0;
+  color: #0F172A;
 }
 
 .font-mono-numbers {

@@ -100,22 +100,19 @@ export const PartnersManager: React.FC = () => {
     switch (status) {
       case 'OPERATIONAL':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
             OPERATIONAL
           </span>
         );
       case 'DEGRADED':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono font-bold bg-amber-50 text-amber-700 border border-amber-200">
             DEGRADED
           </span>
         );
       case 'DOWN':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-red-500/15 text-red-400 border border-red-500/30">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-ping" />
+          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono font-bold bg-rose-50 text-rose-700 border border-rose-200">
             DOWN
           </span>
         );
@@ -137,7 +134,6 @@ export const PartnersManager: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-theme-card p-4 rounded-2xl border border-theme">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#FFB800] animate-pulse" />
             <h1 className="text-xl font-black uppercase tracking-wider text-theme-main">
               Hamkorlar &amp; Tashqi Integratsiyalar
             </h1>
@@ -213,7 +209,7 @@ export const PartnersManager: React.FC = () => {
         {filteredPartners.map((item) => (
           <div
             key={item.id}
-            className="bg-theme-card rounded-2xl border border-theme p-4 flex flex-col justify-between shadow-xs hover:border-[#FFB800]/50 transition duration-150 space-y-4"
+            className="bg-theme-card rounded-2xl border border-theme p-4 flex flex-col justify-between shadow-xs hover:border-[#D95D1E]/50 transition duration-150 space-y-4"
           >
             {/* Card Header */}
             <div>
@@ -284,7 +280,7 @@ export const PartnersManager: React.FC = () => {
                 className="font-mono text-xs px-2.5"
                 title="Sinxronlash"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${syncingId === item.id ? 'animate-spin text-[#FFB800]' : ''}`} />
+                <RefreshCw className={`w-3.5 h-3.5 ${syncingId === item.id ? 'animate-spin text-[#D95D1E]' : ''}`} />
               </Button>
             </div>
           </div>

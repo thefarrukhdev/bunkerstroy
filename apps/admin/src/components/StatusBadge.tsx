@@ -37,8 +37,8 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       case 'COMPLETED':
       case 'AVAILABLE':
         return {
-          container: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-black',
-          dot: 'bg-emerald-400',
+          container: 'bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold',
+          dot: 'bg-emerald-600',
           defaultText: customLabel || normalized
         };
 
@@ -46,8 +46,8 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       case 'PENDING_REVIEW':
       case 'ON_ROUTE':
         return {
-          container: 'bg-[#FFB800]/15 text-[#FFB800] border border-[#FFB800]/30 font-bold',
-          dot: 'bg-[#FFB800] animate-pulse',
+          container: 'bg-orange-50 text-[#D95D1E] border border-orange-200 font-bold',
+          dot: 'bg-[#D95D1E] animate-pulse',
           defaultText: customLabel || normalized
         };
 
@@ -56,23 +56,23 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       case 'FAILED':
       case 'CANCELLED':
         return {
-          container: 'bg-rose-500/15 text-rose-400 border border-rose-500/30 font-bold',
-          dot: 'bg-rose-400',
+          container: 'bg-rose-50 text-rose-700 border border-rose-200 font-bold',
+          dot: 'bg-rose-600',
           defaultText: customLabel || normalized
         };
 
       case 'LOW_STOCK':
       case 'MAINTENANCE':
         return {
-          container: 'bg-amber-500/15 text-amber-400 border border-amber-500/30 font-bold',
-          dot: 'bg-amber-400',
+          container: 'bg-amber-50 text-amber-800 border border-amber-200 font-bold',
+          dot: 'bg-amber-600',
           defaultText: customLabel || normalized
         };
 
       default:
         return {
-          container: 'bg-[#0F2547] text-sky-200 border border-[#1E3A6D]',
-          dot: 'bg-sky-400',
+          container: 'bg-slate-100 text-slate-700 border border-slate-200',
+          dot: 'bg-slate-400',
           defaultText: customLabel || normalized
         };
     }
@@ -82,9 +82,8 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono tracking-wider uppercase rounded-full transition-all ${badge.container} ${className}`}
+      className={`inline-flex items-center px-2 py-0.5 text-[11px] font-mono tracking-wider uppercase rounded-md transition-all ${badge.container} ${className}`}
     >
-      <span className={`w-1.5 h-1.5 rounded-full ${badge.dot}`} />
       <span>{badge.defaultText}</span>
     </span>
   );

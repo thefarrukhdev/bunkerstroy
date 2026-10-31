@@ -78,14 +78,11 @@ const SellerPortalInner: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#071326] text-[#F5F5F2] flex flex-col font-sans selection:bg-[#FFB800] selection:text-[#071326] touch-manipulation">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-[#D95D1E] selection:text-white touch-manipulation">
       {/* =========================================================================
           TOP INDUSTRIAL HEADER
           ========================================================================= */}
-      <header className="sticky top-0 z-40 brushed-steel-header border-b-2 border-[#1E3A6D] text-[#F5F5F2] shadow-2xl pt-safe">
-        {/* Top Hazard Stripe Accent */}
-        <div className="h-1 w-full hazard-stripe-sm opacity-90" />
-
+      <header className="sticky top-0 z-40 bg-white border-b border-slate-200 text-slate-900 shadow-xs pt-safe">
         <div className="max-w-[1920px] mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
           {/* Left: Hamburger & Brand Identity */}
           <div className="flex items-center gap-2 sm:gap-4 min-w-0">
@@ -93,48 +90,46 @@ const SellerPortalInner: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsMobileDrawerOpen(true)}
-              className="lg:hidden p-2 rounded-xl bg-[#0A1931] hover:bg-[#132C54] border border-[#1E3A6D] hover:border-[#FFB800] text-sky-200 hover:text-white cursor-pointer transition-colors shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center shadow-xs"
+              className="lg:hidden p-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 cursor-pointer transition-colors shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center shadow-xs"
               title="Menyuni ochish"
               aria-label="Menyuni ochish"
             >
-              <Menu className="w-5 h-5 text-[#FFB800]" />
+              <Menu className="w-5 h-5 text-[#D95D1E]" />
             </button>
 
             {/* BunkerStroy Brand Pill */}
-            <div className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#071326] border border-[#1E3A6D] shadow-inner shrink-0">
-              <div className="w-6 h-6 rounded-lg bg-[#FFB800] text-[#071326] flex items-center justify-center font-black shadow-md shrink-0">
+            <div className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 shadow-xs shrink-0">
+              <div className="w-6 h-6 rounded-lg bg-[#D95D1E] text-white flex items-center justify-center font-black shadow-xs shrink-0">
                 <Factory className="w-4 h-4 stroke-[2.5]" />
               </div>
               <div className="flex flex-col leading-none">
-                <span className="text-white font-black tracking-wider uppercase text-xs sm:text-sm">
-                  BUNKER<span className="text-[#FFB800]">STROY</span>
+                <span className="text-slate-900 font-black tracking-wider uppercase text-xs sm:text-sm">
+                  BUNKER<span className="text-[#D95D1E]">STROY</span>
                 </span>
-                <span className="text-[8px] sm:text-[9px] text-sky-300 font-mono font-bold tracking-widest uppercase">
+                <span className="text-[8px] sm:text-[9px] text-slate-500 font-mono font-bold tracking-widest uppercase">
                   SELLER &amp; POS CRM
                 </span>
               </div>
             </div>
 
             {/* Active Factory / Store Identity Badge (Responsive) */}
-            <div className="hidden xl:flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-[#0A1931]/80 border border-[#1E3A6D] text-xs font-mono">
-              <Building2 className="w-3.5 h-3.5 text-[#FFB800]" />
+            <div className="hidden xl:flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono">
+              <Building2 className="w-3.5 h-3.5 text-[#D95D1E]" />
               <div className="flex items-center gap-2">
-                <span className="text-white font-bold tracking-wide">
+                <span className="text-slate-900 font-bold tracking-wide">
                   BEKOBOD METALL INVEST MCHJ
                 </span>
-                <span className="text-[#1E3A6D]">|</span>
-                <span className="text-sky-300">STIR: 308112233</span>
-                <span className="text-[#1E3A6D]">|</span>
-                <span className="inline-flex items-center gap-1 text-emerald-400 font-semibold">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-slate-300">|</span>
+                <span className="text-slate-500">STIR: 308112233</span>
+                <span className="text-slate-300">|</span>
+                <span className="inline-flex items-center text-emerald-700 font-semibold">
                   POS Terminal #04
                 </span>
               </div>
             </div>
 
             {/* Compact Store indicator on tablet */}
-            <div className="hidden sm:flex xl:hidden items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#0A1931] border border-[#1E3A6D] text-[11px] font-mono text-emerald-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="hidden sm:flex xl:hidden items-center px-2.5 py-1 rounded-xl bg-slate-50 border border-slate-200 text-[11px] font-mono text-emerald-700">
               <span>POS #04 Faol</span>
             </div>
           </div>
@@ -146,12 +141,12 @@ const SellerPortalInner: React.FC = () => {
               href={marketplaceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#0F2547] hover:bg-[#1E3A6D] border border-[#1E3A6D] hover:border-[#FFB800] text-sky-200 hover:text-white text-xs font-bold font-mono transition-all duration-200 group shadow-sm min-h-[44px]"
+              className="hidden sm:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 text-xs font-bold font-mono transition-all duration-200 group shadow-xs min-h-[44px]"
               title="BunkerStroy Xaridorlar Vitrinasi (apps/web)"
             >
-              <ShoppingBag className="w-3.5 h-3.5 text-[#FFB800] group-hover:scale-110 transition-transform" />
+              <ShoppingBag className="w-3.5 h-3.5 text-[#D95D1E] group-hover:scale-110 transition-transform" />
               <span className="hidden md:inline">Bozor Vitrinasi</span>
-              <ExternalLink className="w-3 h-3 text-sky-400 group-hover:text-[#FFB800]" />
+              <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-[#D95D1E]" />
             </a>
 
             {/* Cross-Link 2: Admin Panel */}
@@ -159,31 +154,31 @@ const SellerPortalInner: React.FC = () => {
               href={adminUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#0F2547] hover:bg-[#1E3A6D] border border-[#1E3A6D] hover:border-[#FFB800] text-sky-200 hover:text-white text-xs font-bold font-mono transition-all duration-200 group shadow-sm min-h-[44px]"
+              className="hidden sm:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 text-xs font-bold font-mono transition-all duration-200 group shadow-xs min-h-[44px]"
               title="BunkerStroy Boshqaruv Markazi (apps/admin)"
             >
-              <ShieldCheck className="w-3.5 h-3.5 text-[#FFB800] group-hover:scale-110 transition-transform" />
+              <ShieldCheck className="w-3.5 h-3.5 text-[#D95D1E] group-hover:scale-110 transition-transform" />
               <span className="hidden md:inline">Admin Panel</span>
-              <ExternalLink className="w-3 h-3 text-sky-400 group-hover:text-[#FFB800]" />
+              <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-[#D95D1E]" />
             </a>
 
             {/* Real-time Tashkent Clock */}
-            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#071326] border border-[#1E3A6D] text-sky-200 font-mono text-xs shadow-inner min-h-[44px]">
-              <Clock className="w-3.5 h-3.5 text-[#FFB800]" />
-              <span className="text-white font-black">{currentTime || '12:00:00'}</span>
-              <span className="text-[10px] text-[#FFB800] font-bold">UZT</span>
+            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 font-mono text-xs shadow-xs min-h-[44px]">
+              <Clock className="w-3.5 h-3.5 text-[#D95D1E]" />
+              <span className="text-slate-900 font-black">{currentTime || '12:00:00'}</span>
+              <span className="text-[10px] text-[#D95D1E] font-bold">UZT</span>
             </div>
 
             {/* Language Switcher */}
             <button
               type="button"
               onClick={toggleLanguage}
-              className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#071326] hover:bg-[#0F2547] border border-[#1E3A6D] hover:border-[#FFB800] text-xs font-mono font-bold text-sky-200 hover:text-white cursor-pointer transition-all shadow-sm min-h-[44px] min-w-[44px] justify-center"
+              className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 text-xs font-mono font-bold text-slate-700 hover:text-slate-900 cursor-pointer transition-all shadow-xs min-h-[44px] min-w-[44px] justify-center"
               title="Tilni almashtirish / Сменить язык"
               aria-label="Tilni almashtirish"
             >
-              <Globe className="w-3.5 h-3.5 text-[#FFB800]" />
-              <span className="uppercase text-[#FFB800] font-black">{language}</span>
+              <Globe className="w-3.5 h-3.5 text-[#D95D1E]" />
+              <span className="uppercase text-[#D95D1E] font-black">{language}</span>
             </button>
 
             {/* Refresh Button */}
@@ -191,11 +186,11 @@ const SellerPortalInner: React.FC = () => {
               type="button"
               onClick={handleRefresh}
               disabled={isRefreshing}
-              className="p-2 sm:p-2.5 rounded-xl bg-[#071326] hover:bg-[#0F2547] border border-[#1E3A6D] hover:border-[#FFB800] text-sky-200 hover:text-[#FFB800] cursor-pointer transition-all shadow-sm disabled:opacity-50 min-h-[44px] min-w-[44px] flex items-center justify-center"
+              className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-[#D95D1E] cursor-pointer transition-all shadow-xs disabled:opacity-50 min-h-[44px] min-w-[44px] flex items-center justify-center"
               title="Kassa va Ombor ma'lumotlarini yangilash"
               aria-label="Yangilash"
             >
-              <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-[#FFB800]' : ''}`} />
+              <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-[#D95D1E]' : ''}`} />
             </button>
           </div>
         </div>
@@ -208,24 +203,24 @@ const SellerPortalInner: React.FC = () => {
         <div className="fixed inset-0 z-50 flex lg:hidden">
           {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-[#071326]/80 backdrop-blur-sm transition-opacity"
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity"
             onClick={() => setIsMobileDrawerOpen(false)}
             aria-hidden="true"
           />
 
           {/* Drawer Sheet */}
-          <div className="relative w-full max-w-xs sm:max-w-sm bg-[#0A1931] border-r-2 border-[#1E3A6D] shadow-2xl flex flex-col h-full z-10 overflow-y-auto">
+          <div className="relative w-full max-w-xs sm:max-w-sm bg-white border-r border-slate-200 shadow-2xl flex flex-col h-full z-10 overflow-y-auto">
             {/* Drawer Header */}
-            <div className="p-4 border-b border-[#1E3A6D] flex items-center justify-between bg-[#071326]">
+            <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-[#FFB800] text-[#071326] flex items-center justify-center font-black">
+                <div className="w-7 h-7 rounded-lg bg-[#D95D1E] text-white flex items-center justify-center font-black">
                   <Factory className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-black text-white text-sm">
-                    BUNKER<span className="text-[#FFB800]">STROY</span>
+                  <h3 className="font-heading font-black text-slate-900 text-sm">
+                    BUNKER<span className="text-[#D95D1E]">STROY</span>
                   </h3>
-                  <span className="text-[9px] font-mono text-sky-300 block">
+                  <span className="text-[9px] font-mono text-slate-500 block">
                     SELLER &amp; POS CRM
                   </span>
                 </div>
@@ -234,7 +229,7 @@ const SellerPortalInner: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsMobileDrawerOpen(false)}
-                className="p-2 rounded-xl bg-[#0F2547] border border-[#1E3A6D] text-slate-300 hover:text-white cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
+                className="p-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-slate-900 cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
                 aria-label="Menyuni yopish"
               >
                 <X className="w-5 h-5" />
@@ -242,15 +237,14 @@ const SellerPortalInner: React.FC = () => {
             </div>
 
             {/* Merchant Identity Card */}
-            <div className="p-4 bg-[#0F2547]/50 border-b border-[#1E3A6D] space-y-1.5 font-mono text-xs">
-              <span className="text-[10px] text-sky-400 font-bold uppercase block">
+            <div className="p-4 bg-slate-50/50 border-b border-slate-200 space-y-1.5 font-mono text-xs">
+              <span className="text-[10px] text-slate-500 font-bold uppercase block">
                 Faol Sotuvchi / Zavod:
               </span>
-              <p className="font-bold text-white text-sm">BEKOBOD METALL INVEST MCHJ</p>
-              <div className="flex items-center justify-between text-slate-300 text-[11px] pt-1">
+              <p className="font-bold text-slate-900 text-sm">BEKOBOD METALL INVEST MCHJ</p>
+              <div className="flex items-center justify-between text-slate-600 text-[11px] pt-1">
                 <span>STIR: 308112233</span>
-                <span className="text-emerald-400 font-bold flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-emerald-700 font-bold">
                   POS #04 Faol
                 </span>
               </div>
@@ -258,7 +252,7 @@ const SellerPortalInner: React.FC = () => {
 
             {/* Drawer Navigation Links */}
             <div className="p-3 space-y-1.5 flex-1">
-              <div className="px-3 py-1.5 text-[10px] font-mono font-bold uppercase text-sky-400 tracking-wider">
+              <div className="px-3 py-1.5 text-[10px] font-mono font-bold uppercase text-slate-500 tracking-wider">
                 Boshqaruv Bo‘limlari
               </div>
 
@@ -272,22 +266,22 @@ const SellerPortalInner: React.FC = () => {
                     onClick={() => handleSelectTab(item.id)}
                     className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl font-mono text-xs font-bold transition-all cursor-pointer min-h-[48px] ${
                       isActive
-                        ? 'bg-[#FFB800] text-[#071326] font-black shadow-md'
+                        ? 'bg-[#D95D1E] text-white font-black shadow-xs'
                         : item.isAccent
-                        ? 'bg-[#0F2547] text-emerald-400 border border-emerald-500/30 hover:border-emerald-400'
-                        : 'bg-[#071326] text-sky-200 border border-[#1E3A6D] hover:border-[#2E5A9C] hover:text-white'
+                        ? 'bg-orange-50/60 text-[#D95D1E] border border-orange-200 hover:border-orange-300'
+                        : 'bg-white text-slate-700 border border-slate-200 hover:border-slate-300 hover:text-slate-900'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <Icon className={`w-4 h-4 ${isActive ? 'text-[#071326]' : item.isAccent ? 'text-emerald-400' : 'text-[#FFB800]'}`} />
+                      <Icon className={`w-4 h-4 ${isActive ? 'text-white' : item.isAccent ? 'text-[#D95D1E]' : 'text-slate-600'}`} />
                       <span>{item.label}</span>
                     </div>
-                    <ChevronRight className={`w-4 h-4 ${isActive ? 'text-[#071326]' : 'text-slate-500'}`} />
+                    <ChevronRight className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                   </button>
                 );
               })}
 
-              <div className="pt-4 px-3 py-1.5 text-[10px] font-mono font-bold uppercase text-sky-400 tracking-wider">
+              <div className="pt-4 px-3 py-1.5 text-[10px] font-mono font-bold uppercase text-slate-500 tracking-wider">
                 Tizim Portallari
               </div>
 
@@ -296,36 +290,36 @@ const SellerPortalInner: React.FC = () => {
                 href={marketplaceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-[#071326] text-sky-200 border border-[#1E3A6D] hover:border-[#FFB800] font-mono text-xs min-h-[44px]"
+                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-white text-slate-700 border border-slate-200 hover:border-slate-300 font-mono text-xs min-h-[44px]"
               >
                 <div className="flex items-center gap-3">
-                  <ShoppingBag className="w-4 h-4 text-[#FFB800]" />
+                  <ShoppingBag className="w-4 h-4 text-[#D95D1E]" />
                   <span>Bozor Vitrinasi (Marketplace)</span>
                 </div>
-                <ExternalLink className="w-3.5 h-3.5 text-sky-400" />
+                <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
               </a>
 
               <a
                 href={adminUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-[#071326] text-sky-200 border border-[#1E3A6D] hover:border-[#FFB800] font-mono text-xs min-h-[44px]"
+                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-white text-slate-700 border border-slate-200 hover:border-slate-300 font-mono text-xs min-h-[44px]"
               >
                 <div className="flex items-center gap-3">
-                  <ShieldCheck className="w-4 h-4 text-[#FFB800]" />
+                  <ShieldCheck className="w-4 h-4 text-[#D95D1E]" />
                   <span>Boshqaruv Admin Paneli</span>
                 </div>
-                <ExternalLink className="w-3.5 h-3.5 text-sky-400" />
+                <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
               </a>
             </div>
 
             {/* Drawer Footer */}
-            <div className="p-4 border-t border-[#1E3A6D] bg-[#071326] space-y-2 font-mono text-xs text-slate-400">
+            <div className="p-4 border-t border-slate-200 bg-slate-50 space-y-2 font-mono text-xs text-slate-500">
               <div className="flex items-center justify-between">
                 <span>Toshkent vaqti:</span>
-                <span className="text-white font-bold">{currentTime || '12:00:00'} UZT</span>
+                <span className="text-slate-900 font-bold">{currentTime || '12:00:00'} UZT</span>
               </div>
-              <div className="text-[10px] text-slate-500">
+              <div className="text-[10px] text-slate-400">
                 BunkerStroy B2B Industrial Ecosystem v2.4
               </div>
             </div>
@@ -345,7 +339,7 @@ const SellerPortalInner: React.FC = () => {
           ========================================================================= */}
       <nav
         aria-label="Mobil tezkor navigatsiya"
-        className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0A1931]/95 backdrop-blur-md border-t-2 border-[#1E3A6D] pb-safe shadow-2xl"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 pb-safe shadow-lg"
       >
         <div className="grid grid-cols-5 gap-1 px-1.5 py-1">
           {/* 1. Ombor */}
@@ -354,8 +348,8 @@ const SellerPortalInner: React.FC = () => {
             onClick={() => handleSelectTab('inventory')}
             className={`flex flex-col items-center justify-center py-1.5 rounded-xl transition-all cursor-pointer min-h-[48px] ${
               activeTab === 'inventory'
-                ? 'text-[#FFB800] font-bold bg-[#132C54]'
-                : 'text-slate-400 hover:text-white'
+                ? 'text-[#D95D1E] font-bold bg-orange-50'
+                : 'text-slate-500 hover:text-slate-900'
             }`}
           >
             <Package className="w-5 h-5" />
@@ -368,8 +362,8 @@ const SellerPortalInner: React.FC = () => {
             onClick={() => handleSelectTab('crm_pos')}
             className={`flex flex-col items-center justify-center py-1.5 rounded-xl transition-all cursor-pointer min-h-[48px] ${
               activeTab === 'crm_pos'
-                ? 'text-[#071326] bg-[#FFB800] font-black shadow-md'
-                : 'text-emerald-400 hover:text-emerald-300'
+                ? 'text-white bg-[#D95D1E] font-black shadow-xs'
+                : 'text-[#D95D1E] hover:text-[#B43B06]'
             }`}
           >
             <Calculator className="w-5 h-5" />
@@ -382,8 +376,8 @@ const SellerPortalInner: React.FC = () => {
             onClick={() => handleSelectTab('orders')}
             className={`flex flex-col items-center justify-center py-1.5 rounded-xl transition-all cursor-pointer min-h-[48px] ${
               activeTab === 'orders'
-                ? 'text-[#FFB800] font-bold bg-[#132C54]'
-                : 'text-slate-400 hover:text-white'
+                ? 'text-[#D95D1E] font-bold bg-orange-50'
+                : 'text-slate-500 hover:text-slate-900'
             }`}
           >
             <Truck className="w-5 h-5" />
@@ -396,8 +390,8 @@ const SellerPortalInner: React.FC = () => {
             onClick={() => handleSelectTab('reports')}
             className={`flex flex-col items-center justify-center py-1.5 rounded-xl transition-all cursor-pointer min-h-[48px] ${
               activeTab === 'reports'
-                ? 'text-[#FFB800] font-bold bg-[#132C54]'
-                : 'text-slate-400 hover:text-white'
+                ? 'text-[#D95D1E] font-bold bg-orange-50'
+                : 'text-slate-500 hover:text-slate-900'
             }`}
           >
             <BarChart3 className="w-5 h-5" />
@@ -408,9 +402,9 @@ const SellerPortalInner: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsMobileDrawerOpen(true)}
-            className="flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-400 hover:text-white transition-all cursor-pointer min-h-[48px]"
+            className="flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-500 hover:text-slate-900 transition-all cursor-pointer min-h-[48px]"
           >
-            <Menu className="w-5 h-5 text-[#FFB800]" />
+            <Menu className="w-5 h-5 text-[#D95D1E]" />
             <span className="text-[10px] font-mono mt-0.5">Menyu</span>
           </button>
         </div>
@@ -419,28 +413,28 @@ const SellerPortalInner: React.FC = () => {
       {/* =========================================================================
           INDUSTRIAL FOOTER STATUS BAR (Desktop/Tablet)
           ========================================================================= */}
-      <footer className="hidden md:block border-t border-[#1E3A6D] bg-[#0A1931] text-xs font-mono text-slate-400 py-3 px-4 sm:px-6 lg:px-8 mt-auto pb-safe">
+      <footer className="hidden md:block border-t border-slate-200 bg-white text-xs font-mono text-slate-500 py-3 px-4 sm:px-6 lg:px-8 mt-auto pb-safe">
         <div className="max-w-[1920px] mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
           {/* Left: System Health & Status */}
           <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-[11px]">
-            <div className="flex items-center gap-1.5 text-emerald-400 font-semibold">
+            <div className="flex items-center gap-1.5 text-emerald-700 font-semibold">
               <Wifi className="w-3.5 h-3.5" />
               <span>POS TIZIM: ONLAYN</span>
             </div>
-            <span className="text-[#1E3A6D] hidden sm:inline">•</span>
-            <div className="flex items-center gap-1.5 text-sky-300">
-              <Activity className="w-3.5 h-3.5 text-[#FFB800]" />
+            <span className="text-slate-300 hidden sm:inline">|</span>
+            <div className="flex items-center gap-1.5 text-slate-700">
+              <Activity className="w-3.5 h-3.5 text-[#D95D1E]" />
               <span>Escrow Gateway v2.4: Faol (1.5% komissiya)</span>
             </div>
-            <span className="text-[#1E3A6D] hidden sm:inline">•</span>
-            <span className="text-slate-400">
+            <span className="text-slate-300 hidden sm:inline">|</span>
+            <span className="text-slate-500">
               STIR: 308112233 (QQS to‘lovchi № 3260012)
             </span>
           </div>
 
           {/* Right: Build & Copyright */}
-          <div className="flex items-center gap-3 text-[11px] text-slate-400">
-            <span className="px-2 py-0.5 rounded bg-[#071326] border border-[#1E3A6D] text-sky-200">
+          <div className="flex items-center gap-3 text-[11px] text-slate-500">
+            <span className="px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700">
               @bunkerstroy/seller:3001
             </span>
             <span>&copy; {new Date().getFullYear()} BunkerStroy B2B Industrial Ecosystem</span>

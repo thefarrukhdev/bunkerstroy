@@ -143,22 +143,22 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
 
   if (loading) {
     return (
-      <div className="space-y-6 max-w-7xl mx-auto text-white">
-        <div className="h-6 w-48 bg-[#0F2547] rounded" />
+      <div className="space-y-6 max-w-7xl mx-auto text-slate-900">
+        <div className="h-6 w-48 bg-slate-100 rounded" />
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-5 space-y-4">
-            <Skeleton variant="rect" height={360} className="rounded-2xl bg-[#0F2547]" />
+            <Skeleton variant="rect" height={360} className="rounded-2xl bg-slate-100" />
             <div className="flex gap-2">
-              <Skeleton variant="rect" width={80} height={70} className="rounded-lg bg-[#0F2547]" />
-              <Skeleton variant="rect" width={80} height={70} className="rounded-lg bg-[#0F2547]" />
+              <Skeleton variant="rect" width={80} height={70} className="rounded-lg bg-slate-100" />
+              <Skeleton variant="rect" width={80} height={70} className="rounded-lg bg-slate-100" />
             </div>
           </div>
           <div className="lg:col-span-7 space-y-4">
-            <Skeleton variant="text" width="30%" className="bg-[#0F2547]" />
-            <Skeleton variant="text" width="80%" height={36} className="bg-[#0F2547]" />
-            <Skeleton variant="text" width="60%" className="bg-[#0F2547]" />
-            <Skeleton variant="rect" height={100} className="rounded-xl bg-[#0F2547]" />
-            <Skeleton variant="rect" height={120} className="rounded-xl bg-[#0F2547]" />
+            <Skeleton variant="text" width="30%" className="bg-slate-100" />
+            <Skeleton variant="text" width="80%" height={36} className="bg-slate-100" />
+            <Skeleton variant="text" width="60%" className="bg-slate-100" />
+            <Skeleton variant="rect" height={100} className="rounded-xl bg-slate-100" />
+            <Skeleton variant="rect" height={120} className="rounded-xl bg-slate-100" />
           </div>
         </div>
       </div>
@@ -167,19 +167,19 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
 
   if (error || !product) {
     return (
-      <div className="text-center py-16 industrial-card rounded-2xl p-8 space-y-4 bg-[#0A1931] border border-[#1E3A6D] text-white">
-        <div className="inline-block px-3 py-1 bg-red-950/80 text-red-400 border border-red-500/40 rounded-lg font-mono text-xs font-bold">
+      <div className="text-center py-16 rounded-2xl p-8 space-y-4 bg-white border border-slate-200 text-slate-900 shadow-2xs">
+        <div className="inline-block px-3 py-1 bg-red-50 text-red-600 border border-red-200 rounded-lg font-mono text-xs font-bold">
           Xatolik
         </div>
-        <h2 className="text-xl font-bold text-white">
+        <h2 className="text-xl font-bold text-slate-900">
           {error || 'Mahsulot topilmadi yoki o‘chirilgan'}
         </h2>
-        <p className="text-sm text-sky-200/80">
+        <p className="text-sm text-slate-600">
           Iltimos, katalog ro‘yxatiga qaytib boshqa materialni tanlang.
         </p>
         <button
           onClick={() => navigate('/catalog')}
-          className="btn-industrial-yellow px-5 py-2.5 rounded-xl font-bold text-xs inline-flex items-center gap-2 cursor-pointer shadow-md"
+          className="bg-[#D95D1E] hover:bg-[#B43B06] text-white px-5 py-2.5 rounded-xl font-bold text-xs inline-flex items-center gap-2 cursor-pointer shadow-xs transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Katalogga Qaytish</span>
@@ -189,26 +189,26 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
   }
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-16 font-sans text-white">
+    <div className="space-y-6 max-w-7xl mx-auto pb-16 font-sans text-slate-900">
       {/* 1. Breadcrumbs */}
-      <nav className="flex flex-wrap items-center justify-between gap-2.5 text-xs font-mono text-sky-300/80">
+      <nav className="flex flex-wrap items-center justify-between gap-2.5 text-xs font-mono text-slate-500">
         <div className="flex items-center gap-2 min-w-0">
-          <Link to="/catalog" className="hover:text-[#FFB800] transition-colors shrink-0">
+          <Link to="/catalog" className="hover:text-[#D95D1E] transition-colors shrink-0">
             Katalog
           </Link>
-          <span className="shrink-0 text-sky-500">/</span>
-          <span className="text-sky-200 uppercase shrink-0">
+          <span className="shrink-0 text-slate-300">/</span>
+          <span className="text-slate-600 uppercase shrink-0 font-medium">
             {product.region || 'O‘zbekiston'}
           </span>
-          <span className="shrink-0 text-sky-500">/</span>
-          <span className="text-white font-bold truncate max-w-[160px] sm:max-w-xs">
+          <span className="shrink-0 text-slate-300">/</span>
+          <span className="text-slate-900 font-bold truncate max-w-[160px] sm:max-w-xs">
             {product.title}
           </span>
         </div>
 
         <button
           onClick={() => navigate('/catalog')}
-          className="flex items-center gap-1.5 text-sky-200 hover:text-[#FFB800] transition-colors cursor-pointer shrink-0 font-bold"
+          className="flex items-center gap-1.5 text-slate-600 hover:text-[#D95D1E] transition-colors cursor-pointer shrink-0 font-bold"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Katalogga qaytish</span>
@@ -219,12 +219,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
         {/* Left Column: Visuals & Images (5 cols) */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="relative industrial-card rounded-2xl overflow-hidden bg-[#071326] border-2 border-[#1E3A6D] shadow-xl group">
-            <div className="absolute top-2 left-2 industrial-rivet z-20" />
-            <div className="absolute top-2 right-2 industrial-rivet z-20" />
-            <div className="absolute bottom-2 left-2 industrial-rivet z-20" />
-            <div className="absolute bottom-2 right-2 industrial-rivet z-20" />
-
+          <div className="relative rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 shadow-2xs group">
             <img
               src={
                 product.images?.[selectedImageIdx] ||
@@ -235,13 +230,13 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
             />
 
             {/* In stock badge */}
-            <div className="absolute bottom-3 right-3 bg-[#071326]/90 backdrop-blur-md px-3 py-1.5 rounded-xl text-xs font-mono font-bold text-sky-100 border border-[#1E3A6D] shadow-md">
-              Omborda: <span className="text-[#FFB800] font-black">{product.stock.toLocaleString()}</span> {unitLabel}
+            <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-xl text-xs font-mono font-bold text-slate-700 border border-slate-200 shadow-2xs">
+              Omborda: <span className="text-[#D95D1E] font-black">{product.stock.toLocaleString()}</span> {unitLabel}
             </div>
 
             {/* 50/50 Escrow badge */}
-            <div className="absolute top-3 left-3 bg-[#071326]/90 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold text-emerald-400 border border-emerald-500/50 shadow-md flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-[#FFB800]" />
+            <div className="absolute top-3 left-3 bg-emerald-50/95 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold text-emerald-700 border border-emerald-200 shadow-2xs flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
               <span>50/50 Xavfsiz Escrow</span>
             </div>
           </div>
@@ -255,8 +250,8 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
                   onClick={() => setSelectedImageIdx(idx)}
                   className={`w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
                     selectedImageIdx === idx
-                      ? 'border-[#FFB800] ring-2 ring-[#FFB800]/50'
-                      : 'border-[#1E3A6D] opacity-60 hover:opacity-100'
+                      ? 'border-[#D95D1E] ring-2 ring-[#D95D1E]/30'
+                      : 'border-slate-200 opacity-70 hover:opacity-100'
                   }`}
                 >
                   <img src={img} alt="" className="w-full h-full object-cover" />
@@ -266,28 +261,28 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
           )}
 
           {/* Verified Seller & Factory Card */}
-          <div className="industrial-card rounded-2xl p-4 space-y-3 font-mono text-xs bg-[#0A1931] border border-[#1E3A6D]">
-            <div className="flex items-center justify-between pb-2 border-b border-[#1E3A6D]">
-              <span className="text-sky-300/80 uppercase text-[10px] font-bold">
+          <div className="rounded-2xl p-4 space-y-3 font-mono text-xs bg-white border border-slate-200 shadow-2xs">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+              <span className="text-slate-500 uppercase text-[10px] font-bold">
                 Ishlab chiqaruvchi &amp; Sotuvchi:
               </span>
-              <span className="inline-flex items-center gap-1 text-[10px] text-emerald-400 font-bold bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded">
-                <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Rasmiy Zavod
+              <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
+                <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Rasmiy Zavod
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <Factory className="w-4 h-4 text-[#FFB800] shrink-0" />
-              <p className="font-bold text-white text-sm">
+              <Factory className="w-4 h-4 text-[#D95D1E] shrink-0" />
+              <p className="font-bold text-slate-900 text-sm">
                 {product.supplierName || 'O‘zbekiston Rasmiy Metallurgiya Zavodi'}
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-2 text-[11px] pt-1 text-sky-200">
+            <div className="grid grid-cols-2 gap-2 text-[11px] pt-1 text-slate-600">
               <div className="flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-[#FFB800] shrink-0" />
+                <MapPin className="w-3.5 h-3.5 text-[#D95D1E] shrink-0" />
                 <span className="truncate">{product.region || 'Toshkent shahri'}</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                 <span className="truncate">{product.warranty || 'Kafolat: 12 oy'}</span>
               </div>
             </div>
@@ -299,37 +294,37 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
           {/* Title & Price Header */}
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-mono text-[#FFB800] uppercase font-bold tracking-wider">
+              <span className="text-xs font-mono text-[#D95D1E] uppercase font-bold tracking-wider">
                 Sanoat Qurilish Materiali
               </span>
-              <span className="text-sky-600">•</span>
-              <span className="text-xs font-mono text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/40 font-bold">
+              <span className="text-slate-300">•</span>
+              <span className="text-xs font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-bold">
                 12% QQS Kiritilgan
               </span>
-              <span className="text-xs font-mono text-sky-200 bg-[#132C54] px-2 py-0.5 rounded border border-[#254B85]">
+              <span className="text-xs font-mono text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
                 O‘zDSt / GOST Sertifikatlangan
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-heading font-black text-white tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-3xl font-heading font-black text-slate-900 tracking-tight leading-tight">
               {product.title}
             </h1>
 
-            <p className="text-xs sm:text-sm text-sky-200/90 leading-relaxed pt-1">
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed pt-1">
               {product.description}
             </p>
           </div>
 
-          {/* Pricing Box & Configuration in Brushed Steel */}
-          <div className="brushed-steel rounded-2xl p-5 space-y-5 border-2 border-[#1E3A6D] shadow-lg font-mono">
+          {/* Pricing Box & Configuration */}
+          <div className="bg-white rounded-2xl p-5 space-y-5 border border-slate-200 shadow-2xs font-mono">
             {/* Price display */}
             <div>
-              <span className="text-xs text-sky-400 uppercase font-bold block">
+              <span className="text-xs text-slate-500 uppercase font-bold block">
                 Zavod ulgurji narxi:
               </span>
-              <div className="text-2xl sm:text-3xl font-black text-[#FFB800] mt-1 font-mono-numbers">
+              <div className="text-2xl sm:text-3xl font-black text-[#D95D1E] mt-1 font-mono-numbers">
                 {basePrice.toLocaleString()}{' '}
-                <span className="text-sm font-normal text-sky-200">
+                <span className="text-sm font-normal text-slate-600">
                   so‘m / {unitLabel}
                 </span>
               </div>
@@ -337,8 +332,8 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
 
             {/* Wholesale Tiered Price Ladder */}
             {product.tieredPrices && product.tieredPrices.length > 0 && (
-              <div className="bg-[#071326] border border-[#1E3A6D] rounded-xl p-3.5 space-y-2">
-                <span className="text-[11px] font-bold text-[#FFB800] uppercase block">
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
+                <span className="text-[11px] font-bold text-slate-900 uppercase block">
                   Ulgurji Hajm Narxlari (Tiered ladder):
                 </span>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
@@ -349,8 +344,8 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
                         key={idx}
                         className={`p-2 rounded-lg border text-center transition-all ${
                           isActive
-                            ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black shadow-xs'
-                            : 'bg-[#0A1931] border-[#1E3A6D] text-sky-200'
+                            ? 'bg-[#D95D1E] text-white border-[#D95D1E] font-bold shadow-2xs'
+                            : 'bg-white border-slate-200 text-slate-700'
                         }`}
                       >
                         <div className="text-[10px] opacity-80">
@@ -367,12 +362,12 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
             )}
 
             {/* COLOR_OPTIONS: Interactive Palette Selector */}
-            <div className="pt-2 border-t border-[#1E3A6D] space-y-2">
+            <div className="pt-2 border-t border-slate-100 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-sky-200 uppercase">
+                <span className="text-xs font-bold text-slate-700 uppercase">
                   Rangni tanlang (Color Palette):
                 </span>
-                <span className="text-xs font-mono text-[#FFB800] font-bold">
+                <span className="text-xs font-mono text-[#D95D1E] font-bold">
                   {COLOR_OPTIONS.find((c) => c.id === selectedColor)?.label || 'Standart'}
                 </span>
               </div>
@@ -387,8 +382,8 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
                       onClick={() => setSelectedColor(col.id)}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
                         isSelected
-                          ? 'bg-[#132C54] border-[#FFB800] text-white ring-2 ring-[#FFB800]/50'
-                          : 'bg-[#071326] border-[#1E3A6D] text-sky-200 hover:border-[#2E5A9C]'
+                          ? 'bg-orange-50 border-[#D95D1E] text-[#D95D1E] ring-1 ring-[#D95D1E]'
+                          : 'bg-slate-50 border-slate-200 text-slate-700 hover:border-slate-300 hover:text-slate-900'
                       }`}
                     >
                       <span
@@ -396,7 +391,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
                         style={{ backgroundColor: col.bg, borderColor: col.border }}
                       />
                       <span>{col.label.split('/')[0].trim()}</span>
-                      {isSelected && <Check className="w-3 h-3 text-[#FFB800]" />}
+                      {isSelected && <Check className="w-3 h-3 text-[#D95D1E]" />}
                     </button>
                   );
                 })}
@@ -404,8 +399,8 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
             </div>
 
             {/* O'lchamlar (Sizes Selector) */}
-            <div className="pt-2 border-t border-[#1E3A6D] space-y-2">
-              <span className="text-xs font-bold text-sky-200 uppercase block">
+            <div className="pt-2 border-t border-slate-100 space-y-2">
+              <span className="text-xs font-bold text-slate-700 uppercase block">
                 O‘lcham / Fraksiya:
               </span>
               <div className="flex flex-wrap gap-2">
@@ -418,8 +413,8 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
                       onClick={() => setSelectedSize(sizeOption)}
                       className={`px-3 py-1.5 rounded-xl border text-xs font-mono font-bold transition-all cursor-pointer ${
                         isSelected
-                          ? 'bg-[#FFB800] text-[#071326] border-[#FFC928] font-black'
-                          : 'bg-[#071326] border-[#1E3A6D] text-sky-200 hover:border-[#2E5A9C]'
+                          ? 'bg-[#D95D1E] text-white border-[#D95D1E]'
+                          : 'bg-slate-50 border-slate-200 text-slate-700 hover:border-slate-300 hover:text-slate-900'
                       }`}
                     >
                       {sizeOption}
@@ -430,12 +425,12 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
             </div>
 
             {/* Quantity Selector */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-[#1E3A6D]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-100">
               <div>
-                <label className="text-xs font-bold text-white block">
+                <label className="text-xs font-bold text-slate-900 block">
                   Xarid Miqdori:
                 </label>
-                <span className="text-[11px] text-sky-400">
+                <span className="text-[11px] text-slate-500">
                   Minimal buyurtma: {product.minOrder || 1} {unitLabel}
                 </span>
               </div>
@@ -444,7 +439,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
                 <button
                   type="button"
                   onClick={() => setQuantity((prev) => Math.max(product.minOrder || 1, prev - 1))}
-                  className="w-9 h-9 rounded-xl bg-[#071326] hover:bg-[#0F2547] border border-[#1E3A6D] flex items-center justify-center font-bold text-white transition-colors cursor-pointer"
+                  className="w-9 h-9 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-800 transition-colors cursor-pointer"
                 >
                   <Minus className="w-4 h-4" />
                 </button>
@@ -458,13 +453,13 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
                   max={product.stock || 9999}
                   value={quantity}
                   onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-24 h-9 text-center font-mono font-black text-sm bg-[#071326] text-white border-2 border-[#1E3A6D] rounded-xl focus:border-[#FFB800] focus:outline-none"
+                  className="w-24 h-9 text-center font-mono font-black text-sm bg-slate-50 text-slate-900 border border-slate-200 rounded-xl focus:border-[#D95D1E] focus:outline-none"
                 />
 
                 <button
                   type="button"
                   onClick={() => setQuantity((prev) => prev + 1)}
-                  className="w-9 h-9 rounded-xl bg-[#071326] hover:bg-[#0F2547] border border-[#1E3A6D] flex items-center justify-center font-bold text-white transition-colors cursor-pointer"
+                  className="w-9 h-9 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-800 transition-colors cursor-pointer"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
@@ -472,59 +467,59 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
             </div>
 
             {/* 50/50 SPLIT ESCROW SHOWCASE BOX */}
-            <div className="bg-[#071326] border-2 border-emerald-500/40 rounded-2xl p-4 space-y-3">
+            <div className="bg-emerald-50/50 border border-emerald-200 rounded-2xl p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-[#FFB800]" />
-                  <span className="font-bold text-xs sm:text-sm text-white">
+                  <ShieldCheck className="w-5 h-5 text-emerald-600" />
+                  <span className="font-bold text-xs sm:text-sm text-slate-900">
                     50/50 Xavfsiz Escrow Tizimi
                   </span>
                 </div>
-                <span className="text-[10px] font-mono bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 px-2 py-0.5 rounded font-bold">
+                <span className="text-[10px] font-mono bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded font-bold">
                   BunkerStroy Himoyasi
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-3 text-xs pt-1">
-                <div className="p-2.5 rounded-xl bg-[#0A1931] border border-[#1E3A6D]">
-                  <span className="text-[10px] text-sky-400 block font-bold">1-bosqich (50% Avans):</span>
-                  <span className="text-sm font-black text-white font-mono-numbers">
+                <div className="p-2.5 rounded-xl bg-white border border-emerald-200/80 shadow-2xs">
+                  <span className="text-[10px] text-slate-600 block font-bold">1-bosqich (50% Avans):</span>
+                  <span className="text-sm font-black text-slate-900 font-mono-numbers">
                     {advance50.toLocaleString()} so‘m
                   </span>
-                  <p className="text-[9px] text-sky-300/70 mt-1">
+                  <p className="text-[9px] text-slate-500 mt-1">
                     Buyurtma tasdiqlanganda Escrow hisobida xavfsiz bloklanadi.
                   </p>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-[#0A1931] border border-[#1E3A6D]">
-                  <span className="text-[10px] text-sky-400 block font-bold">2-bosqich (50% Qoldiq):</span>
-                  <span className="text-sm font-black text-[#FFB800] font-mono-numbers">
+                <div className="p-2.5 rounded-xl bg-white border border-emerald-200/80 shadow-2xs">
+                  <span className="text-[10px] text-slate-600 block font-bold">2-bosqich (50% Qoldiq):</span>
+                  <span className="text-sm font-black text-[#D95D1E] font-mono-numbers">
                     {balance50.toLocaleString()} so‘m
                   </span>
-                  <p className="text-[9px] text-sky-300/70 mt-1">
+                  <p className="text-[9px] text-slate-500 mt-1">
                     Mahsulot ob'ektda tekshirilib qabul qilingandan so‘ng to‘lanadi.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-xs pt-2 border-t border-[#1E3A6D]">
-                <span className="text-sky-300">Jami hisoblangan qiymat:</span>
-                <span className="text-base sm:text-lg font-black text-[#FFB800] font-mono-numbers">
+              <div className="flex items-center justify-between text-xs pt-2 border-t border-emerald-200/60">
+                <span className="text-slate-600 font-medium">Jami hisoblangan qiymat:</span>
+                <span className="text-base sm:text-lg font-black text-[#D95D1E] font-mono-numbers">
                   {totalPrice.toLocaleString()} so‘m
                 </span>
               </div>
             </div>
 
-            {/* Action Buttons: Yellow Industrial Button & Dark Secondary */}
+            {/* Action Buttons: Terracotta Primary & Dark Slate Secondary */}
             <div className="flex flex-col sm:flex-row gap-3 pt-1">
               <button
                 type="button"
                 onClick={handleAddToCart}
-                className="btn-industrial-yellow flex-1 py-3 px-4 rounded-xl font-black text-sm flex items-center justify-center gap-2 cursor-pointer shadow-lg select-none"
+                className="bg-[#D95D1E] hover:bg-[#B43B06] text-white flex-1 py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-xs transition-colors select-none"
               >
                 {addedNotice ? (
                   <>
-                    <Check className="w-5 h-5 text-emerald-950 stroke-[3]" />
+                    <Check className="w-5 h-5 stroke-[3]" />
                     <span>Savatga Qo‘shildi!</span>
                   </>
                 ) : (
@@ -538,9 +533,9 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
               <button
                 type="button"
                 onClick={handleBuyNow}
-                className="btn-industrial-dark flex-1 py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md select-none"
+                className="bg-slate-900 hover:bg-slate-800 text-white flex-1 py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-xs transition-colors select-none"
               >
-                <Zap className="w-4 h-4 text-[#FFB800]" />
+                <Zap className="w-4 h-4 text-orange-400" />
                 <span>Hozir Sotib Olish (50/50)</span>
               </button>
             </div>
@@ -548,31 +543,31 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
 
           {/* Value Props & Logistics Info */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-xs">
-            <div className="industrial-card bg-[#0A1931] border border-[#1E3A6D] rounded-xl p-3 flex items-start gap-2.5">
-              <Truck className="w-4 h-4 text-[#FFB800] shrink-0 mt-0.5" />
+            <div className="bg-white border border-slate-200 rounded-xl p-3 flex items-start gap-2.5 shadow-2xs">
+              <Truck className="w-4 h-4 text-[#D95D1E] shrink-0 mt-0.5" />
               <div>
-                <span className="font-bold text-white block">Yetkazib berish</span>
-                <span className="text-[11px] text-sky-300/80 mt-0.5 block">
+                <span className="font-bold text-slate-900 block">Yetkazib berish</span>
+                <span className="text-[11px] text-slate-500 mt-0.5 block">
                   Ob'ektgacha og‘ir yuk tashish
                 </span>
               </div>
             </div>
 
-            <div className="industrial-card bg-[#0A1931] border border-[#1E3A6D] rounded-xl p-3 flex items-start gap-2.5">
-              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+            <div className="bg-white border border-slate-200 rounded-xl p-3 flex items-start gap-2.5 shadow-2xs">
+              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
               <div>
-                <span className="font-bold text-white block">Sifat Kafolati</span>
-                <span className="text-[11px] text-sky-300/80 mt-0.5 block">
+                <span className="font-bold text-slate-900 block">Sifat Kafolati</span>
+                <span className="text-[11px] text-slate-500 mt-0.5 block">
                   {product.warranty || 'Laboratoriya sertifikati bor'}
                 </span>
               </div>
             </div>
 
-            <div className="industrial-card bg-[#0A1931] border border-[#1E3A6D] rounded-xl p-3 flex items-start gap-2.5">
-              <CreditCard className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
+            <div className="bg-white border border-slate-200 rounded-xl p-3 flex items-start gap-2.5 shadow-2xs">
+              <CreditCard className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
               <div>
-                <span className="font-bold text-white block">B2B To‘lov</span>
-                <span className="text-[11px] text-sky-300/80 mt-0.5 block">
+                <span className="font-bold text-slate-900 block">B2B To‘lov</span>
+                <span className="text-[11px] text-slate-500 mt-0.5 block">
                   Hisob-faktura, karta &amp; naqd
                 </span>
               </div>
@@ -580,37 +575,39 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
           </div>
 
           {/* Technical Specifications Table */}
-          <div className="industrial-card bg-[#0A1931] border border-[#1E3A6D] rounded-2xl p-4 sm:p-5 space-y-3 font-mono text-xs">
-            <h3 className="font-bold text-sm text-[#FFB800] uppercase tracking-wider pb-2 border-b border-[#1E3A6D]">
+          <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-3 font-mono text-xs shadow-2xs">
+            <h3 className="font-bold text-sm text-slate-900 uppercase tracking-wider pb-2 border-b border-slate-100">
               Texnik Parametrlar &amp; GOST Standartlari
             </h3>
 
-            <div className="divide-y divide-[#1E3A6D]">
+            <div className="divide-y divide-slate-100">
               <div className="py-2.5 flex justify-between">
-                <span className="text-sky-400">O‘lchov birligi:</span>
-                <span className="font-bold text-white">{unitLabel}</span>
+                <span className="text-slate-500">O‘lchov birligi:</span>
+                <span className="font-bold text-slate-900">{unitLabel}</span>
               </div>
               <div className="py-2.5 flex justify-between">
-                <span className="text-sky-400">Ombor joylashuvi:</span>
-                <span className="font-bold text-white">
+                <span className="text-slate-500">Ombor joylashuvi:</span>
+                <span className="font-bold text-slate-900">
                   {product.region || 'Toshkent shahri'}, {product.district || 'Sanoat hududi'}
                 </span>
               </div>
               <div className="py-2.5 flex justify-between">
-                <span className="text-sky-400">Minimal xarid soni:</span>
-                <span className="font-bold text-white">
+                <span className="text-slate-500">Minimal xarid soni:</span>
+                <span className="font-bold text-slate-900">
                   {product.minOrder || 1} {unitLabel}
                 </span>
               </div>
               <div className="py-2.5 flex justify-between">
-                <span className="text-sky-400">Ombordagi zaxira:</span>
-                <span className="font-black text-[#FFB800]">
+                <span className="text-slate-500">Ombordagi zaxira:</span>
+                <span className="font-black text-[#D95D1E]">
                   {product.stock.toLocaleString()} {unitLabel}
                 </span>
               </div>
               <div className="py-2.5 flex justify-between">
-                <span className="text-sky-400">Sertifikat:</span>
-                <span className="font-bold text-emerald-400">O‘zDSt / GOST 34028</span>
+                <span className="text-slate-500">Sertifikat:</span>
+                <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  O‘zDSt / GOST 34028
+                </span>
               </div>
             </div>
           </div>

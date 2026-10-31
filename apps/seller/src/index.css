@@ -10,75 +10,75 @@
 @variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* Authentic Bunker-1 Deep Industrial Navy & Hazard Yellow Design */
-  --bg-main: #071326;
-  --bg-sidebar: #0A1931;
-  --bg-header: #0A1931;
-  --bg-card: #0A1931;
-  --bg-card-subtle: #0F2547;
-  --border-main: #1E3A6D;
-  --border-subtle: #1E3A6D;
-  --text-main: #F5F5F2;
-  --text-muted: #94A3B8;
+  /* Neo-Architectural Precision Light Theme */
+  --bg-main: #F8FAFC;
+  --bg-sidebar: #FFFFFF;
+  --bg-header: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-card-subtle: #F1F5F9;
+  --border-main: #E2E8F0;
+  --border-subtle: #F1F5F9;
+  --text-main: #0F172A;
+  --text-muted: #475569;
   --text-subtle: #64748B;
-  --scrollbar-track: #071326;
-  --scrollbar-thumb: #1E3A6D;
-  --scrollbar-thumb-hover: #FFB800;
-  --table-header-bg: #0F2547;
-  --table-row-hover: #132C54;
-  --accent-color: #FFB800;
-  --accent-bg: #FFB800;
-  --accent-text: #071326;
-  --badge-pill-bg: #0F2547;
+  --scrollbar-track: #F8FAFC;
+  --scrollbar-thumb: #CBD5E1;
+  --scrollbar-thumb-hover: #94A3B8;
+  --table-header-bg: #F8FAFC;
+  --table-row-hover: #F1F5F9;
+  --accent-color: #D95D1E;
+  --accent-bg: #D95D1E;
+  --accent-text: #FFFFFF;
+  --badge-pill-bg: #F1F5F9;
 
   /* Aliases */
-  --color-text-primary: #F5F5F2;
-  --color-text-secondary: #BAE6FD;
-  --color-text-muted: #94A3B8;
-  --color-surface-bg: #071326;
-  --color-surface-card: #0A1931;
-  --color-surface-hover: #0F2547;
-  --color-border-subtle: #1E3A6D;
-  --color-border-strong: #2E5A9C;
-  --color-accent-blue: #38BDF8;
-  --color-accent-green: #10B981;
-  --color-accent-yellow: #FFB800;
-  --color-accent-red: #F43F5E;
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #334155;
+  --color-text-muted: #64748B;
+  --color-surface-bg: #F8FAFC;
+  --color-surface-card: #FFFFFF;
+  --color-surface-hover: #F1F5F9;
+  --color-border-subtle: #E2E8F0;
+  --color-border-strong: #CBD5E1;
+  --color-accent-blue: #0284C7;
+  --color-accent-green: #059669;
+  --color-accent-yellow: #D95D1E;
+  --color-accent-red: #E11D48;
 }
 
 .dark {
-  --bg-main: #071326;
-  --bg-sidebar: #0A1931;
-  --bg-header: #0A1931;
-  --bg-card: #0A1931;
-  --bg-card-subtle: #0F2547;
-  --border-main: #1E3A6D;
-  --border-subtle: #1E3A6D;
-  --text-main: #F5F5F2;
-  --text-muted: #94A3B8;
+  --bg-main: #F8FAFC;
+  --bg-sidebar: #FFFFFF;
+  --bg-header: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-card-subtle: #F1F5F9;
+  --border-main: #E2E8F0;
+  --border-subtle: #F1F5F9;
+  --text-main: #0F172A;
+  --text-muted: #475569;
   --text-subtle: #64748B;
-  --scrollbar-track: #071326;
-  --scrollbar-thumb: #1E3A6D;
-  --scrollbar-thumb-hover: #FFB800;
-  --table-header-bg: #0F2547;
-  --table-row-hover: #132C54;
-  --accent-color: #FFB800;
-  --accent-bg: #FFB800;
-  --accent-text: #071326;
-  --badge-pill-bg: #0F2547;
+  --scrollbar-track: #F8FAFC;
+  --scrollbar-thumb: #CBD5E1;
+  --scrollbar-thumb-hover: #94A3B8;
+  --table-header-bg: #F8FAFC;
+  --table-row-hover: #F1F5F9;
+  --accent-color: #D95D1E;
+  --accent-bg: #D95D1E;
+  --accent-text: #FFFFFF;
+  --badge-pill-bg: #F1F5F9;
 
-  --color-text-primary: #F5F5F2;
-  --color-text-secondary: #BAE6FD;
-  --color-text-muted: #94A3B8;
-  --color-surface-bg: #071326;
-  --color-surface-card: #0A1931;
-  --color-surface-hover: #0F2547;
-  --color-border-subtle: #1E3A6D;
-  --color-border-strong: #2E5A9C;
-  --color-accent-blue: #38BDF8;
-  --color-accent-green: #10B981;
-  --color-accent-yellow: #FFB800;
-  --color-accent-red: #F43F5E;
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #334155;
+  --color-text-muted: #64748B;
+  --color-surface-bg: #F8FAFC;
+  --color-surface-card: #FFFFFF;
+  --color-surface-hover: #F1F5F9;
+  --color-border-subtle: #E2E8F0;
+  --color-border-strong: #CBD5E1;
+  --color-accent-blue: #0284C7;
+  --color-accent-green: #059669;
+  --color-accent-yellow: #D95D1E;
+  --color-accent-red: #E11D48;
 }
 
 @layer base {
