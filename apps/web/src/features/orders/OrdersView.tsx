@@ -11,7 +11,6 @@ import {
   RotateCw,
   ExternalLink,
   ShieldCheck,
-  Sparkles,
   Receipt,
   AlertTriangle,
   QrCode,
@@ -250,37 +249,37 @@ export const OrdersView: React.FC = () => {
   const getStatusBadge = (status: OrderStatus) => {
     switch (status) {
       case 'DRAFT':
-        return <span className="bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">SAVATDA</span>;
+        return <Badge variant="neutral">SAVATDA</Badge>;
       case 'PENDING_PAYMENT':
       case 'PENDING':
-        return <span className="bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">TO‘LOV KUTILMOQDA</span>;
+        return <Badge variant="warning">TO‘LOV KUTILMOQDA</Badge>;
       case 'PAID':
       case 'CONFIRMED':
-        return <span className="bg-sky-50 text-sky-700 border border-sky-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">TO‘LANDI (TASDIQLANDI)</span>;
+        return <Badge variant="info">TO‘LANDI (TASDIQLANDI)</Badge>;
       case 'ACCEPTED':
-        return <span className="bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">TA‘MINOTCHI TASDIQLADI</span>;
+        return <Badge variant="info">TA‘MINOTCHI TASDIQLADI</Badge>;
       case 'PACKING':
-        return <span className="bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">YIG‘ILMOQDA (OMBORDA)</span>;
+        return <Badge variant="warning">YIG‘ILMOQDA (OMBORDA)</Badge>;
       case 'ASSIGNED':
       case 'ASSIGNED_TO_FLEET':
-        return <span className="bg-indigo-50 text-indigo-700 border border-indigo-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">HAYDOVCHI TAYINLANDI</span>;
+        return <Badge variant="purple">HAYDOVCHI TAYINLANDI</Badge>;
       case 'IN_TRANSIT':
-        return <span className="bg-purple-50 text-purple-700 border border-purple-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold flex items-center gap-1">🚚 YO‘LDA</span>;
+        return <Badge variant="purple">🚚 YO‘LDA</Badge>;
       case 'ARRIVED':
-        return <span className="bg-orange-50 text-[#D95D1E] border border-orange-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-black animate-pulse">MANZILGA YETDI</span>;
+        return <Badge variant="brand">MANZILGA YETDI</Badge>;
       case 'FULLY_PAID':
-        return <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">TO‘LIQ TO‘LANDI</span>;
+        return <Badge variant="success">TO‘LIQ TO‘LANDI</Badge>;
       case 'RECEIVED':
       case 'DELIVERED':
-        return <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">QABUL QILINDI</span>;
+        return <Badge variant="success">QABUL QILINDI</Badge>;
       case 'COMPLETED':
-        return <span className="bg-emerald-50 text-emerald-800 border border-emerald-300 px-2.5 py-0.5 rounded text-[10px] font-mono font-black">YAKUNLANDI (ESCROW AJRATILDI)</span>;
+        return <Badge variant="success">YAKUNLANDI (ESCROW AJRATILDI)</Badge>;
       case 'DISPUTE':
-        return <span className="bg-red-50 text-red-700 border border-red-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-black">OCHIQ NIZO (DISPUTE)</span>;
+        return <Badge variant="error">OCHIQ NIZO (DISPUTE)</Badge>;
       case 'CANCELLED':
-        return <span className="bg-slate-100 text-slate-600 border border-slate-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">BEKOR QILINGAN</span>;
+        return <Badge variant="neutral">BEKOR QILINGAN</Badge>;
       default:
-        return <span className="bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold">{status}</span>;
+        return <Badge variant="neutral">{status}</Badge>;
     }
   };
 
@@ -734,16 +733,17 @@ export const OrdersView: React.FC = () => {
             </div>
           </div>
 
-          <div className="space-y-2.5 pt-2 font-mono">
-            <button
-              type="button"
-              className="w-full bg-[#D95D1E] hover:bg-[#B43B06] text-white py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-xs transition-colors"
+          <div className="space-y-2.5 pt-2">
+            <Button
+              variant="primary"
+              size="lg"
+              className="w-full"
               onClick={handleSimulatePayment}
               disabled={simulatingPayment || !!paymentSuccessMsg}
+              leftIcon={<CheckCircle2 className="w-4 h-4" />}
             >
-              <Sparkles className="w-4 h-4" />
-              <span>{simulatingPayment ? 'To‘lov amalga oshirilmoqda...' : 'To‘lovni Tasdiqlash'}</span>
-            </button>
+              {simulatingPayment ? 'To‘lov amalga oshirilmoqda...' : 'To‘lovni Tasdiqlash'}
+            </Button>
           </div>
         </Modal>
       )}

@@ -9,7 +9,7 @@ import {
   Wrench,
   User,
   Clock,
-  Sparkles,
+  Handshake,
   RefreshCw
 } from 'lucide-react';
 import { Badge, Button } from '@bunkerstroy/ui';
@@ -90,7 +90,7 @@ export const PartnerCallToActionSection: React.FC<PartnerCallToActionSectionProp
       {/* Section Header */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
         <Badge className="bg-orange-50 text-[#D95D1E] border-orange-200 font-mono text-xs px-4 py-1.5 uppercase tracking-wider shadow-2xs">
-          <Sparkles className="w-3.5 h-3.5 mr-1.5 inline-block text-[#D95D1E]" />
+          <Handshake className="w-3.5 h-3.5 mr-1.5 inline-block text-[#D95D1E]" />
           Hamkorlik &amp; Savdoni Boshlash
         </Badge>
         <h2 id="cta-heading" className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">
@@ -132,7 +132,7 @@ export const PartnerCallToActionSection: React.FC<PartnerCallToActionSectionProp
                 <span>{PLATFORM_METRICS.adminPhone}</span>
               </a>
               <span className="text-[11px] font-mono text-emerald-700 block font-medium">
-                ● Qo‘ng‘iroqlarga darhol javob beriladi
+                Qo‘ng‘iroqlarga darhol javob beriladi
               </span>
             </div>
 

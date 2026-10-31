@@ -110,8 +110,8 @@ export const CrmSection: React.FC<CrmSectionProps> = ({
             <div className="text-xl sm:text-2xl font-black font-mono text-slate-900">
               34 ta buyurtma
             </div>
-            <div className="text-[11px] font-mono text-sky-700 pt-1">
-              ● 29 tasi muvaffaqiyatli topshirildi
+            <div className="text-[11px] font-mono text-sky-700 pt-1 font-medium">
+              29 tasi muvaffaqiyatli topshirildi
             </div>
           </div>
 

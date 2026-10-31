@@ -364,6 +364,23 @@ test('Existing Button, Badge, Card continue to render properly', () => {
     <Badge variant="warning">ESCO A++</Badge>
   );
   assert(badgeHtml.includes('ESCO A++'), 'badge content rendered');
+  assert(badgeHtml.includes('rounded-md'), 'badge uses architectural rounded-md, not rounded-full pill');
+  assert(!badgeHtml.includes('rounded-full'), 'badge must not be rounded-full');
+
+  const brandBadge = ReactDOMServer.renderToStaticMarkup(
+    <Badge variant="brand">MANZILGA YETDI</Badge>
+  );
+  assert(brandBadge.includes('bg-[#D95D1E]/10'), 'brand badge has terracotta styling');
+
+  const purpleBadge = ReactDOMServer.renderToStaticMarkup(
+    <Badge variant="purple">YO‘LDA</Badge>
+  );
+  assert(purpleBadge.includes('bg-indigo-500/10'), 'purple badge has indigo styling');
+
+  const errorBadge = ReactDOMServer.renderToStaticMarkup(
+    <Badge variant="error">NIZO</Badge>
+  );
+  assert(errorBadge.includes('bg-bunker-status-red/10'), 'error badge maps to danger styling');
 
   const cardHtml = ReactDOMServer.renderToStaticMarkup(
     <Card rivetAccents chamfered>Card Content</Card>

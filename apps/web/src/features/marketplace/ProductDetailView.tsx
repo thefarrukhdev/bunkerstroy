@@ -22,7 +22,7 @@ import {
   FileText
 } from 'lucide-react';
 import { Product } from '@bunkerstroy/types';
-import { Skeleton } from '@bunkerstroy/ui';
+import { Skeleton, Button, Badge } from '@bunkerstroy/ui';
 import { COLOR_OPTIONS, ColorOption } from './MarketplaceView';
 import { apiFetch } from '../../services/apiClient';
 
@@ -297,13 +297,13 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
               <span className="text-xs font-mono text-[#D95D1E] uppercase font-bold tracking-wider">
                 Sanoat Qurilish Materiali
               </span>
-              <span className="text-slate-300">•</span>
-              <span className="text-xs font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-bold">
+              <span className="text-slate-300">|</span>
+              <Badge variant="success" size="sm">
                 12% QQS Kiritilgan
-              </span>
-              <span className="text-xs font-mono text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+              </Badge>
+              <Badge variant="neutral" size="sm">
                 O‘zDSt / GOST Sertifikatlangan
-              </span>
+              </Badge>
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-heading font-black text-slate-900 tracking-tight leading-tight">
@@ -512,32 +512,25 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
 
             {/* Action Buttons: Terracotta Primary & Dark Slate Secondary */}
             <div className="flex flex-col sm:flex-row gap-3 pt-1">
-              <button
-                type="button"
+              <Button
+                variant="primary"
+                size="lg"
+                className="flex-1"
                 onClick={handleAddToCart}
-                className="bg-[#D95D1E] hover:bg-[#B43B06] text-white flex-1 py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-xs transition-colors select-none"
+                leftIcon={addedNotice ? <Check className="w-5 h-5 stroke-[3]" /> : <ShoppingCart className="w-5 h-5" />}
               >
-                {addedNotice ? (
-                  <>
-                    <Check className="w-5 h-5 stroke-[3]" />
-                    <span>Savatga Qo‘shildi!</span>
-                  </>
-                ) : (
-                  <>
-                    <ShoppingCart className="w-5 h-5" />
-                    <span>Savatga Qo‘shish</span>
-                  </>
-                )}
-              </button>
+                {addedNotice ? 'Savatga Qo‘shildi!' : 'Savatga Qo‘shish'}
+              </Button>
 
-              <button
-                type="button"
+              <Button
+                variant="secondary"
+                size="lg"
+                className="flex-1 bg-slate-900 text-white hover:bg-slate-800 border-slate-900"
                 onClick={handleBuyNow}
-                className="bg-slate-900 hover:bg-slate-800 text-white flex-1 py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-xs transition-colors select-none"
+                leftIcon={<Zap className="w-4 h-4 text-orange-400" />}
               >
-                <Zap className="w-4 h-4 text-orange-400" />
-                <span>Hozir Sotib Olish (50/50)</span>
-              </button>
+                Hozir Sotib Olish (50/50)
+              </Button>
             </div>
           </div>
 

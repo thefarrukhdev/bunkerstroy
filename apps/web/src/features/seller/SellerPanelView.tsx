@@ -15,7 +15,6 @@ import {
   MapPin,
   Clock,
   ArrowRight,
-  Sparkles,
   ShoppingBag,
   Save,
   X,
@@ -55,6 +54,7 @@ import {
   Tag
 } from 'lucide-react';
 import { Product, Order, OrderStatus } from '@bunkerstroy/types';
+import { Button, Badge, Modal, Alert } from '@bunkerstroy/ui';
 import { useLanguage } from '../../context/LanguageContext';
 import { COLOR_OPTIONS, ColorOption } from '../marketplace/MarketplaceView';
 
@@ -1057,9 +1057,9 @@ export const SellerPanelView: React.FC = () => {
                 <Store className="w-4 h-4 text-[#D95D1E]" />
                 Sotuvchi &amp; Do‘kon Boshqaruv Markazi
               </span>
-              <span className="bg-emerald-50 text-emerald-600 border border-emerald-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">
-                ● Tizim Faol
-              </span>
+              <Badge variant="success" size="sm">
+                Tizim Faol
+              </Badge>
             </div>
             <h1 className="text-2xl sm:text-3xl font-heading font-black tracking-tight text-slate-900">
               Sanoat Vitrinasi, Kassa POS &amp; B2B Xaridlar
@@ -1088,17 +1088,13 @@ export const SellerPanelView: React.FC = () => {
 
         {/* Global Feedback Banner */}
         {feedback && (
-          <div
-            className={`mt-4 p-3 rounded-xl border text-xs font-mono font-bold flex items-center justify-between animate-in fade-in ${
-              feedback.type === 'success'
-                ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
-                : 'bg-rose-50 border-rose-200 text-rose-700'
-            }`}
-          >
-            <span>{feedback.message}</span>
-            <button type="button" onClick={() => setFeedback(null)} className="cursor-pointer text-slate-500 hover:text-slate-800">
-              <X className="w-4 h-4" />
-            </button>
+          <div className="mt-4">
+            <Alert
+              variant={feedback.type === 'success' ? 'success' : 'error'}
+              onDismiss={() => setFeedback(null)}
+            >
+              {feedback.message}
+            </Alert>
           </div>
         )}
       </div>
@@ -2412,7 +2408,7 @@ export const SellerPanelView: React.FC = () => {
                 SANOAT VA QURILISH MATERIALLARI MARKAZI
               </p>
               <p className="text-[10px] text-slate-600">
-                Do‘kon: BunkerStroy Hamkor #1 • STIR: 309112844
+                Do‘kon: BunkerStroy Hamkor #1 | STIR: 309112844
               </p>
               <div className="text-[10px] font-bold pt-1 text-slate-800">
                 CHEK RAQAMI: {activeReceipt.receiptNumber}
@@ -2513,239 +2509,226 @@ export const SellerPanelView: React.FC = () => {
       {/* =====================================================================
           MODAL 2: B2B WHOLESALE ORDER MODAL (Bank Requisites & Contract)
           ===================================================================== */}
-      {isB2bModalOpen && selectedManufacturer && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-50/80 backdrop-blur-sm p-4">
-          <div className="w-full max-w-lg rounded-2xl bg-white text-slate-900 p-6 shadow-2xl border border-slate-200 space-y-5 font-mono text-xs">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-              <div className="flex items-center gap-2">
-                <Factory className="w-5 h-5 text-[#D95D1E]" />
-                <h3 className="font-heading font-black text-slate-900 text-base">
-                  Zavoddan Ulgurji Xarid (B2B Shartnoma)
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsB2bModalOpen(false)}
-                className="text-slate-500 hover:text-slate-900 cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
+      {selectedManufacturer && (
+        <Modal
+          isOpen={isB2bModalOpen}
+          onClose={() => setIsB2bModalOpen(false)}
+          title={
+            <div className="flex items-center gap-2">
+              <Factory className="w-5 h-5 text-[#D95D1E]" />
+              <span className="font-heading font-black text-slate-900 text-base">
+                Zavoddan Ulgurji Xarid (B2B Shartnoma)
+              </span>
             </div>
-
-            <div className="space-y-3">
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
-                <span className="text-[10px] text-slate-500 uppercase font-bold">Ishlab chiqaruvchi:</span>
-                <p className="font-black text-slate-900 text-sm">{selectedManufacturer.name}</p>
-                <p className="text-[11px] text-slate-600">{selectedManufacturer.featuredProduct}</p>
-              </div>
-
-              {/* Quantity selector */}
-              <div className="space-y-1">
-                <label htmlFor="seller-b2b-quantity" className="text-slate-600 font-bold block">
-                  Buyurtma hajmi ({selectedManufacturer.unit}):
-                </label>
-                <input
-                  id="seller-b2b-quantity"
-                  name="b2bQuantity"
-                  type="number"
-                  min={selectedManufacturer.minOrderTons}
-                  value={b2bQuantity}
-                  onChange={(e) => setB2bQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold"
-                />
-                <span className="text-[10px] text-slate-500">
-                  Minimal partiya: {selectedManufacturer.minOrderTons} {selectedManufacturer.unit}
-                </span>
-              </div>
-
-              {/* Incoterm */}
-              <div className="space-y-1">
-                <label className="text-slate-600 font-bold block">Yetkazib berish sharti:</label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setB2bIncoterm('DAP')}
-                    className={`p-2.5 rounded-xl border text-center font-bold cursor-pointer transition-all ${
-                      b2bIncoterm === 'DAP'
-                        ? 'bg-orange-50 border-[#D95D1E] text-[#D95D1E]'
-                        : 'bg-slate-50 border-slate-200 text-slate-600'
-                    }`}
-                  >
-                    DAP (Yetkazib berish zavodning bo‘ynida)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setB2bIncoterm('EXW')}
-                    className={`p-2.5 rounded-xl border text-center font-bold cursor-pointer transition-all ${
-                      b2bIncoterm === 'EXW'
-                        ? 'bg-orange-50 border-[#D95D1E] text-[#D95D1E]'
-                        : 'bg-slate-50 border-slate-200 text-slate-600'
-                    }`}
-                  >
-                    EXW (Zavoddan olib ketish)
-                  </button>
-                </div>
-              </div>
-
-              {/* Bank Requisites of Manufacturer */}
-              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5 text-[11px]">
-                <span className="text-[#D95D1E] font-bold uppercase block text-[10px]">
-                  Zavod Bank Rekvizitlari (To‘lov uchun):
-                </span>
-                <div className="flex justify-between text-slate-600">
-                  <span>H/R (Hisob raqam):</span>
-                  <span className="text-slate-900 font-bold">{selectedManufacturer.accountNumber}</span>
-                </div>
-                <div className="flex justify-between text-slate-600">
-                  <span>MFO:</span>
-                  <span className="text-slate-900 font-bold">{selectedManufacturer.mfo}</span>
-                </div>
-                <div className="flex justify-between text-slate-600">
-                  <span>STIR:</span>
-                  <span className="text-slate-900 font-bold">{selectedManufacturer.stir}</span>
-                </div>
-                <div className="flex justify-between text-slate-600">
-                  <span>Bank:</span>
-                  <span className="text-slate-900 font-bold">{selectedManufacturer.bankName}</span>
-                </div>
-              </div>
-
-              {/* Total Calculation */}
-              <div className="p-3 rounded-xl bg-slate-50 border-2 border-[#D95D1E]/50 flex items-center justify-between">
-                <span className="text-slate-600">Jami shartnoma qiymati:</span>
-                <span className="text-base font-black text-[#D95D1E]">
-                  {(b2bQuantity * selectedManufacturer.unitPrice).toLocaleString()} so‘m
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 pt-2">
-              <button
-                type="button"
+          }
+          size="md"
+          footer={
+            <div className="flex items-center gap-2 w-full">
+              <Button
+                variant="primary"
                 onClick={handleConfirmB2bWholesaleOrder}
-                className="flex-1 btn-industrial-yellow py-3 rounded-xl font-black text-xs flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                className="flex-1 py-3"
               >
-                <Check className="w-4 h-4" />
-                <span>Buyurtmani Tasdiqlash &amp; Invoys Shakllantirish</span>
-              </button>
-              <button
-                type="button"
+                <Check className="w-4 h-4 mr-1.5" />
+                Buyurtmani Tasdiqlash &amp; Invoys Shakllantirish
+              </Button>
+              <Button
+                variant="secondary"
                 onClick={() => setIsB2bModalOpen(false)}
-                className="py-3 px-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 cursor-pointer"
+                className="py-3 px-4"
               >
                 Bekor qilish
-              </button>
+              </Button>
+            </div>
+          }
+        >
+          <div className="space-y-3 font-mono text-xs">
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+              <span className="text-[10px] text-slate-500 uppercase font-bold">Ishlab chiqaruvchi:</span>
+              <p className="font-black text-slate-900 text-sm">{selectedManufacturer.name}</p>
+              <p className="text-[11px] text-slate-600">{selectedManufacturer.featuredProduct}</p>
+            </div>
+
+            {/* Quantity selector */}
+            <div className="space-y-1">
+              <label htmlFor="seller-b2b-quantity" className="text-slate-600 font-bold block">
+                Buyurtma hajmi ({selectedManufacturer.unit}):
+              </label>
+              <input
+                id="seller-b2b-quantity"
+                name="b2bQuantity"
+                type="number"
+                min={selectedManufacturer.minOrderTons}
+                value={b2bQuantity}
+                onChange={(e) => setB2bQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold"
+              />
+              <span className="text-[10px] text-slate-500">
+                Minimal partiya: {selectedManufacturer.minOrderTons} {selectedManufacturer.unit}
+              </span>
+            </div>
+
+            {/* Incoterm */}
+            <div className="space-y-1">
+              <label className="text-slate-600 font-bold block">Yetkazib berish sharti:</label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setB2bIncoterm('DAP')}
+                  className={`p-2.5 rounded-xl border text-center font-bold cursor-pointer transition-all ${
+                    b2bIncoterm === 'DAP'
+                      ? 'bg-orange-50 border-[#D95D1E] text-[#D95D1E]'
+                      : 'bg-slate-50 border-slate-200 text-slate-600'
+                  }`}
+                >
+                  DAP (Yetkazib berish zavodning bo‘ynida)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setB2bIncoterm('EXW')}
+                  className={`p-2.5 rounded-xl border text-center font-bold cursor-pointer transition-all ${
+                    b2bIncoterm === 'EXW'
+                      ? 'bg-orange-50 border-[#D95D1E] text-[#D95D1E]'
+                      : 'bg-slate-50 border-slate-200 text-slate-600'
+                  }`}
+                >
+                  EXW (Zavoddan olib ketish)
+                </button>
+              </div>
+            </div>
+
+            {/* Bank Requisites of Manufacturer */}
+            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5 text-[11px]">
+              <span className="text-[#D95D1E] font-bold uppercase block text-[10px]">
+                Zavod Bank Rekvizitlari (To‘lov uchun):
+              </span>
+              <div className="flex justify-between text-slate-600">
+                <span>H/R (Hisob raqam):</span>
+                <span className="text-slate-900 font-bold">{selectedManufacturer.accountNumber}</span>
+              </div>
+              <div className="flex justify-between text-slate-600">
+                <span>MFO:</span>
+                <span className="text-slate-900 font-bold">{selectedManufacturer.mfo}</span>
+              </div>
+              <div className="flex justify-between text-slate-600">
+                <span>STIR:</span>
+                <span className="text-slate-900 font-bold">{selectedManufacturer.stir}</span>
+              </div>
+              <div className="flex justify-between text-slate-600">
+                <span>Bank:</span>
+                <span className="text-slate-900 font-bold">{selectedManufacturer.bankName}</span>
+              </div>
+            </div>
+
+            {/* Total Calculation */}
+            <div className="p-3 rounded-xl bg-slate-50 border-2 border-[#D95D1E]/50 flex items-center justify-between">
+              <span className="text-slate-600">Jami shartnoma qiymati:</span>
+              <span className="text-base font-black text-[#D95D1E]">
+                {(b2bQuantity * selectedManufacturer.unitPrice).toLocaleString()} so‘m
+              </span>
             </div>
           </div>
-        </div>
+        </Modal>
       )}
 
       {/* =====================================================================
           MODAL 3: YANGI XARAJAT / CHIQIM KIRITISH
           ===================================================================== */}
-      {isExpenseModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-50/80 backdrop-blur-sm p-4">
-          <form
-            onSubmit={handleAddExpense}
-            className="w-full max-w-md rounded-2xl bg-white text-slate-900 p-6 shadow-2xl border border-slate-200 space-y-4 font-mono text-xs"
-          >
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-              <h3 className="font-heading font-black text-slate-900 text-base">
-                + Yangi Chiqim / Xarajat Kiritish
-              </h3>
-              <button
-                type="button"
-                onClick={() => setIsExpenseModalOpen(false)}
-                className="text-slate-500 hover:text-slate-900 cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+      <Modal
+        isOpen={isExpenseModalOpen}
+        onClose={() => setIsExpenseModalOpen(false)}
+        title="+ Yangi Chiqim / Xarajat Kiritish"
+        size="sm"
+        footer={
+          <div className="flex items-center gap-2 w-full">
+            <Button
+              type="submit"
+              variant="primary"
+              form="seller-expense-form"
+              className="flex-1 py-2.5"
+            >
+              Saqlash
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => setIsExpenseModalOpen(false)}
+              className="py-2.5 px-4"
+            >
+              Bekor qilish
+            </Button>
+          </div>
+        }
+      >
+        <form
+          id="seller-expense-form"
+          onSubmit={handleAddExpense}
+          className="space-y-3 font-mono text-xs"
+        >
+          <div className="space-y-1">
+            <label htmlFor="seller-expense-category" className="text-slate-600 font-bold block">Xarajat Kategoriyasi *</label>
+            <select
+              id="seller-expense-category"
+              name="expenseCategory"
+              aria-label="Xarajat kategoriyasi"
+              value={expenseCategory}
+              onChange={(e) => setExpenseCategory(e.target.value)}
+              className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900"
+            >
+              <option value="Ombor Arendasi">Ombor / Do‘kon Ijarasi</option>
+              <option value="Ishchilar Maoshi">Ishchilar va Haydovchilar Maoshi</option>
+              <option value="Logistika va Yoqilg‘i">Logistika, Yuk tashish &amp; Benzin</option>
+              <option value="Kommunal To‘lovlar">Kommunal, Elektr &amp; Internet</option>
+              <option value="Soliqlar va Litsenziya">Soliqlar va Davlat to‘lovlari</option>
+              <option value="Xom-ashyo Xaridi">Xom-ashyo &amp; Tovar xaridi</option>
+              <option value="Boshqa Xarajatlar">Boshqa operatsion chiqimlar</option>
+            </select>
+          </div>
 
-            <div className="space-y-3">
-              <div className="space-y-1">
-                <label htmlFor="seller-expense-category" className="text-slate-600 font-bold block">Xarajat Kategoriyasi *</label>
-                <select
-                  id="seller-expense-category"
-                  name="expenseCategory"
-                  aria-label="Xarajat kategoriyasi"
-                  value={expenseCategory}
-                  onChange={(e) => setExpenseCategory(e.target.value)}
-                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900"
-                >
-                  <option value="Ombor Arendasi">Ombor / Do‘kon Ijarasi</option>
-                  <option value="Ishchilar Maoshi">Ishchilar va Haydovchilar Maoshi</option>
-                  <option value="Logistika va Yoqilg‘i">Logistika, Yuk tashish &amp; Benzin</option>
-                  <option value="Kommunal To‘lovlar">Kommunal, Elektr &amp; Internet</option>
-                  <option value="Soliqlar va Litsenziya">Soliqlar va Davlat to‘lovlari</option>
-                  <option value="Xom-ashyo Xaridi">Xom-ashyo &amp; Tovar xaridi</option>
-                  <option value="Boshqa Xarajatlar">Boshqa operatsion chiqimlar</option>
-                </select>
-              </div>
+          <div className="space-y-1">
+            <label htmlFor="seller-expense-amount" className="text-slate-600 font-bold block">Summa (so‘m) *</label>
+            <input
+              id="seller-expense-amount"
+              name="expenseAmount"
+              type="number"
+              min="0"
+              required
+              placeholder="Masalan: 3500000"
+              value={expenseAmount}
+              onChange={(e) => setExpenseAmount(e.target.value ? Math.max(0, Number(e.target.value)) : '')}
+              className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-red-400 font-black text-sm"
+            />
+          </div>
 
-              <div className="space-y-1">
-                <label htmlFor="seller-expense-amount" className="text-slate-600 font-bold block">Summa (so‘m) *</label>
-                <input
-                  id="seller-expense-amount"
-                  name="expenseAmount"
-                  type="number"
-                  min="0"
-                  required
-                  placeholder="Masalan: 3500000"
-                  value={expenseAmount}
-                  onChange={(e) => setExpenseAmount(e.target.value ? Math.max(0, Number(e.target.value)) : '')}
-                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-red-400 font-black text-sm"
-                />
-              </div>
+          <div className="space-y-1">
+            <label htmlFor="seller-expense-method" className="text-slate-600 font-bold block">To‘lov vositasi</label>
+            <select
+              id="seller-expense-method"
+              name="expensePaymentMethod"
+              aria-label="To‘lov vositasi"
+              value={expensePaymentMethod}
+              onChange={(e) => setExpensePaymentMethod(e.target.value)}
+              className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900"
+            >
+              <option value="Bank o‘tkazmasi">Bank o‘tkazmasi (H/R)</option>
+              <option value="Korporativ Karta">Korporativ Karta</option>
+              <option value="Naqd pul">Naqd pul (Kassadan)</option>
+            </select>
+          </div>
 
-              <div className="space-y-1">
-                <label htmlFor="seller-expense-method" className="text-slate-600 font-bold block">To‘lov vositasi</label>
-                <select
-                  id="seller-expense-method"
-                  name="expensePaymentMethod"
-                  aria-label="To‘lov vositasi"
-                  value={expensePaymentMethod}
-                  onChange={(e) => setExpensePaymentMethod(e.target.value)}
-                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900"
-                >
-                  <option value="Bank o‘tkazmasi">Bank o‘tkazmasi (H/R)</option>
-                  <option value="Korporativ Karta">Korporativ Karta</option>
-                  <option value="Naqd pul">Naqd pul (Kassadan)</option>
-                </select>
-              </div>
-
-              <div className="space-y-1">
-                <label htmlFor="seller-expense-notes" className="text-slate-600 font-bold block">Izoh / Maqsad</label>
-                <input
-                  id="seller-expense-notes"
-                  name="expenseNotes"
-                  type="text"
-                  placeholder="Xarajat bo‘yicha qo‘shimcha izoh..."
-                  value={expenseNotes}
-                  onChange={(e) => setExpenseNotes(e.target.value)}
-                  className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900"
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 pt-2">
-              <button
-                type="submit"
-                className="flex-1 btn-industrial-yellow py-2.5 rounded-xl font-black text-xs cursor-pointer shadow-md"
-              >
-                Saqlash
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsExpenseModalOpen(false)}
-                className="py-2.5 px-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 cursor-pointer"
-              >
-                Bekor qilish
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
+          <div className="space-y-1">
+            <label htmlFor="seller-expense-notes" className="text-slate-600 font-bold block">Izoh / Maqsad</label>
+            <input
+              id="seller-expense-notes"
+              name="expenseNotes"
+              type="text"
+              placeholder="Xarajat bo‘yicha qo‘shimcha izoh..."
+              value={expenseNotes}
+              onChange={(e) => setExpenseNotes(e.target.value)}
+              className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900"
+            />
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 };

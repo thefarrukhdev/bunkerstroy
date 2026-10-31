@@ -24,7 +24,6 @@ import {
   AlertTriangle,
   Boxes,
   Layers,
-  Sparkles,
   TrendingDown,
   CheckCircle2,
   Building2,

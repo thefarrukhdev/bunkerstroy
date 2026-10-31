@@ -86,7 +86,7 @@ export const StaffManager: React.FC = () => {
         const config = roleLabels[row.role] || { label: row.role, color: 'bg-theme-card text-theme-muted' };
 
         return (
-          <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold border uppercase ${config.color}`}>
+          <span className={`inline-block px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold border uppercase ${config.color}`}>
             {config.label}
           </span>
         );

@@ -6,7 +6,7 @@ import { Input } from '../../components/Input';
 import { Select } from '../../components/Select';
 import { Switch } from '../../components/Switch';
 import { Button } from '../../components/Button';
-import { Package, Tag, Building2, Layers, AlertCircle, Sparkles } from 'lucide-react';
+import { Package, Tag, Building2, Layers, AlertCircle, ShieldCheck } from 'lucide-react';
 
 interface ProductFormDrawerProps {
   isOpen: boolean;
@@ -249,7 +249,7 @@ export const ProductFormDrawer: React.FC<ProductFormDrawerProps> = ({
         <div className="p-3.5 rounded-xl bg-[var(--color-surface-card)] border border-[var(--color-border-subtle)] space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[var(--color-accent-green)]" />
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
               <div>
                 <div className="text-xs font-bold text-[var(--color-text-primary)]">
                   ESCO Energiya Tejamkorlik Sertifikati

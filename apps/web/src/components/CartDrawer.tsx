@@ -17,7 +17,7 @@ import {
   User,
   ShoppingBag,
   Clock,
-  Sparkles,
+  ShieldCheck,
   Bookmark,
   Check
 } from 'lucide-react';
@@ -730,7 +730,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-3 shadow-2xs">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#D95D1E]" />
+                <ShieldCheck className="w-4 h-4 text-emerald-600" />
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
                   4. To‘lov Rejimi (Escrow Himoyasi)
                 </h3>

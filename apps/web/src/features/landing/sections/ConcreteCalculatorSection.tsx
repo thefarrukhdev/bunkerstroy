@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Calculator, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
+import { Calculator, ArrowRight, CheckCircle2, Zap } from 'lucide-react';
 import { cn, Button } from '@bunkerstroy/ui';
 import { triggerHaptic } from '../../../services/mobileBridge';
 import { ConcreteCalculationResult } from '../types';
@@ -76,7 +76,7 @@ export const ConcreteCalculatorSection: React.FC<ConcreteCalculatorSectionProps>
       {/* Presets Bar */}
       <div className="flex flex-wrap items-center justify-center gap-2 text-xs font-mono">
         <span className="text-slate-500 mr-1 flex items-center gap-1">
-          <Sparkles className="w-3 h-3 text-[#D95D1E]" /> Tezkor andozalar:
+          <Zap className="w-3 h-3 text-[#D95D1E]" /> Tezkor andozalar:
         </span>
         <button
           type="button"

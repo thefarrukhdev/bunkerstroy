@@ -26,7 +26,6 @@ import {
   ArrowLeft,
   ExternalLink,
   ChevronDown,
-  Sparkles,
   Layers,
   Volume2
 } from 'lucide-react';

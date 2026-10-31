@@ -339,7 +339,6 @@ export const SubAdminPermissionsSection: React.FC = () => {
               <span className="text-[10px] font-mono font-black text-[#D95D1E] uppercase">
                 {meta.shortLabel}
               </span>
-              <span className="w-2 h-2 rounded-full bg-[#D95D1E]" />
             </div>
             <div className="text-xs font-black text-slate-900">{meta.label}</div>
             <p className="text-[10px] text-slate-600 line-clamp-2 leading-relaxed font-sans">
@@ -452,7 +451,7 @@ export const SubAdminPermissionsSection: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleToggleActiveStatus(admin.id)}
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-black uppercase cursor-pointer transition-all ${
+                        className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-black uppercase cursor-pointer transition-all ${
                           admin.isActive
                             ? 'bg-emerald-500/15 text-emerald-600 border border-emerald-200'
                             : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'

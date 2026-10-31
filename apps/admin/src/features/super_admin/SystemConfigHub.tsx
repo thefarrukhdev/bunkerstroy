@@ -196,8 +196,8 @@ export const SystemConfigHub: React.FC = () => {
               Tashqi Integratsiyalar Holati (Live Health)
             </h3>
           </div>
-          <span className="text-xs text-[var(--color-text-muted)] flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[var(--color-accent-green)] animate-ping" />
+          <span className="text-xs text-[var(--color-text-muted)] flex items-center gap-1.5 font-mono">
+            <CheckCircle2 className="w-3.5 h-3.5 text-[var(--color-accent-green)]" />
             Barcha tizimlar barqaror
           </span>
         </div>

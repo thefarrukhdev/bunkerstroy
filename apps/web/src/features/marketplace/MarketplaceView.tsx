@@ -10,13 +10,12 @@ import {
   SlidersHorizontal,
   Layers,
   Factory,
-  Sparkles,
   ChevronRight,
   MapPin,
   Tag
 } from 'lucide-react';
 import { Product } from '@bunkerstroy/types';
-import { Skeleton } from '@bunkerstroy/ui';
+import { Skeleton, Button, Badge, Input, Select } from '@bunkerstroy/ui';
 import { apiFetch } from '../../services/apiClient';
 
 /* ==========================================================================
@@ -201,9 +200,8 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
       {/* 2. Search & Region Filter Bar */}
       <div className="bg-white border border-slate-200 p-3 rounded-2xl flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-between shadow-2xs">
         {/* Search input */}
-        <div className="relative flex-1">
-          <Search className="absolute left-3 w-4 h-4 text-slate-400 pointer-events-none" />
-          <input
+        <div className="flex-1">
+          <Input
             id="marketplace-filter-search"
             name="search"
             type="text"
@@ -213,34 +211,38 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
             onKeyDown={(e) => e.key === 'Enter' && fetchProducts()}
             placeholder="Mahsulot nomi, markasi, sement, g‘isht yoki zavod bo‘yicha qidiruv..."
             aria-label="Mahsulot qidirish"
-            className="w-full h-10 pl-9 pr-4 rounded-xl bg-slate-50 border border-slate-200 focus:border-[#D95D1E] text-xs sm:text-sm text-slate-900 placeholder-slate-400 outline-none transition-colors"
+            leftIcon={<Search className="w-4 h-4 text-slate-400" />}
+            sizeVariant="sm"
+            className="bg-slate-50 border-slate-200"
           />
         </div>
 
         {/* Region selector */}
         <div className="w-full sm:w-56 shrink-0">
-          <select
+          <Select
             id="marketplace-region-select"
             name="region"
             autoComplete="address-level1"
             aria-label="Viloyat bo‘yicha saralash"
             value={selectedRegion}
             onChange={(e) => setSelectedRegion(e.target.value)}
-            className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-[#D95D1E] text-xs font-mono text-slate-700 outline-none cursor-pointer"
-          >
-            <option value="all">Barcha viloyatlar</option>
-            <option value="Toshkent shahri">Toshkent shahri</option>
-            <option value="Toshkent viloyati">Toshkent viloyati</option>
-            <option value="Samarqand viloyati">Samarqand viloyati</option>
-            <option value="Farg‘ona viloyati">Farg‘ona viloyati</option>
-            <option value="Andijon viloyati">Andijon viloyati</option>
-            <option value="Namangan viloyati">Namangan viloyati</option>
-            <option value="Buxoro viloyati">Buxoro viloyati</option>
-            <option value="Qashqadaryo viloyati">Qashqadaryo viloyati</option>
-            <option value="Surxondaryo viloyati">Surxondaryo viloyati</option>
-            <option value="Xorazm viloyati">Xorazm viloyati</option>
-            <option value="Navoiy viloyati">Navoiy viloyati</option>
-          </select>
+            sizeVariant="sm"
+            className="bg-slate-50 border-slate-200 text-xs font-mono"
+            options={[
+              { value: 'all', label: 'Barcha viloyatlar' },
+              { value: 'Toshkent shahri', label: 'Toshkent shahri' },
+              { value: 'Toshkent viloyati', label: 'Toshkent viloyati' },
+              { value: 'Samarqand viloyati', label: 'Samarqand viloyati' },
+              { value: 'Farg‘ona viloyati', label: 'Farg‘ona viloyati' },
+              { value: 'Andijon viloyati', label: 'Andijon viloyati' },
+              { value: 'Namangan viloyati', label: 'Namangan viloyati' },
+              { value: 'Buxoro viloyati', label: 'Buxoro viloyati' },
+              { value: 'Qashqadaryo viloyati', label: 'Qashqadaryo viloyati' },
+              { value: 'Surxondaryo viloyati', label: 'Surxondaryo viloyati' },
+              { value: 'Xorazm viloyati', label: 'Xorazm viloyati' },
+              { value: 'Navoiy viloyati', label: 'Navoiy viloyati' },
+            ]}
+          />
         </div>
       </div>
 
@@ -405,9 +407,11 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                     </div>
 
                     {/* 50/50 Escrow Pill on Image */}
-                    <div className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50/95 backdrop-blur-md border border-emerald-200 text-[10px] font-mono font-bold text-emerald-700 shadow-2xs">
-                      <ShieldCheck className="w-3 h-3 text-emerald-600" />
-                      <span>50/50 Escrow</span>
+                    <div className="absolute top-2.5 left-2.5">
+                      <Badge variant="success" size="sm" isMono>
+                        <ShieldCheck className="w-3 h-3 mr-1 inline-block text-emerald-600" />
+                        50/50 Escrow
+                      </Badge>
                     </div>
                   </div>
 
@@ -419,11 +423,11 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                     </span>
                     <div className="flex items-center gap-1.5 shrink-0">
                       {p.hasDelivery && (
-                        <span className="text-emerald-700 bg-emerald-50/80 px-1.5 py-0.5 rounded font-bold flex items-center gap-0.5 text-[10px]">
-                          <Truck className="w-3 h-3" /> Yetkazish bor
-                        </span>
+                        <Badge variant="success" size="sm" isMono>
+                          <Truck className="w-3 h-3 mr-1 inline-block" /> Yetkazish bor
+                        </Badge>
                       )}
-                      <span className="text-slate-300">•</span>
+                      <span className="text-slate-300">|</span>
                       <span className="text-slate-600 font-medium text-[10px]">12% QQS</span>
                     </div>
                   </div>
@@ -475,23 +479,14 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                     )}
                   </div>
 
-                  <button
-                    type="button"
+                  <Button
+                    variant="primary"
+                    size="sm"
                     onClick={(e) => handleAdd(e, p)}
-                    className="bg-[#D95D1E] hover:bg-[#B43B06] text-white px-3.5 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs transition-colors select-none"
+                    leftIcon={addedId === p.id ? <Check className="w-4 h-4 stroke-[3]" /> : <ShoppingCart className="w-4 h-4" />}
                   >
-                    {addedId === p.id ? (
-                      <>
-                        <Check className="w-4 h-4 stroke-[3]" />
-                        <span>Savatda</span>
-                      </>
-                    ) : (
-                      <>
-                        <ShoppingCart className="w-4 h-4" />
-                        <span className="hidden sm:inline">Savatga</span>
-                      </>
-                    )}
-                  </button>
+                    {addedId === p.id ? 'Savatda' : <span className="hidden sm:inline">Savatga</span>}
+                  </Button>
                 </div>
               </div>
             );

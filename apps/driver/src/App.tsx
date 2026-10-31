@@ -23,8 +23,7 @@ import {
   Layers,
   ArrowUpRight,
   Wifi,
-  WifiOff,
-  Sparkles
+  WifiOff
 } from 'lucide-react';
 import { apiFetch, resolveApiUrl } from './services/apiClient';
 import { offlineStorage } from './services/offlineStorage';

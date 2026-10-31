@@ -10,7 +10,6 @@ import {
   Package,
   ShoppingCart,
   RotateCcw,
-  Sparkles,
   Flame,
   Leaf,
   Info,

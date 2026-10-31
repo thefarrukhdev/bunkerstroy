@@ -222,7 +222,7 @@ async function main() {
     { name: 'Sement va qorishmalar', slug: 'sement-qorishmalar', icon: 'Layers' },
     { name: 'Armatura va metall prokat', slug: 'armatura-metall', icon: 'ShieldCheck' },
     { name: 'G‘isht va gazobloklar', slug: 'gisht-gazoblok', icon: 'Building2' },
-    { name: 'Izolyatsiya va tom yopish', slug: 'izolyatsiya-tom', icon: 'Sparkles' },
+    { name: 'Izolyatsiya va tom yopish', slug: 'izolyatsiya-tom', icon: 'Shield' },
     { name: 'Yog‘och va taxta materiallari', slug: 'yogoch-taxta', icon: 'Box' },
     { name: 'Maxsus texnika va transport', slug: 'texnika-transport', icon: 'Truck' },
   ];

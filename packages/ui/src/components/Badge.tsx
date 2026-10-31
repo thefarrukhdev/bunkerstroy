@@ -1,7 +1,16 @@
 import React from 'react';
 import { cn } from '../utils';
 
-export type BadgeVariant = 'warning' | 'success' | 'danger' | 'info' | 'neutral' | 'default';
+export type BadgeVariant =
+  | 'warning'
+  | 'success'
+  | 'danger'
+  | 'info'
+  | 'neutral'
+  | 'default'
+  | 'brand'
+  | 'purple'
+  | 'error';
 export type BadgeSize = 'sm' | 'md' | 'lg';
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -24,14 +33,17 @@ export const Badge: React.FC<BadgeProps> = ({
   isMono = true,
   ...props
 }) => {
-  const normalizedVariant = variant === 'default' ? 'neutral' : variant;
+  const normalizedVariant =
+    variant === 'default' ? 'neutral' : variant === 'error' ? 'danger' : variant;
 
   const variantStyles: Record<string, string> = {
     warning: 'bg-bunker-amber-500/10 text-bunker-amber-500 border-bunker-amber-500/25',
     success: 'bg-bunker-status-green/10 text-bunker-status-green border-bunker-status-green/25',
     danger: 'bg-bunker-status-red/10 text-bunker-status-red border-bunker-status-red/25',
     info: 'bg-bunker-status-cyan/10 text-bunker-status-cyan border-bunker-status-cyan/25',
-    neutral: 'bg-bunker-surface-2 text-bunker-text-secondary border-bunker-border-strong'
+    neutral: 'bg-bunker-surface-2 text-bunker-text-secondary border-bunker-border-strong',
+    brand: 'bg-[#D95D1E]/10 text-[#D95D1E] border-[#D95D1E]/30',
+    purple: 'bg-indigo-500/10 text-indigo-500 border-indigo-500/25'
   };
 
   const dotColorStyles: Record<string, string> = {
@@ -39,7 +51,9 @@ export const Badge: React.FC<BadgeProps> = ({
     success: 'bg-bunker-status-green',
     danger: 'bg-bunker-status-red',
     info: 'bg-bunker-status-cyan',
-    neutral: 'bg-bunker-text-muted'
+    neutral: 'bg-bunker-text-muted',
+    brand: 'bg-[#D95D1E]',
+    purple: 'bg-indigo-500'
   };
 
   const sizeStyles: Record<BadgeSize, string> = {

@@ -46,32 +46,32 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
   const getStatusBadge = (status: OrderStatus) => {
     switch (status) {
       case 'DRAFT':
-        return <span className="bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">SAVATDA</span>;
+        return <Badge variant="neutral">SAVATDA</Badge>;
       case 'PENDING_PAYMENT':
       case 'PENDING':
-        return <span className="bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">TO‘LOV KUTILMOQDA</span>;
+        return <Badge variant="warning">TO‘LOV KUTILMOQDA</Badge>;
       case 'PAID':
       case 'CONFIRMED':
-        return <span className="bg-sky-50 text-sky-700 border border-sky-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">TO‘LANDI</span>;
+        return <Badge variant="info">TO‘LANDI</Badge>;
       case 'ACCEPTED':
       case 'PACKING':
-        return <span className="bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">TAYYORLANMOQDA</span>;
+        return <Badge variant="info">TAYYORLANMOQDA</Badge>;
       case 'ASSIGNED':
       case 'ASSIGNED_TO_FLEET':
-        return <span className="bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">HAYDOVCHI TAYINLANDI</span>;
+        return <Badge variant="purple">HAYDOVCHI TAYINLANDI</Badge>;
       case 'IN_TRANSIT':
-        return <span className="bg-purple-50 text-purple-700 border border-purple-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">🚚 YO‘LDA</span>;
+        return <Badge variant="purple">🚚 YO‘LDA</Badge>;
       case 'ARRIVED':
-        return <span className="bg-orange-50 text-[#D95D1E] border border-orange-200 px-2 py-0.5 rounded text-[10px] font-mono font-black animate-pulse">MANZILGA YETDI</span>;
+        return <Badge variant="brand">MANZILGA YETDI</Badge>;
       case 'FULLY_PAID':
       case 'RECEIVED':
       case 'DELIVERED':
       case 'COMPLETED':
-        return <span className="bg-emerald-50 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded text-[10px] font-mono font-black">YAKUNLANDI</span>;
+        return <Badge variant="success">YAKUNLANDI</Badge>;
       case 'DISPUTE':
-        return <span className="bg-red-50 text-red-700 border border-red-200 px-2 py-0.5 rounded text-[10px] font-mono font-black">NIZO (DISPUTE)</span>;
+        return <Badge variant="error">NIZO (DISPUTE)</Badge>;
       default:
-        return <span className="bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">{status}</span>;
+        return <Badge variant="neutral">{status}</Badge>;
     }
   };
 
