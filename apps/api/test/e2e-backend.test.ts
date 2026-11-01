@@ -13,7 +13,7 @@ import { AuditLogService } from '../src/modules/admin/audit-log.service';
 import { HealthController } from '../src/modules/health/health.controller';
 import { RedisService } from '../src/redis/redis.service';
 import { PrismaService } from '../src/prisma/prisma.service';
-import { Role, OrderStatus, PaymentMode, VerificationStatus, SupplierType, UserType } from '@bunkerstroy/db';
+import { Role, OrderStatus, PaymentMode, VerificationStatus, SupplierType, UserType, PaymentProvider, PaymentStatus } from '@bunkerstroy/db';
 import { ThrottlerStorage } from '@nestjs/throttler';
 import crypto from 'crypto';
 import { env } from '../src/config/env';
@@ -68,8 +68,28 @@ async function runAllBackendVerificationTests() {
     };
     await healthController.checkHealth(mockRes);
     assert(
-      mockRes.statusCode === 200 && mockRes.data.status === 'ok' && mockRes.data.services.database.status === 'healthy',
+      mockRes.statusCode === 200 && mockRes.data.status === 'ok' && mockRes.data.services.database.status === 'healthy' && mockRes.data.services.redis.status === 'healthy',
       'HealthController /api/health returns 200 OK with connected database and redis'
+    );
+
+    // Test real ping failure detection (no false positive healthy reports)
+    const originalPing = redis.pingWithDetails;
+    (redis as any).pingWithDetails = async () => ({
+      healthy: false,
+      latencyMs: 5,
+      status: 'disconnected',
+      error: 'Simulated connection timeout',
+    });
+    const mockResDegraded: any = {
+      statusCode: 200,
+      status(code: number) { this.statusCode = code; return this; },
+      json(data: any) { this.data = data; return this; },
+    };
+    await healthController.checkHealth(mockResDegraded);
+    (redis as any).pingWithDetails = originalPing;
+    assert(
+      mockResDegraded.statusCode === 503 && mockResDegraded.data.status === 'error' && mockResDegraded.data.services.redis.status === 'unhealthy',
+      'HealthController /api/health returns 503 Service Unavailable when Redis is unreachable'
     );
 
     // Test HttpExceptionFilter error structure and validation formatting
@@ -570,6 +590,11 @@ async function runAllBackendVerificationTests() {
     assert(splitOrder.acceptanceCode === null, 'PIN code hidden from client until full payment or arrival');
     assert(splitOrder.subOrders && splitOrder.subOrders.length >= 1, `Sub-orders generated for multi-vendor fulfillment (Count: ${splitOrder.subOrders?.length})`);
 
+    // First payment: Client pays first 50% upon ordering
+    await paymentsService.simulatePayment(splitOrder.id, 'PAYME');
+    const firstPaidOrder = await prisma.order.findUnique({ where: { id: splitOrder.id } });
+    assert(firstPaidOrder?.isFirstPaid === true, 'First 50% payment recorded successfully');
+
     // 3. Mark Arrived & Waiting timer (30 mins)
     const arrivedOrder = await ordersService.markArrived(splitOrder.id, { id: 'DRIVER_1', role: Role.LOGISTICS_DRIVER });
     assert(arrivedOrder.status === 'ARRIVED', 'markArrived updates status to ARRIVED');
@@ -587,12 +612,37 @@ async function runAllBackendVerificationTests() {
     }
     assert(prematureVerificationBlocked, 'verifyAcceptanceCode blocks release before second 50% payment');
 
-    // 5. Pay second 50%
-    const secondPaidOrder = await ordersService.paySecondHalf(splitOrder.id, { id: verifyOtpRes.user.id, role: Role.CLIENT });
+    // 5. Pay second 50% - FinTech Security Verification
+    // 5a. Calling paySecondHalf before gateway payment returns checkout session without revealing PIN
+    const checkoutSession = await ordersService.paySecondHalf(splitOrder.id, { id: verifyOtpRes.user.id, role: Role.CLIENT });
+    assert('paymentRequired' in checkoutSession && (checkoutSession as any).paymentRequired === true, 'paySecondHalf returns checkout session when unpaid by gateway');
+    assert('paymeCheckoutUrl' in checkoutSession && !!(checkoutSession as any).paymeCheckoutUrl, 'Payme checkout URL generated');
+    assert('clickCheckoutUrl' in checkoutSession && !!(checkoutSession as any).clickCheckoutUrl, 'Click checkout URL generated');
+
+    const dbOrderUnpaid = await prisma.order.findUnique({ where: { id: splitOrder.id } });
+    assert(dbOrderUnpaid?.isSecondPaid === false, 'Order isSecondPaid remains false without gateway payment');
+    assert(dbOrderUnpaid?.isAcceptanceCodeRevealed === false, 'PIN code remains hidden without gateway payment');
+
+    // 5b. Real Payment Gateway processes 2nd payment transaction (simulating Payme/Click webhook)
+    await paymentsService.simulatePayment(splitOrder.id, 'PAYME');
+
+    // 5c. Second half is now confirmed and PIN is revealed
+    const secondPaidOrder = (await ordersService.findOne(splitOrder.id, { id: verifyOtpRes.user.id, role: Role.CLIENT })) as any;
     assert(secondPaidOrder.isSecondPaid === true, 'paySecondHalf marks isSecondPaid to true');
     assert(secondPaidOrder.status === 'FULLY_PAID', 'Order status transitions to FULLY_PAID');
     assert(secondPaidOrder.isAcceptanceCodeRevealed === true, 'Acceptance PIN code revealed to buyer upon full payment');
     assert(typeof secondPaidOrder.acceptanceCode === 'string' && secondPaidOrder.acceptanceCode === dbSplitOrder!.acceptanceCode, 'Revealed PIN matches generated DB PIN');
+
+    // 5d. Calling paySecondHalf again when already paid throws BadRequestException
+    let alreadyPaidBlocked = false;
+    try {
+      await ordersService.paySecondHalf(splitOrder.id, { id: verifyOtpRes.user.id, role: Role.CLIENT });
+    } catch (e: any) {
+      if (e.message?.includes('allaqachon')) {
+        alreadyPaidBlocked = true;
+      }
+    }
+    assert(alreadyPaidBlocked, 'paySecondHalf rejects repeated payment when already paid');
 
     // 6. Test invalid PIN code rejection
     let invalidPinRejected = false;
@@ -767,9 +817,89 @@ async function runAllBackendVerificationTests() {
     const stockAfterCancel = (await prisma.product.findUnique({ where: { id: newProd.id } }))?.stock || 0;
     assert(stockAfterCancel === stockBeforeCancel, 'Prisma interactive transaction successfully restores product stock on CANCELLED order');
 
+    // 5. Test paymeCancelTransaction restores stock in Prisma transaction
+    const stockBeforePayme = (await prisma.product.findUnique({ where: { id: newProd.id } }))?.stock || 0;
+    const paymeTestOrder = await ordersService.createOrder(
+      {
+        items: [{ productId: newProd.id, quantity: 4 }],
+        deliveryAddress: { region: 'Toshkent shahri', district: 'Chilonzor tumani' },
+        buyerName: 'Payme Stock Tester',
+      },
+      { id: verifyOtpRes.user.id, role: Role.CLIENT }
+    );
+    const stockAfterPaymeOrder = (await prisma.product.findUnique({ where: { id: newProd.id } }))?.stock || 0;
+    assert(stockAfterPaymeOrder === stockBeforePayme - 4, 'Stock decremented on Payme test order creation');
+
+    const paymeTx = await prisma.paymentTransaction.create({
+      data: {
+        orderId: paymeTestOrder.id,
+        provider: PaymentProvider.PAYME,
+        paymentType: 'FULL',
+        transactionId: `payme_cancel_test_${Date.now()}`,
+        amount: Number(paymeTestOrder.finalAmount),
+        status: PaymentStatus.PREAUTHORIZED,
+      },
+    });
+
+    const cancelRes: any = await paymentsService.handlePaymeWebhook(
+      `Basic ${Buffer.from('Paycom:bunker_payme_test_secret_key_2026').toString('base64')}`,
+      {
+        method: 'CancelTransaction',
+        params: { id: paymeTx.transactionId, reason: 1 },
+        id: 9999,
+      }
+    );
+    assert(cancelRes.result?.state === -1, 'paymeCancelTransaction successfully cancels transaction with state -1');
+    const stockAfterPaymeCancel = (await prisma.product.findUnique({ where: { id: newProd.id } }))?.stock || 0;
+    assert(stockAfterPaymeCancel === stockBeforePayme, 'paymeCancelTransaction restores product stock via Prisma transaction');
+
+    // 6. Test BOLA/IDOR protection on PATCH /api/orders/:id/status
+    let strangerSupplierBlocked = false;
+    try {
+      await ordersService.updateStatus(
+        paymeTestOrder.id,
+        { status: OrderStatus.ACCEPTED },
+        { id: 'STRANGER_SUPPLIER_XYZ', role: Role.SUPPLIER }
+      );
+    } catch (e: any) {
+      if (e.status === 403 || e.message?.includes('tegishli emas')) {
+        strangerSupplierBlocked = true;
+      }
+    }
+    assert(strangerSupplierBlocked, 'SECURITY CHECK: Stranger supplier cannot update another supplier order status (BOLA/IDOR protected)');
+
+    // 7. Test E-IMZO PKCS#7 format and STIR comparison validation
+    const { eimzoService, createValidPkcs7Signature } = await import('../src/modules/auth/eimzo.service');
+    const eimzoChallenge = eimzoService.createChallenge('201122334');
+
+    let fakePkcs7Blocked = false;
+    try {
+      eimzoService.verifySignature(eimzoChallenge.challengeId, 'invalid_fake_pkcs7_data_short', '201122334');
+    } catch (e: any) {
+      fakePkcs7Blocked = true;
+    }
+    assert(fakePkcs7Blocked, 'E-IMZO rejects fake/short signature format');
+
+    const genuinePkcs7 = createValidPkcs7Signature('201122334', '«BUNKER STROY INVEST» MChJ');
+    const eimzoVerified = eimzoService.verifySignature(eimzoChallenge.challengeId, genuinePkcs7, '201122334');
+    assert(eimzoVerified.valid === true, 'E-IMZO verifies genuine PKCS#7 signature');
+    assert(eimzoVerified.inn === '201122334', 'E-IMZO extracts and validates matching STIR');
+    assert(eimzoVerified.serialNumber.startsWith('EIMZO-'), 'E-IMZO generates cryptographic certificate serial');
+
+    const mismatchChallenge = eimzoService.createChallenge('305999888');
+    let stirMismatchBlocked = false;
+    try {
+      eimzoService.verifySignature(mismatchChallenge.challengeId, genuinePkcs7, '305999888');
+    } catch (e: any) {
+      if (e.message?.includes('nomuvofiq') || e.message?.includes('mos kelmadi')) {
+        stirMismatchBlocked = true;
+      }
+    }
+    assert(stirMismatchBlocked, 'E-IMZO rejects signature with mismatched STIR');
+
     // Clean up created test data
     const userOrders = await prisma.order.findMany({ where: { buyerId: verifyOtpRes.user.id } });
-    const allTestOrderIds = Array.from(new Set([...userOrders.map(o => o.id), createdOrder.id, splitOrder.id, disputeOrder.id, cancelOrder.id]));
+    const allTestOrderIds = Array.from(new Set([...userOrders.map(o => o.id), createdOrder.id, splitOrder.id, disputeOrder.id, cancelOrder.id, paymeTestOrder.id]));
 
     await prisma.dispute.deleteMany({ where: { orderId: { in: allTestOrderIds } } });
     await prisma.subOrder.deleteMany({ where: { orderId: { in: allTestOrderIds } } });

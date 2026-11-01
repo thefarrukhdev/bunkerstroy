@@ -1,10 +1,15 @@
 import React from 'react';
 import { cn } from '../utils';
 
+export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'outline' | 'ghost';
+export type ButtonSize = 'sm' | 'md' | 'lg';
+
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   isLoading?: boolean;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -14,6 +19,8 @@ export const Button: React.FC<ButtonProps> = ({
   size = 'md',
   isLoading = false,
   disabled,
+  leftIcon,
+  rightIcon,
   ...props
 }) => {
   const baseStyles =
@@ -57,7 +64,11 @@ export const Button: React.FC<ButtonProps> = ({
           <span>Kutilmoqda...</span>
         </>
       ) : (
-        children
+        <>
+          {leftIcon && <span className="inline-flex shrink-0 items-center">{leftIcon}</span>}
+          {children}
+          {rightIcon && <span className="inline-flex shrink-0 items-center">{rightIcon}</span>}
+        </>
       )}
     </button>
   );

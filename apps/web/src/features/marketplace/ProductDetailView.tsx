@@ -61,7 +61,6 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
         setQuantity(json.data.minOrder || 1);
         if (json.data.variants && json.data.variants.length > 0) {
           const first = json.data.variants[0];
-          if (first.color) setSelectedColor(first.color.toLowerCase());
           if (first.size) setSelectedSize(first.size);
         }
       } else {

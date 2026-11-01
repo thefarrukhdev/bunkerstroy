@@ -156,15 +156,62 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   }
 
   async ping(): Promise<boolean> {
-    if (this.isConnected && this.client) {
-      try {
-        const res = await this.client.ping();
-        return res === 'PONG';
-      } catch {
-        return false;
-      }
+    if (!this.client) {
+      return false;
     }
-    return true;
+    try {
+      const res = await this.client.ping();
+      const ok = res === 'PONG';
+      this.isConnected = ok;
+      return ok;
+    } catch (err: any) {
+      this.isConnected = false;
+      this.logger.warn(`Redis ping failed: ${err?.message}`);
+      return false;
+    }
+  }
+
+  async pingWithDetails(): Promise<{ healthy: boolean; latencyMs: number; status: string; error?: string }> {
+    const start = Date.now();
+    if (!this.client) {
+      return {
+        healthy: false,
+        latencyMs: 0,
+        status: 'uninitialized',
+        error: 'Redis client is not initialized',
+      };
+    }
+    try {
+      const res = await this.client.ping();
+      const latencyMs = Date.now() - start;
+      if (res === 'PONG') {
+        this.isConnected = true;
+        return {
+          healthy: true,
+          latencyMs,
+          status: 'connected',
+        };
+      }
+      return {
+        healthy: false,
+        latencyMs,
+        status: 'unexpected_response',
+        error: `Unexpected ping response: ${res}`,
+      };
+    } catch (err: any) {
+      this.isConnected = false;
+      const latencyMs = Date.now() - start;
+      return {
+        healthy: false,
+        latencyMs,
+        status: 'disconnected',
+        error: err?.message || 'Connection failed',
+      };
+    }
+  }
+
+  isUsingMemoryFallback(): boolean {
+    return !this.isConnected;
   }
 
   async incr(key: string, ttlSeconds?: number): Promise<number> {

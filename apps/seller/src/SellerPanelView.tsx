@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   AlertCircle,
   RotateCw,
+  RefreshCw,
   Trash2,
   Edit2,
   ExternalLink,
@@ -681,7 +682,7 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
   // Status Change Modal State
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [selectedOrderForStatus, setSelectedOrderForStatus] = useState<Order | null>(null);
-  const [newOrderStatus, setNewOrderStatus] = useState<OrderStatus>('PROCESSING');
+  const [newOrderStatus, setNewOrderStatus] = useState<OrderStatus>('ACCEPTED');
   const [statusUpdateNote, setStatusUpdateNote] = useState('');
 
   // State: B2B Wholesale

@@ -66,6 +66,16 @@ export interface CartItem {
   quantity: number;
 }
 
+export interface CurrentUserProfile {
+  stir?: string;
+  companyName?: string;
+  displayName?: string;
+  email?: string;
+  role?: string;
+  phone?: string;
+  [key: string]: any;
+}
+
 interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -74,6 +84,7 @@ interface CartDrawerProps {
   onRemove: (productId: string) => void;
   onClear: () => void;
   onOrderSuccess: () => void;
+  currentUser?: CurrentUserProfile | null;
 }
 
 type CheckoutStep = 1 | 2 | 'success';
@@ -86,14 +97,31 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onRemove,
   onClear,
   onOrderSuccess,
+  currentUser,
 }) => {
   const [step, setStep] = useState<CheckoutStep>(1);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Step 2: Receiver & Delivery Details
-  const [buyerName, setBuyerName] = useState('Alisher Normurodov');
-  const [buyerPhone, setBuyerPhone] = useState('+998 90 123 45 67');
+  // Step 2: Receiver & Delivery Details (Default from logged-in profile or empty string)
+  const [buyerName, setBuyerName] = useState<string>(
+    () => currentUser?.displayName || currentUser?.companyName || ''
+  );
+  const [buyerPhone, setBuyerPhone] = useState<string>(
+    () => currentUser?.phone || ''
+  );
+
+  // Sync when currentUser changes or loads
+  React.useEffect(() => {
+    if (currentUser) {
+      if (!buyerName && (currentUser.displayName || currentUser.companyName)) {
+        setBuyerName(currentUser.displayName || currentUser.companyName || '');
+      }
+      if (!buyerPhone && currentUser.phone) {
+        setBuyerPhone(currentUser.phone);
+      }
+    }
+  }, [currentUser]);
   const [deliveryMethod, setDeliveryMethod] = useState<'COURIER' | 'PICKUP'>('COURIER');
   const [vehicleType, setVehicleType] = useState('Standart Kuryer / HOWO');
   const [region, setRegion] = useState('Toshkent shahri');
@@ -195,7 +223,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             landmark: landmark.trim(),
           },
           vehicleType: deliveryMethod === 'PICKUP' ? 'O‘zi olib ketish (Samovivoz)' : vehicleType,
-          paymentMethod: paymentMethod === 'CASH_ON_DELIVERY' ? 'PAYME' : paymentMethod,
+          paymentMethod,
           paymentMode,
         }),
       });

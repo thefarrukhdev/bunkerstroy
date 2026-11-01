@@ -75,37 +75,45 @@ export class IdempotencyInterceptor implements NestInterceptor {
     const redisKey = `idempotency:${userId}:${req.baseUrl || ''}${req.path}:${idempotencyKey}`;
     const ttlSeconds = options.ttlSeconds || 86400; // 24 hours default retention
 
-    const existingJson = await this.redis.get(redisKey);
-    if (existingJson) {
-      try {
-        const record: IdempotencyRecord = JSON.parse(existingJson);
-        if (record.status === 'PENDING') {
-          throw new ConflictException(
-            "Ushbu idempotency kalitli so'rov ayni paytda qayta ishlanmoqda. Iltimos, birozdan so'ng tekshiring."
-          );
-        }
-        if (record.status === 'COMPLETED') {
-          if (typeof res.setHeader === 'function') {
-            res.setHeader('X-Idempotent-Replayed', 'true');
-            res.setHeader('X-Idempotency-Key', idempotencyKey);
-          }
-          if (record.statusCode && typeof res.status === 'function') {
-            res.status(record.statusCode);
-          }
-          return of(record.body);
-        }
-      } catch (err) {
-        if (err instanceof ConflictException) throw err;
-        this.logger.warn(`Idempotency record parsing failed: ${err}`);
-      }
-    }
-
-    // Atomically set lock with 120s TTL
+    // Atomically acquire lock using Redis SET key val EX 120 NX
+    // Prevents race condition (double spending) in concurrent parallel requests
     const pendingRecord: IdempotencyRecord = {
       status: 'PENDING',
       createdAt: new Date().toISOString(),
     };
-    await this.redis.set(redisKey, JSON.stringify(pendingRecord), 120);
+    const acquired = await this.redis.setNx(redisKey, JSON.stringify(pendingRecord), 120);
+
+    if (!acquired) {
+      // Key already exists (either concurrent in-flight request or already completed)
+      const existingJson = await this.redis.get(redisKey);
+      if (existingJson) {
+        try {
+          const record: IdempotencyRecord = JSON.parse(existingJson);
+          if (record.status === 'PENDING') {
+            throw new ConflictException(
+              "Ushbu idempotency kalitli so'rov ayni paytda qayta ishlanmoqda. Iltimos, birozdan so'ng tekshiring."
+            );
+          }
+          if (record.status === 'COMPLETED') {
+            if (typeof res.setHeader === 'function') {
+              res.setHeader('X-Idempotent-Replayed', 'true');
+              res.setHeader('X-Idempotency-Key', idempotencyKey);
+            }
+            if (record.statusCode && typeof res.status === 'function') {
+              res.status(record.statusCode);
+            }
+            return of(record.body);
+          }
+        } catch (err) {
+          if (err instanceof ConflictException) throw err;
+          this.logger.warn(`Idempotency record parsing failed: ${err}`);
+        }
+      }
+
+      throw new ConflictException(
+        "Ushbu idempotency kalitli so'rov ayni paytda qayta ishlanmoqda. Iltimos, birozdan so'ng tekshiring."
+      );
+    }
 
     return next.handle().pipe(
       tap({

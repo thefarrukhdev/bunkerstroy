@@ -6,7 +6,7 @@ import { LogisticsService } from '../src/modules/logistics/logistics.service';
 import { CatalogService } from '../src/modules/catalog/catalog.service';
 import { RedisService } from '../src/redis/redis.service';
 import { PrismaService } from '../src/prisma/prisma.service';
-import { Role, OrderStatus, PaymentMode, UserType } from '@bunkerstroy/db';
+import { Role, OrderStatus, PaymentMode, UserType, PaymentProvider, PaymentStatus } from '@bunkerstroy/db';
 
 async function runDomainAndLogisticsVerification() {
   console.log('🚀 Running Domain & Logistics Dedicated Verification Tests...');
@@ -157,12 +157,28 @@ async function runDomainAndLogisticsVerification() {
       'Initial subOrder acceptanceCode is null'
     );
 
-    // Pay second half as buyer -> reveals code
+    // Mark arrived and record paid gateway transaction before completing second half
+    await prisma.order.update({
+      where: { id: newOrder.id },
+      data: { status: OrderStatus.ARRIVED },
+    });
+    await prisma.paymentTransaction.create({
+      data: {
+        orderId: newOrder.id,
+        provider: PaymentProvider.PAYME,
+        paymentType: 'SECOND_50',
+        transactionId: `TX-DOMAIN-TEST-P2-${Date.now()}`,
+        amount: 100000,
+        status: PaymentStatus.PAID,
+      },
+    });
+
+    // Pay second half as buyer -> verifies gateway payment and reveals code
     const fullyPaidOrder = await ordersService.paySecondHalf(newOrder.id, {
       id: buyerUser.id,
       role: Role.CLIENT,
     });
-    assert(fullyPaidOrder.isAcceptanceCodeRevealed === true, 'Order isAcceptanceCodeRevealed is true');
+    assert((fullyPaidOrder as any).isAcceptanceCodeRevealed === true, 'Order isAcceptanceCodeRevealed is true');
 
     const dbOrder = await prisma.order.findUniqueOrThrow({ where: { id: newOrder.id } });
     assert(

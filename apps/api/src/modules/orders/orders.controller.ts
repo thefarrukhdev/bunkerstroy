@@ -136,10 +136,13 @@ export class OrdersController {
   @ApiOperation({ summary: '50/50 buyurtmaning ikkinchi 50% qismini to‘lash' })
   async paySecondHalf(@Param('id') id: string, @CurrentUser() user: CurrentUserPayload) {
     const data = await this.ordersService.paySecondHalf(id, user);
+    const isPaymentRequired = 'paymentRequired' in data && (data as any).paymentRequired;
     return {
       success: true,
       data,
-      message: 'Ikkinchi to‘lov muvaffaqiyatli bajarildi. Qabul kodi ochildi.',
+      message: isPaymentRequired
+        ? 'Ikkinchi to‘lov uchun to‘lov havolasi yaratildi. To‘lov shlyuzi orqali to‘lovni yakunlang.'
+        : 'Ikkinchi to‘lov muvaffaqiyatli bajarildi. Qabul kodi ochildi.',
     };
   }
 

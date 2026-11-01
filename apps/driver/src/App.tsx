@@ -442,7 +442,12 @@ export const App: React.FC = () => {
   };
 
   const handlePinSubmit = async () => {
-    const isPinValid = await offlineStorage.verifyPinOffline(task.orderNumber, pinInput, task.correctPin);
+    if (!pinInput.trim()) {
+      triggerHaptic('alert');
+      setPinError('Iltimos, mijozdan 4 xonali qabul PIN-kodini oling va kiriting!');
+      return;
+    }
+    const isPinValid = await offlineStorage.verifyPinOffline(task.orderNumber, pinInput.trim(), task.correctPin);
     if (isPinValid) {
       triggerHaptic('success');
       setIsPinVerified(true);
@@ -454,6 +459,12 @@ export const App: React.FC = () => {
   };
 
   const handleDeliverComplete = async () => {
+    if (!isPinVerified || !pinInput.trim()) {
+      triggerHaptic('alert');
+      setPinError('Iltimos, avval mijozning qabul PIN-kodini kiriting va tasdiqlang!');
+      return;
+    }
+
     const photoToUse =
       deliveryPhoto ||
       'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80';
@@ -470,7 +481,7 @@ export const App: React.FC = () => {
       try {
         const res = await apiFetch(`/logistics/dispatches/${task.id}/driver-verify-code`, {
           method: 'POST',
-          body: JSON.stringify({ code: pinInput || task.correctPin, photoUrl: photoToUse })
+          body: JSON.stringify({ code: pinInput.trim(), photoUrl: photoToUse })
         });
         if (res.ok) synced = true;
       } catch (e) {
@@ -481,7 +492,7 @@ export const App: React.FC = () => {
       offlineStorage.enqueueAction({
         type: 'DRIVER_VERIFY_CODE',
         dispatchId: task.id,
-        payload: { code: pinInput || task.correctPin, photoUrl: photoToUse }
+        payload: { code: pinInput.trim(), photoUrl: photoToUse }
       });
       setPendingSyncCount(offlineStorage.getSyncQueue().length);
     }

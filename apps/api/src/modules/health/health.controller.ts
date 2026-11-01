@@ -18,46 +18,59 @@ export class HealthController {
   @ApiResponse({ status: 503, description: 'Bir yoki bir nechta tizim qismlari ishlamayapti' })
   async checkHealth(@Res() res: Response) {
     const startTime = Date.now();
-    let dbStatus = 'healthy';
-    let redisStatus = 'healthy';
     let isHealthy = true;
 
-    // 1. Check PostgreSQL via Prisma
+    // 1. Check PostgreSQL via Prisma (real query ping)
+    let dbStatus = 'healthy';
+    let dbLatencyMs = 0;
+    let dbError: string | undefined;
+    const dbStart = Date.now();
     try {
       await this.prisma.$queryRaw`SELECT 1`;
+      dbLatencyMs = Date.now() - dbStart;
     } catch (err: any) {
-      dbStatus = `unhealthy: ${err?.message || 'DB query failed'}`;
+      dbLatencyMs = Date.now() - dbStart;
+      dbStatus = 'unhealthy';
+      dbError = err?.message || 'DB query failed';
       isHealthy = false;
     }
 
-    // 2. Check Redis
-    try {
-      const testKey = 'health:ping:' + Date.now();
-      await this.redis.set(testKey, 'pong', 5);
-      const val = await this.redis.get(testKey);
-      if (val !== 'pong') {
-        redisStatus = 'degraded (fallback active)';
-      }
-    } catch (err: any) {
-      redisStatus = `degraded: ${err?.message}`;
+    // 2. Check Redis (real PING command, no fake memory fallback masking)
+    let redisStatus = 'healthy';
+    let redisLatencyMs = 0;
+    let redisError: string | undefined;
+    const redisCheck = await this.redis.pingWithDetails();
+    redisLatencyMs = redisCheck.latencyMs;
+
+    if (redisCheck.healthy) {
+      redisStatus = 'healthy';
+    } else {
+      redisStatus = 'unhealthy';
+      redisError = redisCheck.error || 'Redis connection unreachable';
+      isHealthy = false;
     }
 
-    const latencyMs = Date.now() - startTime;
+    const totalLatencyMs = Date.now() - startTime;
     const memory = process.memoryUsage();
 
     const responsePayload = {
       status: isHealthy ? 'ok' : 'error',
       timestamp: new Date().toISOString(),
       uptimeSeconds: Math.floor(process.uptime()),
-      latencyMs,
+      latencyMs: totalLatencyMs,
       services: {
         database: {
           status: dbStatus,
           provider: 'PostgreSQL 16 (PostGIS)',
+          latencyMs: dbLatencyMs,
+          ...(dbError ? { error: dbError } : {}),
         },
         redis: {
           status: redisStatus,
           provider: 'Redis 7',
+          latencyMs: redisLatencyMs,
+          fallbackActive: this.redis.isUsingMemoryFallback(),
+          ...(redisError ? { error: redisError } : {}),
         },
       },
       system: {
@@ -74,5 +87,17 @@ export class HealthController {
     return res
       .status(isHealthy ? HttpStatus.OK : HttpStatus.SERVICE_UNAVAILABLE)
       .json(responsePayload);
+  }
+
+  @Get('liveness')
+  @ApiOperation({ summary: 'Liveness probe tekshiruvi' })
+  livenessProbe(@Res() res: Response) {
+    return res.status(HttpStatus.OK).json({ status: 'alive' });
+  }
+
+  @Get('readiness')
+  @ApiOperation({ summary: 'Readiness probe tekshiruvi' })
+  async readinessProbe(@Res() res: Response) {
+    return this.checkHealth(res);
   }
 }

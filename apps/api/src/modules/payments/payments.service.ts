@@ -364,11 +364,31 @@ export class PaymentsService {
         data: { status: newStatus },
       });
 
-      if (isPaid && transaction.orderId) {
-        await tx.order.update({
+      // Restore stock for all products in the cancelled order (state === -1 or state === -2)
+      if (transaction.orderId) {
+        const orderRecord = await tx.order.findUnique({
           where: { id: transaction.orderId },
-          data: { status: OrderStatus.CANCELLED },
+          include: { items: true },
         });
+
+        if (orderRecord && orderRecord.status !== OrderStatus.CANCELLED) {
+          for (const item of orderRecord.items) {
+            await tx.product.update({
+              where: { id: item.productId },
+              data: { stock: { increment: item.quantity } },
+            });
+          }
+
+          await tx.subOrder.updateMany({
+            where: { orderId: orderRecord.id },
+            data: { status: OrderStatus.CANCELLED },
+          });
+
+          await tx.order.update({
+            where: { id: orderRecord.id },
+            data: { status: OrderStatus.CANCELLED },
+          });
+        }
       }
 
       return p;

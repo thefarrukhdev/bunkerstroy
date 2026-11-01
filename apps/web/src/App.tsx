@@ -368,6 +368,7 @@ export const AppContent: React.FC = () => {
         onRemove={handleRemoveFromCart}
         onClear={handleClearCart}
         onOrderSuccess={handleOrderSuccess}
+        currentUser={currentUser}
       />
 
       <AuthModal

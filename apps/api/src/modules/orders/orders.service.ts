@@ -29,6 +29,21 @@ import {
   OpenDisputeDto,
 } from './dto/order.dto';
 
+export interface SecondHalfPaymentSession {
+  paymentRequired: true;
+  orderId: string;
+  orderNumber: string;
+  amount: number;
+  paymentType: 'SECOND_50';
+  status: 'PENDING_PAYMENT';
+  invoiceNumber: string;
+  paymeCheckoutUrl: string;
+  clickCheckoutUrl: string;
+  checkoutUrl: string;
+  message: string;
+  order: Order;
+}
+
 export const ORDER_FULL_INCLUDE = {
   buyer: true,
   items: { include: { product: true } },
@@ -528,7 +543,11 @@ export class OrdersService {
   ): Promise<Order> {
     const order = await this.prisma.order.findFirst({
       where: { OR: [{ id }, { orderNumber: id }] },
-      include: { buyer: true },
+      include: {
+        buyer: true,
+        items: { include: { product: true } },
+        subOrders: true,
+      },
     });
 
     if (!order) {
@@ -538,8 +557,28 @@ export class OrdersService {
     const prevStatus = order.status;
     const newStatus = dto.status;
 
-    // Admin can update freely, suppliers can mark ACCEPTED / PACKING or CANCELLED (reject)
-    if (currentUser && currentUser.role === Role.SUPPLIER) {
+    // Security check: Role verification & BOLA/IDOR protection
+    if (currentUser && currentUser.role !== Role.ADMIN) {
+      const isSupplier =
+        currentUser.role === Role.SUPPLIER ||
+        (currentUser as any).role === 'SELLER' ||
+        (currentUser as any).userType === 'SELLER';
+
+      if (!isSupplier) {
+        throw new ForbiddenException('Buyurtma holatini faqat administrator yoki tegishli ta‘minotchi o‘zgartirishi mumkin');
+      }
+
+      // BOLA/IDOR check: Ensure products/subOrders in this order belong to this supplier
+      const isOwnerSupplier =
+        order.items.some((it) => it.product?.supplierId === currentUser.id) ||
+        order.subOrders.some((so) => so.supplierId === currentUser.id);
+
+      if (!isOwnerSupplier) {
+        throw new ForbiddenException(
+          'Ushbu buyurtma sizning mahsulotlaringizga tegishli emas. Begona ta‘minotchi buyurtmasini o‘zgartirish taqiqlanadi'
+        );
+      }
+
       if (
         newStatus !== OrderStatus.ACCEPTED &&
         newStatus !== OrderStatus.PACKING &&
@@ -718,7 +757,10 @@ export class OrdersService {
     return this.mapPrismaOrder(updated, currentUser);
   }
 
-  async paySecondHalf(orderId: string, currentUser?: CurrentUserPayload | null): Promise<Order> {
+  async paySecondHalf(
+    orderId: string,
+    currentUser?: CurrentUserPayload | null
+  ): Promise<Order | SecondHalfPaymentSession> {
     const order = await this.prisma.order.findFirst({
       where: { OR: [{ id: orderId }, { orderNumber: orderId }] },
     });
@@ -743,37 +785,111 @@ export class OrdersService {
       throw new BadRequestException('Ikkinchi to‘lov allaqachon amalga oshirilgan');
     }
 
-    const amount = Number(order.secondPaymentAmount || Math.round(Number(order.finalAmount) / 2));
+    // Transit / Arrival validation: Goods must be in transit or arrived at destination
+    const allowedStatuses: OrderStatus[] = [OrderStatus.ARRIVED, OrderStatus.IN_TRANSIT];
+    if (!allowedStatuses.includes(order.status)) {
+      throw new BadRequestException(
+        "Ikkinchi 50% to‘lov faqat yuk yo‘lda (IN_TRANSIT) yoki manzilga yetib borganda (ARRIVED) amalga oshirilishi mumkin"
+      );
+    }
 
-    const updated = await this.prisma.$transaction(async (tx) => {
-      await tx.paymentTransaction.create({
-        data: {
+    const amount = Number(
+      order.secondPaymentAmount ||
+      (Number(order.finalAmount) - Math.round(Number(order.finalAmount) / 2))
+    );
+
+    // Verify whether real payment gateway transaction (Payme/Click) has been processed
+    const paidGatewayTx = await this.prisma.paymentTransaction.findFirst({
+      where: {
+        orderId: order.id,
+        paymentType: 'SECOND_50',
+        status: PaymentStatus.PAID,
+      },
+    });
+
+    if (!paidGatewayTx) {
+      // Payment has NOT been verified from Payme/Click!
+      // Do NOT set status = PAID and do NOT reveal the PIN!
+      // Create/ensure PENDING payment transaction and return genuine checkout session
+      let pendingTx = await this.prisma.paymentTransaction.findFirst({
+        where: {
           orderId: order.id,
-          provider: PaymentProvider.PAYME,
           paymentType: 'SECOND_50',
-          transactionId: `TX-${order.orderNumber}-P2`,
-          amount,
-          status: PaymentStatus.PAID,
-          qrReceiptUrl: `https://bunkerstroy.uz/receipt/${order.id}-p2`,
+          status: PaymentStatus.PENDING,
         },
       });
 
-      return tx.order.update({
-        where: { id: order.id },
-        data: {
-          isSecondPaid: true,
-          status: OrderStatus.FULLY_PAID,
-          isAcceptanceCodeRevealed: true,
-        },
-        include: ORDER_FULL_INCLUDE,
+      if (!pendingTx) {
+        pendingTx = await this.prisma.paymentTransaction.create({
+          data: {
+            orderId: order.id,
+            provider: PaymentProvider.PAYME,
+            paymentType: 'SECOND_50',
+            transactionId: `TX-${order.orderNumber}-P2-PENDING`,
+            amount,
+            status: PaymentStatus.PENDING,
+            qrReceiptUrl: `https://bunkerstroy.uz/receipt/${order.id}-p2`,
+          },
+        });
+      }
+
+      const paymeMerchantId = process.env.PAYME_MERCHANT_ID || 'bunker_payme_merchant_id';
+      const paymeParams = Buffer.from(
+        `m=${paymeMerchantId};ac.order_id=${order.id};a=${amount * 100}`
+      ).toString('base64');
+      const paymeCheckoutUrl = `https://checkout.paycom.uz/${paymeParams}`;
+
+      const clickServiceId = process.env.CLICK_SERVICE_ID || '38491';
+      const clickMerchantId = process.env.CLICK_MERCHANT_ID || '29182';
+      const clickCheckoutUrl = `https://my.click.uz/services/pay?service_id=${clickServiceId}&merchant_id=${clickMerchantId}&amount=${amount}&transaction_param=${order.id}&return_url=https://bunkerstroy.uz/orders/${order.id}`;
+
+      await this.auditLogService.logAction({
+        actorId: currentUser.id,
+        action: 'SECOND_PAYMENT_INITIATED',
+        category: 'PAYMENT',
+        details: `Ikkinchi 50% to‘lov uchun to‘lov havolasi yaratildi (${amount} so'm): ${order.orderNumber}`,
+        level: 'INFO',
       });
+
+      return {
+        paymentRequired: true,
+        orderId: order.id,
+        orderNumber: order.orderNumber,
+        amount,
+        paymentType: 'SECOND_50',
+        status: 'PENDING_PAYMENT',
+        invoiceNumber: `INV-${order.orderNumber}-P2`,
+        paymeCheckoutUrl,
+        clickCheckoutUrl,
+        checkoutUrl: paymeCheckoutUrl,
+        message:
+          'Ikkinchi 50% to‘lov uchun to‘lov havolasi yaratildi. To‘lov shlyuzi orqali to‘lov o‘tgach, PIN kod ochiladi.',
+        order: this.mapPrismaOrder(
+          await this.prisma.order.findUniqueOrThrow({
+            where: { id: order.id },
+            include: ORDER_FULL_INCLUDE,
+          }),
+          currentUser
+        ),
+      };
+    }
+
+    // Payment verified through payment gateway! Transition order to FULLY_PAID and reveal PIN
+    const updated = await this.prisma.order.update({
+      where: { id: order.id },
+      data: {
+        isSecondPaid: true,
+        status: OrderStatus.FULLY_PAID,
+        isAcceptanceCodeRevealed: true,
+      },
+      include: ORDER_FULL_INCLUDE,
     });
 
     await this.auditLogService.logAction({
-      actorId: currentUser?.id || order.buyerId,
+      actorId: currentUser.id,
       action: 'SECOND_PAYMENT_COMPLETED',
       category: 'PAYMENT',
-      details: `Ikkinchi 50% to‘lov qabul qilindi (${amount} so'm). Qabul kodi mijozga ochildi: ${order.orderNumber}`,
+      details: `Ikkinchi 50% to‘lov shlyuz orqali qabul qilindi (${amount} so'm). Qabul kodi mijozga ochildi: ${order.orderNumber}`,
       level: 'INFO',
     });
 

@@ -371,17 +371,28 @@ export const DriverMobileView: React.FC = () => {
   };
 
   const handlePinSubmit = () => {
+    if (!pinInput.trim()) {
+      triggerHaptic();
+      setPinError('Iltimos, mijozdan 4 xonali qabul PIN-kodini oling va kiriting!');
+      return;
+    }
     if (pinInput.trim() === task.correctPin) {
       triggerHaptic();
       setIsPinVerified(true);
       setPinError(null);
     } else {
       triggerHaptic();
-      setPinError(`Noto‘g‘ri PIN-kod! (Demo sinov kodi: ${task.correctPin})`);
+      setPinError('Noto‘g‘ri PIN-kod! Iltimos, mijozdan 4 xonali qabul kodini oling.');
     }
   };
 
   const handleDeliverComplete = async () => {
+    if (!isPinVerified || !pinInput.trim()) {
+      triggerHaptic();
+      setPinError('Iltimos, avval mijozning qabul PIN-kodini kiriting va tasdiqlang!');
+      return;
+    }
+
     const photoToUse =
       deliveryPhoto ||
       'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80';
@@ -402,7 +413,7 @@ export const DriverMobileView: React.FC = () => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
           },
-          body: JSON.stringify({ code: pinInput || task.correctPin, photoUrl: photoToUse })
+          body: JSON.stringify({ code: pinInput.trim(), photoUrl: photoToUse })
         });
       } catch (e) {
         console.warn('API driver-verify-code sync error:', e);
@@ -978,9 +989,6 @@ export const DriverMobileView: React.FC = () => {
                     <KeyRound className="w-4 h-4 text-[#F59E0B]" />
                     <span>Mijozning 4 xonali PIN-kodini kiriting:</span>
                   </label>
-                  <span className="text-[10px] font-mono text-slate-500">
-                    (Demo PIN: <strong>{task.correctPin}</strong>)
-                  </span>
                 </div>
 
                 <div className="flex items-center gap-3">
