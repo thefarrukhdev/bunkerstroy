@@ -54,7 +54,7 @@ import {
   Tag
 } from 'lucide-react';
 import { Product, Order, OrderStatus, COLOR_OPTIONS, ColorOption } from '@bunkerstroy/types';
-import { Button, Badge, Modal, Alert } from '@bunkerstroy/ui';
+import { Button, Badge, Modal, Alert, ProductCard } from '@bunkerstroy/ui';
 import { useLanguage } from './context/LanguageContext';
 import { apiFetch, resolveApiUrl } from './services/apiClient';
 
@@ -2184,35 +2184,13 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
                     p.supplierName.toLowerCase().includes(posSearchTerm.toLowerCase())
                 )
                 .map((prod) => (
-                  <div
+                  <ProductCard
                     key={prod.id}
+                    product={prod}
+                    variant="pos"
+                    onAddToCart={() => handleAddItemToBasket(prod)}
                     onClick={() => handleAddItemToBasket(prod)}
-                    className="industrial-card rounded-xl p-3 bg-white border border-slate-200 hover:border-[#D95D1E] cursor-pointer transition-all flex flex-col justify-between select-none group"
-                  >
-                    <div>
-                      <div className="relative aspect-video rounded-lg overflow-hidden bg-slate-50 mb-2 border border-slate-200">
-                        <img
-                          src={prod.images?.[0] || SAMPLE_IMAGE_PRESETS[0].url}
-                          alt=""
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                        />
-                        <span className="absolute bottom-1 right-1 bg-slate-50/90 px-1.5 py-0.2 rounded text-[9px] font-mono text-slate-600">
-                          {prod.stock} {prod.unit || 'dona'}
-                        </span>
-                      </div>
-                      <h4 className="font-bold text-slate-900 text-xs line-clamp-2 leading-tight">
-                        {prod.title}
-                      </h4>
-                    </div>
-                    <div className="pt-2 mt-2 border-t border-slate-200 flex items-center justify-between">
-                      <span className="text-xs font-black text-[#D95D1E] font-mono-numbers">
-                        {Number(prod.price).toLocaleString()} so‘m
-                      </span>
-                      <div className="w-6 h-6 rounded bg-[#D95D1E] text-white flex items-center justify-center font-black">
-                        <Plus className="w-3.5 h-3.5" />
-                      </div>
-                    </div>
-                  </div>
+                  />
                 ))}
             </div>
           </div>

@@ -23,7 +23,8 @@ import {
   TabTrigger,
   TabsContent,
   Skeleton,
-  Tooltip
+  Tooltip,
+  ProductCard
 } from '../src/index';
 
 console.log('🧪 Starting BunkerStroy 10 Global Industrial Components Test Suite...\n');
@@ -387,6 +388,85 @@ test('Existing Button, Badge, Card continue to render properly', () => {
   );
   assert(cardHtml.includes('Card Content'), 'card content rendered');
   assert(cardHtml.includes('chamfer-tab-corner'), 'chamfered class on card');
+});
+
+// 11. ProductCard Tests
+test('ProductCard renders catalog variant with full industrial badges, price, and actions', () => {
+  const sampleProduct = {
+    id: 'prod-001',
+    title: 'E2E Sement M500 Zinapoya',
+    price: 80000,
+    unit: 'BAG_50KG',
+    stock: 450,
+    images: ['https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800'],
+    supplierName: 'Toshkent G‘isht va Sement',
+    hasDelivery: true,
+    vatRate: 12,
+    tieredPrices: [{ minQty: 100, price: 74000 }]
+  };
+
+  const html = ReactDOMServer.renderToStaticMarkup(
+    <ProductCard
+      product={sampleProduct}
+      variant="catalog"
+      onAddToCart={() => {}}
+    />
+  );
+
+  assert(html.includes('E2E Sement M500 Zinapoya'), 'product title rendered');
+  assert(html.includes('450 qop (50kg)'), 'stock badge rendered with unit');
+  assert(html.includes('50/50 Escrow'), 'escrow badge rendered');
+  assert(html.includes('Toshkent G‘isht va Sement'), 'supplier name rendered');
+  assert(html.includes('Yetkazish bor'), 'delivery badge rendered');
+  assert(html.includes('12% QQS'), 'QQS indicator rendered');
+  assert(html.includes('80,000'), 'formatted price rendered');
+  assert(html.includes('Ulgurji: 74,000 so‘mdan'), 'tiered price rendered');
+  assert(html.includes('Savatga'), 'action button rendered');
+});
+
+test('ProductCard renders POS variant with compact layout and fast-add trigger', () => {
+  const sampleProduct = {
+    id: 'prod-pos',
+    title: 'Qurilish Ohagi 25kg',
+    price: 35000,
+    unit: 'BAG_25KG',
+    stock: 80
+  };
+
+  const html = ReactDOMServer.renderToStaticMarkup(
+    <ProductCard
+      product={sampleProduct}
+      variant="pos"
+      onAddToCart={() => {}}
+    />
+  );
+
+  assert(html.includes('Qurilish Ohagi 25kg'), 'title rendered');
+  assert(html.includes('35,000 so‘m'), 'price rendered');
+  assert(html.includes('80 qop (25kg)'), 'stock rendered');
+  assert(html.includes('aspect-video'), 'pos variant uses 16:9 aspect');
+});
+
+test('ProductCard renders compact variant with horizontal structure', () => {
+  const sampleProduct = {
+    id: 'prod-compact',
+    title: 'G‘isht M150 Pishgan',
+    price: 1200,
+    unit: 'DONA',
+    stock: 5000
+  };
+
+  const html = ReactDOMServer.renderToStaticMarkup(
+    <ProductCard
+      product={sampleProduct}
+      variant="compact"
+      onAddToCart={() => {}}
+    />
+  );
+
+  assert(html.includes('G‘isht M150 Pishgan'), 'compact title rendered');
+  assert(html.includes('1,200 so‘m'), 'compact price rendered');
+  assert(html.includes('w-16 h-16'), 'compact image box rendered');
 });
 
 console.log('\n========================================');

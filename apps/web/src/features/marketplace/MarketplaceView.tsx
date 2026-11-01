@@ -15,7 +15,7 @@ import {
   Tag
 } from 'lucide-react';
 import { Product } from '@bunkerstroy/types';
-import { Skeleton, Button, Badge, Input, Select } from '@bunkerstroy/ui';
+import { Skeleton, Button, Badge, Input, Select, ProductCard } from '@bunkerstroy/ui';
 import { apiFetch } from '../../services/apiClient';
 
 /* ==========================================================================
@@ -293,97 +293,16 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteredProducts.map((p) => {
-            const priceNum = Number(p.price);
-
-            return (
-              <div
-                key={p.id}
-                onClick={() => navigate(`/products/${p.id}`)}
-                className="group relative rounded-2xl p-4 flex flex-col justify-between border border-slate-200 hover:border-slate-300 bg-white shadow-2xs hover:shadow-md cursor-pointer select-none transition-all duration-200"
-              >
-                <div>
-                  {/* Product Image Box */}
-                  <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-slate-50 border border-slate-100 mb-3 group-hover:border-slate-200 transition-colors">
-                    <img
-                      src={p.images?.[0] || 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800'}
-                      alt={p.title}
-                      loading="lazy"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src =
-                          'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800';
-                      }}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-
-                    {/* Stock badge */}
-                    <div className="absolute bottom-2.5 right-2.5 bg-white/95 backdrop-blur-md px-2.5 py-0.5 rounded text-[10px] font-mono font-bold text-slate-700 border border-slate-200 shadow-2xs">
-                      {p.stock > 0 ? `${p.stock} ${formatUnit(p.unit)}` : 'Zaxira tugagan'}
-                    </div>
-
-                    {/* 50/50 Escrow Pill on Image */}
-                    <div className="absolute top-2.5 left-2.5">
-                      <Badge variant="success" size="sm" isMono>
-                        <ShieldCheck className="w-3 h-3 mr-1 inline-block text-emerald-600" />
-                        50/50 Escrow
-                      </Badge>
-                    </div>
-                  </div>
-
-                  {/* Supplier & Delivery Badges */}
-                  <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 mb-1.5">
-                    <span className="truncate max-w-[170px] text-slate-700 font-semibold flex items-center gap-1">
-                      <Factory className="w-3 h-3 text-[#D95D1E] shrink-0" />
-                      {p.supplierName || 'Rasmiy Ishlab chiqaruvchi'}
-                    </span>
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      {p.hasDelivery && (
-                        <Badge variant="success" size="sm" isMono>
-                          <Truck className="w-3 h-3 mr-1 inline-block" /> Yetkazish bor
-                        </Badge>
-                      )}
-                      <span className="text-slate-300">|</span>
-                      <span className="text-slate-600 font-medium text-[10px]">12% QQS</span>
-                    </div>
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="font-heading font-black text-slate-900 text-base line-clamp-2 group-hover:text-[#D95D1E] transition-colors leading-snug">
-                    {p.title}
-                  </h3>
-                </div>
-
-                {/* Bottom Price & Action Row */}
-                <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] uppercase font-mono text-slate-500 block">
-                      Zavod Narxi:
-                    </span>
-                    <p className="text-lg font-heading font-black text-[#D95D1E] leading-tight font-mono-numbers">
-                      {priceNum.toLocaleString()}{' '}
-                      <span className="text-xs font-sans font-normal text-slate-600">
-                        so‘m / {formatUnit(p.unit)}
-                      </span>
-                    </p>
-                    {p.tieredPrices && p.tieredPrices.length > 0 && (
-                      <span className="text-[10px] font-mono font-bold text-amber-800 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded mt-0.5 inline-block">
-                        Ulgurji: {Number(p.tieredPrices[p.tieredPrices.length - 1].price).toLocaleString()} so‘mdan
-                      </span>
-                    )}
-                  </div>
-
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={(e) => handleAdd(e, p)}
-                    leftIcon={addedId === p.id ? <Check className="w-4 h-4 stroke-[3]" /> : <ShoppingCart className="w-4 h-4" />}
-                  >
-                    {addedId === p.id ? 'Savatda' : <span className="hidden sm:inline">Savatga</span>}
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
+          {filteredProducts.map((p) => (
+            <ProductCard
+              key={p.id}
+              product={p}
+              variant="catalog"
+              isAdded={addedId === p.id}
+              onAddToCart={(e) => handleAdd(e, p)}
+              onClick={(prod) => navigate(`/products/${prod.id}`)}
+            />
+          ))}
         </div>
       )}
     </div>
