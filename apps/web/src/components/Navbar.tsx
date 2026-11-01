@@ -251,14 +251,9 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({ onClick }) => {
 
       {/* Brand Name & Subtitle */}
       <div className="flex flex-col">
-        <div className="flex items-center gap-1.5 leading-none">
-          <span className="font-heading font-black text-lg sm:text-xl tracking-tight text-slate-900">
-            <span className="text-[#D95D1E]">BUNKER</span>STROY
-          </span>
-          <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-orange-50 text-[#D95D1E] border border-orange-200 leading-none">
-            B2B
-          </span>
-        </div>
+        <span className="font-heading font-black text-lg sm:text-xl tracking-tight text-slate-900 leading-none">
+          <span className="text-[#D95D1E]">BUNKER</span>STROY
+        </span>
         <span className="text-[9px] font-mono font-medium tracking-[0.14em] text-slate-500 uppercase mt-1 leading-none hidden sm:block">
           Sanoat Xaridlari B2B &amp; B2C
         </span>
