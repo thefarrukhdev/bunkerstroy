@@ -57,7 +57,6 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedRegion, setSelectedRegion] = useState('all');
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [addedId, setAddedId] = useState<string | null>(null);
 
   // Sync from URL search params if present
@@ -108,26 +107,8 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
     }
   };
 
-  // Filter products locally by selected color if active
-  const filteredProducts = useMemo(() => {
-    if (!selectedColor) return products;
-    return products.filter((p) => {
-      // Check variants
-      if (p.variants && p.variants.length > 0) {
-        const matchesVariant = p.variants.some(
-          (v) => v.color && v.color.toLowerCase().includes(selectedColor.toLowerCase())
-        );
-        if (matchesVariant) return true;
-      }
-      // Check title and description
-      const text = `${p.title} ${p.description || ''}`.toLowerCase();
-      const col = COLOR_OPTIONS.find((c) => c.id === selectedColor);
-      if (col && text.includes(col.label.toLowerCase().split('/')[0].trim())) {
-        return true;
-      }
-      return false;
-    });
-  }, [products, selectedColor]);
+  // Direct products reference (filtered by API category, region, and search)
+  const filteredProducts = products;
 
   // Unit formatter
   const formatUnit = (unit: string): string => {
@@ -275,69 +256,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
         ))}
       </div>
 
-      {/* 4. COLOR_OPTIONS Palette Filter Bar */}
-      <div className="bg-white border border-slate-200 p-3 rounded-2xl space-y-2 shadow-2xs">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono font-bold text-slate-900 uppercase tracking-wider">
-              Ranglar Bo‘yicha Filtr (Palette):
-            </span>
-            {selectedColor && (
-              <span className="text-[10px] font-mono bg-orange-50 text-[#D95D1E] border border-orange-200 px-2 py-0.5 rounded font-bold">
-                Tanlangan: {COLOR_OPTIONS.find((c) => c.id === selectedColor)?.label}
-              </span>
-            )}
-          </div>
-          {selectedColor && (
-            <button
-              type="button"
-              onClick={() => setSelectedColor(null)}
-              className="text-[10px] font-mono text-[#D95D1E] hover:underline cursor-pointer font-bold"
-            >
-              Rang filtrini tozalash
-            </button>
-          )}
-        </div>
-
-        <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-none">
-          <button
-            type="button"
-            onClick={() => setSelectedColor(null)}
-            className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-all cursor-pointer border ${
-              selectedColor === null
-                ? 'bg-slate-900 text-white border-slate-900'
-                : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-300 hover:text-slate-900'
-            }`}
-          >
-            Barchasi
-          </button>
-
-          {COLOR_OPTIONS.map((col) => {
-            const isSelected = selectedColor === col.id;
-            return (
-              <button
-                key={col.id}
-                type="button"
-                onClick={() => setSelectedColor(isSelected ? null : col.id)}
-                title={col.label}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-semibold transition-all cursor-pointer border shrink-0 ${
-                  isSelected
-                    ? 'bg-orange-50 border-[#D95D1E] text-[#D95D1E] ring-1 ring-[#D95D1E]'
-                    : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 hover:text-slate-900'
-                }`}
-              >
-                <span
-                  className="w-3.5 h-3.5 rounded-full border shrink-0 shadow-inner"
-                  style={{ backgroundColor: col.bg, borderColor: col.border }}
-                />
-                <span className="text-[11px]">{col.label.split('/')[0].trim()}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* 5. Products Cards Grid */}
+      {/* Products Cards Grid */}
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -377,9 +296,6 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredProducts.map((p) => {
             const priceNum = Number(p.price);
-
-            // Extract variant colors or assign standard preview colors
-            const variantColors = p.variants?.map((v) => v.color).filter(Boolean) || [];
 
             return (
               <div
@@ -436,28 +352,6 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart })
                   <h3 className="font-heading font-black text-slate-900 text-base line-clamp-2 group-hover:text-[#D95D1E] transition-colors leading-snug">
                     {p.title}
                   </h3>
-
-                  {/* Variants / Color Swatches Preview if available */}
-                  {variantColors.length > 0 && (
-                    <div className="flex items-center gap-1.5 mt-2">
-                      <span className="text-[10px] font-mono text-slate-500">Ranglar:</span>
-                      <div className="flex items-center gap-1">
-                        {variantColors.slice(0, 5).map((cName, idx) => {
-                          const opt = COLOR_OPTIONS.find((c) =>
-                            cName?.toLowerCase().includes(c.id) || cName?.toLowerCase().includes(c.label.toLowerCase())
-                          );
-                          return (
-                            <span
-                              key={idx}
-                              title={cName || ''}
-                              className="w-3 h-3 rounded-full border border-slate-300"
-                              style={{ backgroundColor: opt?.bg || '#64748b' }}
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
                 </div>
 
                 {/* Bottom Price & Action Row */}

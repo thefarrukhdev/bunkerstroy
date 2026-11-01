@@ -23,7 +23,6 @@ import {
 } from 'lucide-react';
 import { Product } from '@bunkerstroy/types';
 import { Skeleton, Button, Badge } from '@bunkerstroy/ui';
-import { COLOR_OPTIONS, ColorOption } from './MarketplaceView';
 import { apiFetch } from '../../services/apiClient';
 
 interface ProductDetailViewProps {
@@ -42,8 +41,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
   const [addedNotice, setAddedNotice] = useState(false);
   const [selectedImageIdx, setSelectedImageIdx] = useState(0);
 
-  // Selected Variant state: Color and Size
-  const [selectedColor, setSelectedColor] = useState<string>('kulrang');
+  // Selected Variant state: Size / Fraction
   const [selectedSize, setSelectedSize] = useState<string>('');
 
   useEffect(() => {
@@ -360,43 +358,6 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
                 </div>
               </div>
             )}
-
-            {/* COLOR_OPTIONS: Interactive Palette Selector */}
-            <div className="pt-2 border-t border-slate-100 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-700 uppercase">
-                  Rangni tanlang (Color Palette):
-                </span>
-                <span className="text-xs font-mono text-[#D95D1E] font-bold">
-                  {COLOR_OPTIONS.find((c) => c.id === selectedColor)?.label || 'Standart'}
-                </span>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2">
-                {COLOR_OPTIONS.map((col) => {
-                  const isSelected = selectedColor === col.id;
-                  return (
-                    <button
-                      key={col.id}
-                      type="button"
-                      onClick={() => setSelectedColor(col.id)}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${
-                        isSelected
-                          ? 'bg-orange-50 border-[#D95D1E] text-[#D95D1E] ring-1 ring-[#D95D1E]'
-                          : 'bg-slate-50 border-slate-200 text-slate-700 hover:border-slate-300 hover:text-slate-900'
-                      }`}
-                    >
-                      <span
-                        className="w-3.5 h-3.5 rounded-full border shadow-inner shrink-0"
-                        style={{ backgroundColor: col.bg, borderColor: col.border }}
-                      />
-                      <span>{col.label.split('/')[0].trim()}</span>
-                      {isSelected && <Check className="w-3 h-3 text-[#D95D1E]" />}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
 
             {/* O'lchamlar (Sizes Selector) */}
             <div className="pt-2 border-t border-slate-100 space-y-2">
