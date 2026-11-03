@@ -260,8 +260,9 @@ export const LogisticsView: React.FC = () => {
               <div>
                 <div className="flex items-center gap-2">
                   <h3 className="text-base font-bold text-slate-900">Reys Tasdiqlandi</h3>
-                  <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">
-                    STATUS: BIRIKTIRILDI
+                  <span className="bg-emerald-50 text-emerald-800 border border-emerald-200/80 px-2.5 py-0.5 rounded-md text-xs font-sans font-semibold inline-flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                    Biriktirildi
                   </span>
                 </div>
                 <p className="text-xs text-slate-500 mt-0.5 font-mono">

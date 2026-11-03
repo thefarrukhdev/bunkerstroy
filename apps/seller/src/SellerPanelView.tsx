@@ -1490,7 +1490,7 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
         >
           <Calculator className="w-4 h-4" />
           <span>Do‘kon Kassa / POS CRM</span>
-          <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <span className="text-xs px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200/80 font-sans font-semibold">
             POS
           </span>
         </button>
@@ -2436,7 +2436,7 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
                 O‘zmetkombinat, Qizilqumsement, Knauf va boshqa yirik zavodlardan to‘g‘ridan-to‘g‘ri
                 vagon va fura partiyalarida xarid qiling. Bank to‘lov topshiriqnomasi va shartnoma bilan.
               </p>
-              <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-mono">
+              <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-sans">
                 <Truck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                 <span>
                   <strong>«Kim sotsa — o‘sha yetkazadi»</strong> qoidasi: Zavod do‘konga ulgurji sotganda yetkazib berish to‘liq <strong>ZAVODNING bo‘ynida</strong>.
@@ -3115,7 +3115,7 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
                             <span className="font-bold text-[#D95D1E] text-sm font-mono-numbers block">
                               {Number(ord.totalAmount).toLocaleString()} so‘m
                             </span>
-                            <span className="text-[9px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+                            <span className="text-xs text-emerald-800 font-semibold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/80 inline-flex items-center gap-1 font-sans">
                               50/50 Escrow
                             </span>
                           </td>
@@ -3198,7 +3198,8 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
                 50/50 Escrow Mablag‘lari va To‘lov Reestri
               </h3>
             </div>
-            <span className="text-xs font-mono text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200">
+            <span className="text-xs font-sans text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200/80 font-semibold inline-flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
               BunkerStroy Escrow Himoyasi
             </span>
           </div>
@@ -3235,7 +3236,7 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
                       {row.netAmount.toLocaleString()} so‘m
                     </td>
                     <td className="p-3">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">
+                      <span className="px-2.5 py-0.5 rounded-md text-xs font-sans font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200/80">
                         {row.status}
                       </span>
                     </td>

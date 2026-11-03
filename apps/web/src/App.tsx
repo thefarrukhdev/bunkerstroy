@@ -250,11 +250,11 @@ export const AppContent: React.FC = () => {
                 birlashtiruvchi zamonaviy marketplace va og‘ir yuk logistika platformasi.
               </p>
 
-              <div className="flex items-center gap-2 pt-1 font-mono text-[10px]">
-                <span className="bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-slate-700">
+              <div className="flex items-center gap-2 pt-1 font-sans text-xs">
+                <span className="bg-slate-100 border border-slate-200/80 px-2.5 py-0.5 rounded-md text-slate-700 font-semibold">
                   ISO 9001:2015
                 </span>
-                <span className="bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-emerald-700 font-bold">
+                <span className="bg-slate-100 border border-slate-200/80 px-2.5 py-0.5 rounded-md text-slate-700 font-semibold">
                   O‘zDSt &amp; GOST
                 </span>
               </div>
@@ -399,8 +399,9 @@ export const AppContent: React.FC = () => {
             <p className="text-slate-500">
               &copy; 2026 BunkerStroy Enterprise LLC. Barcha huquqlar himoyalangan.
             </p>
-            <div className="flex items-center gap-2">
-              <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded text-[11px] font-bold">
+            <div className="flex items-center gap-2 font-sans">
+              <span className="bg-emerald-50 text-emerald-800 border border-emerald-200/80 px-2.5 py-0.5 rounded-md text-xs font-semibold inline-flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 SLA: 99.98%
               </span>
             </div>

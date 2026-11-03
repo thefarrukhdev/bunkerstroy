@@ -232,7 +232,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
             </div>
 
             {/* 50/50 Escrow badge */}
-            <div className="absolute top-3 left-3 bg-emerald-50/95 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold text-emerald-700 border border-emerald-200 shadow-2xs flex items-center gap-1.5">
+            <div className="absolute top-3 left-3 bg-emerald-50/95 backdrop-blur-md px-2.5 py-1 rounded-lg text-xs font-sans font-semibold text-emerald-800 border border-emerald-200/80 shadow-2xs flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
               <span>50/50 Xavfsiz Escrow</span>
             </div>
@@ -258,13 +258,13 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
           )}
 
           {/* Verified Seller & Factory Card */}
-          <div className="rounded-2xl p-4 space-y-3 font-mono text-xs bg-white border border-slate-200 shadow-2xs">
+          <div className="rounded-2xl p-4 space-y-3 font-sans text-xs bg-white border border-slate-200 shadow-2xs">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <span className="text-slate-500 uppercase text-[10px] font-bold">
                 Ishlab chiqaruvchi &amp; Sotuvchi:
               </span>
-              <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
-                <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Rasmiy Zavod
+              <span className="inline-flex items-center gap-1 text-xs text-emerald-800 font-semibold bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 rounded-md">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Rasmiy Zavod
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -556,9 +556,9 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({ onAddToCar
                   {product.stock.toLocaleString()} {unitLabel}
                 </span>
               </div>
-              <div className="py-2.5 flex justify-between">
+              <div className="py-2.5 flex justify-between items-center">
                 <span className="text-slate-500">Sertifikat:</span>
-                <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                <span className="font-semibold text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-md border border-slate-200/80 text-xs font-sans">
                   O‘zDSt / GOST 34028
                 </span>
               </div>

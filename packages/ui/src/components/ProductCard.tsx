@@ -87,7 +87,7 @@ export const defaultFormatPrice = (price: number | string): string => {
 export const B2BBadge: React.FC<{ className?: string }> = ({ className }) => (
   <span
     className={cn(
-      'inline-flex items-center justify-center px-2 py-0.5 rounded-md border border-[#E26625]/60 bg-[#FFF6F0] text-[#D95D1E] font-black text-[11px] leading-none tracking-wide font-mono shadow-2xs select-none',
+      'inline-flex items-center justify-center px-2 py-0.5 rounded-md border border-[#E26625]/60 bg-[#FFF6F0] text-[#D95D1E] font-black text-xs leading-none tracking-normal font-sans shadow-2xs select-none',
       className
     )}
   >
@@ -310,38 +310,36 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
 
           {/* Badges on Image (50/50 Escrow and B2B Pill) */}
-          <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 flex-wrap">
+          <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 flex-wrap z-10">
             {showEscrowBadge && (
-              <Badge variant="success" size="sm" isMono>
-                <ShieldCheck className="w-3 h-3 mr-1 inline-block text-emerald-600" />
-                50/50 Escrow
-              </Badge>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-sans font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200/90 shadow-2xs backdrop-blur-xs">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span>50/50 Escrow</span>
+              </span>
             )}
             {isB2B && <B2BBadge />}
           </div>
         </div>
 
         {/* Supplier & Delivery Badges */}
-        <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 mb-1.5">
+        <div className="flex items-center justify-between gap-2 text-xs font-sans text-slate-500 mb-2">
           {showSupplier && (
-            <span className="truncate max-w-[170px] text-slate-700 font-semibold flex items-center gap-1">
-              <Factory className="w-3 h-3 text-[#D95D1E] shrink-0" />
-              {product.supplierName || 'Rasmiy Ishlab chiqaruvchi'}
+            <span className="min-w-0 flex-1 truncate text-slate-700 font-semibold flex items-center gap-1 text-[11px]">
+              <Factory className="w-3.5 h-3.5 text-[#D95D1E] shrink-0" />
+              <span className="truncate">{product.supplierName || 'Rasmiy Ishlab chiqaruvchi'}</span>
             </span>
           )}
-          <div className="flex items-center gap-1.5 shrink-0 ml-auto">
+          <div className="flex items-center gap-1.5 shrink-0">
             {showDelivery && product.hasDelivery && (
-              <Badge variant="success" size="sm" isMono>
-                <Truck className="w-3 h-3 mr-1 inline-block" /> Yetkazish bor
-              </Badge>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-sans font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200/90">
+                <Truck className="w-3 h-3 text-emerald-600 shrink-0" />
+                <span>Yetkazish bor</span>
+              </span>
             )}
             {showVat && (
-              <>
-                {showDelivery && product.hasDelivery && <span className="text-slate-300">|</span>}
-                <span className="text-slate-600 font-medium text-[10px]">
-                  {product.vatRate !== undefined ? `${product.vatRate}% QQS` : '12% QQS'}
-                </span>
-              </>
+              <span className="text-slate-500 font-medium text-[11px]">
+                {product.vatRate !== undefined ? `${product.vatRate}% QQS` : '12% QQS'}
+              </span>
             )}
           </div>
         </div>

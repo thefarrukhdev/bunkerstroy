@@ -20,6 +20,7 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   isMono?: boolean;
+  uppercase?: boolean;
 }
 
 export const Badge: React.FC<BadgeProps> = ({
@@ -30,7 +31,8 @@ export const Badge: React.FC<BadgeProps> = ({
   dot = false,
   leftIcon,
   rightIcon,
-  isMono = true,
+  isMono = false,
+  uppercase = false,
   ...props
 }) => {
   const normalizedVariant =
@@ -38,34 +40,35 @@ export const Badge: React.FC<BadgeProps> = ({
 
   const variantStyles: Record<string, string> = {
     warning: 'bg-bunker-amber-500/10 text-bunker-amber-500 border-bunker-amber-500/25',
-    success: 'bg-bunker-status-green/10 text-bunker-status-green border-bunker-status-green/25',
+    success: 'bg-emerald-50 text-emerald-800 border-emerald-200/80',
     danger: 'bg-bunker-status-red/10 text-bunker-status-red border-bunker-status-red/25',
     info: 'bg-bunker-status-cyan/10 text-bunker-status-cyan border-bunker-status-cyan/25',
-    neutral: 'bg-bunker-surface-2 text-bunker-text-secondary border-bunker-border-strong',
+    neutral: 'bg-slate-100 text-slate-700 border-slate-200/80',
     brand: 'bg-[#D95D1E]/10 text-[#D95D1E] border-[#D95D1E]/30',
     purple: 'bg-indigo-500/10 text-indigo-500 border-indigo-500/25'
   };
 
   const dotColorStyles: Record<string, string> = {
     warning: 'bg-bunker-amber-500',
-    success: 'bg-bunker-status-green',
+    success: 'bg-emerald-600',
     danger: 'bg-bunker-status-red',
     info: 'bg-bunker-status-cyan',
-    neutral: 'bg-bunker-text-muted',
+    neutral: 'bg-slate-500',
     brand: 'bg-[#D95D1E]',
     purple: 'bg-indigo-500'
   };
 
   const sizeStyles: Record<BadgeSize, string> = {
-    sm: 'px-2 py-0.5 text-[10px]',
-    md: 'px-2.5 py-0.5 text-[11px]',
-    lg: 'px-3 py-1 text-xs'
+    sm: 'px-2 py-0.5 text-xs',
+    md: 'px-2.5 py-0.5 text-xs',
+    lg: 'px-3 py-1 text-sm'
   };
 
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-md font-semibold border tracking-wide uppercase',
+        'inline-flex items-center gap-1.5 rounded-md font-semibold border font-sans',
+        uppercase && 'uppercase tracking-wide',
         isMono && 'font-mono',
         sizeStyles[size],
         variantStyles[normalizedVariant],
@@ -73,6 +76,12 @@ export const Badge: React.FC<BadgeProps> = ({
       )}
       {...props}
     >
+      {dot && (
+        <span
+          className={cn('w-1.5 h-1.5 rounded-full shrink-0', dotColorStyles[normalizedVariant])}
+          aria-hidden="true"
+        />
+      )}
       {leftIcon && <span className="shrink-0">{leftIcon}</span>}
       <span>{children}</span>
       {rightIcon && <span className="shrink-0">{rightIcon}</span>}

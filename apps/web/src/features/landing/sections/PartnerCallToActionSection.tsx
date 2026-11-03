@@ -262,7 +262,7 @@ export const PartnerCallToActionSection: React.FC<PartnerCallToActionSectionProp
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, businessType: 'zavod' })}
-                    className={`py-2 px-2.5 rounded-xl border text-xs font-mono font-bold flex flex-col items-center gap-1 cursor-pointer transition-all ${
+                    className={`py-2 px-2.5 rounded-xl border text-xs font-sans font-bold flex flex-col items-center gap-1 cursor-pointer transition-all ${
                       formData.businessType === 'zavod'
                         ? 'bg-orange-50 border-[#D95D1E] text-[#D95D1E]'
                         : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
@@ -275,7 +275,7 @@ export const PartnerCallToActionSection: React.FC<PartnerCallToActionSectionProp
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, businessType: 'market' })}
-                    className={`py-2 px-2.5 rounded-xl border text-xs font-mono font-bold flex flex-col items-center gap-1 cursor-pointer transition-all ${
+                    className={`py-2 px-2.5 rounded-xl border text-xs font-sans font-bold flex flex-col items-center gap-1 cursor-pointer transition-all ${
                       formData.businessType === 'market'
                         ? 'bg-sky-50 border-sky-600 text-sky-700'
                         : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
@@ -288,7 +288,7 @@ export const PartnerCallToActionSection: React.FC<PartnerCallToActionSectionProp
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, businessType: 'usta' })}
-                    className={`py-2 px-2.5 rounded-xl border text-xs font-mono font-bold flex flex-col items-center gap-1 cursor-pointer transition-all ${
+                    className={`py-2 px-2.5 rounded-xl border text-xs font-sans font-bold flex flex-col items-center gap-1 cursor-pointer transition-all ${
                       formData.businessType === 'usta'
                         ? 'bg-emerald-50 border-emerald-600 text-emerald-700'
                         : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
@@ -301,7 +301,7 @@ export const PartnerCallToActionSection: React.FC<PartnerCallToActionSectionProp
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, businessType: 'xaridor' })}
-                    className={`py-2 px-2.5 rounded-xl border text-xs font-mono font-bold flex flex-col items-center gap-1 cursor-pointer transition-all ${
+                    className={`py-2 px-2.5 rounded-xl border text-xs font-sans font-bold flex flex-col items-center gap-1 cursor-pointer transition-all ${
                       formData.businessType === 'xaridor'
                         ? 'bg-purple-50 border-purple-600 text-purple-700'
                         : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'

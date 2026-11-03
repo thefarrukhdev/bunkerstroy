@@ -340,7 +340,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 <div className="text-[9px] text-[#D95D1E] font-bold">{currentRole}</div>
               </div>
             </div>
-            <span className="text-[10px] text-emerald-700 font-bold px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200">
+            <span className="text-xs text-emerald-800 font-semibold px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200/80 inline-flex items-center gap-1 font-sans">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               ONLINE
             </span>
           </div>

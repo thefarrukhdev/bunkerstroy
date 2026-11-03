@@ -749,7 +749,7 @@ export const CalculatorsView: React.FC = () => {
                   className={cn(
                     'py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer min-h-[44px]',
                     insulationThicknessMm === 50
-                      ? 'bg-emerald-50 border-emerald-600 text-emerald-800 ring-1 ring-emerald-600'
+                      ? 'bg-orange-50 border-[#D95D1E] text-[#D95D1E] ring-1 ring-[#D95D1E]'
                       : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                   )}
                 >
@@ -761,7 +761,7 @@ export const CalculatorsView: React.FC = () => {
                   className={cn(
                     'py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer min-h-[44px]',
                     insulationThicknessMm === 100
-                      ? 'bg-emerald-50 border-emerald-600 text-emerald-800 ring-1 ring-emerald-600'
+                      ? 'bg-orange-50 border-[#D95D1E] text-[#D95D1E] ring-1 ring-[#D95D1E]'
                       : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
                   )}
                 >

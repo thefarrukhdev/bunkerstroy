@@ -266,12 +266,14 @@ export const ProductPreviewModal: React.FC<ProductPreviewModalProps> = ({
                 </span>
               </div>
 
-              <div className="flex items-center gap-2 pt-1 border-t border-slate-200/60 text-[11px] font-mono text-slate-600">
-                <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded font-bold">
+              <div className="flex items-center gap-2 pt-1 border-t border-slate-200/60 text-xs font-sans text-slate-600">
+                <span className="bg-emerald-50 text-emerald-800 border border-emerald-200/80 px-2.5 py-0.5 rounded-md font-semibold inline-flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                   50/50 Xavfsiz Escrow
                 </span>
                 {product.hasDelivery && (
-                  <span className="bg-sky-50 text-sky-700 border border-sky-200 px-2 py-0.5 rounded font-bold">
+                  <span className="bg-sky-50 text-sky-800 border border-sky-200/80 px-2.5 py-0.5 rounded-md font-semibold inline-flex items-center gap-1">
+                    <Truck className="w-3.5 h-3.5 text-sky-600" />
                     Yetkazib berish mavjud
                   </span>
                 )}

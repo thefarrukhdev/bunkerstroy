@@ -65,11 +65,12 @@ export const DeliverySection: React.FC = () => {
       {/* 12 Regions Coverage Badge Grid */}
       <div className="rounded-2xl bg-slate-50/75 border border-slate-200 p-5 sm:p-7 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
-          <div className="flex items-center gap-2 text-slate-800 font-mono text-xs sm:text-sm font-bold">
+          <div className="flex items-center gap-2 text-slate-800 font-sans text-xs sm:text-sm font-bold">
             <MapPin className="w-4 h-4 text-[#D95D1E]" />
             <span>REKLAMA VA XARIDORLAR QAMROVI: 12 TA VILOYAT VA QORAQALPOG‘ISTON</span>
           </div>
-          <span className="text-xs font-mono text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200 font-semibold">
+          <span className="text-xs font-sans text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 rounded-md font-semibold inline-flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             Faol Hududiy Tarmoq
           </span>
         </div>

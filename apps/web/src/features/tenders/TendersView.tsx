@@ -214,57 +214,57 @@ export const TendersView: React.FC = () => {
       </div>
 
       {/* 3. Tenders Grid */}
-      <div className="grid grid-cols-1 gap-4 font-mono">
+      <div className="grid grid-cols-1 gap-4 font-sans">
         {filteredTenders.map((tender) => (
           <div
             key={tender.id}
-            className="industrial-card rounded-2xl p-4 sm:p-6 bg-white border border-slate-200 hover:border-slate-300 shadow-sm text-slate-900 space-y-4 transition-all"
+            className="industrial-card rounded-2xl p-4 sm:p-6 bg-white border border-slate-200 hover:border-slate-300 shadow-2xs hover:shadow-md text-slate-900 space-y-4 transition-all duration-200"
           >
-            <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-200">
+            <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <span className="bg-slate-100 text-slate-800 border border-slate-200 px-2 py-0.5 rounded text-[10px] font-bold">
-                  {tender.tenderNumber}
+                <span className="bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-0.5 rounded-md text-xs font-mono font-bold tracking-tight">
+                  #{tender.tenderNumber}
                 </span>
-                <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded text-[10px] font-bold">
+                <span className="bg-orange-50 text-[#D95D1E] border border-orange-200/80 px-2.5 py-0.5 rounded-md text-xs font-sans font-bold tracking-normal inline-flex items-center">
                   {tender.categoryLabel}
                 </span>
               </div>
-              <span className="text-[11px] text-slate-500 font-medium">
-                Muddati: <strong className="text-[#D95D1E]">{tender.submissionDeadline}</strong> gacha
+              <span className="text-xs text-slate-500 font-medium font-sans">
+                Muddati: <strong className="text-[#D95D1E] font-bold">{tender.submissionDeadline}</strong> gacha
               </span>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <h3 className="text-base sm:text-lg font-heading font-black text-slate-900 leading-snug">
                 {tender.projectName}
               </h3>
-              <p className="text-xs text-slate-600 font-sans leading-relaxed">
-                Spetsifikatsiya: <strong>{tender.volumeSpecification}</strong>
+              <p className="text-xs sm:text-sm text-slate-600 font-sans leading-relaxed">
+                Spetsifikatsiya: <strong className="text-slate-800">{tender.volumeSpecification}</strong>
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pt-1">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pt-1 font-sans">
               <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-1">
-                <span className="text-[10px] text-slate-500 uppercase font-bold">Buyurtmachi</span>
+                <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">Buyurtmachi</span>
                 <p className="font-bold text-slate-900 truncate">{tender.buyerCompany}</p>
-                <p className="text-[10px] text-slate-500">STIR: {tender.buyerInn}</p>
+                <p className="text-[11px] text-slate-500 font-mono">STIR: {tender.buyerInn}</p>
               </div>
 
               <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-1">
-                <span className="text-[10px] text-slate-500 uppercase font-bold">Boshlang‘ich Byudjet</span>
+                <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">Boshlang‘ich Byudjet</span>
                 <p className="font-black text-[#D95D1E] text-sm font-mono-numbers">{tender.estimatedBudget}</p>
-                <p className="text-[10px] text-emerald-600 font-medium">12% QQS kiritilgan</p>
+                <p className="text-[10px] text-slate-500 font-medium">12% QQS kiritilgan</p>
               </div>
 
               <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-1">
-                <span className="text-[10px] text-slate-500 uppercase font-bold">Yetkazish Manzili</span>
+                <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">Yetkazish Manzili</span>
                 <p className="font-semibold text-slate-900 truncate">{tender.deliveryLocation}</p>
-                <p className="text-[10px] text-slate-500">{tender.participantsCount} ta ishtirokchi arizasi</p>
+                <p className="text-[11px] text-slate-500">{tender.participantsCount} ta ishtirokchi arizasi</p>
               </div>
             </div>
 
-            <div className="pt-2 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
-              <div className="text-[11px] text-emerald-700 font-bold flex items-center gap-1.5">
+            <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 font-sans">
+              <div className="text-xs text-slate-700 font-semibold flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
                 <span>50/50 Escrow Kafolati &amp; Rasmiy E-IMZO Shartnomasi</span>
               </div>
@@ -272,7 +272,7 @@ export const TendersView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleOpenBid(tender)}
-                className="bg-[#D95D1E] hover:bg-[#B43B06] text-white px-4 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-sm min-h-[44px] transition-colors"
+                className="bg-[#D95D1E] hover:bg-[#B43B06] active:scale-98 text-white px-4 py-2 rounded-xl font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-2xs min-h-[40px] transition-all"
               >
                 <Send className="w-4 h-4" />
                 <span>Tijoriy Taklif (Bid) Berish</span>

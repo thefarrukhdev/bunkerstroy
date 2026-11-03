@@ -353,11 +353,11 @@ export const B2bDocumentsModal: React.FC<B2bDocumentsModalProps> = ({
               </div>
 
               <div className="text-right">
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold border border-emerald-300 bg-emerald-50 text-emerald-800">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-sans font-semibold border border-emerald-200/80 bg-emerald-50 text-emerald-800">
                   <Check className="w-3.5 h-3.5 text-emerald-600" />
                   {order.status === 'COMPLETED' || order.status === 'FULLY_PAID' || order.isSecondPaid
-                    ? 'STATUS: TO‘LANGAN'
-                    : 'STATUS: 50% AVANS TO‘LANGAN'}
+                    ? 'Holati: To‘langan'
+                    : 'Holati: 50% Avans To‘langan'}
                 </span>
               </div>
             </div>

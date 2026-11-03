@@ -11,8 +11,8 @@ export const TradeModelSection: React.FC = () => {
     >
       {/* Section Header */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
-        <Badge className="bg-emerald-50 text-emerald-800 border-emerald-200 font-mono text-xs px-3.5 py-1 uppercase tracking-wider">
-          <ShieldCheck className="w-3.5 h-3.5 mr-1 inline-block" />
+        <Badge className="bg-emerald-50 text-emerald-800 border-emerald-200/80 font-sans font-bold text-xs px-3.5 py-1 tracking-normal">
+          <ShieldCheck className="w-3.5 h-3.5 mr-1 inline-block text-emerald-600" />
           Kafolatlangan Savdo Modeli
         </Badge>
         <h2 id="trade-model-heading" className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">

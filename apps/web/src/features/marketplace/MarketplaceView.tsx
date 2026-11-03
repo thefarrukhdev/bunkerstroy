@@ -218,14 +218,14 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart, o
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-mono font-bold text-[#D95D1E] uppercase tracking-wider">
+              <span className="text-xs font-sans font-bold text-[#D95D1E] uppercase tracking-wider">
                 BunkerStroy Sanoat Vitrinasi
               </span>
-              <span className="bg-orange-50 text-[#D95D1E] border border-orange-200 px-2.5 py-0.5 rounded-md text-[10px] font-mono font-black">
+              <span className="bg-orange-50 text-[#D95D1E] border border-orange-200/80 px-2.5 py-0.5 rounded-md text-xs font-sans font-bold">
                 ZAVOD NARXLARIDA
               </span>
-              <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-md text-[10px] font-mono font-black flex items-center gap-1">
-                <ShieldCheck className="w-3 h-3 text-emerald-600" /> 50/50 Xavfsiz Escrow
+              <span className="bg-emerald-50 text-emerald-800 border border-emerald-200/80 px-2.5 py-0.5 rounded-md text-xs font-sans font-semibold inline-flex items-center gap-1">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> 50/50 Xavfsiz Escrow
               </span>
             </div>
 
@@ -238,14 +238,14 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onAddToCart, o
             </p>
           </div>
 
-          <div className="flex flex-wrap md:flex-col items-start md:items-end gap-2 shrink-0 font-mono text-xs">
-            <div className="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-slate-700 flex items-center gap-2 shadow-2xs">
-              <span className="text-[#D95D1E] font-black">{products.length}</span>
+          <div className="flex flex-wrap md:flex-col items-start md:items-end gap-2 shrink-0 font-sans text-xs">
+            <div className="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-slate-700 flex items-center gap-2 shadow-2xs font-sans">
+              <span className="text-[#D95D1E] font-black font-mono-numbers">{products.length}</span>
               <span>xil tovar omborda</span>
             </div>
-            <div className="bg-emerald-50/60 border border-emerald-200 px-3 py-1.5 rounded-xl text-emerald-700 flex items-center gap-1.5 shadow-2xs">
+            <div className="bg-emerald-50/70 border border-emerald-200/80 px-3 py-1.5 rounded-xl text-emerald-800 flex items-center gap-1.5 shadow-2xs font-sans font-medium">
               <Truck className="w-3.5 h-3.5 text-emerald-600" />
-              <span className="font-medium">Kim sotsa — o'sha yetkazadi</span>
+              <span>Kim sotsa — o'sha yetkazadi</span>
             </div>
           </div>
         </div>

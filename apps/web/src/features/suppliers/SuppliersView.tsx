@@ -504,12 +504,13 @@ export const SuppliersView: React.FC<{ onNavigateToCatalog?: () => void }> = ({
                   <div className="flex items-start justify-between gap-3">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="bg-orange-50 text-[#D95D1E] border border-orange-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">
+                        <span className="bg-orange-50 text-[#D95D1E] border border-orange-200/80 px-2.5 py-0.5 rounded-md text-xs font-sans font-bold">
                           {f.categoryLabel}
                         </span>
                         {f.contractStatus === 'STRATEGIC_PARTNER' && (
-                          <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">
-                            STRATEGIK HAMKOR
+                          <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 rounded-md text-xs font-sans font-semibold inline-flex items-center gap-1">
+                            <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                            Strategik Hamkor
                           </span>
                         )}
                       </div>
@@ -659,21 +660,22 @@ export const SuppliersView: React.FC<{ onNavigateToCatalog?: () => void }> = ({
                       </div>
                     </div>
 
-                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                    <span className="px-2.5 py-0.5 rounded-md text-xs font-sans font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200/80 shrink-0 inline-flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                       Faol Tranzit
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1 font-mono text-xs">
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1 font-sans text-xs">
                     <span className="text-[10px] uppercase text-slate-500 font-bold block">Asosiy Yo‘nalish:</span>
                     <span className="font-bold text-slate-900 block">{gp.category}</span>
                   </div>
 
-                  <div className="space-y-1.5 font-mono text-xs">
+                  <div className="space-y-1.5 font-sans text-xs">
                     <span className="text-[10px] uppercase text-slate-500 font-bold block">Import Mahsulotlari:</span>
                     <div className="flex flex-wrap gap-1.5">
                       {gp.materials.map((m, idx) => (
-                        <span key={idx} className="px-2 py-0.5 rounded-md bg-orange-50 border border-orange-200 text-[#D95D1E] text-[10px] font-bold">
+                        <span key={idx} className="px-2.5 py-0.5 rounded-md bg-orange-50 border border-orange-200/80 text-[#D95D1E] text-xs font-sans font-semibold">
                           {m}
                         </span>
                       ))}
