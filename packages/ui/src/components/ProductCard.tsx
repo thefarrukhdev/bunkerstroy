@@ -5,7 +5,8 @@ import {
   Truck,
   ShieldCheck,
   Factory,
-  Plus
+  Plus,
+  MapPin
 } from 'lucide-react';
 import { cn } from '../utils';
 import { Badge } from './Badge';
@@ -20,6 +21,9 @@ export interface ProductCardData {
   images?: string[];
   imageUrl?: string;
   supplierName?: string;
+  supplierCabinetType?: 'manufacturer' | 'partner' | string;
+  isB2B?: boolean;
+  region?: string;
   hasDelivery?: boolean;
   vatRate?: number | string;
   tieredPrices?: Array<{
@@ -80,6 +84,17 @@ export const defaultFormatPrice = (price: number | string): string => {
   return num.toLocaleString();
 };
 
+export const B2BBadge: React.FC<{ className?: string }> = ({ className }) => (
+  <span
+    className={cn(
+      'inline-flex items-center justify-center px-2 py-0.5 rounded-md border border-[#E26625]/60 bg-[#FFF6F0] text-[#D95D1E] font-black text-[11px] leading-none tracking-wide font-mono shadow-2xs select-none',
+      className
+    )}
+  >
+    B2B
+  </span>
+);
+
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   variant = 'catalog',
@@ -110,6 +125,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       ? product.tieredPrices[product.tieredPrices.length - 1]
       : null;
   const lowestTierPrice = lowestTier ? formatPrice(lowestTier.price) : null;
+
+  // Wholesale B2B classification
+  const isB2B =
+    product.isB2B !== false &&
+    (Boolean(product.isB2B) ||
+      product.supplierCabinetType === 'manufacturer' ||
+      Boolean(product.tieredPrices && product.tieredPrices.length > 0) ||
+      Boolean(product.b2bPrice) ||
+      Boolean(product.supplierName?.toLowerCase().includes('mchj')) ||
+      Boolean(product.supplierName?.toLowerCase().includes('zavod')) ||
+      Boolean(product.supplierName?.toLowerCase().includes('servis')) ||
+      Boolean(product.supplierName?.toLowerCase().includes('standart')) ||
+      Boolean(product.supplierName?.toLowerCase().includes('sanoat')));
 
   // Handle card level click
   const handleCardClick = () => {
@@ -281,15 +309,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {stockCount > 0 ? `${stockCount} ${unitLabel}` : 'Zaxira tugagan'}
           </div>
 
-          {/* 50/50 Escrow Pill on Image */}
-          {showEscrowBadge && (
-            <div className="absolute top-2.5 left-2.5">
+          {/* Badges on Image (50/50 Escrow and B2B Pill) */}
+          <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 flex-wrap">
+            {showEscrowBadge && (
               <Badge variant="success" size="sm" isMono>
                 <ShieldCheck className="w-3 h-3 mr-1 inline-block text-emerald-600" />
                 50/50 Escrow
               </Badge>
-            </div>
-          )}
+            )}
+            {isB2B && <B2BBadge />}
+          </div>
         </div>
 
         {/* Supplier & Delivery Badges */}
@@ -316,6 +345,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             )}
           </div>
         </div>
+
+        {/* Region / Location if available */}
+        {product.region && (
+          <div className="flex items-center gap-1 text-[11px] text-slate-500 font-medium truncate mb-1">
+            <MapPin className="w-3 h-3 text-[#D95D1E] shrink-0" />
+            <span className="truncate">{product.region}</span>
+          </div>
+        )}
 
         {/* Title */}
         <h3 className="font-heading font-black text-slate-900 text-base line-clamp-2 group-hover:text-[#D95D1E] transition-colors leading-snug">

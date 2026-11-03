@@ -13,7 +13,10 @@ import {
   ArrowRight,
   TrendingUp,
   Building2,
-  Truck
+  Truck,
+  Globe,
+  Container,
+  Send
 } from 'lucide-react';
 import {
   Badge,
@@ -46,14 +49,91 @@ interface FactoryPartner {
   description: string;
 }
 
+interface GlobalPartner {
+  id: string;
+  name: string;
+  country: string;
+  countryCode: string;
+  category: string;
+  materials: string[];
+  capacity: string;
+  transitTime: string;
+  deliveryMethod: string;
+  customsStation: string;
+}
+
+const GLOBAL_PARTNERS: GlobalPartner[] = [
+  {
+    id: 'gp-1',
+    name: '«АрселорМиттал Темиртау» (Qarmet)',
+    country: 'Qozog‘iston',
+    countryCode: 'KZ 🇰🇿',
+    category: 'Konstruksion Po‘lat & Shveller',
+    materials: ['Shveller 10-30', 'Ugolok 50-120', 'Goryachekatanniy list'],
+    capacity: '40,000 t / oy',
+    transitTime: '4-7 kun',
+    deliveryMethod: 'Temir yo‘l ochiq vagonlari',
+    customsStation: 'Sariag‘ash - Chuqursoy (720000)'
+  },
+  {
+    id: 'gp-2',
+    name: '«Новолипецкий металлургический комбинат» (НЛМК)',
+    country: 'Rossiya',
+    countryCode: 'RU 🇷🇺',
+    category: 'Prokat List & Ruxlangan Tunuka',
+    materials: ['Ruxlangan tunuka 0.45-1.5mm', 'Xolodnokatanniy list', 'Konditsioner metall'],
+    capacity: '25,000 t / oy',
+    transitTime: '8-14 kun',
+    deliveryMethod: 'Temir yo‘l yopiq vagonlari',
+    customsStation: 'Toshkent-Tovarniy (722400)'
+  },
+  {
+    id: 'gp-3',
+    name: '«Shandong Iron & Steel Group»',
+    country: 'Xitoy',
+    countryCode: 'CN 🇨🇳',
+    category: 'Maxsus Trubalar & Armatura Xom-ashyosi',
+    materials: ['Kvadrat profillar 100-300mm', 'Beshik po‘lat', 'Payvand trubalar'],
+    capacity: '50,000 t / oy',
+    transitTime: '12-18 kun',
+    deliveryMethod: '40ft Dengiz/Temiryo‘l Konteynerlari',
+    customsStation: 'Sergeli Logistika Markazi (723507)'
+  },
+  {
+    id: 'gp-4',
+    name: '«Kardemir Karabük Demir Çelik»',
+    country: 'Turkiya',
+    countryCode: 'TR 🇹🇷',
+    category: 'Relsovaya stal & Fasad Konstruksiyalari',
+    materials: ['Temir yo‘l relslari R65', 'Katta o‘lchamli I-Balkalar', 'Fasad ankerlari'],
+    capacity: '15,000 t / oy',
+    transitTime: '10-15 kun',
+    deliveryMethod: 'TIR Avto Furalar & Temir yo‘l',
+    customsStation: 'Toshkent Bojxona Kompleksi'
+  },
+  {
+    id: 'gp-5',
+    name: '«Esfahan Steel Company» (ESCO)',
+    country: 'Eron',
+    countryCode: 'IR 🇮🇷',
+    category: 'Armatura & Bog‘lovchi Katanka',
+    materials: ['Armatura B500B 12-32mm', 'Katanka sim 6.5mm', 'Uglerodli po‘lat'],
+    capacity: '30,000 t / oy',
+    transitTime: '7-12 kun',
+    deliveryMethod: 'Temir yo‘l vagonlari',
+    customsStation: 'Buxoro / Qorako‘l Bojxona'
+  }
+];
+
 export const SuppliersView: React.FC<{ onNavigateToCatalog?: () => void }> = ({
   onNavigateToCatalog
 }) => {
+  const [supplierTab, setSupplierTab] = useState<'local' | 'global'>('local');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
 
-  // Direct Contract Inquiry Modal
+  // Direct Contract Inquiry Modal (Local)
   const [inquiryModalOpen, setInquiryModalOpen] = useState(false);
   const [selectedFactory, setSelectedFactory] = useState<FactoryPartner | null>(null);
   const [companyName, setCompanyName] = useState('');
@@ -62,6 +142,13 @@ export const SuppliersView: React.FC<{ onNavigateToCatalog?: () => void }> = ({
   const [estimatedMonthlyVolume, setEstimatedMonthlyVolume] = useState('');
   const [inquirySuccess, setInquirySuccess] = useState<string | null>(null);
   const [inquiryError, setInquiryError] = useState<string | null>(null);
+
+  // Global Bunker Inquiry Modal
+  const [globalInquiryOpen, setGlobalInquiryOpen] = useState(false);
+  const [selectedGlobalPartner, setSelectedGlobalPartner] = useState<GlobalPartner | null>(null);
+  const [customsStation, setCustomsStation] = useState('Toshkent-Tovarniy (TY: 722400)');
+  const [globalMaterial, setGlobalMaterial] = useState('');
+  const [globalVolume, setGlobalVolume] = useState('');
 
   const factories: FactoryPartner[] = [
     {
@@ -180,6 +267,31 @@ export const SuppliersView: React.FC<{ onNavigateToCatalog?: () => void }> = ({
     setInquiryModalOpen(true);
   };
 
+  const handleOpenGlobalInquiry = (partner: GlobalPartner) => {
+    setSelectedGlobalPartner(partner);
+    setGlobalMaterial(partner.materials[0] || '');
+    setInquiryError(null);
+    setGlobalInquiryOpen(true);
+  };
+
+  const handleGlobalSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!companyName.trim() || !contactPhone.trim() || !globalMaterial.trim() || !globalVolume.trim()) {
+      setInquiryError("Iltimos, barcha maydonlarni (Kompaniya, Telefon, Xomashyo, Hajm) to'ldiring.");
+      return;
+    }
+
+    setInquirySuccess(
+      `"${companyName}" kompaniyasining ${selectedGlobalPartner?.name} (${selectedGlobalPartner?.country}) korxonasiga to'g'ridan-to'g'ri xalqaro import va tranzit arizasi qabul qilindi. Bojxona stansiyasi: ${customsStation}. Xalqaro savdo departamenti 24 soat ichida bog'lanadi.`
+    );
+    setGlobalInquiryOpen(false);
+    setCompanyName('');
+    setContactPhone('');
+    setGlobalMaterial('');
+    setGlobalVolume('');
+    setInquiryError(null);
+  };
+
   const handleSubmitInquiry = (e: React.FormEvent) => {
     e.preventDefault();
     if (!companyName.trim() || !stir.trim() || !contactPhone.trim() || !estimatedMonthlyVolume.trim()) {
@@ -253,11 +365,43 @@ export const SuppliersView: React.FC<{ onNavigateToCatalog?: () => void }> = ({
       {inquirySuccess && (
         <Alert
           variant="success"
-          title="Zavod B2B Shartnomasi So'rovi Qabul Qilindi"
+          title="B2B Shartnomasi So'rovi Qabul Qilindi"
           description={inquirySuccess}
           onDismiss={() => setInquirySuccess(null)}
         />
       )}
+
+      {/* Tab Switcher: Mahalliy Zavodlar vs Global Bunker */}
+      <div className="flex items-center gap-2 border-b border-slate-200 pb-2 font-mono text-xs">
+        <button
+          type="button"
+          onClick={() => setSupplierTab('local')}
+          className={`px-4 py-2.5 rounded-xl border font-bold transition-all cursor-pointer flex items-center gap-2 shadow-2xs ${
+            supplierTab === 'local'
+              ? 'bg-[#D95D1E] text-white border-[#D95D1E]'
+              : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
+          }`}
+        >
+          <Factory className="w-4 h-4" />
+          <span>O‘zbekiston Zavodlari (Mahalliy Vitrina)</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setSupplierTab('global')}
+          className={`px-4 py-2.5 rounded-xl border font-bold transition-all cursor-pointer flex items-center gap-2 shadow-2xs ${
+            supplierTab === 'global'
+              ? 'bg-slate-900 text-white border-slate-900'
+              : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
+          }`}
+        >
+          <Globe className="w-4 h-4 text-[#D95D1E]" />
+          <span>Global Bunker • Xalqaro Tranzit &amp; Import</span>
+          <span className="bg-orange-500 text-white text-[9px] px-1.5 py-0.2 rounded font-black">
+            5 TA DAVLAT
+          </span>
+        </button>
+      </div>
 
       {/* 3. Key Industry KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 font-mono">
@@ -298,170 +442,275 @@ export const SuppliersView: React.FC<{ onNavigateToCatalog?: () => void }> = ({
         </div>
       </div>
 
-      {/* 4. Search & Filters Bar */}
-      <div className="bg-white border border-slate-200 p-4 sm:p-5 rounded-2xl shadow-2xs">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
-              id="suppliers-search-input"
-              name="suppliersSearch"
-              type="text"
-              placeholder="Zavod nomi, STIR yoki tovar turi bo‘yicha qidiruv..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-10 pl-9 pr-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-[#D95D1E] text-xs font-mono text-slate-900 placeholder-slate-400 outline-none"
-            />
+      {/* 4. Search & Filters Bar (Local) */}
+      {supplierTab === 'local' && (
+        <>
+          <div className="bg-white border border-slate-200 p-4 sm:p-5 rounded-2xl shadow-2xs">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  id="suppliers-search-input"
+                  name="suppliersSearch"
+                  type="text"
+                  placeholder="Zavod nomi, STIR yoki tovar turi bo‘yicha qidiruv..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full h-10 pl-9 pr-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-[#D95D1E] text-xs font-mono text-slate-900 placeholder-slate-400 outline-none"
+                />
+              </div>
+
+              <select
+                id="suppliers-category-select"
+                name="category"
+                aria-label="Ishlab chiqarish yo‘nalishi"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-[#D95D1E] text-xs font-mono text-slate-800 outline-none cursor-pointer"
+              >
+                <option value="all">Barcha Ishlab Chiqarish Yo‘nalishlari</option>
+                <option value="sement">Sement &amp; Bog‘lovchi Materiallar</option>
+                <option value="metall">Metallurgiya &amp; Konstruksion Po‘lat</option>
+                <option value="gisht">G‘isht &amp; Gazobeton Bloklar</option>
+                <option value="izolyatsiya">Gips &amp; Issiqlik Izolyatsiyasi</option>
+              </select>
+
+              <select
+                id="suppliers-region-select"
+                name="region"
+                aria-label="Hududlar va shaharlar"
+                value={selectedRegion}
+                onChange={(e) => setSelectedRegion(e.target.value)}
+                className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-[#D95D1E] text-xs font-mono text-slate-800 outline-none cursor-pointer"
+              >
+                <option value="all">Barcha Hududlar &amp; Shaharlar</option>
+                <option value="tashkent">Toshkent shahri</option>
+                <option value="tashkent_region">Toshkent viloyati (Bekobod, Ohangaron)</option>
+                <option value="navoi">Navoiy viloyati</option>
+                <option value="bukhara">Buxoro viloyati</option>
+              </select>
+            </div>
           </div>
 
-          <select
-            id="suppliers-category-select"
-            name="category"
-            aria-label="Ishlab chiqarish yo‘nalishi"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-[#D95D1E] text-xs font-mono text-slate-800 outline-none cursor-pointer"
-          >
-            <option value="all">Barcha Ishlab Chiqarish Yo‘nalishlari</option>
-            <option value="sement">Sement &amp; Bog‘lovchi Materiallar</option>
-            <option value="metall">Metallurgiya &amp; Konstruksion Po‘lat</option>
-            <option value="gisht">G‘isht &amp; Gazobeton Bloklar</option>
-            <option value="izolyatsiya">Gips &amp; Issiqlik Izolyatsiyasi</option>
-          </select>
-
-          <select
-            id="suppliers-region-select"
-            name="region"
-            aria-label="Hududlar va shaharlar"
-            value={selectedRegion}
-            onChange={(e) => setSelectedRegion(e.target.value)}
-            className="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-[#D95D1E] text-xs font-mono text-slate-800 outline-none cursor-pointer"
-          >
-            <option value="all">Barcha Hududlar &amp; Shaharlar</option>
-            <option value="tashkent">Toshkent shahri</option>
-            <option value="tashkent_region">Toshkent viloyati (Bekobod, Ohangaron)</option>
-            <option value="navoi">Navoiy viloyati</option>
-            <option value="bukhara">Buxoro viloyati</option>
-          </select>
-        </div>
-      </div>
-
-      {/* 5. Verified Factories Directory */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {filteredFactories.map((f) => (
-          <div
-            key={f.id}
-            className="group relative rounded-2xl p-5 sm:p-6 flex flex-col justify-between space-y-4 sm:space-y-5 bg-white border border-slate-200 hover:border-slate-300 shadow-2xs hover:shadow-md text-slate-900 transition-all duration-200"
-          >
-            <div className="space-y-4">
-              {/* Header */}
-              <div className="flex items-start justify-between gap-3">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="bg-orange-50 text-[#D95D1E] border border-orange-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">
-                      {f.categoryLabel}
-                    </span>
-                    {f.contractStatus === 'STRATEGIC_PARTNER' && (
-                      <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">
-                        STRATEGIK HAMKOR
-                      </span>
-                    )}
+          {/* 5. Verified Factories Directory */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            {filteredFactories.map((f) => (
+              <div
+                key={f.id}
+                className="group relative rounded-2xl p-5 sm:p-6 flex flex-col justify-between space-y-4 sm:space-y-5 bg-white border border-slate-200 hover:border-slate-300 shadow-2xs hover:shadow-md text-slate-900 transition-all duration-200"
+              >
+                <div className="space-y-4">
+                  {/* Header */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="bg-orange-50 text-[#D95D1E] border border-orange-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">
+                          {f.categoryLabel}
+                        </span>
+                        {f.contractStatus === 'STRATEGIC_PARTNER' && (
+                          <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded text-[10px] font-mono font-bold">
+                            STRATEGIK HAMKOR
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="text-lg font-heading font-black text-slate-900 mt-1">{f.name}</h3>
+                      <p className="text-xs font-semibold text-[#D95D1E] font-mono">{f.brandName}</p>
+                    </div>
+                    <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center shrink-0">
+                      <Factory className="w-5 h-5 text-[#D95D1E]" />
+                    </div>
                   </div>
-                  <h3 className="text-lg font-heading font-black text-slate-900 mt-1">{f.name}</h3>
-                  <p className="text-xs font-semibold text-[#D95D1E] font-mono">{f.brandName}</p>
-                </div>
-                <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center shrink-0">
-                  <Factory className="w-5 h-5 text-[#D95D1E]" />
-                </div>
-              </div>
 
-              <p className="text-xs text-slate-600 leading-relaxed">{f.description}</p>
+                  <p className="text-xs text-slate-600 leading-relaxed">{f.description}</p>
 
-              {/* Data Specifications Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono pt-3 border-t border-slate-100">
-                <div>
-                  <span className="text-slate-400 block text-[10px] uppercase">STIR (INN):</span>
-                  <span className="font-bold text-slate-900">{f.inn}</span>
-                </div>
-                <div>
-                  <span className="text-slate-400 block text-[10px] uppercase">Ishlab Chiqarish Quvvati:</span>
-                  <span className="font-bold text-slate-900">{f.annualCapacity}</span>
-                </div>
-                <div>
-                  <span className="text-slate-400 block text-[10px] uppercase">Manzil:</span>
-                  <span className="text-slate-600 truncate block">{f.address}</span>
-                </div>
-                <div>
-                  <span className="text-slate-400 block text-[10px] uppercase">QQS To‘lovchi:</span>
-                  <span className="text-emerald-700 font-bold">12% QQS To‘liq Tasdiqlangan</span>
-                </div>
-              </div>
+                  {/* Data Specifications Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono pt-3 border-t border-slate-100">
+                    <div>
+                      <span className="text-slate-400 block text-[10px] uppercase">STIR (INN):</span>
+                      <span className="font-bold text-slate-900">{f.inn}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block text-[10px] uppercase">Ishlab Chiqarish Quvvati:</span>
+                      <span className="font-bold text-slate-900">{f.annualCapacity}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block text-[10px] uppercase">Manzil:</span>
+                      <span className="text-slate-600 truncate block">{f.address}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block text-[10px] uppercase">QQS To‘lovchi:</span>
+                      <span className="text-emerald-700 font-bold">12% QQS To‘liq Tasdiqlangan</span>
+                    </div>
+                  </div>
 
-              {/* Certified Standards Badges */}
-              <div className="space-y-1.5 pt-2 border-t border-slate-100">
-                <span className="text-[10px] font-mono text-slate-500 uppercase block font-semibold">
-                  Sertifikatlar &amp; Davlat Standartlari:
-                </span>
-                <div className="flex flex-wrap gap-1.5">
-                  {f.standards.map((std, idx) => (
-                    <span
-                      key={idx}
-                      className="px-2 py-0.5 rounded-md bg-slate-50 border border-slate-200 text-slate-700 text-[10px] font-mono font-medium"
-                    >
-                      {std}
+                  {/* Certified Standards Badges */}
+                  <div className="space-y-1.5 pt-2 border-t border-slate-100">
+                    <span className="text-[10px] font-mono text-slate-500 uppercase block font-semibold">
+                      Sertifikatlar &amp; Davlat Standartlari:
                     </span>
-                  ))}
-                </div>
-              </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {f.standards.map((std, idx) => (
+                        <span
+                          key={idx}
+                          className="px-2 py-0.5 rounded-md bg-slate-50 border border-slate-200 text-slate-700 text-[10px] font-mono font-medium"
+                        >
+                          {std}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
 
-              {/* Main Products */}
-              <div className="space-y-1.5">
-                <span className="text-[10px] font-mono text-slate-500 uppercase block font-semibold">
-                  Asosiy Tovarlar:
-                </span>
-                <div className="flex flex-wrap gap-1.5">
-                  {f.mainProducts.map((p, idx) => (
-                    <span
-                      key={idx}
-                      className="px-2 py-0.5 rounded-md bg-orange-50 border border-orange-200 text-[#D95D1E] text-[11px] font-mono font-bold"
-                    >
-                      {p}
+                  {/* Main Products */}
+                  <div className="space-y-1.5">
+                    <span className="text-[10px] font-mono text-slate-500 uppercase block font-semibold">
+                      Asosiy Tovarlar:
                     </span>
-                  ))}
+                    <div className="flex flex-wrap gap-1.5">
+                      {f.mainProducts.map((p, idx) => (
+                        <span
+                          key={idx}
+                          className="px-2 py-0.5 rounded-md bg-orange-50 border border-orange-200 text-[#D95D1E] text-[11px] font-mono font-bold"
+                        >
+                          {p}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom Actions */}
+                <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-1.5 text-xs font-mono text-slate-600">
+                    <Phone className="w-3.5 h-3.5 text-[#D95D1E]" />
+                    <span>{f.phone}</span>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                    {onNavigateToCatalog && (
+                      <button
+                        type="button"
+                        onClick={onNavigateToCatalog}
+                        className="px-3 py-1.5 rounded-xl text-xs font-bold flex-1 sm:flex-initial cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 transition-colors"
+                      >
+                        <span>Katalogda Ko‘rish</span>
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => handleOpenInquiry(f)}
+                      className="bg-[#D95D1E] hover:bg-[#B43B06] text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 flex-1 sm:flex-initial cursor-pointer shadow-xs transition-colors"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      <span>Zavod Shartnomasi</span>
+                    </button>
+                  </div>
                 </div>
               </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* 5. GLOBAL BUNKER DIRECTORY */}
+      {supplierTab === 'global' && (
+        <div className="space-y-5 animate-fadeIn">
+          <div className="bg-slate-900 text-white rounded-2xl p-5 sm:p-6 border border-slate-800 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4 font-mono">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="bg-orange-500/20 text-[#D95D1E] border border-orange-500/40 px-2 py-0.5 rounded text-[10px] font-black">
+                  TRANZIT &amp; IMPORT
+                </span>
+                <span className="text-xs text-sky-200">Xalqaro Temir Yo‘l &amp; Konteyner Ta’minoti</span>
+              </div>
+              <h3 className="text-lg font-heading font-black text-white">
+                Global Bunker: Yirik Xom-ashyo Importi &amp; Tranzit Portali
+              </h3>
+              <p className="text-xs text-slate-300 max-w-2xl font-sans">
+                Rossiya, Qozog‘iston, Xitoy, Eron va Turkiyadagi kombinatlardan vagon yoki konteyner 
+                partiyalarida to‘g‘ridan-to‘g‘ri shartnoma va akkreditiv orqali xarid qilish imkoniyati.
+              </p>
             </div>
+            <div className="bg-slate-800 border border-slate-700 px-3.5 py-2 rounded-xl text-center shrink-0">
+              <span className="text-[#D95D1E] font-black text-lg block font-mono">160,000+ t</span>
+              <span className="text-[10px] text-slate-400">Oylik import kvotasi</span>
+            </div>
+          </div>
 
-            {/* Bottom Actions */}
-            <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <div className="flex items-center gap-1.5 text-xs font-mono text-slate-600">
-                <Phone className="w-3.5 h-3.5 text-[#D95D1E]" />
-                <span>{f.phone}</span>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {GLOBAL_PARTNERS.map((gp) => (
+              <div
+                key={gp.id}
+                className="bg-white border border-slate-200 hover:border-slate-300 rounded-2xl p-5 shadow-2xs hover:shadow-md flex flex-col justify-between space-y-4 group transition-all"
+              >
+                <div className="space-y-3">
+                  <div className="flex items-start justify-between gap-3 pb-3 border-b border-slate-100">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center text-[#D95D1E] font-black font-mono text-xs shrink-0">
+                        {gp.countryCode.slice(0, 2)}
+                      </div>
+                      <div>
+                        <h4 className="font-heading font-bold text-sm text-slate-900 group-hover:text-[#D95D1E] transition-colors leading-snug">
+                          {gp.name}
+                        </h4>
+                        <span className="text-xs text-slate-500 flex items-center gap-1 font-mono mt-0.5">
+                          <MapPin className="w-3 h-3 text-[#D95D1E]" />
+                          {gp.country} ({gp.countryCode})
+                        </span>
+                      </div>
+                    </div>
 
-              <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-                {onNavigateToCatalog && (
+                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                      Faol Tranzit
+                    </span>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1 font-mono text-xs">
+                    <span className="text-[10px] uppercase text-slate-500 font-bold block">Asosiy Yo‘nalish:</span>
+                    <span className="font-bold text-slate-900 block">{gp.category}</span>
+                  </div>
+
+                  <div className="space-y-1.5 font-mono text-xs">
+                    <span className="text-[10px] uppercase text-slate-500 font-bold block">Import Mahsulotlari:</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {gp.materials.map((m, idx) => (
+                        <span key={idx} className="px-2 py-0.5 rounded-md bg-orange-50 border border-orange-200 text-[#D95D1E] text-[10px] font-bold">
+                          {m}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-[11px] font-mono pt-2 border-t border-slate-100">
+                    <div>
+                      <span className="text-slate-400 block text-[10px]">Oylik quvvat:</span>
+                      <span className="font-bold text-slate-900">{gp.capacity}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block text-[10px]">Yetkazish muddati:</span>
+                      <span className="font-bold text-emerald-700">{gp.transitTime}</span>
+                    </div>
+                    <div className="col-span-2">
+                      <span className="text-slate-400 block text-[10px]">Bojxona stansiyasi:</span>
+                      <span className="text-slate-700 truncate block">{gp.customsStation}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-slate-100">
                   <button
                     type="button"
-                    onClick={onNavigateToCatalog}
-                    className="px-3 py-1.5 rounded-xl text-xs font-bold flex-1 sm:flex-initial cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 transition-colors"
+                    onClick={() => handleOpenGlobalInquiry(gp)}
+                    className="w-full bg-[#D95D1E] hover:bg-[#B43B06] text-white py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs transition-colors"
                   >
-                    <span>Katalogda Ko‘rish</span>
+                    <Send className="w-3.5 h-3.5" />
+                    <span>Xalqaro Shartnoma &amp; Partiya So‘rovi</span>
                   </button>
-                )}
-                <button
-                  type="button"
-                  onClick={() => handleOpenInquiry(f)}
-                  className="bg-[#D95D1E] hover:bg-[#B43B06] text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 flex-1 sm:flex-initial cursor-pointer shadow-xs transition-colors"
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>Zavod Shartnomasi</span>
-                </button>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
 
       {/* 6. Direct Factory Contract Inquiry Modal */}
       <Modal
@@ -538,6 +787,98 @@ export const SuppliersView: React.FC<{ onNavigateToCatalog?: () => void }> = ({
             icon={<ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" />}
             description="Barcha rasmiy shartnomalar E-IMZO raqamli elektron imzosi orqali DIDX.uz elektron hujjat aylanish tizimida yuridik kuchga ega bo‘ladi."
           />
+        </form>
+      </Modal>
+
+      {/* 7. Global Bunker International Transit Inquiry Modal */}
+      <Modal
+        isOpen={globalInquiryOpen}
+        onClose={() => setGlobalInquiryOpen(false)}
+        title="Global Bunker: Xalqaro Import &amp; Tranzit Shartnomasi So‘rovi"
+        subtitle={
+          selectedGlobalPartner
+            ? `${selectedGlobalPartner.name} (${selectedGlobalPartner.country}) korxonasiga to‘g‘ridan-to‘g‘ri import arizasi`
+            : undefined
+        }
+        size="lg"
+        footer={
+          <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 w-full">
+            <Button variant="ghost" size="sm" onClick={() => setGlobalInquiryOpen(false)}>
+              Bekor qilish
+            </Button>
+            <Button variant="primary" size="sm" onClick={handleGlobalSubmit}>
+              <Send className="w-3.5 h-3.5 mr-1.5" />
+              <span>Arizani Tasdiqlash &amp; Yuborish</span>
+            </Button>
+          </div>
+        }
+      >
+        <form onSubmit={handleGlobalSubmit} className="space-y-4">
+          {inquiryError && <Alert variant="error" description={inquiryError} />}
+
+          <Alert
+            variant="info"
+            title="Xalqaro Tranzit &amp; Bojxona Kafolati"
+            description="BunkerStroy xalqaro savdo departamenti tovarlarni yuklash punktidan to O‘zbekiston bojxona postlarigacha temir yo‘l va avto tranzitini to‘liq nazorat qiladi."
+          />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input
+              label="Kompaniya yoki Buyurtmachi Nomi *"
+              placeholder="Masalan: Tashkent Steel Trading MChJ"
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+              isMono
+              sizeVariant="sm"
+            />
+
+            <Input
+              label="Mas'ul Shaxs Telefon Raqami *"
+              placeholder="+998 (90) 123-45-67"
+              value={contactPhone}
+              onChange={(e) => setContactPhone(e.target.value)}
+              isMono
+              sizeVariant="sm"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input
+              label="Talab Qilingan Xomashyo / Marka *"
+              placeholder="Masalan: Shveller 20, Katanka 6.5mm"
+              value={globalMaterial}
+              onChange={(e) => setGlobalMaterial(e.target.value)}
+              isMono
+              sizeVariant="sm"
+            />
+
+            <Input
+              label="Talab Qilingan Partiya Hajmi *"
+              placeholder="Masalan: 5 ta temir yo‘l vagoni (350 tonna)"
+              value={globalVolume}
+              onChange={(e) => setGlobalVolume(e.target.value)}
+              isMono
+              sizeVariant="sm"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs font-mono font-bold text-slate-700 block mb-1">
+              Qabul Qilish &amp; Bojxona Stansiyasi:
+            </label>
+            <Select
+              sizeVariant="sm"
+              value={customsStation}
+              onChange={(e) => setCustomsStation(e.target.value)}
+              options={[
+                { value: 'Toshkent-Tovarniy (TY: 722400)', label: 'Toshkent-Tovarniy (TY kodi: 722400)' },
+                { value: 'Chuqursoy Bojxona Posti (TY: 720000)', label: 'Chuqursoy Bojxona Posti (TY kodi: 720000)' },
+                { value: 'Sergeli Logistika Markazi (TY: 723507)', label: 'Sergeli Logistika Markazi (TY kodi: 723507)' },
+                { value: 'Samarqand Temir Yo‘l Stansiyasi', label: 'Samarqand Temir Yo‘l Stansiyasi' },
+                { value: 'Navoiy EIZ Erkin Bojxona Hududi', label: 'Navoiy EIZ Erkin Bojxona Hududi' },
+              ]}
+            />
+          </div>
         </form>
       </Modal>
     </div>

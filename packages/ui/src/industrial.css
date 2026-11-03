@@ -157,9 +157,42 @@
   box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.07);
 }
 
-/* Obsolete Hazard Stripes and Rivets are neutralized */
+/* Industrial Hairline Hazard Accent */
 .hazard-stripe-sm {
-  display: none !important;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    #D95D1E 0,
+    #D95D1E 6px,
+    #0F172A 6px,
+    #0F172A 12px
+  );
+}
+
+/* Glass Sheen and Tovlanish Effect for Social and Industrial Icons */
+.tovlanish-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.tovlanish-sheen {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  transition: all 0.6s ease;
+  pointer-events: none;
+}
+
+.tovlanish-container:hover .tovlanish-sheen {
+  left: 150%;
 }
 
 .industrial-rivet {

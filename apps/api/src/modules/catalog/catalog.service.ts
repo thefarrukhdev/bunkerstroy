@@ -143,6 +143,15 @@ export class CatalogService {
       unit = 'BAG_50KG';
     }
 
+    const isB2B = Boolean(
+      p.b2bPrice ||
+      (Array.isArray(p.tieredPrices) && p.tieredPrices.length > 0) ||
+      p.supplier?.userType === 'LEGAL_ENTITY' ||
+      p.supplier?.companyName ||
+      p.supplier?.supplierType === 'LOCAL' ||
+      p.itemType === 'MATERIAL'
+    );
+
     return {
       id: p.id,
       title: p.title,
@@ -151,6 +160,9 @@ export class CatalogService {
       supplierId: p.supplierId,
       supplierName: p.supplier?.companyName || p.supplier?.displayName || 'Toshkent Sement Servis MChJ',
       price: Number(p.price),
+      b2bPrice: p.b2bPrice ? Number(p.b2bPrice) : null,
+      isB2B,
+      supplierCabinetType: p.supplier?.companyName || p.supplier?.userType === 'LEGAL_ENTITY' ? 'manufacturer' : 'partner',
       unit,
       stock: p.stock,
       minOrder: p.minOrder,

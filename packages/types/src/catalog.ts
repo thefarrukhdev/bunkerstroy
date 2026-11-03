@@ -60,6 +60,8 @@ export const ProductSchema = z.object({
   supplierName: z.string(),
   price: z.number().positive(),
   b2bPrice: z.number().positive().optional().nullable(),
+  isB2B: z.boolean().optional(),
+  supplierCabinetType: z.string().optional().nullable(),
   unit: MeasurementUnitSchema,
   stock: z.number().int().nonnegative(),
   minOrder: z.number().int().positive().default(1),

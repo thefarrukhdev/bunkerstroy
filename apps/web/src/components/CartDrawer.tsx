@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Trash2,
   Plus,
@@ -19,9 +19,12 @@ import {
   Clock,
   ShieldCheck,
   Bookmark,
-  Check
+  Check,
+  KeyRound,
+  Download,
+  AlertTriangle
 } from 'lucide-react';
-import { Product } from '@bunkerstroy/types';
+import { Product, REGIONS_AND_DISTRICTS, getMfyListForDistrict } from '@bunkerstroy/types';
 import { Button, Badge, Drawer, Input, Select, Alert } from '@bunkerstroy/ui';
 import { apiFetch, resolveApiUrl } from '../services/apiClient';
 
@@ -126,10 +129,24 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [vehicleType, setVehicleType] = useState('Standart Kuryer / HOWO');
   const [region, setRegion] = useState('Toshkent shahri');
   const [district, setDistrict] = useState('Chilonzor tumani');
+  const [mfy, setMfy] = useState('Novza MFY');
   const [streetAddress, setStreetAddress] = useState('Bunyodkor shox ko‘chasi, 42-uy');
   const [landmark, setLandmark] = useState('Novza metro bekati yaqinida');
+  const [secondaryPhone, setSecondaryPhone] = useState('');
+  const [showSecondaryPhone, setShowSecondaryPhone] = useState(false);
+  const [buyerInn, setBuyerInn] = useState(currentUser?.stir || '');
   const [paymentMethod, setPaymentMethod] = useState<'CASH_ON_DELIVERY' | 'PAYME' | 'CLICK' | 'BANK_TRANSFER'>('PAYME');
   const [paymentMode, setPaymentMode] = useState<'FULL_100' | 'SPLIT_50_50'>('FULL_100');
+  const [securityPin, setSecurityPin] = useState(() => Math.floor(1000 + Math.random() * 9000).toString());
+
+  // Districts & MFY lists
+  const availableDistricts = useMemo(() => {
+    return REGIONS_AND_DISTRICTS[region] || [];
+  }, [region]);
+
+  const availableMfys = useMemo(() => {
+    return district ? getMfyListForDistrict(district) : [];
+  }, [district]);
 
   // Saved construction sites (MJ-02)
   const [savedSites, setSavedSites] = useState<ConstructionSite[]>(() => {
@@ -188,8 +205,29 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     0
   );
 
+  // Heavy Logistics calculations (Weight & Volume)
+  const totalWeightKg = useMemo(() => {
+    return items.reduce((sum, it) => {
+      const unit = (it.product.unit || '').toUpperCase();
+      if (unit.includes('TON')) return sum + it.quantity * 1000;
+      if (unit.includes('50KG')) return sum + it.quantity * 50;
+      if (unit.includes('25KG')) return sum + it.quantity * 25;
+      return sum + it.quantity * 15;
+    }, 0);
+  }, [items]);
+
+  const totalTons = (totalWeightKg / 1000).toFixed(2);
+  const totalVolumeM3 = (totalWeightKg / 1400).toFixed(2);
+
+  const recommendedVehicle = useMemo(() => {
+    if (totalWeightKg <= 3000) return 'Gazel (3 tonnagacha)';
+    if (totalWeightKg <= 10000) return 'Isuzu Bortli (10 tonnagacha)';
+    if (totalWeightKg <= 25000) return 'HOWO Samosval (25 tonna)';
+    return 'Fura / Tirkama (30+ tonna)';
+  }, [totalWeightKg]);
+
   // Delivery fee is 0 if pickup, or 50,000 UZS / 150,000 UZS if courier based on weight/size
-  const deliveryFee = deliveryMethod === 'PICKUP' ? 0 : 50000;
+  const deliveryFee = deliveryMethod === 'PICKUP' ? 0 : totalWeightKg > 10000 ? 150000 : 50000;
   const grandTotal = totalItemsSum + deliveryFee;
 
   // Handle Place Order
@@ -452,6 +490,28 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   </button>
                 </div>
               ))}
+
+              {/* Heavy Logistics Tonnage & Volume Summary Card */}
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2 text-xs font-mono shadow-2xs">
+                <div className="flex items-center justify-between text-slate-800 font-bold">
+                  <span className="flex items-center gap-1.5">
+                    <Truck className="w-4 h-4 text-[#D95D1E]" />
+                    <span>Og‘irlik &amp; Tonnaj hisobi:</span>
+                  </span>
+                  <span className="text-[#D95D1E] font-black">{totalTons} tonna</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-[11px] pt-1 text-slate-600 border-t border-slate-200">
+                  <div>
+                    <span className="text-slate-400 block text-[10px]">Taxminiy hajm:</span>
+                    <span className="font-bold text-slate-900">~{totalVolumeM3} m³</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 block text-[10px]">Tavsiya etilgan transport:</span>
+                    <span className="font-bold text-slate-900 truncate">{recommendedVehicle}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -497,6 +557,45 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 <span className="text-[10px] text-slate-500 mt-0.5 block">
                   Kuryer yoki sotuvchi yetkazib berishdan oldin telefon qiladi.
                 </span>
+              </div>
+
+              {/* Secondary Phone Toggle */}
+              <div className="pt-1">
+                <button
+                  type="button"
+                  onClick={() => setShowSecondaryPhone(!showSecondaryPhone)}
+                  className="text-[11px] font-bold text-[#D95D1E] hover:underline cursor-pointer flex items-center gap-1"
+                >
+                  <Phone className="w-3 h-3" />
+                  <span>{showSecondaryPhone ? 'Qo‘shimcha telefonni yopish' : '+ Qo‘shimcha aloqa telefoni'}</span>
+                </button>
+              </div>
+
+              {showSecondaryPhone && (
+                <div className="animate-fadeIn">
+                  <label className="text-[11px] text-slate-700 font-medium block mb-1">
+                    Qo‘shimcha telefon raqami
+                  </label>
+                  <Input
+                    sizeVariant="sm"
+                    placeholder="+998 93 987 65 43"
+                    value={secondaryPhone}
+                    onChange={(e) => setSecondaryPhone(e.target.value)}
+                  />
+                </div>
+              )}
+
+              {/* B2B / Legal Entity STIR */}
+              <div>
+                <label className="text-[11px] text-slate-700 font-medium block mb-1">
+                  STIR / INN (Yuridik shaxslar yoki pudratchilar uchun)
+                </label>
+                <Input
+                  sizeVariant="sm"
+                  placeholder="301234567"
+                  value={buyerInn}
+                  onChange={(e) => setBuyerInn(e.target.value)}
+                />
               </div>
             </div>
           </div>
@@ -643,54 +742,103 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div>
                     <label className="text-[11px] text-slate-700 font-medium block mb-1">
-                      Viloyat / Shahar
+                      Viloyat / Shahar *
                     </label>
                     <Select
                       sizeVariant="sm"
                       value={region}
-                      onChange={(e) => setRegion(e.target.value)}
-                    >
-                      <option value="Toshkent shahri">Toshkent shahri</option>
-                      <option value="Toshkent viloyati">Toshkent viloyati</option>
-                      <option value="Samarqand viloyati">Samarqand viloyati</option>
-                      <option value="Farg‘ona viloyati">Farg‘ona viloyati</option>
-                    </Select>
+                      onChange={(e) => {
+                        const newReg = e.target.value;
+                        setRegion(newReg);
+                        const firstDist = REGIONS_AND_DISTRICTS[newReg]?.[0] || '';
+                        setDistrict(firstDist);
+                        const firstMfy = getMfyListForDistrict(firstDist)?.[0] || '';
+                        setMfy(firstMfy);
+                      }}
+                      options={Object.keys(REGIONS_AND_DISTRICTS).map((reg) => ({
+                        value: reg,
+                        label: reg
+                      }))}
+                    />
                   </div>
 
                   <div>
                     <label className="text-[11px] text-slate-700 font-medium block mb-1">
-                      Tuman
+                      Tuman / Shahar *
+                    </label>
+                    {availableDistricts.length > 0 ? (
+                      <Select
+                        sizeVariant="sm"
+                        value={district}
+                        onChange={(e) => {
+                          const newDist = e.target.value;
+                          setDistrict(newDist);
+                          const firstMfy = getMfyListForDistrict(newDist)?.[0] || '';
+                          setMfy(firstMfy);
+                        }}
+                        options={availableDistricts.map((d) => ({
+                          value: d,
+                          label: d
+                        }))}
+                      />
+                    ) : (
+                      <Input
+                        sizeVariant="sm"
+                        placeholder="Tuman nomi"
+                        value={district}
+                        onChange={(e) => setDistrict(e.target.value)}
+                      />
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[11px] text-slate-700 font-medium block mb-1">
+                      MFY (Mahalla fuqarolar yig‘ini)
+                    </label>
+                    {availableMfys.length > 0 ? (
+                      <Select
+                        sizeVariant="sm"
+                        value={mfy}
+                        onChange={(e) => setMfy(e.target.value)}
+                        options={availableMfys.map((m) => ({
+                          value: m,
+                          label: m
+                        }))}
+                      />
+                    ) : (
+                      <Input
+                        sizeVariant="sm"
+                        placeholder="MFY nomi"
+                        value={mfy}
+                        onChange={(e) => setMfy(e.target.value)}
+                      />
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] text-slate-700 font-medium block mb-1">
+                      Mo‘ljal (Landmark)
                     </label>
                     <Input
                       sizeVariant="sm"
-                      placeholder="Chilonzor tumani"
-                      value={district}
-                      onChange={(e) => setDistrict(e.target.value)}
+                      placeholder="Masalan: 42-maktab yoki metro yaqinida"
+                      value={landmark}
+                      onChange={(e) => setLandmark(e.target.value)}
                     />
                   </div>
                 </div>
 
                 <div>
                   <label className="text-[11px] text-slate-700 font-medium block mb-1">
-                    Ko‘cha, uy / xonadon raqami *
+                    Ko‘cha, uy / bino raqami *
                   </label>
                   <Input
                     sizeVariant="sm"
                     placeholder="Bunyodkor shox ko‘chasi, 42-uy"
                     value={streetAddress}
                     onChange={(e) => setStreetAddress(e.target.value)}
-                  />
-                </div>
-
-                <div>
-                  <label className="text-[11px] text-slate-700 font-medium block mb-1">
-                    Mo‘ljal (Landmark)
-                  </label>
-                  <Input
-                    sizeVariant="sm"
-                    placeholder="Novza metro bekati ro‘parasida"
-                    value={landmark}
-                    onChange={(e) => setLandmark(e.target.value)}
                   />
                 </div>
               </div>
@@ -830,6 +978,20 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             </p>
           </div>
 
+          {/* 4-digit Security PIN Display Box */}
+          <div className="bg-orange-50/70 border-2 border-[#D95D1E] rounded-2xl p-4 max-w-sm mx-auto space-y-2 shadow-sm text-center">
+            <div className="flex items-center justify-center gap-1.5 text-xs font-black text-[#D95D1E] uppercase tracking-wider">
+              <KeyRound className="w-4 h-4" />
+              <span>Yuk Qabul Qilish Xavfsizlik PIN Kodi:</span>
+            </div>
+            <div className="text-3xl sm:text-4xl font-heading font-black text-slate-900 tracking-widest py-1.5 bg-white rounded-xl border border-orange-200 shadow-2xs font-mono">
+              {securityPin}
+            </div>
+            <p className="text-[10px] text-slate-600 leading-tight">
+              ⚠️ Ushbu kodni yuk manzilga yetib kelib, mahsulotni to‘liq tekshirib olganingizdan so‘nggina haydovchiga taqdim eting!
+            </p>
+          </div>
+
           <div className="bg-slate-50 border border-bunker-border-strong rounded-xl p-4 text-left text-xs space-y-2 max-w-sm mx-auto">
             <div className="flex items-center justify-between text-bunker-text-muted">
               <span>Holat:</span>
@@ -840,6 +1002,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <span className="font-bold text-slate-800">
                 {deliveryMethod === 'PICKUP' ? 'Samovivoz (Ombordan)' : 'BunkerStroy Kuryer'}
               </span>
+            </div>
+            <div className="flex items-center justify-between text-bunker-text-muted">
+              <span>Manzil:</span>
+              <span className="font-bold text-slate-800 truncate max-w-[200px]">{region}, {district}</span>
             </div>
             <div className="flex items-center justify-between text-bunker-text-muted">
               <span>Qabul qiluvchi:</span>

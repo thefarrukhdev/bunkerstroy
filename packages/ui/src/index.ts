@@ -13,3 +13,5 @@ export * from './components/Tabs';
 export * from './components/Skeleton';
 export * from './components/Tooltip';
 export * from './components/ProductCard';
+export * from './components/SocialLogos';
+

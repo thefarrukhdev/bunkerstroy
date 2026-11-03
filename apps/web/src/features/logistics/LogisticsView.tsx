@@ -5,10 +5,28 @@ import {
   Navigation,
   Phone,
   PackageCheck,
-  Compass
+  Compass,
+  Building2,
+  Factory,
+  ShieldCheck,
+  ShoppingBag,
+  Layers,
+  MapPin
 } from 'lucide-react';
 import { LogisticsVehicle, Order } from '@bunkerstroy/types';
-import { Button, Badge, Card, Input, Select, Alert, StatCard } from '@bunkerstroy/ui';
+import {
+  Button,
+  Badge,
+  Card,
+  Input,
+  Select,
+  Alert,
+  StatCard,
+  RealTelegramLogo,
+  RealInstagramLogo,
+  RealYouTubeLogo,
+  RealPhoneLogo
+} from '@bunkerstroy/ui';
 
 interface QuoteCalculation {
   vehicle: LogisticsVehicle;
@@ -509,6 +527,155 @@ export const LogisticsView: React.FC = () => {
               {isBooking ? 'Yuborilmoqda...' : 'Reysni Dispetcherga Yuborish'}
             </span>
           </button>
+        </div>
+      </div>
+
+      {/* 4. B2B2C Platforma Modeli & Biz Haqimizda (Legacy LogisticsHub Core Standard) */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xs">
+        <div className="space-y-2 border-b border-slate-100 pb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-orange-50 border border-orange-200 text-[#D95D1E] text-xs font-mono font-bold uppercase tracking-wider">
+            <Building2 className="w-4 h-4" />
+            <span>Biz Haqimizda • B2B2C Platforma</span>
+          </div>
+
+          <h2 className="text-xl sm:text-2xl font-heading font-black text-slate-900 leading-tight">
+            BunkerStroy: qurilish mahsulotlarining onlayn savdo markazi
+          </h2>
+
+          <p className="text-slate-600 text-xs sm:text-sm leading-relaxed max-w-3xl">
+            BunkerStroy’da ta’minotchilarni bir savdo maydonida jamladik: narxlarni solishtirasiz,
+            shartlarni ko‘rasiz, buyurtmani bir joydan berasiz. BunkerStroy mahsulotni o‘zi sotmaydi — 
+            u ta’minotchilarni va ularning mijozlarini uchrashtiradigan ishonchli savdo maydoni.
+          </p>
+        </div>
+
+        {/* Bu yerda kim bor: B2B vs B2C */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
+          {/* B2B Zavodlar */}
+          <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5 shadow-2xs">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#D95D1E] text-white flex items-center justify-center shrink-0 shadow-xs">
+                <Factory className="w-5 h-5 stroke-[2.2]" />
+              </div>
+              <div>
+                <span className="text-[10px] font-bold uppercase text-[#D95D1E] block">
+                  Ta’minotchilar • B2B yo‘nalish
+                </span>
+                <h3 className="text-sm font-bold text-slate-900">
+                  Ishlab chiqaruvchi zavodlar (B2B)
+                </h3>
+              </div>
+            </div>
+            <p className="text-slate-600 text-xs leading-relaxed font-sans">
+              Katta hajm, zavod narxi. Qurilish korxonalari, pudratchilar va yirik obyektlar uchun.
+            </p>
+          </div>
+
+          {/* B2C Chakana do'konlar */}
+          <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5 shadow-2xs">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 shadow-xs">
+                <ShoppingBag className="w-5 h-5 stroke-[2.2]" />
+              </div>
+              <div>
+                <span className="text-[10px] font-bold uppercase text-slate-500 block">
+                  Ta’minotchilar • B2C yo‘nalish
+                </span>
+                <h3 className="text-sm font-bold text-slate-900">
+                  Chakana sotuvchilar (B2C)
+                </h3>
+              </div>
+            </div>
+            <p className="text-slate-600 text-xs leading-relaxed font-sans">
+              Uyingizdagi ta’mir yoki kichik qurilish uchun kerakli miqdorda, qulay yetkazib berish bilan.
+            </p>
+          </div>
+        </div>
+
+        {/* Mahsulot kafolati va aniqlik */}
+        <div className="p-4 sm:p-5 rounded-xl bg-emerald-50/70 border border-emerald-200 flex items-start gap-3.5">
+          <div className="w-10 h-10 rounded-xl bg-white border border-emerald-300 text-emerald-600 flex items-center justify-center shrink-0 shadow-2xs mt-0.5">
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+          <div className="space-y-1">
+            <h4 className="text-xs sm:text-sm font-bold text-emerald-900 font-mono uppercase tracking-wider">
+              Mahsulot kafolati va aniqlik
+            </h4>
+            <p className="text-xs text-slate-700 leading-relaxed font-sans">
+              Mahsulot kafolati va aniqlik ma’lumotlari mahsulot tavsifida kiritilgan va tavsif uchun 
+              ta’minotchi kafolati mavjud. 50/50 Xavfsiz Escrow xaridoringiz huquqlarini 100% himoya qiladi.
+            </p>
+          </div>
+        </div>
+
+        {/* 5. Rasmiy Ijtimoiy Tarmoqlar va 24/7 Aloqa */}
+        <div className="pt-4 border-t border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 block">
+              Rasmiy Ijtimoiy Tarmoqlar
+            </span>
+            <div className="flex items-center gap-3">
+              <a
+                href="https://t.me/bunkerstroy_uz"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="BunkerStroy Telegram"
+                className="hover:scale-105 active:scale-95 transition-transform"
+              >
+                <RealTelegramLogo className="w-10 h-10" />
+              </a>
+
+              <a
+                href="https://instagram.com/bunkerstroy.uz"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="BunkerStroy Instagram"
+                className="hover:scale-105 active:scale-95 transition-transform"
+              >
+                <RealInstagramLogo className="w-10 h-10" />
+              </a>
+
+              <a
+                href="https://youtube.com/@bunkerstroy"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="BunkerStroy YouTube"
+                className="hover:scale-105 active:scale-95 transition-transform"
+              >
+                <RealYouTubeLogo className="w-10 h-10" />
+              </a>
+            </div>
+          </div>
+
+          <div className="space-y-2 md:text-right">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 block">
+              Dispetcherlik &amp; 24/7 Aloqa
+            </span>
+            <div className="flex items-center gap-3">
+              <a
+                href="tel:+998712000050"
+                title="Telefon orqali bog‘lanish"
+                className="hover:scale-105 active:scale-95 transition-transform"
+              >
+                <RealPhoneLogo className="w-10 h-10" />
+              </a>
+
+              <a
+                href="https://t.me/bunkerstroy_uz"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Telegram orqali to‘g‘ridan-to‘g‘ri aloqa"
+                className="hover:scale-105 active:scale-95 transition-transform"
+              >
+                <RealTelegramLogo className="w-10 h-10" />
+              </a>
+
+              <div className="text-left font-mono pl-1">
+                <div className="text-xs font-bold text-slate-900">+998 (71) 200-00-50</div>
+                <div className="text-[10px] text-emerald-600 font-semibold">24/7 Dispetcher faol</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

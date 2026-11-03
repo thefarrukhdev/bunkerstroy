@@ -23,7 +23,13 @@ import {
   Clock,
   WifiOff
 } from 'lucide-react';
-import { Badge } from '@bunkerstroy/ui';
+import {
+  Badge,
+  RealTelegramLogo,
+  RealInstagramLogo,
+  RealYouTubeLogo,
+  RealPhoneLogo
+} from '@bunkerstroy/ui';
 import { initializeMobilePlatform, triggerHaptic } from './services/mobileBridge';
 import { apiFetch, resolveApiUrl } from './services/apiClient';
 
@@ -251,6 +257,49 @@ export const AppContent: React.FC = () => {
                 <span className="bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-emerald-700 font-bold">
                   O‘zDSt &amp; GOST
                 </span>
+              </div>
+
+              {/* Official Social Channels */}
+              <div className="pt-2">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-2">
+                  Ijtimoiy tarmoqlar:
+                </span>
+                <div className="flex items-center gap-2.5">
+                  <a
+                    href="https://t.me/bunkerstroy_uz"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:scale-105 active:scale-95 transition-transform"
+                    title="BunkerStroy Telegram (@bunkerstroy_uz)"
+                  >
+                    <RealTelegramLogo className="w-7 h-7" />
+                  </a>
+                  <a
+                    href="https://instagram.com/bunkerstroy.uz"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:scale-105 active:scale-95 transition-transform"
+                    title="BunkerStroy Instagram (@bunkerstroy.uz)"
+                  >
+                    <RealInstagramLogo className="w-7 h-7" />
+                  </a>
+                  <a
+                    href="https://youtube.com/@bunkerstroy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:scale-105 active:scale-95 transition-transform"
+                    title="BunkerStroy YouTube (@bunkerstroy)"
+                  >
+                    <RealYouTubeLogo className="w-7 h-7" />
+                  </a>
+                  <a
+                    href="tel:+998712000050"
+                    className="hover:scale-105 active:scale-95 transition-transform"
+                    title="Dispetcher: +998 (71) 200-00-50"
+                  >
+                    <RealPhoneLogo className="w-7 h-7" />
+                  </a>
+                </div>
               </div>
             </div>
 

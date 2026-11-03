@@ -25,7 +25,12 @@ import {
   FileSpreadsheet,
   Home
 } from 'lucide-react';
-import { cn } from '@bunkerstroy/ui';
+import {
+  cn,
+  RealTelegramLogo,
+  RealInstagramLogo,
+  RealPhoneLogo
+} from '@bunkerstroy/ui';
 import { useLanguage } from '../context/LanguageContext';
 
 /* ==========================================================================
@@ -951,6 +956,28 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               </button>
             )}
           </div>
+
+          {/* Official Social Channels */}
+          <div className="pt-2 flex items-center justify-center gap-3">
+            <a
+              href="https://t.me/bunkerstroy_uz"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 hover:border-[#2AABEE]/50 text-xs text-slate-700 transition-all shadow-2xs"
+            >
+              <RealTelegramLogo className="w-5.5 h-5.5" />
+              <span className="font-bold text-xs">Telegram</span>
+            </a>
+            <a
+              href="https://instagram.com/bunkerstroy.uz"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 hover:border-[#E1306C]/50 text-xs text-slate-700 transition-all shadow-2xs"
+            >
+              <RealInstagramLogo className="w-5.5 h-5.5" />
+              <span className="font-bold text-xs">Instagram</span>
+            </a>
+          </div>
         </div>
 
         {/* Drawer Footer */}
@@ -999,11 +1026,45 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <>
       <header className="sticky top-0 z-40 w-full bg-white border-b border-slate-200 text-slate-900 shadow-2xs transition-colors">
+        {/* Subtle Industrial Hazard Hairline Accent */}
+        <div className="h-[2.5px] w-full hazard-stripe-sm opacity-90" />
+
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 gap-2 sm:gap-4">
             
-            {/* 1. Architectural Brand Logo */}
-            <BrandLogo />
+            {/* 1. Architectural Brand Logo & Official Channels */}
+            <div className="flex items-center gap-3">
+              <BrandLogo />
+
+              {/* Official Social & Contact Channels (Telegram, Instagram, 24/7 Phone) */}
+              <div className="hidden xl:flex items-center gap-1.5 pl-3 border-l border-slate-200">
+                <a
+                  href="https://t.me/bunkerstroy_uz"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-7 h-7 flex items-center justify-center transition-transform hover:scale-110 active:scale-95"
+                  title="BunkerStroy Telegram kanali (@bunkerstroy_uz)"
+                >
+                  <RealTelegramLogo className="w-5.5 h-5.5" />
+                </a>
+                <a
+                  href="https://instagram.com/bunkerstroy.uz"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-7 h-7 flex items-center justify-center transition-transform hover:scale-110 active:scale-95"
+                  title="BunkerStroy Instagram (@bunkerstroy.uz)"
+                >
+                  <RealInstagramLogo className="w-5.5 h-5.5" />
+                </a>
+                <a
+                  href="tel:+998712000050"
+                  className="w-7 h-7 flex items-center justify-center transition-transform hover:scale-110 active:scale-95"
+                  title="Dispetcherlik qo‘ng‘irog‘i: +998 (71) 200-00-50"
+                >
+                  <RealPhoneLogo className="w-5.5 h-5.5" />
+                </a>
+              </div>
+            </div>
 
             {/* 2. Fast Search Bar (Integrated) */}
             <div className="hidden md:flex flex-1 max-w-xs xl:max-w-sm">
@@ -1056,6 +1117,21 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <Factory className="w-3.5 h-3.5 text-[#D95D1E]" />
                 <span>Zavodlar</span>
+              </NavLink>
+
+              <NavLink
+                to="/logistics"
+                className={({ isActive }) =>
+                  cn(
+                    'px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5',
+                    isActive
+                      ? 'bg-orange-50 text-[#D95D1E] border border-orange-200 font-bold'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  )
+                }
+              >
+                <Truck className="w-3.5 h-3.5 text-[#D95D1E]" />
+                <span>Logistika</span>
               </NavLink>
 
               <NavLink
