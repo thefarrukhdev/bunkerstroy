@@ -12,7 +12,6 @@ import { SuppliersView } from './features/suppliers/SuppliersView';
 import { CalculatorsView } from './features/calculators/CalculatorsView';
 import { TendersView } from './features/tenders/TendersView';
 import { LogisticsView } from './features/logistics/LogisticsView';
-import { DriverMobileView } from './features/driver/DriverMobileView';
 import { OrdersView } from './features/orders/OrdersView';
 import { SellerPanelView } from './features/seller/SellerPanelView';
 import { AuthModal } from './features/auth/AuthModal';
@@ -221,8 +220,8 @@ export const AppContent: React.FC = () => {
           <Route path="/orders" element={<OrdersView />} />
           <Route path="/seller-panel" element={<SellerPanelView />} />
           <Route path="/logistics" element={<LogisticsView />} />
-          <Route path="/driver" element={<DriverMobileView />} />
           {/* Legacy redirects */}
+          <Route path="/driver" element={<Navigate to="/logistics" replace />} />
           <Route path="/esco" element={<Navigate to="/calculators" replace />} />
           <Route path="/global-bunker" element={<Navigate to="/" replace />} />
           <Route path="/certifications" element={<Navigate to="/" replace />} />
@@ -330,18 +329,13 @@ export const AppContent: React.FC = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/seller-panel" className="text-[#D95D1E] font-bold hover:underline transition-colors">
-                    + Sotuvchi Kabineti (POS &amp; CRM)
+                  <Link to="/seller-panel" className="text-[#D95D1E] font-bold hover:underline transition-colors flex items-center gap-1.5">
+                    <span>🏢 Hamkor &amp; Sotuvchi Kabineti</span>
                   </Link>
                 </li>
                 <li>
                   <Link to="/logistics" className="hover:text-[#D95D1E] transition-colors">
                     Yetkazib berish (Logistika)
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/driver" className="text-sky-700 font-bold hover:underline transition-colors flex items-center gap-1">
-                    <span>🚛 Haydovchi Kabineti</span>
                   </Link>
                 </li>
               </ul>

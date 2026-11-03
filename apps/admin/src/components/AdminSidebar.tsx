@@ -306,27 +306,20 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             BunkerStroy Portallari:
           </div>
 
-          <div className="grid grid-cols-3 gap-1">
+          <div className="grid grid-cols-2 gap-1.5">
             <a
               href={typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://bunkerstroy-web.vercel.app'}
               title="Bozor Vitrinasi & Marketplace"
-              className="flex items-center justify-center gap-1 py-1.5 px-1 rounded-lg bg-white hover:bg-slate-100 border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 transition-all text-[10px] font-mono font-bold select-none text-center"
+              className="flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg bg-white hover:bg-slate-100 border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 transition-all text-xs font-sans font-semibold select-none text-center"
             >
               <span>🏪 Vitrina</span>
             </a>
             <a
               href={typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://bunkerstroy-seller.vercel.app'}
-              title="Sotuvchi & POS CRM"
-              className="flex items-center justify-center gap-1 py-1.5 px-1 rounded-lg bg-white hover:bg-slate-100 border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 transition-all text-[10px] font-mono font-bold select-none text-center"
+              title="Hamkor & Sotuvchi Portali"
+              className="flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg bg-white hover:bg-slate-100 border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 transition-all text-xs font-sans font-semibold select-none text-center"
             >
-              <span>🏬 Sotuvchi</span>
-            </a>
-            <a
-              href={typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:3003' : 'https://bunkerstroy-driver.vercel.app'}
-              title="Haydovchi PWA"
-              className="flex items-center justify-center gap-1 py-1.5 px-1 rounded-lg bg-white hover:bg-slate-100 border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 transition-all text-[10px] font-mono font-bold select-none text-center"
-            >
-              <span>🚛 Haydovchi</span>
+              <span>🏢 Hamkor</span>
             </a>
           </div>
 

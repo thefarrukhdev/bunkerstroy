@@ -1,4 +1,0 @@
-dist
-.vercel
-.env*
-node_modules

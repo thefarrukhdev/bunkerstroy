@@ -37,10 +37,8 @@ export const CabinetSwitcher: React.FC<CabinetSwitcherProps> = ({
     CABINET_OPTIONS.find((c) => currentPath.startsWith(c.path)) ||
     (currentUser?.role === 'supplier'
       ? CABINET_OPTIONS[1]
-      : currentUser?.role === 'driver'
-      ? CABINET_OPTIONS[2]
       : currentUser?.role === 'admin'
-      ? CABINET_OPTIONS[4]
+      ? CABINET_OPTIONS[2]
       : CABINET_OPTIONS[0]);
 
   const CurrentIcon = currentCabinet.icon;

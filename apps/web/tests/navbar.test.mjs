@@ -17,10 +17,10 @@ describe('BunkerStroy Modular Navbar Architecture & Configuration', () => {
     assert.ok(UZBEKISTAN_REGIONS.includes('Qoraqalpog‘iston Respublikasi'));
   });
 
-  test('5 ta boshqaruv kabineti to‘liq sozlanganligi', () => {
-    assert.strictEqual(CABINET_OPTIONS.length, 5);
+  test('3 ta asosiy boshqaruv kabineti (Mijoz, Hamkor & Sotuvchi, Admin) to‘liq sozlanganligi', () => {
+    assert.strictEqual(CABINET_OPTIONS.length, 3);
     const ids = CABINET_OPTIONS.map((c) => c.id);
-    assert.deepStrictEqual(ids, ['client', 'seller', 'driver', 'partner', 'admin']);
+    assert.deepStrictEqual(ids, ['client', 'seller', 'admin']);
 
     CABINET_OPTIONS.forEach((cab) => {
       assert.ok(cab.title.length > 0);

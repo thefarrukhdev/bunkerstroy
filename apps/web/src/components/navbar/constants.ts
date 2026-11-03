@@ -1,11 +1,12 @@
 import {
   ClipboardList,
   Store,
-  Truck,
+  Building2,
   Factory,
   ShieldCheck,
   Home,
   Package,
+  Truck,
   Calculator,
   FileSpreadsheet
 } from 'lucide-react';
@@ -18,9 +19,6 @@ export const getDedicatedAppUrl = (id: string): string | null => {
 
   if (id === 'seller') {
     return isLocal ? 'http://localhost:3001' : 'https://bunkerstroy-seller.vercel.app';
-  }
-  if (id === 'driver') {
-    return isLocal ? 'http://localhost:3003' : 'https://bunkerstroy-driver.vercel.app';
   }
   if (id === 'admin') {
     return isLocal ? 'http://localhost:3002' : 'https://bunkerstroy-admin.vercel.app';
@@ -58,32 +56,13 @@ export const CABINET_OPTIONS: CabinetOption[] = [
   },
   {
     id: 'seller',
-    title: 'Sotuvchi Kabineti',
-    subtitle: 'Mahsulotlar vitrinasi, Do‘kon Kassa / POS CRM',
+    title: 'Hamkor & Sotuvchi Kabineti',
+    subtitle: 'Zavodlar ulgurji savdosi, Do‘kon Kassa / POS CRM',
     path: '/seller-panel',
-    icon: Store,
-    badge: 'POS & CRM',
-    badgeColor: 'bg-orange-50 text-[#D95D1E] border-orange-200',
+    icon: Building2,
+    badge: 'ZAVOD & DO‘KON',
+    badgeColor: 'bg-orange-50 text-[#D95D1E] border-orange-200/80',
     isDedicatedApp: true
-  },
-  {
-    id: 'driver',
-    title: 'Haydovchi Kabineti',
-    subtitle: 'Og‘ir yuk tashish va GPS marshrutlar',
-    path: '/driver',
-    icon: Truck,
-    badge: 'LOGISTIKA',
-    badgeColor: 'bg-sky-50 text-sky-800 border-sky-200',
-    isDedicatedApp: true
-  },
-  {
-    id: 'partner',
-    title: 'Hamkor & Zavodlar',
-    subtitle: 'Ishlab chiqaruvchilar va ulgurji dillerlik',
-    path: '/suppliers',
-    icon: Factory,
-    badge: 'B2B ZAVOD',
-    badgeColor: 'bg-purple-50 text-purple-800 border-purple-200'
   },
   {
     id: 'admin',
@@ -92,7 +71,7 @@ export const CABINET_OPTIONS: CabinetOption[] = [
     path: '/admin',
     icon: ShieldCheck,
     badge: 'ROOT ADMIN',
-    badgeColor: 'bg-red-50 text-red-800 border-red-200',
+    badgeColor: 'bg-red-50 text-red-800 border-red-200/80',
     isAdmin: true,
     isDedicatedApp: true
   }
@@ -141,8 +120,8 @@ export const NAV_LINKS: NavItem[] = [
 export const OFFICIAL_CHANNELS = {
   telegram: 'https://t.me/bunkerstroy_uz',
   instagram: 'https://instagram.com/bunkerstroy.uz',
-  phone: '+998 (71) 200-00-50',
-  phoneRaw: '+998712000050',
-  hotline: '+998 (71) 200-45-46',
-  hotlineRaw: '+998712004546'
+  phone: '+998 (95) 082-1336',
+  phoneRaw: '+998950821336',
+  hotline: '+998 (95) 082-1336',
+  hotlineRaw: '+998950821336'
 } as const;

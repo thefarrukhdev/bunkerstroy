@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Factory,
   Store,
@@ -19,17 +19,90 @@ import {
   BarChart3,
   Truck,
   Wallet,
-  ChevronRight
+  ChevronRight,
+  Zap,
+  CheckCircle2
 } from 'lucide-react';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { SellerPanelView, SellerTab } from './SellerPanelView';
+
+export type PartnerRole = 'manufacturer' | 'retailer' | 'distributor';
+
+export interface RoleConfig {
+  role: PartnerRole;
+  label: string;
+  shortLabel: string;
+  badge: string;
+  icon: typeof Factory;
+  companyName: string;
+  companySub: string;
+  shortSub: string;
+  stir: string;
+  statusBadge: string;
+}
+
+export const ROLE_CONFIGS: Record<PartnerRole, RoleConfig> = {
+  manufacturer: {
+    role: 'manufacturer',
+    label: 'Zavod (Ishlab chiqaruvchi)',
+    shortLabel: 'Zavod',
+    badge: '🏭 Zavod',
+    icon: Factory,
+    companyName: '«BEKOBOD METALL INVEST» AJ',
+    companySub: 'Akkreditatsiyalangan Zavod (ZV-842) | STIR: 308112233 | Vagon & Fura Partiyalari',
+    shortSub: 'Zavod ZV-842 | Fura & Vagon',
+    stir: '308112233',
+    statusBadge: 'Akkreditatsiyalangan ZV-842'
+  },
+  retailer: {
+    role: 'retailer',
+    label: 'Do‘kon / Baza (Sotuvchi)',
+    shortLabel: 'Do‘kon / Baza',
+    badge: '🏪 Do‘kon',
+    icon: Store,
+    companyName: '«STROY SERVIS TASHKENT» MCHJ',
+    companySub: 'Qurilish Do‘kon-Baza | STIR: 309445566 | POS Terminal #04',
+    shortSub: 'Do‘kon-Baza | POS #04',
+    stir: '309445566',
+    statusBadge: 'POS Terminal #04 Faol'
+  },
+  distributor: {
+    role: 'distributor',
+    label: 'Diler (Gibrid)',
+    shortLabel: 'Diler',
+    badge: '⚡ Diler',
+    icon: Building2,
+    companyName: '«GLOBAL BUNKER DISTRIB» MCHJ',
+    companySub: 'Yirik Distribyutorlik Markazi | STIR: 301223344 | Gibrid Ulgurji & Chakana',
+    shortSub: 'Ulgurji & Chakana Distribyutsiya',
+    stir: '301223344',
+    statusBadge: 'Bunker Distrib Markazi'
+  }
+};
 
 const SellerPortalInner: React.FC = () => {
   const { language, toggleLanguage } = useLanguage();
   const [currentTime, setCurrentTime] = useState<string>('');
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [activeTab, setActiveTab] = useState<SellerTab>('inventory');
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+
+  // Dynamic Partner Role: 'manufacturer' | 'retailer' | 'distributor'
+  const [currentRole, setCurrentRole] = useState<PartnerRole>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('bunkerstroy_partner_role') as PartnerRole;
+        if (saved === 'manufacturer' || saved === 'retailer' || saved === 'distributor') {
+          return saved;
+        }
+      } catch (e) {
+        // Fallback for localStorage access restrictions
+      }
+    }
+    return 'manufacturer';
+  });
+
+  // Active Tab
+  const [activeTab, setActiveTab] = useState<SellerTab>('inventory');
 
   // Cross-app navigation URLs based on environment
   const isLocal =
@@ -62,15 +135,62 @@ const SellerPortalInner: React.FC = () => {
     }, 500);
   };
 
-  const navItems = [
-    { id: 'inventory' as SellerTab, label: 'Mahsulotlar Ombori', shortLabel: 'Ombor', icon: Package },
-    { id: 'create' as SellerTab, label: '+ Yangi Tovar Qo‘shish', shortLabel: '+ Tovar', icon: PlusCircle },
-    { id: 'crm_pos' as SellerTab, label: 'Do‘kon Kassa (POS CRM)', shortLabel: 'Kassa POS', icon: Calculator, isAccent: true },
-    { id: 'b2b' as SellerTab, label: 'B2B Zavodlar & Buyurtmalar', shortLabel: 'B2B', icon: Factory },
-    { id: 'reports' as SellerTab, label: 'Moliyaviy Kirim-Chiqim', shortLabel: 'Moliya', icon: BarChart3 },
-    { id: 'orders' as SellerTab, label: 'Buyurtmalar & Logistika', shortLabel: 'Buyurtmalar', icon: Truck },
-    { id: 'escrow' as SellerTab, label: '50/50 Escrow Reestri', shortLabel: 'Escrow', icon: Wallet }
-  ];
+  // Role Switcher Handler
+  const handleRoleChange = (newRole: PartnerRole) => {
+    setCurrentRole(newRole);
+    try {
+      localStorage.setItem('bunkerstroy_partner_role', newRole);
+    } catch (e) {
+      // Ignore localStorage write error
+    }
+
+    // Role-specific tab adjustments:
+    // If switching to 'manufacturer' and activeTab was 'crm_pos', redirect to 'inventory'
+    if (newRole === 'manufacturer' && activeTab === 'crm_pos') {
+      setActiveTab('inventory');
+    }
+  };
+
+  // Active company identity configuration
+  const currentConfig = ROLE_CONFIGS[currentRole];
+  const CurrentIcon = currentConfig.icon;
+
+  // Dynamic Nav Items based on Role
+  const navItems = useMemo(() => {
+    if (currentRole === 'manufacturer') {
+      return [
+        { id: 'inventory' as SellerTab, label: 'Zavod Mahsulotlari', shortLabel: 'Mahsulotlar', icon: Package },
+        { id: 'create' as SellerTab, label: '+ Tovar Qo‘shish', shortLabel: '+ Tovar', icon: PlusCircle },
+        { id: 'b2b' as SellerTab, label: 'B2B Shartnomalar & Tenderlar', shortLabel: 'B2B', icon: Factory, isAccent: true },
+        { id: 'orders' as SellerTab, label: 'Fura & Vagon Logistikasi', shortLabel: 'Logistika', icon: Truck },
+        { id: 'escrow' as SellerTab, label: '50/50 Escrow Reestri', shortLabel: 'Escrow', icon: Wallet },
+        { id: 'reports' as SellerTab, label: 'Moliyaviy Hisobot', shortLabel: 'Moliya', icon: BarChart3 }
+      ];
+    }
+
+    if (currentRole === 'retailer') {
+      return [
+        { id: 'crm_pos' as SellerTab, label: 'Do‘kon Kassa (POS CRM)', shortLabel: 'Kassa POS', icon: Calculator, isAccent: true },
+        { id: 'inventory' as SellerTab, label: 'Do‘kon Ombori', shortLabel: 'Ombor', icon: Package },
+        { id: 'create' as SellerTab, label: '+ Tovar Qo‘shish', shortLabel: '+ Tovar', icon: PlusCircle },
+        { id: 'b2b' as SellerTab, label: 'Zavodlardan Ulgurji Xarid', shortLabel: 'Zavod Xaridi', icon: Factory },
+        { id: 'orders' as SellerTab, label: 'Mijoz Buyurtmalari', shortLabel: 'Buyurtmalar', icon: Truck },
+        { id: 'escrow' as SellerTab, label: '50/50 Escrow Reestri', shortLabel: 'Escrow', icon: Wallet },
+        { id: 'reports' as SellerTab, label: 'Moliyaviy Kirim-Chiqim', shortLabel: 'Moliya', icon: BarChart3 }
+      ];
+    }
+
+    // Distributor (Hybrid)
+    return [
+      { id: 'inventory' as SellerTab, label: 'Distribyutor Ombori', shortLabel: 'Ombor', icon: Package },
+      { id: 'create' as SellerTab, label: '+ Tovar Qo‘shish', shortLabel: '+ Tovar', icon: PlusCircle },
+      { id: 'crm_pos' as SellerTab, label: 'Baza Kassasi (POS CRM)', shortLabel: 'Kassa POS', icon: Calculator, isAccent: true },
+      { id: 'b2b' as SellerTab, label: 'Zavod Shartnomalari & B2B', shortLabel: 'B2B', icon: Factory },
+      { id: 'orders' as SellerTab, label: 'Fura & Vagon Logistikasi', shortLabel: 'Logistika', icon: Truck },
+      { id: 'escrow' as SellerTab, label: '50/50 Escrow Reestri', shortLabel: 'Escrow', icon: Wallet },
+      { id: 'reports' as SellerTab, label: 'Moliyaviy Hisobot', shortLabel: 'Moliya', icon: BarChart3 }
+    ];
+  }, [currentRole]);
 
   const handleSelectTab = (tab: SellerTab) => {
     setActiveTab(tab);
@@ -84,8 +204,8 @@ const SellerPortalInner: React.FC = () => {
           ========================================================================= */}
       <header className="sticky top-0 z-40 bg-white border-b border-slate-200 text-slate-900 shadow-xs pt-safe">
         <div className="max-w-[1920px] mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
-          {/* Left: Hamburger & Brand Identity */}
-          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+          {/* Left: Drawer Toggle & Brand Identity */}
+          <div className="flex items-center gap-2 sm:gap-3.5 min-w-0">
             {/* Mobile / Tablet Drawer Toggle Button */}
             <button
               type="button"
@@ -97,40 +217,105 @@ const SellerPortalInner: React.FC = () => {
               <Menu className="w-5 h-5 text-[#D95D1E]" />
             </button>
 
-            {/* BunkerStroy Brand Pill */}
-            <div className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 shadow-xs shrink-0">
-              <div className="w-6 h-6 rounded-lg bg-[#D95D1E] text-white flex items-center justify-center font-black shadow-xs shrink-0">
-                <Factory className="w-4 h-4 stroke-[2.5]" />
+            {/* Brand Title: BUNKERSTROY HAMKOR & SOTUVCHI PORTALI */}
+            <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 shadow-xs shrink-0">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#D95D1E] text-white flex items-center justify-center font-black shadow-xs shrink-0">
+                <CurrentIcon className="w-4 h-4 stroke-[2.5]" />
               </div>
-              <div className="flex flex-col leading-none">
-                <span className="text-slate-900 font-black tracking-wider uppercase text-xs sm:text-sm">
-                  BUNKER<span className="text-[#D95D1E]">STROY</span>
-                </span>
-                <span className="text-[8px] sm:text-[9px] text-slate-500 font-mono font-bold tracking-widest uppercase">
-                  SELLER &amp; POS CRM
-                </span>
-              </div>
-            </div>
-
-            {/* Active Factory / Store Identity Badge (Responsive) */}
-            <div className="hidden xl:flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono">
-              <Building2 className="w-3.5 h-3.5 text-[#D95D1E]" />
-              <div className="flex items-center gap-2">
-                <span className="text-slate-900 font-bold tracking-wide">
-                  BEKOBOD METALL INVEST MCHJ
-                </span>
-                <span className="text-slate-300">|</span>
-                <span className="text-slate-500">STIR: 308112233</span>
-                <span className="text-slate-300">|</span>
-                <span className="inline-flex items-center text-emerald-700 font-semibold">
-                  POS Terminal #04
+              <div className="flex flex-col leading-tight">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-slate-900 font-black tracking-wider uppercase text-xs sm:text-sm font-heading">
+                    BUNKER<span className="text-[#D95D1E]">STROY</span>
+                  </span>
+                  <span className="hidden sm:inline-block text-[10px] sm:text-[11px] font-black uppercase text-slate-800 tracking-wide font-sans">
+                    HAMKOR &amp; SOTUVCHI PORTALI
+                  </span>
+                </div>
+                <span className="text-[9px] text-[#D95D1E] font-mono font-bold tracking-widest uppercase">
+                  ZAVOD, DILER &amp; DO‘KON
                 </span>
               </div>
             </div>
 
-            {/* Compact Store indicator on tablet */}
-            <div className="hidden sm:flex xl:hidden items-center px-2.5 py-1 rounded-xl bg-slate-50 border border-slate-200 text-[11px] font-mono text-emerald-700">
-              <span>POS #04 Faol</span>
+            {/* Elegant Industrial Role Switcher in Header (Desktop / Tablet) */}
+            <div
+              role="tablist"
+              aria-label="Hamkorlik roli"
+              className="hidden md:inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200/80 shadow-inner shrink-0"
+            >
+              {/* 1. Zavod */}
+              <button
+                type="button"
+                role="tab"
+                aria-selected={currentRole === 'manufacturer'}
+                onClick={() => handleRoleChange('manufacturer')}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
+                  currentRole === 'manufacturer'
+                    ? 'bg-white text-slate-900 shadow-xs border border-slate-200 font-black text-[#D95D1E]'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50/60'
+                }`}
+                title="Zavod (Ishlab chiqaruvchi): Vagon va fura partiyalari, B2B shartnomalar"
+              >
+                <span className="text-sm">🏭</span>
+                <span className="font-sans font-bold">Zavod</span>
+                <span className="hidden 2xl:inline text-[10px] font-normal text-slate-500 font-mono">
+                  (Ishlab chiqaruvchi)
+                </span>
+              </button>
+
+              {/* 2. Do'kon / Baza */}
+              <button
+                type="button"
+                role="tab"
+                aria-selected={currentRole === 'retailer'}
+                onClick={() => handleRoleChange('retailer')}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
+                  currentRole === 'retailer'
+                    ? 'bg-white text-slate-900 shadow-xs border border-slate-200 font-black text-[#D95D1E]'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50/60'
+                }`}
+                title="Do‘kon / Baza (Sotuvchi): POS CRM kassa, ombor va zavodlardan xarid"
+              >
+                <span className="text-sm">🏪</span>
+                <span className="font-sans font-bold">Do‘kon / Baza</span>
+                <span className="hidden 2xl:inline text-[10px] font-normal text-slate-500 font-mono">
+                  (Sotuvchi)
+                </span>
+              </button>
+
+              {/* 3. Diler */}
+              <button
+                type="button"
+                role="tab"
+                aria-selected={currentRole === 'distributor'}
+                onClick={() => handleRoleChange('distributor')}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
+                  currentRole === 'distributor'
+                    ? 'bg-white text-slate-900 shadow-xs border border-slate-200 font-black text-[#D95D1E]'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50/60'
+                }`}
+                title="Diler (Gibrid): Yirik distribyutsiya, ulgurji va chakana savdo"
+              >
+                <span className="text-sm">⚡</span>
+                <span className="font-sans font-bold">Diler</span>
+                <span className="hidden 2xl:inline text-[10px] font-normal text-slate-500 font-mono">
+                  (Gibrid)
+                </span>
+              </button>
+            </div>
+
+            {/* Dynamic Company Identity Banner (Widescreen 2xl+) */}
+            <div className="hidden 2xl:flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono shrink-0">
+              <CurrentIcon className="w-3.5 h-3.5 text-[#D95D1E] shrink-0" />
+              <div className="flex items-center gap-1.5">
+                <span className="text-slate-900 font-black tracking-wide whitespace-nowrap">
+                  {currentConfig.companyName}
+                </span>
+                <span className="text-slate-300">|</span>
+                <span className="text-slate-500 text-[11px] whitespace-nowrap">
+                  {currentConfig.companySub}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -213,15 +398,18 @@ const SellerPortalInner: React.FC = () => {
             {/* Drawer Header */}
             <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-[#D95D1E] text-white flex items-center justify-center font-black">
-                  <Factory className="w-4 h-4" />
+                <div className="w-8 h-8 rounded-lg bg-[#D95D1E] text-white flex items-center justify-center font-black">
+                  <CurrentIcon className="w-4 h-4" />
                 </div>
                 <div>
                   <h3 className="font-heading font-black text-slate-900 text-sm">
                     BUNKER<span className="text-[#D95D1E]">STROY</span>
                   </h3>
-                  <span className="text-[9px] font-mono text-slate-500 block">
-                    SELLER &amp; POS CRM
+                  <span className="text-[10px] font-black uppercase text-slate-800 block">
+                    HAMKOR &amp; SOTUVCHI PORTALI
+                  </span>
+                  <span className="text-[9px] font-mono text-[#D95D1E] font-bold block">
+                    ZAVOD, DILER &amp; DO‘KON
                   </span>
                 </div>
               </div>
@@ -236,24 +424,70 @@ const SellerPortalInner: React.FC = () => {
               </button>
             </div>
 
-            {/* Merchant Identity Card */}
+            {/* Industrial Role Switcher in Drawer */}
+            <div className="p-3 bg-slate-100/90 border-b border-slate-200">
+              <span className="text-[10px] font-mono font-bold uppercase text-slate-500 block mb-2 tracking-wider">
+                Hamkorlik Rolini Tanlang:
+              </span>
+              <div className="grid grid-cols-3 gap-1">
+                <button
+                  type="button"
+                  onClick={() => handleRoleChange('manufacturer')}
+                  className={`flex flex-col items-center justify-center py-2 px-1 rounded-lg text-xs font-mono font-bold transition-all ${
+                    currentRole === 'manufacturer'
+                      ? 'bg-white text-[#D95D1E] shadow-xs border border-slate-200 font-black'
+                      : 'text-slate-600 hover:bg-slate-200/60'
+                  }`}
+                >
+                  <span className="text-base">🏭</span>
+                  <span className="text-[11px] font-sans mt-0.5">Zavod</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleRoleChange('retailer')}
+                  className={`flex flex-col items-center justify-center py-2 px-1 rounded-lg text-xs font-mono font-bold transition-all ${
+                    currentRole === 'retailer'
+                      ? 'bg-white text-[#D95D1E] shadow-xs border border-slate-200 font-black'
+                      : 'text-slate-600 hover:bg-slate-200/60'
+                  }`}
+                >
+                  <span className="text-base">🏪</span>
+                  <span className="text-[11px] font-sans mt-0.5">Do‘kon</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleRoleChange('distributor')}
+                  className={`flex flex-col items-center justify-center py-2 px-1 rounded-lg text-xs font-mono font-bold transition-all ${
+                    currentRole === 'distributor'
+                      ? 'bg-white text-[#D95D1E] shadow-xs border border-slate-200 font-black'
+                      : 'text-slate-600 hover:bg-slate-200/60'
+                  }`}
+                >
+                  <span className="text-base">⚡</span>
+                  <span className="text-[11px] font-sans mt-0.5">Diler</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Active Company Identity Card in Drawer */}
             <div className="p-4 bg-slate-50/50 border-b border-slate-200 space-y-1.5 font-mono text-xs">
               <span className="text-[10px] text-slate-500 font-bold uppercase block">
-                Faol Sotuvchi / Zavod:
+                Faol Korxona / Rol:
               </span>
-              <p className="font-bold text-slate-900 text-sm">BEKOBOD METALL INVEST MCHJ</p>
-              <div className="flex items-center justify-between text-slate-600 text-[11px] pt-1">
-                <span>STIR: 308112233</span>
-                <span className="text-emerald-700 font-bold">
-                  POS #04 Faol
-                </span>
+              <p className="font-bold text-slate-900 text-sm leading-snug">
+                {currentConfig.companyName}
+              </p>
+              <div className="text-slate-600 text-[11px] pt-1">
+                <span>{currentConfig.companySub}</span>
               </div>
             </div>
 
             {/* Drawer Navigation Links */}
             <div className="p-3 space-y-1.5 flex-1">
               <div className="px-3 py-1.5 text-[10px] font-mono font-bold uppercase text-slate-500 tracking-wider">
-                Boshqaruv Bo‘limlari
+                Boshqaruv Bo‘limlari ({currentConfig.shortLabel})
               </div>
 
               {navItems.map((item) => {
@@ -328,10 +562,15 @@ const SellerPortalInner: React.FC = () => {
       )}
 
       {/* =========================================================================
-          MAIN SELLER & POS CRM VIEW
+          MAIN UNIFIED PARTNER & SUPPLIER VIEW
           ========================================================================= */}
       <main className="flex-1 w-full max-w-[1920px] mx-auto p-3 sm:p-5 lg:p-6 pb-24 md:pb-8">
-        <SellerPanelView activeTab={activeTab} onTabChange={setActiveTab} />
+        <SellerPanelView
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          currentRole={currentRole}
+          onRoleChange={handleRoleChange}
+        />
       </main>
 
       {/* =========================================================================
@@ -342,7 +581,7 @@ const SellerPortalInner: React.FC = () => {
         className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 pb-safe shadow-lg"
       >
         <div className="grid grid-cols-5 gap-1 px-1.5 py-1">
-          {/* 1. Ombor */}
+          {/* 1. Ombor / Mahsulotlar */}
           <button
             type="button"
             onClick={() => handleSelectTab('inventory')}
@@ -353,24 +592,41 @@ const SellerPortalInner: React.FC = () => {
             }`}
           >
             <Package className="w-5 h-5" />
-            <span className="text-[10px] font-mono mt-0.5">Ombor</span>
+            <span className="text-[10px] font-mono mt-0.5">
+              {currentRole === 'manufacturer' ? 'Mahsulot' : 'Ombor'}
+            </span>
           </button>
 
-          {/* 2. Kassa POS (High-visibility) */}
-          <button
-            type="button"
-            onClick={() => handleSelectTab('crm_pos')}
-            className={`flex flex-col items-center justify-center py-1.5 rounded-xl transition-all cursor-pointer min-h-[48px] ${
-              activeTab === 'crm_pos'
-                ? 'text-white bg-[#D95D1E] font-black shadow-xs'
-                : 'text-[#D95D1E] hover:text-[#B43B06]'
-            }`}
-          >
-            <Calculator className="w-5 h-5" />
-            <span className="text-[10px] font-mono mt-0.5">Kassa POS</span>
-          </button>
+          {/* 2. Middle Tab: Role-dependent */}
+          {currentRole === 'manufacturer' ? (
+            <button
+              type="button"
+              onClick={() => handleSelectTab('b2b')}
+              className={`flex flex-col items-center justify-center py-1.5 rounded-xl transition-all cursor-pointer min-h-[48px] ${
+                activeTab === 'b2b'
+                  ? 'text-white bg-[#D95D1E] font-black shadow-xs'
+                  : 'text-[#D95D1E] hover:text-[#B43B06]'
+              }`}
+            >
+              <Factory className="w-5 h-5" />
+              <span className="text-[10px] font-mono mt-0.5">B2B Zavod</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => handleSelectTab('crm_pos')}
+              className={`flex flex-col items-center justify-center py-1.5 rounded-xl transition-all cursor-pointer min-h-[48px] ${
+                activeTab === 'crm_pos'
+                  ? 'text-white bg-[#D95D1E] font-black shadow-xs'
+                  : 'text-[#D95D1E] hover:text-[#B43B06]'
+              }`}
+            >
+              <Calculator className="w-5 h-5" />
+              <span className="text-[10px] font-mono mt-0.5">Kassa POS</span>
+            </button>
+          )}
 
-          {/* 3. Buyurtmalar */}
+          {/* 3. Logistika / Buyurtma */}
           <button
             type="button"
             onClick={() => handleSelectTab('orders')}
@@ -381,7 +637,9 @@ const SellerPortalInner: React.FC = () => {
             }`}
           >
             <Truck className="w-5 h-5" />
-            <span className="text-[10px] font-mono mt-0.5">Buyurtma</span>
+            <span className="text-[10px] font-mono mt-0.5">
+              {currentRole === 'manufacturer' ? 'Logistika' : 'Buyurtma'}
+            </span>
           </button>
 
           {/* 4. Moliya */}
@@ -419,16 +677,22 @@ const SellerPortalInner: React.FC = () => {
           <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-[11px]">
             <div className="flex items-center gap-1.5 text-emerald-700 font-semibold">
               <Wifi className="w-3.5 h-3.5" />
-              <span>POS TIZIM: ONLAYN</span>
+              <span>
+                {currentRole === 'manufacturer'
+                  ? 'ZAVOD STATUSI: ONLAYN'
+                  : currentRole === 'retailer'
+                  ? 'POS TIZIM: ONLAYN'
+                  : 'DISTRIB TIZIM: ONLAYN'}
+              </span>
             </div>
             <span className="text-slate-300 hidden sm:inline">|</span>
             <div className="flex items-center gap-1.5 text-slate-700">
               <Activity className="w-3.5 h-3.5 text-[#D95D1E]" />
-              <span>Escrow Gateway v2.4: Faol (1.5% komissiya)</span>
+              <span>Escrow Gateway v2.4: Faol (1.5% kafolatli kliring)</span>
             </div>
             <span className="text-slate-300 hidden sm:inline">|</span>
             <span className="text-slate-500">
-              STIR: 308112233 (QQS to‘lovchi № 3260012)
+              STIR: {currentConfig.stir} ({currentConfig.statusBadge})
             </span>
           </div>
 

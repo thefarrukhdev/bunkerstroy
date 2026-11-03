@@ -141,6 +141,76 @@ export interface B2bWholesaleOrder {
   createdAt: string;
 }
 
+// Zavod Chiqish Dispetcherligi (Fura & Vagon)
+export interface FactoryDispatchItem {
+  id: string;
+  contractNo: string;
+  buyerName: string;
+  buyerLocation: string;
+  product: string;
+  quantity: string;
+  transport: string;
+  totalAmount: number;
+  status: 'YO‘LDA' | 'ZAVODDAN_YUKLANDI' | 'YETKAZILDI' | 'KUTILMOQDA';
+  incoterm: string;
+  escrowStatus: string;
+}
+
+export const INITIAL_FACTORY_DISPATCHES: FactoryDispatchItem[] = [
+  {
+    id: 'fdisp-01',
+    contractNo: 'BS-ZAV-2026/8841',
+    buyerName: '«STROY SERVIS TASHKENT» MCHJ',
+    buyerLocation: 'Toshkent sh., Sergeli qurilish bozori',
+    product: 'Armatura A500C D14 (GOST 52544)',
+    quantity: '60 tonna',
+    transport: '🚆 Temir Yo‘l Vagon (№ 548812)',
+    totalAmount: 582000000,
+    status: 'YO‘LDA',
+    incoterm: 'DAP Toshkent-Janubiy',
+    escrowStatus: '50% Bloklangan (Escrow)'
+  },
+  {
+    id: 'fdisp-02',
+    contractNo: 'BS-ZAV-2026/8839',
+    buyerName: '«SAMARQAND QURILISH BAZA» XK',
+    buyerLocation: 'Samarqand vil., Jomboy tumani',
+    product: 'Armatura A500C D16 (GOST 52544)',
+    quantity: '30 tonna',
+    transport: '🚛 Shacman Fura (№ 30 741 AAA)',
+    totalAmount: 291000000,
+    status: 'ZAVODDAN_YUKLANDI',
+    incoterm: 'DAP Samarqand Ombori',
+    escrowStatus: '50% Bloklangan (Escrow)'
+  },
+  {
+    id: 'fdisp-03',
+    contractNo: 'BS-ZAV-2026/8835',
+    buyerName: '«BUXORO MEGA STROY» MCHJ',
+    buyerLocation: 'Buxoro sh., Sanoatchilar ko‘chasi',
+    product: 'Katanka Sim D6.5 (SAE 1008)',
+    quantity: '120 tonna (2 ta vagon)',
+    transport: '🚆 Temir Yo‘l Vagon (№ 591044, № 591045)',
+    totalAmount: 1140000000,
+    status: 'YETKAZILDI',
+    incoterm: 'DAP Buxoro-1',
+    escrowStatus: '100% Yechildi (Kliring)'
+  },
+  {
+    id: 'fdisp-04',
+    contractNo: 'BS-ZAV-2026/8830',
+    buyerName: '«TOSHKENT CITY BLOCK 12» Pudrat',
+    buyerLocation: 'Toshkent sh., Shayxontohur',
+    product: 'Armatura A500C D25 (Seysmik 9+)',
+    quantity: '90 tonna',
+    transport: '🚛 3 ta Og‘ir Fura Karvoni',
+    totalAmount: 882000000,
+    status: 'KUTILMOQDA',
+    incoterm: 'DAP Qurilish Maydoni',
+    escrowStatus: '50/50 Shartnoma Imzolandi'
+  }
+];
+
 // POS Cart item and Basket
 export interface PosBasketItem {
   id: string;
@@ -627,9 +697,13 @@ export type SellerTab =
   | 'orders'
   | 'escrow';
 
+export type PartnerRole = 'manufacturer' | 'retailer' | 'distributor';
+
 export interface SellerPanelViewProps {
   activeTab?: SellerTab;
   onTabChange?: (tab: SellerTab) => void;
+  currentRole?: PartnerRole;
+  onRoleChange?: (role: PartnerRole) => void;
 }
 
 /* ==========================================================================
@@ -638,7 +712,9 @@ export interface SellerPanelViewProps {
 
 export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
   activeTab: propActiveTab,
-  onTabChange
+  onTabChange,
+  currentRole = 'manufacturer',
+  onRoleChange
 }) => {
   const { t } = useLanguage();
 
@@ -694,6 +770,31 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
       return INITIAL_B2B_ORDERS;
     }
   });
+
+  // State: Factory Outgoing Dispatches (Fura & Vagon Partiyalari)
+  const [factoryDispatches, setFactoryDispatches] = useState<FactoryDispatchItem[]>(() => {
+    try {
+      const saved = localStorage.getItem('bunkerstroy_factory_dispatches');
+      return saved ? JSON.parse(saved) : INITIAL_FACTORY_DISPATCHES;
+    } catch {
+      return INITIAL_FACTORY_DISPATCHES;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('bunkerstroy_factory_dispatches', JSON.stringify(factoryDispatches));
+    } catch {
+      // ignore
+    }
+  }, [factoryDispatches]);
+
+  const handleUpdateDispatchStatus = (id: string, newStatus: FactoryDispatchItem['status']) => {
+    setFactoryDispatches((prev) =>
+      prev.map((d) => (d.id === id ? { ...d, status: newStatus } : d))
+    );
+    showFeedback('success', `Partiya holati o‘zgartirildi: ${newStatus}`);
+  };
 
   const [selectedManufacturer, setSelectedManufacturer] = useState<B2bManufacturer | null>(null);
   const [b2bQuantity, setB2bQuantity] = useState<number>(20);
@@ -1400,36 +1501,175 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
               <span className="text-xs font-mono font-black text-[#D95D1E] uppercase tracking-wider flex items-center gap-1.5">
-                <Store className="w-4 h-4 text-[#D95D1E]" />
-                Sotuvchi &amp; Do‘kon Boshqaruv Markazi
+                {currentRole === 'manufacturer' ? (
+                  <>
+                    <Factory className="w-4 h-4 text-[#D95D1E]" />
+                    Zavod &amp; Ishlab Chiqaruvchi Boshqaruv Markazi
+                  </>
+                ) : currentRole === 'retailer' ? (
+                  <>
+                    <Store className="w-4 h-4 text-[#D95D1E]" />
+                    Qurilish Do‘kon-Baza Markazi
+                  </>
+                ) : (
+                  <>
+                    <Building2 className="w-4 h-4 text-[#D95D1E]" />
+                    Distribyutorlik Markazi
+                  </>
+                )}
               </span>
               <Badge variant="success" size="sm">
-                Tizim Faol
+                {currentRole === 'manufacturer'
+                  ? 'Akkreditatsiyalangan ZV-842'
+                  : currentRole === 'retailer'
+                  ? 'POS #04 Faol'
+                  : 'Bunker Distrib Markazi'}
               </Badge>
             </div>
             <h1 className="text-2xl sm:text-3xl font-heading font-black tracking-tight text-slate-900">
-              Sanoat Vitrinasi, Kassa POS &amp; B2B Xaridlar
+              {currentRole === 'manufacturer'
+                ? '«BEKOBOD METALL INVEST» AJ — Zavod Portali & B2B Ekotizim'
+                : currentRole === 'retailer'
+                ? '«STROY SERVIS TASHKENT» MCHJ — Do‘kon Boshqaruv Markazi'
+                : '«GLOBAL BUNKER DISTRIB» MCHJ — Yirik Distribyutorlik Markazi'}
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 max-w-2xl leading-relaxed">
-              Jismoniy do‘kon kassa apparati (POS CRM), B2B zavodlardan ulgurji xaridlar,
-              online tovarlar vitrinasi va to‘liq moliyaviy Kirim-Chiqim hisobotlari.
+              {currentRole === 'manufacturer'
+                ? 'Yillik quvvat: 850,000 tonna armatura va po‘lat prokat. Vagon va fura partiyalarida B2B shartnomalar, ishlab chiqaruvchi narxlari va 50/50 kafolatlangan Escrow kliringi.'
+                : currentRole === 'retailer'
+                ? 'Jismoniy do‘kon kassa apparati (POS CRM), B2B zavodlardan ulgurji xaridlar («Kim sotsa — o‘sha yetkazadi»), ombor va to‘liq moliyaviy Kirim-Chiqim hisobotlari.'
+                : 'Gibrid Ulgurji & Chakana savdo, zavodlardan vagon partiyalarida to‘g‘ridan-to‘g‘ri shartnomalar, 12 viloyat distribyutsiyasi va baza kassa tizimi.'}
             </p>
           </div>
 
-          {/* Quick POS Trigger Button */}
+          {/* Quick Action Buttons according to Role */}
           <div className="flex items-center gap-2 shrink-0">
-            <button
-              type="button"
-              onClick={() => setActiveTab('crm_pos')}
-              className="btn-industrial-yellow px-4 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 cursor-pointer shadow-lg select-none"
-            >
-              <Calculator className="w-4 h-4" />
-              <span>Do‘kon Kassa / POS CRM</span>
-              <span className="bg-slate-50 text-[#D95D1E] px-1.5 py-0.2 rounded-md text-[10px] font-mono">
-                {activeBasket.items.length}
-              </span>
-            </button>
+            {currentRole === 'manufacturer' ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('create')}
+                  className="btn-industrial-yellow px-4 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 cursor-pointer shadow-lg select-none"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  <span>+ Zavod Tovari Qo‘shish</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('b2b')}
+                  className="px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-800 font-bold text-xs flex items-center gap-2 hover:border-[#D95D1E] transition-all shadow-xs cursor-pointer"
+                >
+                  <Factory className="w-4 h-4 text-[#D95D1E]" />
+                  <span>B2B Shartnomalar</span>
+                </button>
+              </>
+            ) : currentRole === 'retailer' ? (
+              <button
+                type="button"
+                onClick={() => setActiveTab('crm_pos')}
+                className="btn-industrial-yellow px-4 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 cursor-pointer shadow-lg select-none"
+              >
+                <Calculator className="w-4 h-4" />
+                <span>Do‘kon Kassa / POS CRM</span>
+                <span className="bg-slate-50 text-[#D95D1E] px-1.5 py-0.2 rounded-md text-[10px] font-mono">
+                  {activeBasket.items.length}
+                </span>
+              </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('crm_pos')}
+                  className="btn-industrial-yellow px-3.5 py-2.5 rounded-xl font-black text-xs flex items-center gap-1.5 cursor-pointer shadow-lg select-none"
+                >
+                  <Calculator className="w-4 h-4" />
+                  <span>Baza Kassasi</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('b2b')}
+                  className="px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-800 font-bold text-xs flex items-center gap-1.5 hover:border-[#D95D1E] transition-all shadow-xs cursor-pointer"
+                >
+                  <Factory className="w-4 h-4 text-[#D95D1E]" />
+                  <span>Zavod Xaridi</span>
+                </button>
+              </>
+            )}
           </div>
+        </div>
+
+        {/* Industrial Capacity & Identity Metrics Strip */}
+        <div className="mt-4 pt-3.5 border-t border-slate-200 grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 font-mono text-xs">
+          {currentRole === 'manufacturer' ? (
+            <>
+              <div className="p-2.5 rounded-xl bg-slate-50/80 border border-slate-200">
+                <span className="text-[10px] text-slate-500 block uppercase font-bold">Yillik Quvvat</span>
+                <span className="text-slate-900 font-black text-sm">850,000 tonna</span>
+                <span className="text-[10px] text-emerald-700 block font-sans">O‘zStandart akkreditatsiyasi</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-50/80 border border-slate-200">
+                <span className="text-[10px] text-slate-500 block uppercase font-bold">Temir Yo‘l &amp; Fura</span>
+                <span className="text-slate-900 font-black text-sm">24/7 Dispetcherlik</span>
+                <span className="text-[10px] text-slate-500 block font-sans">Xususiy vagon shoxobchasi</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-50/80 border border-slate-200">
+                <span className="text-[10px] text-slate-500 block uppercase font-bold">Minimal Partiya</span>
+                <span className="text-[#D95D1E] font-black text-sm">20–60 tonna</span>
+                <span className="text-[10px] text-slate-500 block font-sans">Ulgurji vagon &amp; fura</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-50/80 border border-slate-200">
+                <span className="text-[10px] text-slate-500 block uppercase font-bold">B2B Kliring Escrow</span>
+                <span className="text-emerald-700 font-black text-sm">50/50 Shartnoma</span>
+                <span className="text-[10px] text-slate-500 block font-sans">Bank akkreditivi bilan</span>
+              </div>
+            </>
+          ) : currentRole === 'retailer' ? (
+            <>
+              <div className="p-2.5 rounded-xl bg-slate-50/80 border border-slate-200">
+                <span className="text-[10px] text-slate-500 block uppercase font-bold">POS Terminal</span>
+                <span className="text-slate-900 font-black text-sm">#04 Faol</span>
+                <span className="text-[10px] text-emerald-700 block font-sans">Onlayn fiskallashtirish</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-50/80 border border-slate-200">
+                <span className="text-[10px] text-slate-500 block uppercase font-bold">Logistika Qoidasi</span>
+                <span className="text-[#D95D1E] font-black text-sm">«Kim sotsa — yetkazadi»</span>
+                <span className="text-[10px] text-slate-500 block font-sans">Zavod do‘konga keltiradi</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-50/80 border border-slate-200">
+                <span className="text-[10px] text-slate-500 block uppercase font-bold">Do‘kon Ombori</span>
+                <span className="text-slate-900 font-black text-sm">{products.length} ta tovar</span>
+                <span className="text-[10px] text-slate-500 block font-sans">Oflayn va onlayn qoldiq</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-50/80 border border-slate-200">
+                <span className="text-[10px] text-slate-500 block uppercase font-bold">Xarid Modeli</span>
+                <span className="text-emerald-700 font-black text-sm">To‘g‘ridan-to‘g‘ri Zavod</span>
+                <span className="text-[10px] text-slate-500 block font-sans">Dilerlik ustamasiz</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="p-2.5 rounded-xl bg-slate-50/80 border border-slate-200">
+                <span className="text-[10px] text-slate-500 block uppercase font-bold">Savdo Modeli</span>
+                <span className="text-slate-900 font-black text-sm">Gibrid Ulgurji</span>
+                <span className="text-[10px] text-slate-500 block font-sans">Optom va chakana savdo</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-50/80 border border-slate-200">
+                <span className="text-[10px] text-slate-500 block uppercase font-bold">Qamrov Hududi</span>
+                <span className="text-slate-900 font-black text-sm">12 Viloyat</span>
+                <span className="text-[10px] text-slate-500 block font-sans">Respublika bo‘yicha logistika</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-50/80 border border-slate-200">
+                <span className="text-[10px] text-slate-500 block uppercase font-bold">Baza Zaxirasi</span>
+                <span className="text-[#D95D1E] font-black text-sm">4,200 tonna</span>
+                <span className="text-[10px] text-slate-500 block font-sans">Doimiy ombor zaxirasi</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-50/80 border border-slate-200">
+                <span className="text-[10px] text-slate-500 block uppercase font-bold">B2B Kliring</span>
+                <span className="text-emerald-700 font-black text-sm">50/50 Escrow</span>
+                <span className="text-[10px] text-slate-500 block font-sans">Kafolatlangan shartnomalar</span>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Global Feedback Banner */}
@@ -1445,9 +1685,28 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
         )}
       </div>
 
-      {/* 2. Main Navigation Tabs (7 ta bo'lim) */}
+      {/* 2. Main Navigation Tabs (Role-Filtered) */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none font-mono text-xs">
-        {/* 1. Ombor & Mahsulotlar */}
+        {/* Retailer POS (Accented First Tab for Retailer) */}
+        {currentRole === 'retailer' && (
+          <button
+            type="button"
+            onClick={() => setActiveTab('crm_pos')}
+            className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
+              activeTab === 'crm_pos'
+                ? 'bg-[#D95D1E] text-white border-[#C2410C] font-black'
+                : 'bg-white text-emerald-600 border-emerald-200 hover:border-emerald-400'
+            }`}
+          >
+            <Calculator className="w-4 h-4" />
+            <span>Do‘kon Kassa (POS CRM)</span>
+            <span className="text-xs px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200/80 font-sans font-semibold">
+              POS #04
+            </span>
+          </button>
+        )}
+
+        {/* Inventory / Ombor */}
         <button
           type="button"
           onClick={() => setActiveTab('inventory')}
@@ -1458,13 +1717,19 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
           }`}
         >
           <Package className="w-4 h-4" />
-          <span>Mahsulotlar Ombori</span>
+          <span>
+            {currentRole === 'manufacturer'
+              ? 'Zavod Mahsulotlari'
+              : currentRole === 'distributor'
+              ? 'Distribyutor Ombori'
+              : 'Do‘kon Ombori'}
+          </span>
           <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-slate-50 text-[#D95D1E]">
             {products.length}
           </span>
         </button>
 
-        {/* 2. + Yangi Tovar Qo'shish */}
+        {/* + Yangi Tovar Qo'shish */}
         <button
           type="button"
           onClick={() => setActiveTab('create')}
@@ -1478,24 +1743,26 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
           <span>+ Yangi Tovar Qo‘shish</span>
         </button>
 
-        {/* 3. Do'kon Kassa / POS CRM */}
-        <button
-          type="button"
-          onClick={() => setActiveTab('crm_pos')}
-          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
-            activeTab === 'crm_pos'
-              ? 'bg-[#D95D1E] text-white border-[#C2410C] font-black'
-              : 'bg-white text-emerald-600 border-emerald-200 hover:border-emerald-400'
-          }`}
-        >
-          <Calculator className="w-4 h-4" />
-          <span>Do‘kon Kassa / POS CRM</span>
-          <span className="text-xs px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200/80 font-sans font-semibold">
-            POS
-          </span>
-        </button>
+        {/* Distributor POS (Middle Tab) */}
+        {currentRole === 'distributor' && (
+          <button
+            type="button"
+            onClick={() => setActiveTab('crm_pos')}
+            className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
+              activeTab === 'crm_pos'
+                ? 'bg-[#D95D1E] text-white border-[#C2410C] font-black'
+                : 'bg-white text-emerald-600 border-emerald-200 hover:border-emerald-400'
+            }`}
+          >
+            <Calculator className="w-4 h-4" />
+            <span>Baza Kassasi (POS CRM)</span>
+            <span className="text-xs px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200/80 font-sans font-semibold">
+              POS
+            </span>
+          </button>
+        )}
 
-        {/* 4. B2B Zavodlar & Buyurtmalar */}
+        {/* B2B Zavodlar & Buyurtmalar */}
         <button
           type="button"
           onClick={() => setActiveTab('b2b')}
@@ -1506,27 +1773,19 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
           }`}
         >
           <Factory className="w-4 h-4" />
-          <span>B2B Zavodlar &amp; Buyurtmalar</span>
+          <span>
+            {currentRole === 'manufacturer'
+              ? 'B2B Shartnomalar & Tenderlar'
+              : currentRole === 'distributor'
+              ? 'Zavod Shartnomalari & B2B'
+              : 'Zavodlardan Ulgurji Xarid'}
+          </span>
           <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-slate-50 text-purple-400">
             {b2bOrders.length}
           </span>
         </button>
 
-        {/* 5. Moliyaviy Kirim-Chiqim */}
-        <button
-          type="button"
-          onClick={() => setActiveTab('reports')}
-          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
-            activeTab === 'reports'
-              ? 'bg-[#D95D1E] text-white border-[#C2410C] font-black'
-              : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:text-slate-900'
-          }`}
-        >
-          <BarChart3 className="w-4 h-4" />
-          <span>Moliyaviy Kirim-Chiqim</span>
-        </button>
-
-        {/* 6. Marketplace Buyurtmalari */}
+        {/* Buyurtmalar & Logistika */}
         <button
           type="button"
           onClick={() => setActiveTab('orders')}
@@ -1537,13 +1796,19 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
           }`}
         >
           <Truck className="w-4 h-4" />
-          <span>Buyurtmalar</span>
+          <span>
+            {currentRole === 'manufacturer'
+              ? 'Fura & Vagon Logistikasi'
+              : currentRole === 'distributor'
+              ? 'Yuk Tashuvlar & Buyurtmalar'
+              : 'Mijoz Buyurtmalari'}
+          </span>
           <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-slate-50 text-slate-600">
             {orders.length}
           </span>
         </button>
 
-        {/* 7. Escrow Hisobi */}
+        {/* 50/50 Escrow Reestri */}
         <button
           type="button"
           onClick={() => setActiveTab('escrow')}
@@ -1555,6 +1820,20 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
         >
           <Wallet className="w-4 h-4" />
           <span>50/50 Escrow Reestri</span>
+        </button>
+
+        {/* Moliyaviy Hisobot */}
+        <button
+          type="button"
+          onClick={() => setActiveTab('reports')}
+          className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-bold transition-all whitespace-nowrap cursor-pointer shadow-xs ${
+            activeTab === 'reports'
+              ? 'bg-[#D95D1E] text-white border-[#C2410C] font-black'
+              : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:text-slate-900'
+          }`}
+        >
+          <BarChart3 className="w-4 h-4" />
+          <span>{currentRole === 'manufacturer' ? 'Moliyaviy Hisobot' : 'Moliyaviy Kirim-Chiqim'}</span>
         </button>
       </div>
 
@@ -2416,146 +2695,356 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
       )}
 
       {/* =====================================================================
-          TAB 4: B2B ZAVODLAR VA ULARGA ULUG'RJI BUYURTMA BERISH
+          TAB 4: B2B SHARTNOMALAR, ZAVOD XARIDLARI VA LOGISTIKA DISPETCHERLIGI
           ===================================================================== */}
       {activeTab === 'b2b' && (
         <div className="space-y-6">
-          {/* Header notice */}
+          {/* Header notice: Role-tailored B2B overview */}
           <div className="industrial-card rounded-2xl p-5 bg-white border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <Factory className="w-4 h-4 text-[#D95D1E]" />
                 <span className="text-xs font-mono font-bold text-[#D95D1E] uppercase">
-                  B2B To‘g‘ridan-to‘g‘ri Zavod Xaridlari
+                  {currentRole === 'manufacturer'
+                    ? 'Zavod B2B Savdo Portali & Chiqish Dispetcherligi'
+                    : currentRole === 'retailer'
+                    ? 'Zavodlardan To‘g‘ridan-to‘g‘ri Tovar Xarid Qilish'
+                    : 'Gibrid B2B Zavod Shartnomalari & Distribyutsiya'}
                 </span>
               </div>
               <h2 className="text-lg font-heading font-black text-slate-900">
-                O‘zbekiston Ishlab Chiqaruvchi Zavodlari Vitrinasi
+                {currentRole === 'manufacturer'
+                  ? '«BEKOBOD METALL INVEST» AJ — Vagon & Fura Partiyalari Dispetcherligi'
+                  : currentRole === 'retailer'
+                  ? 'O‘zbekiston Ishlab Chiqaruvchi Zavodlari Vitrinasi'
+                  : 'BunkerStroy Ulgurji Distribyutsiya & Zavod Xaridlari'}
               </h2>
               <p className="text-xs text-slate-500 max-w-xl">
-                O‘zmetkombinat, Qizilqumsement, Knauf va boshqa yirik zavodlardan to‘g‘ridan-to‘g‘ri
-                vagon va fura partiyalarida xarid qiling. Bank to‘lov topshiriqnomasi va shartnoma bilan.
+                {currentRole === 'manufacturer'
+                  ? 'Yillik quvvat: 850,000 tonna. Respublika bo‘ylab qurilish do‘kon-bazalari, dilerlar va tender pudratchilari uchun temir yo‘l vagonlari va furalarda to‘g‘ridan-to‘g‘ri jo‘natmalar.'
+                  : currentRole === 'retailer'
+                  ? 'O‘zmetkombinat, Bekobod Metall Invest, Qizilqumsement, Knauf va boshqa yirik zavodlardan to‘g‘ridan-to‘g‘ri vagon va fura partiyalarida xarid qiling. Bank to‘lov topshiriqnomasi bilan.'
+                  : 'Yirik distribyutorlik markazi: Zavodlardan vagon partiyalarida qabul qilish va hududiy do‘kon-bazalarga furalarda ulgurji taqsimlash.'}
               </p>
               <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-sans">
                 <Truck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                 <span>
-                  <strong>«Kim sotsa — o‘sha yetkazadi»</strong> qoidasi: Zavod do‘konga ulgurji sotganda yetkazib berish to‘liq <strong>ZAVODNING bo‘ynida</strong>.
+                  {currentRole === 'manufacturer' ? (
+                    <>
+                      <strong>«Kim sotsa — o‘sha yetkazadi» Zavod Majburiyati:</strong> Zavod buyurtmani qabul qilgach, mijoz omboriga yoki temir yo‘l stantsiyasigacha yukni yetkazib berish to‘liq <strong>ZAVODNING zimmasida</strong>.
+                    </>
+                  ) : (
+                    <>
+                      <strong>«Kim sotsa — o‘sha yetkazadi»</strong> qoidasi: Zavod do‘konga ulgurji sotganda yetkazib berish to‘liq <strong>ZAVODNING bo‘ynida</strong>.
+                    </>
+                  )}
                 </span>
               </div>
             </div>
 
             <div className="text-right font-mono text-xs shrink-0">
-              <span className="text-purple-400 font-bold block">{b2bOrders.length} ta B2B buyurtma</span>
-              <span className="text-[10px] text-slate-500">100% rasmiy invoys</span>
+              <span className="text-purple-400 font-bold block">
+                {currentRole === 'manufacturer'
+                  ? `${factoryDispatches.length} ta faol jo‘natma`
+                  : `${b2bOrders.length} ta B2B buyurtma`}
+              </span>
+              <span className="text-[10px] text-slate-500">100% rasmiy shartnoma &amp; invoys</span>
             </div>
           </div>
 
-          {/* Manufacturers Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {B2B_MANUFACTURERS_LIST.map((mfg) => (
-              <div
-                key={mfg.id}
-                className="industrial-card rounded-2xl p-5 bg-white border border-slate-200 hover:border-[#D95D1E] transition-all flex flex-col justify-between space-y-4"
-              >
-                <div className="space-y-3">
-                  <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-50 border border-slate-200">
-                    <img src={mfg.imageUrl} alt="" className="w-full h-full object-cover" />
-                    <span className="absolute top-2 left-2 px-2 py-0.5 rounded bg-slate-50/90 text-[#D95D1E] border border-slate-200 text-[10px] font-mono font-bold">
-                      {mfg.category}
-                    </span>
+          {/* ===================================================================
+              MANUFACTURER SPECIFIC HIGHLIGHTS:
+              Factory Capacity & Outgoing Rail/Truck Dispatches & Tenders
+              =================================================================== */}
+          {currentRole === 'manufacturer' && (
+            <div className="space-y-6">
+              {/* 3 Zavod Highlight Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
+                <div className="industrial-card rounded-2xl p-4 bg-white border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] text-slate-500 uppercase font-bold">Temir Yo‘l Vagon Shoxobchasi</span>
+                    <span className="text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded text-[10px] font-sans font-semibold">24/7 Ochiq</span>
                   </div>
-
-                  <div>
-                    <h3 className="font-heading font-black text-slate-900 text-base leading-snug">
-                      {mfg.name}
-                    </h3>
-                    <p className="text-[11px] font-mono text-slate-500 flex items-center gap-1 mt-1">
-                      <MapPin className="w-3.5 h-3.5 text-[#D95D1E]" />
-                      <span>{mfg.location}</span>
-                    </p>
-                  </div>
-
-                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5 font-mono text-xs">
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">Asosiy tovar:</span>
-                      <span className="text-slate-900 font-bold truncate max-w-[150px]">
-                        {mfg.featuredProduct}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-500">Zavod narxi:</span>
-                      <span className="text-[#D95D1E] font-black">
-                        {mfg.unitPrice.toLocaleString()} so‘m / {mfg.unit}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-slate-500">Min. partiya:</span>
-                      <span className="text-emerald-600 font-bold">
-                        {mfg.minOrderTons} {mfg.unit}
-                      </span>
-                    </div>
-                  </div>
+                  <div className="text-xl font-heading font-black text-slate-900">18 ta Vagon Yo‘lda</div>
+                  <p className="text-[11px] text-slate-500 font-sans">
+                    Bekobod-Yuk stansiyasidan 6 ta vagon yuklanmoqda (Jami partiya: 1,440 tonna armatura).
+                  </p>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => handleOpenB2bModal(mfg)}
-                  className="w-full btn-industrial-yellow py-2.5 rounded-xl font-black text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
-                >
-                  <FileText className="w-4 h-4" />
-                  <span>Ulgurji Buyurtma &amp; Shartnoma</span>
-                </button>
+                <div className="industrial-card rounded-2xl p-4 bg-white border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] text-slate-500 uppercase font-bold">Og‘ir Fura Dispetcherligi</span>
+                    <span className="text-[#D95D1E] bg-orange-50 border border-orange-200 px-2 py-0.5 rounded text-[10px] font-sans font-semibold">Yuklash Faol</span>
+                  </div>
+                  <div className="text-xl font-heading font-black text-slate-900">1,200 t / kun</div>
+                  <p className="text-[11px] text-slate-500 font-sans">
+                    Elektron avtotarozi va GPS nazorat ostida hududiy qurilish do‘kon-bazalariga jo‘natish.
+                  </p>
+                </div>
+
+                <div className="industrial-card rounded-2xl p-4 bg-white border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] text-slate-500 uppercase font-bold">Davlat &amp; B2B Tenderlari</span>
+                    <span className="text-purple-700 bg-purple-50 border border-purple-200 px-2 py-0.5 rounded text-[10px] font-sans font-semibold">50/50 Escrow</span>
+                  </div>
+                  <div className="text-xl font-heading font-black text-slate-900">14 ta Shartnoma</div>
+                  <p className="text-[11px] text-slate-500 font-sans">
+                    Yirik qurilish kompaniyalari va infratuzilma loyihalari uchun kafolatlangan ta’minot.
+                  </p>
+                </div>
               </div>
-            ))}
-          </div>
 
-          {/* B2B Buyurtmalarim Ro'yxati */}
-          <div className="industrial-card rounded-2xl p-5 bg-white border border-slate-200 space-y-4">
-            <h3 className="font-heading font-black text-slate-900 text-base">
-              B2B Buyurtmalarim &amp; Invoyslar
-            </h3>
+              {/* Table of Outgoing Factory Wholesale Contracts & Rail/Truck Dispatches */}
+              <div className="industrial-card rounded-2xl p-5 bg-white border border-slate-200 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <h3 className="font-heading font-black text-slate-900 text-base">
+                      Zavod Chiqish Partiyalari &amp; Temir Yo‘l / Fura Dispetcherligi
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Do‘kon-bazalar va pudrat tashkilotlari nomiga rasmiylashtirilgan vagon va fura yuklari
+                    </p>
+                  </div>
+                  <Badge variant="warning" size="sm">
+                    {factoryDispatches.length} ta Partiya
+                  </Badge>
+                </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left font-mono text-xs">
-                <thead className="bg-slate-50 text-slate-600 border-b border-slate-200 uppercase text-[10px]">
-                  <tr>
-                    <th className="p-3">Invoys #</th>
-                    <th className="p-3">Ishlab Chiqaruvchi</th>
-                    <th className="p-3">Mahsulot</th>
-                    <th className="p-3">Jami Summa</th>
-                    <th className="p-3">Status</th>
-                    <th className="p-3 text-right">Rekvizitlar</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {b2bOrders.map((ord) => (
-                    <tr key={ord.id} className="hover:bg-slate-100/50">
-                      <td className="p-3 font-bold text-[#D95D1E]">{ord.orderNumber}</td>
-                      <td className="p-3 text-slate-900 font-bold">{ord.manufacturerName}</td>
-                      <td className="p-3 text-slate-600">{ord.productName}</td>
-                      <td className="p-3 font-black text-[#D95D1E]">
-                        {ord.totalAmount.toLocaleString()} so‘m
-                      </td>
-                      <td className="p-3">
-                        <span
-                          className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                            ord.status === 'YETKAZILDI'
-                              ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
-                              : 'bg-orange-50 text-[#D95D1E] border border-[#D95D1E]/40'
-                          }`}
-                        >
-                          {ord.status}
-                        </span>
-                      </td>
-                      <td className="p-3 text-right text-[11px] text-slate-600">
-                        STIR: {ord.bankRequisites.stir}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left font-mono text-xs">
+                    <thead className="bg-slate-50 text-slate-600 border-b border-slate-200 uppercase text-[10px]">
+                      <tr>
+                        <th className="p-3">Shartnoma #</th>
+                        <th className="p-3">Xaridor (Do‘kon / Baza)</th>
+                        <th className="p-3">Tovar &amp; Hajm</th>
+                        <th className="p-3">Transport Turi</th>
+                        <th className="p-3">Jami Summa</th>
+                        <th className="p-3">Status</th>
+                        <th className="p-3">Escrow Kafolati</th>
+                        <th className="p-3 text-right">Amal</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200">
+                      {factoryDispatches.map((item) => (
+                        <tr key={item.id} className="hover:bg-slate-100/50">
+                          <td className="p-3 font-bold text-[#D95D1E] whitespace-nowrap">
+                            {item.contractNo}
+                          </td>
+                          <td className="p-3">
+                            <span className="font-bold text-slate-900 block">{item.buyerName}</span>
+                            <span className="text-[11px] text-slate-500">{item.buyerLocation}</span>
+                          </td>
+                          <td className="p-3">
+                            <span className="text-slate-800 font-bold block">{item.product}</span>
+                            <span className="text-emerald-700 text-[11px] font-semibold">{item.quantity}</span>
+                          </td>
+                          <td className="p-3 text-slate-700 font-medium whitespace-nowrap">
+                            {item.transport}
+                          </td>
+                          <td className="p-3 font-black text-[#D95D1E] whitespace-nowrap">
+                            {item.totalAmount.toLocaleString()} so‘m
+                          </td>
+                          <td className="p-3 whitespace-nowrap">
+                            <span
+                              className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                item.status === 'YETKAZILDI'
+                                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                  : item.status === 'YO‘LDA'
+                                  ? 'bg-sky-50 text-sky-700 border border-sky-200'
+                                  : 'bg-orange-50 text-[#D95D1E] border border-[#D95D1E]/40'
+                              }`}
+                            >
+                              {item.status}
+                            </span>
+                          </td>
+                          <td className="p-3 text-[11px] text-slate-600 whitespace-nowrap">
+                            {item.escrowStatus}
+                          </td>
+                          <td className="p-3 text-right whitespace-nowrap">
+                            {item.status === 'KUTILMOQDA' ? (
+                              <button
+                                type="button"
+                                onClick={() => handleUpdateDispatchStatus(item.id, 'ZAVODDAN_YUKLANDI')}
+                                className="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-[11px] font-bold transition-colors cursor-pointer"
+                              >
+                                Yuklash
+                              </button>
+                            ) : item.status === 'ZAVODDAN_YUKLANDI' ? (
+                              <button
+                                type="button"
+                                onClick={() => handleUpdateDispatchStatus(item.id, 'YO‘LDA')}
+                                className="px-2.5 py-1 bg-sky-600 hover:bg-sky-700 text-white rounded-lg text-[11px] font-bold transition-colors cursor-pointer"
+                              >
+                                Yo‘lga Chiqdi
+                              </button>
+                            ) : item.status === 'YO‘LDA' ? (
+                              <button
+                                type="button"
+                                onClick={() => handleUpdateDispatchStatus(item.id, 'YETKAZILDI')}
+                                className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-bold transition-colors cursor-pointer"
+                              >
+                                Yetkazildi
+                              </button>
+                            ) : (
+                              <span className="text-[11px] text-emerald-700 font-bold">✓ Kliring Yopildi</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* ===================================================================
+              RETAILER & DISTRIBUTOR SPECIFIC VIEW:
+              Wholesale Manufacturer Purchasing Catalog
+              =================================================================== */}
+          {(currentRole === 'retailer' || currentRole === 'distributor') && (
+            <>
+              {/* Manufacturers Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {B2B_MANUFACTURERS_LIST.map((mfg) => (
+                  <div
+                    key={mfg.id}
+                    className="industrial-card rounded-2xl p-5 bg-white border border-slate-200 hover:border-[#D95D1E] transition-all flex flex-col justify-between space-y-4"
+                  >
+                    <div className="space-y-3">
+                      <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-50 border border-slate-200">
+                        <img src={mfg.imageUrl} alt="" className="w-full h-full object-cover" />
+                        <span className="absolute top-2 left-2 px-2 py-0.5 rounded bg-slate-50/90 text-[#D95D1E] border border-slate-200 text-[10px] font-mono font-bold">
+                          {mfg.category}
+                        </span>
+                      </div>
+
+                      <div>
+                        <h3 className="font-heading font-black text-slate-900 text-base leading-snug">
+                          {mfg.name}
+                        </h3>
+                        <p className="text-[11px] font-mono text-slate-500 flex items-center gap-1 mt-1">
+                          <MapPin className="w-3.5 h-3.5 text-[#D95D1E]" />
+                          <span>{mfg.location}</span>
+                        </p>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5 font-mono text-xs">
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Asosiy tovar:</span>
+                          <span className="text-slate-900 font-bold truncate max-w-[150px]">
+                            {mfg.featuredProduct}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Zavod narxi:</span>
+                          <span className="text-[#D95D1E] font-black">
+                            {mfg.unitPrice.toLocaleString()} so‘m / {mfg.unit}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-[11px]">
+                          <span className="text-slate-500">Min. partiya:</span>
+                          <span className="text-emerald-600 font-bold">
+                            {mfg.minOrderTons} {mfg.unit}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleOpenB2bModal(mfg)}
+                      className="w-full btn-industrial-yellow py-2.5 rounded-xl font-black text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
+                    >
+                      <FileText className="w-4 h-4" />
+                      <span>Ulgurji Buyurtma &amp; Shartnoma</span>
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/* B2B Buyurtmalarim Ro'yxati */}
+              <div className="industrial-card rounded-2xl p-5 bg-white border border-slate-200 space-y-4">
+                <h3 className="font-heading font-black text-slate-900 text-base">
+                  Zavodlarga Yuborilgan B2B Buyurtmalarim &amp; Invoyslar
+                </h3>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left font-mono text-xs">
+                    <thead className="bg-slate-50 text-slate-600 border-b border-slate-200 uppercase text-[10px]">
+                      <tr>
+                        <th className="p-3">Invoys #</th>
+                        <th className="p-3">Ishlab Chiqaruvchi</th>
+                        <th className="p-3">Mahsulot</th>
+                        <th className="p-3">Jami Summa</th>
+                        <th className="p-3">Status</th>
+                        <th className="p-3 text-right">Rekvizitlar</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200">
+                      {b2bOrders.map((ord) => (
+                        <tr key={ord.id} className="hover:bg-slate-100/50">
+                          <td className="p-3 font-bold text-[#D95D1E]">{ord.orderNumber}</td>
+                          <td className="p-3 text-slate-900 font-bold">{ord.manufacturerName}</td>
+                          <td className="p-3 text-slate-600">{ord.productName}</td>
+                          <td className="p-3 font-black text-[#D95D1E]">
+                            {ord.totalAmount.toLocaleString()} so‘m
+                          </td>
+                          <td className="p-3">
+                            <span
+                              className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                ord.status === 'YETKAZILDI'
+                                  ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+                                  : 'bg-orange-50 text-[#D95D1E] border border-[#D95D1E]/40'
+                              }`}
+                            >
+                              {ord.status}
+                            </span>
+                          </td>
+                          <td className="p-3 text-right text-[11px] text-slate-600">
+                            STIR: {ord.bankRequisites.stir}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Inter-factory cooperation notice for manufacturers */}
+          {currentRole === 'manufacturer' && (
+            <div className="industrial-card rounded-2xl p-5 bg-white border border-slate-200 space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-heading font-black text-slate-900 text-base">
+                    BunkerStroy Hamkor Zavodlar Tarmog‘i (Kooperatsiya)
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Sanoat narxlari indeksi va xom-ashyo / tovar ayirboshlash bo‘yicha akkreditatsiyalangan zavodlar
+                  </p>
+                </div>
+                <Badge variant="info" size="sm">
+                  {B2B_MANUFACTURERS_LIST.length} ta Zavod
+                </Badge>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 font-mono text-xs">
+                {B2B_MANUFACTURERS_LIST.map((mfg) => (
+                  <div key={mfg.id} className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                    <span className="text-[10px] text-[#D95D1E] font-bold uppercase block">{mfg.category}</span>
+                    <h4 className="font-bold text-slate-900 text-sm truncate">{mfg.name}</h4>
+                    <p className="text-[11px] text-slate-500 truncate">{mfg.location}</p>
+                    <div className="pt-1 flex justify-between text-[11px]">
+                      <span className="text-slate-500">Narx:</span>
+                      <span className="text-slate-900 font-bold">{mfg.unitPrice.toLocaleString()} so‘m</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
