@@ -21,9 +21,9 @@ export interface ProductCardData {
   images?: string[];
   imageUrl?: string;
   supplierName?: string;
-  supplierCabinetType?: 'manufacturer' | 'partner' | string;
+  supplierCabinetType?: 'manufacturer' | 'partner' | string | null;
   isB2B?: boolean;
-  region?: string;
+  region?: string | null;
   hasDelivery?: boolean;
   vatRate?: number | string;
   tieredPrices?: Array<{
@@ -312,7 +312,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {/* Badges on Image (50/50 Escrow and B2B Pill) */}
           <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 flex-wrap z-10">
             {showEscrowBadge && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-sans font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200/90 shadow-2xs backdrop-blur-xs">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-sans font-semibold bg-white/95 text-emerald-800 border border-slate-200/90 shadow-2xs backdrop-blur-xs">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                 <span>50/50 Escrow</span>
               </span>
@@ -331,8 +331,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           )}
           <div className="flex items-center gap-1.5 shrink-0">
             {showDelivery && product.hasDelivery && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-sans font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200/90">
-                <Truck className="w-3 h-3 text-emerald-600 shrink-0" />
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-sans font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                <Truck className="w-3 h-3 text-[#D95D1E] shrink-0" />
                 <span>Yetkazish bor</span>
               </span>
             )}

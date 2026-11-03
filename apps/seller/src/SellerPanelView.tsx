@@ -1518,7 +1518,7 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
                   </>
                 )}
               </span>
-              <Badge variant="success" size="sm">
+              <Badge variant="neutral" size="sm" dot>
                 {currentRole === 'manufacturer'
                   ? 'Akkreditatsiyalangan ZV-842'
                   : currentRole === 'retailer'
@@ -2465,7 +2465,7 @@ export const SellerPanelView: React.FC<SellerPanelViewProps> = ({
                 .map((prod) => (
                   <ProductCard
                     key={prod.id}
-                    product={prod}
+                    product={prod as any}
                     variant="pos"
                     onAddToCart={() => handleAddItemToBasket(prod)}
                     onClick={() => handleAddItemToBasket(prod)}

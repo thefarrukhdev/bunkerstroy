@@ -125,3 +125,10 @@ export const OFFICIAL_CHANNELS = {
   hotline: '+998 (95) 082-1336',
   hotlineRaw: '+998950821336'
 } as const;
+
+export const SUPPORTED_LANGUAGES = [
+  { code: 'uz', label: 'UZ', title: 'O‘zbek tili' },
+  { code: 'ru', label: 'RU', title: 'Русский язык' },
+  { code: 'en', label: 'EN', title: 'English' }
+] as const;
+

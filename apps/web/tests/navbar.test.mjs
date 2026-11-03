@@ -5,6 +5,7 @@ import {
   UZBEKISTAN_REGIONS,
   NAV_LINKS,
   OFFICIAL_CHANNELS,
+  SUPPORTED_LANGUAGES,
   getDedicatedAppUrl
 } from '../src/components/navbar/constants.ts';
 
@@ -52,5 +53,17 @@ describe('BunkerStroy Modular Navbar Architecture & Configuration', () => {
   test('getDedicatedAppUrl port xaritalari', () => {
     // In node environment without window, returns default or null
     assert.strictEqual(typeof getDedicatedAppUrl, 'function');
+  });
+
+  test('3 ta til (UZ, RU, EN) to‘liq qo‘llab-quvvatlanishi va sozlanishi', () => {
+    assert.strictEqual(SUPPORTED_LANGUAGES.length, 3);
+    const codes = SUPPORTED_LANGUAGES.map((l) => l.code);
+    assert.deepStrictEqual(codes, ['uz', 'ru', 'en']);
+
+    const labels = SUPPORTED_LANGUAGES.map((l) => l.label);
+    assert.deepStrictEqual(labels, ['UZ', 'RU', 'EN']);
+
+    const titles = SUPPORTED_LANGUAGES.map((l) => l.title);
+    assert.deepStrictEqual(titles, ['O‘zbek tili', 'Русский язык', 'English']);
   });
 });

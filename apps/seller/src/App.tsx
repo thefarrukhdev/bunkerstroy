@@ -81,7 +81,7 @@ export const ROLE_CONFIGS: Record<PartnerRole, RoleConfig> = {
 };
 
 const SellerPortalInner: React.FC = () => {
-  const { language, toggleLanguage } = useLanguage();
+  const { language, setLanguage, toggleLanguage } = useLanguage();
   const [currentTime, setCurrentTime] = useState<string>('');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
@@ -218,7 +218,7 @@ const SellerPortalInner: React.FC = () => {
             </button>
 
             {/* Brand Title: BUNKERSTROY HAMKOR & SOTUVCHI PORTALI */}
-            <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 shadow-xs shrink-0">
+            <div className="flex items-center gap-2 sm:gap-2.5 px-2 sm:px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 shadow-xs shrink-0">
               <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#D95D1E] text-white flex items-center justify-center font-black shadow-xs shrink-0">
                 <CurrentIcon className="w-4 h-4 stroke-[2.5]" />
               </div>
@@ -231,7 +231,7 @@ const SellerPortalInner: React.FC = () => {
                     HAMKOR &amp; SOTUVCHI PORTALI
                   </span>
                 </div>
-                <span className="text-[9px] text-[#D95D1E] font-mono font-bold tracking-widest uppercase">
+                <span className="hidden sm:inline-block text-[9px] text-[#D95D1E] font-mono font-bold tracking-widest uppercase">
                   ZAVOD, DILER &amp; DO‘KON
                 </span>
               </div>
@@ -354,17 +354,38 @@ const SellerPortalInner: React.FC = () => {
               <span className="text-[10px] text-[#D95D1E] font-bold">UZT</span>
             </div>
 
-            {/* Language Switcher */}
-            <button
-              type="button"
-              onClick={toggleLanguage}
-              className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 text-xs font-mono font-bold text-slate-700 hover:text-slate-900 cursor-pointer transition-all shadow-xs min-h-[44px] min-w-[44px] justify-center"
-              title="Tilni almashtirish / Сменить язык"
-              aria-label="Tilni almashtirish"
+            {/* 3-Language Switcher (UZ | RU | EN) */}
+            <div
+              role="group"
+              aria-label="Til tanlash / Выбор языка / Select language"
+              className="inline-flex items-center h-9 p-0.5 rounded-xl bg-slate-100 border border-slate-200 font-sans text-xs font-bold select-none shrink-0"
             >
-              <Globe className="w-3.5 h-3.5 text-[#D95D1E]" />
-              <span className="uppercase text-[#D95D1E] font-black">{language}</span>
-            </button>
+              {(
+                [
+                  { code: 'uz', label: 'UZ', title: 'O‘zbek tili' },
+                  { code: 'ru', label: 'RU', title: 'Русский язык' },
+                  { code: 'en', label: 'EN', title: 'English' }
+                ] as const
+              ).map((item) => {
+                const isActive = language === item.code;
+                return (
+                  <button
+                    key={item.code}
+                    type="button"
+                    onClick={() => setLanguage(item.code)}
+                    title={item.title}
+                    aria-pressed={isActive}
+                    className={`h-7.5 px-2 sm:px-2.5 rounded-lg transition-all cursor-pointer flex items-center justify-center font-bold min-w-[28px] sm:min-w-[32px] text-[11px] sm:text-xs ${
+                      isActive
+                        ? 'bg-[#D95D1E] text-white font-bold shadow-2xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                );
+              })}
+            </div>
 
             {/* Refresh Button */}
             <button
@@ -422,6 +443,45 @@ const SellerPortalInner: React.FC = () => {
               >
                 <X className="w-5 h-5" />
               </button>
+            </div>
+
+            {/* Language Switcher in Mobile Drawer */}
+            <div className="p-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Globe className="w-4 h-4 text-[#D95D1E] shrink-0" aria-hidden="true" />
+                <span className="text-xs font-sans font-bold text-slate-700">Til / Язык / Lang:</span>
+              </div>
+              <div
+                role="group"
+                aria-label="Til tanlash / Выбор языка / Select language"
+                className="inline-flex p-0.5 rounded-lg bg-white border border-slate-200 font-sans text-xs font-bold shadow-2xs"
+              >
+                {(
+                  [
+                    { code: 'uz', label: 'UZ', title: 'O‘zbek tili' },
+                    { code: 'ru', label: 'RU', title: 'Русский язык' },
+                    { code: 'en', label: 'EN', title: 'English' }
+                  ] as const
+                ).map((item) => {
+                  const isActive = language === item.code;
+                  return (
+                    <button
+                      key={item.code}
+                      type="button"
+                      onClick={() => setLanguage(item.code)}
+                      title={item.title}
+                      aria-pressed={isActive}
+                      className={`px-2.5 py-1 rounded-md transition-all cursor-pointer font-bold ${
+                        isActive
+                          ? 'bg-[#D95D1E] text-white font-bold shadow-2xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Industrial Role Switcher in Drawer */}

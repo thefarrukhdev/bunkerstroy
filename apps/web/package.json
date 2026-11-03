@@ -17,6 +17,7 @@
   "dependencies": {
     "@bunkerstroy/types": "workspace:*",
     "@bunkerstroy/ui": "workspace:*",
+    "@bunkerstroy/i18n": "workspace:*",
     "@capacitor/android": "^8.5.3",
     "@capacitor/app": "^8.1.2",
     "@capacitor/camera": "^8.2.6",
